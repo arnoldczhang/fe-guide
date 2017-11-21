@@ -1,28 +1,40 @@
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
 
-function resolve (dir) {
-  return path.join(__dirname, '.', dir)
-};
+// 生成index.html
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+// 打包前清理之前的压缩文件
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+
+// 生成配置文件，内容是资源文件和打包后文件的对应关系
+const ManifestPlugin = require('webpack-manifest-plugin');
 
 module.exports = {
   devtool: 'inline-source-map',
-  devServer: {
-    contentBase: path.join(__dirname, "dist"),
-    compress: true,
-    port: 8081,
-  },
+
+  // 本地服务器
+  // devServer: {
+  //   contentBase: path.join(__dirname, "dist"),
+  //   compress: true,
+  //   hot: true,
+  //   port: 8081,
+  // },
   entry: {
-    app: "./src/webpack/src/app.js",
-    app2: "./src/webpack/src/app2.js",
+    index: [
+      "./src/webpack/src/app.js",
+
+      // 服务端渲染，在客户端要实现hot-load，需要引入这个client
+      "webpack-hot-middleware/client?path=/__webpack_hmr&reload=true&timeout=20000",
+    ],
+
+    // 如果其他文件也要hot-load，都要引入client
+    // vendor: ['jquery', 'webpack-hot-middleware/client'],
   },
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].[hash].js',
-    publicPath: '/',
+    publicPath: '',
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
@@ -34,6 +46,12 @@ module.exports = {
       template: 'src/webpack/src/app.html',
       // filename: '../index.html',
     }),
+
+    // log中只展示打包相关的文件
+    new webpack.NamedModulesPlugin(),
+
+    // 注入hot-load
+    new webpack.HotModuleReplacementPlugin(),
   ],
   resolve: {
   },
