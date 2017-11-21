@@ -10,6 +10,9 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 // 生成配置文件，内容是资源文件和打包后文件的对应关系
 const ManifestPlugin = require('webpack-manifest-plugin');
 
+// tree-shaking，或者命令中--optimize-minimize
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+
 module.exports = {
   devtool: 'inline-source-map',
 
@@ -23,13 +26,16 @@ module.exports = {
   entry: {
     index: [
       "./src/webpack/src/app.js",
-
+      "underscore",
       // 服务端渲染，在客户端要实现hot-load，需要引入这个client
       "webpack-hot-middleware/client?path=/__webpack_hmr&reload=true&timeout=20000",
     ],
 
     // 如果其他文件也要hot-load，都要引入client
-    // vendor: ['jquery', 'webpack-hot-middleware/client'],
+    // vendor: [
+    //   'underscore',
+    //   'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true&timeout=20000',
+    // ],
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -46,12 +52,23 @@ module.exports = {
       template: 'src/webpack/src/app.html',
       // filename: '../index.html',
     }),
+    new UglifyJSPlugin(),
 
     // log中只展示打包相关的文件
     new webpack.NamedModulesPlugin(),
 
     // 注入hot-load
     new webpack.HotModuleReplacementPlugin(),
+
+    // 环境变量定义
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
+
+    // 提取公共部分代码
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+    }),
   ],
   resolve: {
   },
