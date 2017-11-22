@@ -1,11 +1,31 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
-    "outDir": "./dist/",
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "module": "es6",
-    "target": "es5",
     "jsx": "react",
+    "lib": [
+      "dom",
+      "es2015"
+    ],
+    "declaration": true,
+    "target": "es5", //编译为es5的代码
+    "module": "commonjs",//模块化方式，还有commonjs，amd等
+    "watch": true,
+    "baseUrl": ".",
+    "paths": {
+    },
+    "allowSyntheticDefaultImports": true, // 允许从没有设置默认导出的模块中默认导入
+    "experimentalDecorators": true,//开启装饰器
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
     "allowJs": true
-  }
+  },
+  "include": [
+    "app.ts"
+  ],
+  "exclude": [
+      "node_modules"
+  ]
 }
