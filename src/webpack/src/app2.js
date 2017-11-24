@@ -1,9 +1,9 @@
-import './app.css';
 import img from './app.png';
+import styles from './app.less';
 
 const title = document.createElement('button');
 title.textContent = 'title';
-title.classList = ['title'];
+title.classList = [ styles.title ];
 title.style.backgroundImage = `url(${img})`;
 document.body.appendChild(title);
 

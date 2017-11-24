@@ -4,13 +4,22 @@ const webpack = require('webpack');
 // 生成index.html
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+// 抽离单独文件
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
 // 打包前清理之前的压缩文件
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 // 生成配置文件，内容是资源文件和打包后文件的对应关系
 const ManifestPlugin = require('webpack-manifest-plugin');
 
-// 配合import，做tree-shaking，或者命令中--optimize-minimize
+// 1.配合import { xx, xxx }，做tree-shaking，或者命令中--optimize-minimize
+// 2.配合import(....)，如下，做按需加载
+// aa.onclick = () => {
+//   import('./app2.js').then((res) => {
+//     res.aa();
+//   });
+// };
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
@@ -39,12 +48,12 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     // 普通打包的文件，命名为[name].bundle.js
-    filename: '[name].[chunkhash].bundle.js',
+    filename: '[name].[chunkhash:5].bundle.js',
     publicPath: '',
 
     // 配合代码中的import(/* webpackChunkName: "xxx" */ 'xxx')，
     // 而打包的文件，命名为xxx.[chunkhash].bundle.js
-    chunkFilename: '[name].[chunkhash].bundle.js',
+    chunkFilename: '[name].[chunkhash:5].bundle.js',
 
     // 将打包文件命名为 `webpackNumbers`这个全局变量
     // library: 'webpackNumbers',
@@ -73,7 +82,9 @@ module.exports = {
       // filename: '../index.html',
     }),
 
-    // new UglifyJSPlugin(),
+    // new UglifyJSPlugin({
+    //   sourceMap: true,
+    // }),
 
     // log中只展示打包相关的文件（product）
     // new webpack.HashedModuleIdsPlugin(),
@@ -103,8 +114,25 @@ module.exports = {
     // new webpack.ProvidePlugin({
     //   filter: ['underscore', 'filter'],
     // }),
+
+    // 打包文件的顶部加些注释信息
+    // new webpack.BannerPlugin({
+    //   banner: 'aaaa',
+    // }),
+
+    // 注入ExtractTextPlugin
+    new ExtractTextPlugin({
+      filename: "[chunkhash:5].bundle.css",
+      allChunks: true,
+      disable: false,
+    }),
+
   ],
   resolve: {
+    modules: [
+      path.join(__dirname, 'src'),
+      'node_modules',
+    ],
   },
   module: {
     rules: [
@@ -121,10 +149,63 @@ module.exports = {
       //   use: 'exports-loader?abs=nn.abs',
       // },
       {
-        test: /\.css$/,
+        test: /\.(le|c|sa)ss$/,
+        use: ExtractTextPlugin.extract({
+          use:[
+            {
+              loader: 'css-loader',
+              options:{
+                modules:true,
+                importLoaders:1,
+                localIdentName: '[name]__[local]___[hash:base64:5]',
+              },
+            },
+            'less-loader',
+
+            // css module + autoprefixer
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: (loader) => [
+                  require('autoprefixer')({
+                    browsers: [
+                      'Android >= 4.0',
+                      'last 3 versions',
+                      'iOS > 6'
+                    ],
+                  }),
+                ],
+              },
+            },
+          ],
+          fallback: 'style-loader',
+          publicPath: '/dist',
+        })
+      },
+      {
+        test: /\.jsx?$/,
+        enforce: 'pre',
+        loader: 'eslint-loader',
+        exclude: /node_modules/,
+        options: {
+          failOnError: true,
+        },
+      },
+      {
+        test: /\.jsx?$/,
         use: [
-          'style-loader',
-          'css-loader',
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [ 'es2015' ],
+            },
+          },
+        ],
+      },
+      {
+        test: /\.tsx?$/,
+        use: [
+          'ts-loader',
         ]
       },
       {
