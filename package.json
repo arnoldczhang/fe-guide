@@ -7,13 +7,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node bin.js",
     "webpack": "webpack",
-    "g1": "webpack --config ./src/webpack/webpack.config.js -w",
+    "g1": "webpack --config ./src/webpack/webpack.config.js -w --progress",
     "g1:dev": "node ./src/webpack/webpack.dev.js",
-    "g1:build": "webpack --config ./src/webpack/webpack.prod.js -w",
-    "g1:start": "npm run g1 & webpack-dev-server --open --config ./src/webpack/webpack.config.js",
+    "g1:build": "webpack --config ./src/webpack/webpack.prod.js -w --progress",
+    "g1:start": "npm run g1 & webpack-dev-server --open --config ./src/webpack/webpack.config.js --progress",
     "g1:server": "node ./src/webpack/app.js",
     "g1:ts": "webpack --config ./src/webpack/webpack.ts.config.js",
-    "g1:ts:server": "node ./src/webpack/ts-dist/bundle.js"
+    "g1:ts:server": "node ./src/webpack/ts-dist/bundle.js",
+    "g1:env": "webpack --env.NODE_ENV=aaa --env.production --progress --config ./src/webpack/enviro-variable.js"
   },
   "author": "arnold",
   "license": "MIT",

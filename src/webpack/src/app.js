@@ -12,8 +12,13 @@ title.style.backgroundImage = `url(${img})`;
 // console.log(abs());
 
 title.onclick = () => {
-  import('./app2.js').then((res) => {
+  require.ensure([], (require) => {
+    const res = require('./app2.js');
     res.aa();
   });
 };
 document.body.appendChild(title);
+((r) => {
+  r.keys().forEach(r);
+})(require.context('../test/', true, /\.js$/));
+

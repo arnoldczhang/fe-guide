@@ -16,7 +16,10 @@
     "import/first": "off",
     "no-underscore-dangle": "off",
     "arrow-body-style": "off",
-    "allow-import-export-everywhere": "on"
+    "allow-import-export-everywhere": "on",
+    "linebreak-style": "off",
+    "global-require": "off",
+    "no-console": "off"
   },
   "parserOptions": {
     "ecmaVersion": 6,

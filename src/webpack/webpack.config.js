@@ -20,7 +20,29 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 //     res.aa();
 //   });
 // };
+// 3.配合babel-loader + require.ensure([], (require) => {...})，如下，做按需加载
+// require.ensure([], (require) => {
+//   const res = require('./app2.js');
+//   res.aa();
+// });
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+
+// require.context去中心化
+// 例：require test目录下的所有js
+// ((r) => {
+//   r.keys().forEach(r);
+// })(require.context('../test/', true, /\.js$/));
+
+// --env.xxx
+// 获取webpack命令行的环境变量
+
+
+
+
+
+
+
+
 
 module.exports = {
   devtool: 'inline-source-map',
@@ -186,6 +208,7 @@ module.exports = {
         test: /\.jsx?$/,
         enforce: 'pre',
         loader: 'eslint-loader',
+        include: path.resolve(__dirname, "src"),
         exclude: /node_modules/,
         options: {
           failOnError: true,
@@ -193,6 +216,8 @@ module.exports = {
       },
       {
         test: /\.jsx?$/,
+        include: path.resolve(__dirname, "src"),
+        exclude: /node_modules/,
         use: [
           {
             loader: 'babel-loader',
