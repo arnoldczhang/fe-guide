@@ -155,6 +155,10 @@ module.exports = {
       path.join(__dirname, 'src'),
       'node_modules',
     ],
+    alias: {
+      '@': path.join(__dirname, 'src'),
+    },
+    extensions: ['js', 'jsx'],
   },
   module: {
     rules: [

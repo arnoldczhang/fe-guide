@@ -14,7 +14,8 @@
     "g1:server": "node ./src/webpack/app.js",
     "g1:ts": "webpack --config ./src/webpack/webpack.ts.config.js",
     "g1:ts:server": "node ./src/webpack/ts-dist/bundle.js",
-    "g1:env": "webpack --env.NODE_ENV=aaa --env.production --progress --config ./src/webpack/enviro-variable.js"
+    "g1:env": "webpack --env.NODE_ENV=aaa --env.production --progress --config ./src/webpack/enviro-variable.js",
+    "g1:diy": "webpack --config ./src/webpack/webpack.diy.config.js -w --progress"
   },
   "author": "arnold",
   "license": "MIT",
