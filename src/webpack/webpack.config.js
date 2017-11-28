@@ -36,8 +36,9 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 // --env.xxx
 // 获取webpack命令行的环境变量
 
-
-
+// require.resolve获取文件绝对路径
+// 例如，require.resolve('./index.ts') 
+// "/Users/dianping/website/fe-guide/src/webpack/index.ts"
 
 
 

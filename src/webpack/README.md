@@ -1,8 +1,11 @@
 ## webpack-3.8.1解析
 
 - 主体
+    - 支持webpack([conf1, conf2], callback)
     - webpackOptionsValidationErrors
       - 使用ajv校验options的json格式
+    - Compiler
+      - 编译器，生命周期会触发n多hooks...，插件要在不同hooks中做些callback
     - WebpackOptionsDefaulter
       - 填充默认配置项
     - NodeEnvironmentPlugin
@@ -10,4 +13,17 @@
     - compiler.apply.apply(compiler, options.plugins)
       - 执行plugins
     - WebpackOptionsApply
-      -
+      - 定义打包出来的模板
+        - JsonpTemplatePlugin
+          - this-compilation
+        - FunctionModulePlugin
+          - compilation
+        - NodeSourcePlugin
+          - compilation
+          - after-resolvers
+        - LoaderTargetPlugin
+          - compilation
+          - normal-module-loader
+        - EntryOptionPlugin
+          - entry-option
+        - ...
