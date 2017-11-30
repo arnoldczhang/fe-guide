@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "main": "./src/webpack/dist/index.bundle.js",
+  "bin": {
+    "pojo": "./src/webpack/pojo-loader/bin/pojo-loader.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node bin.js",
@@ -27,6 +30,7 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "clean-webpack-plugin": "^0.1.17",
+    "core-js": "^2.5.1",
     "css-loader": "^0.28.7",
     "eslint": "^4.11.0",
     "eslint-config-airbnb": "^16.1.0",

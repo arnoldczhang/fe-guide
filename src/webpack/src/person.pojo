@@ -1,0 +1,22 @@
+public 
+
+
+
+String
+ name;
+
+
+
+public Number age;
+
+
+private
+
+
+ Array favorites;
+
+private Number
+
+
+ weight;
+

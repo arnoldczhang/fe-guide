@@ -1,5 +1,6 @@
 const path = require('path');
 const myPlugin = require('./plugin.js');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -13,12 +14,13 @@ module.exports = {
     new myPlugin({
       title: 'aaaaaaaaaaa'
     }),
+    new HtmlWebpackPlugin(),
   ],
   module: {
     rules: [{
-      test: /\.jsx?$/,
+      test: /\.pojo$/,
       enforce: 'pre',
-      loader: path.resolve('src/webpack/loader.js'),
+      loader: path.resolve('src/webpack/pojo-loader'),
     }],
   },
 };

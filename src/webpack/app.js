@@ -8,6 +8,10 @@ const webpackHotMiddleware = require('koa-webpack-hot-middleware');
 const config = require('./webpack.config');
 const compiler = webpack(config);
 const app = new Koa();
+const open = require('open');
+const internalIP = require('internal-ip');
+const host = internalIP.v4() || '0.0.0.0';
+const port = 3001;
 
 app
   .use(webpackDevMiddleware(compiler, {
@@ -19,6 +23,7 @@ app
   .use(logger())
   ;
 
-if (!module.parent) app.listen(3001, () => {
-  console.log('koa started at 3001 port');
+if (!module.parent) app.listen(port, () => {
+  console.log(`koa started at ${port} port`);
+  open(`http://${host}:${port}`);
 });
