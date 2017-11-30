@@ -12,7 +12,7 @@
     <img width="200" height="200"
       src="https://webpack.js.org/assets/icon-square-big.svg">
   </a>
-  <h1>JSON Loader</h1>
+  <h1>pojo Loader</h1>
 </div>
 
 <h2 align="center">Install</h2>
@@ -50,20 +50,6 @@ module.exports = {
   }
 }
 ```
-
-<h2 align="center">Maintainer</h2>
-
-<table>
-  <tbody>
-    <tr>
-      <td align="center">
-        <img width="150" height="150" src="https://avatars.githubusercontent.com/sokra?v=3">
-        </br>
-        <a href="https://github.com/sokra">Tobias Koppers</a>
-      </td>
-    </tr>
-  </tbody>
-</table>
 
 
 [npm]: https://img.shields.io/npm/v/pojo-loader.svg
