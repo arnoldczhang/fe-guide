@@ -21,4 +21,4 @@ document.body.appendChild(title);
 ((r) => {
   r.keys().forEach(r);
 })(require.context('../test/', true, /\.js$/));
-
+Object.assign({}, { a: 1 });
