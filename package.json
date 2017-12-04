@@ -12,7 +12,7 @@
     "webpack": "webpack",
     "g1": "webpack --config ./src/webpack/webpack.config.js -w --progress",
     "g1:dev": "node ./src/webpack/webpack.dev.js",
-    "g1:build": "webpack --config ./src/webpack/webpack.prod.js -w --progress",
+    "g1:prod": "webpack --config ./src/webpack/webpack.prod.js -w --progress",
     "g1:start": "npm run g1 & webpack-dev-server --open --config ./src/webpack/webpack.config.js --progress",
     "g1:server": "node ./src/webpack/app.js",
     "g1:ts": "webpack --config ./src/webpack/webpack.ts.config.js",

@@ -1,6 +1,13 @@
 {
+  "0.c0774e497608b9c22434.js": "0.c0774e497608b9c22434.js",
+  "0.c0774e497608b9c22434.js.map": "0.c0774e497608b9c22434.js.map",
+  "2.c0774e497608b9c22434.js": "2.c0774e497608b9c22434.js",
+  "2.c0774e497608b9c22434.js.map": "2.c0774e497608b9c22434.js.map",
   "app.png": "a5191c964526d03c866edfd2a059d527.png",
-  "common.js": "common.83a2b3cc3c521c276beb.bundle.js",
-  "index.js": "index.4a4a347b0789c26bacab.bundle.js",
-  "vendor.js": "vendor.2fad632ae4f5e4e00825.bundle.js"
+  "common.js": "common.c0774e497608b9c22434.js",
+  "common.js.map": "common.c0774e497608b9c22434.js.map",
+  "index.css": "93cd5.bundle.css",
+  "index.css.map": "93cd5.bundle.css.map",
+  "index.js": "index.c0774e497608b9c22434.js",
+  "index.js.map": "index.c0774e497608b9c22434.js.map"
 }

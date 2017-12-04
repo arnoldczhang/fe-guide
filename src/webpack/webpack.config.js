@@ -46,7 +46,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 
 module.exports = {
-  devtool: 'inline-source-map',
+  // devtool: 'inline-source-map',
 
   // 本地服务器配置，或者使用命令形式，比如webpack-dev-server --hot
   // devServer: {
@@ -56,7 +56,7 @@ module.exports = {
   //   port: 8081,
   // },
   entry: {
-    polyfills: './src/webpack/src/polyfills.js',
+    // polyfills: './src/webpack/src/polyfills.js',
     index: [
       "./src/webpack/src/app.js",
       // 服务端渲染，在客户端要实现hot-load，需要引入这个client
@@ -71,7 +71,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     // 普通打包的文件，命名为[name].bundle.js
-    filename: '[name].[chunkhash:5].bundle.js',
+    filename: '[name].[hash:5].bundle.js',
     publicPath: '',
 
     // 配合代码中的import(/* webpackChunkName: "xxx" */ 'xxx')，
@@ -84,14 +84,14 @@ module.exports = {
     // 打包文件兼容环境的方式，比如umd、window、this等
     // libraryTarget: 'umd',
   },
-  externals: {
-    lodash: {
-      commonjs: 'lodash',
-      commonjs2: 'lodash',
-      amd: 'lodash',
-      root: '_',
-    },
-  },
+  // externals: {
+  //   lodash: {
+  //     commonjs: 'lodash',
+  //     commonjs2: 'lodash',
+  //     amd: 'lodash',
+  //     root: '_',
+  //   },
+  // },
   plugins: [
     new CleanWebpackPlugin(['dist']),
 
@@ -159,7 +159,7 @@ module.exports = {
     alias: {
       '@': path.join(__dirname, 'src'),
     },
-    extensions: ['js', 'jsx'],
+    // extensions: ['*', 'js', 'jsx'],
   },
   module: {
     rules: [

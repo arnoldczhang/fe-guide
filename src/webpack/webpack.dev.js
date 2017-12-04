@@ -24,7 +24,7 @@ const config = merge(base, {
     port,
     proxy: {
     },
-  },  
+  },
 });
 
 webpackDevServer.addDevServerEntrypoints(config, config.devServer);

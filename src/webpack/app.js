@@ -16,7 +16,7 @@ const port = 3001;
 app
   .use(webpackDevMiddleware(compiler, {
     noInfo: false,
-    publicPath: config.output.publicPath
+    publicPath: config.output.publicPath,
   }))
   .use(webpackHotMiddleware(compiler))
   .use(body())

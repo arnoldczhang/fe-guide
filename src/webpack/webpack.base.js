@@ -36,6 +36,30 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.jsx?$/,
+        enforce: 'pre',
+        loader: 'eslint-loader',
+        include: path.resolve(__dirname, "src"),
+        exclude: /node_modules/,
+        options: {
+          failOnError: true,
+        },
+      },
+      {
+        test: /\.jsx?$/,
+        include: path.resolve(__dirname, "src"),
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [ 'es2015' ],
+              plugins: ['transform-runtime'],
+            },
+          },
+        ],
+      },
+      {
         test: /\.(le|c|sa)ss$/,
         use: ExtractTextPlugin.extract({
           use:[

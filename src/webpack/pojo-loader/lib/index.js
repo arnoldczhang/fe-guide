@@ -1,4 +1,5 @@
 'use strict';
+
 const spaceRE = /\s/g;
 const lineRE = /[\r\n\s]+/g;
 const splitRE = /;/g;
