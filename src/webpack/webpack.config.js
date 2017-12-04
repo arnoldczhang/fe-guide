@@ -1,3 +1,4 @@
+// 配置集合，看看就好
 const path = require('path');
 const webpack = require('webpack');
 

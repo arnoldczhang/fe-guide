@@ -1,3 +1,4 @@
+// 测试自己写的plugins和loader的配置
 const path = require('path');
 const myPlugin = require('./plugin.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');

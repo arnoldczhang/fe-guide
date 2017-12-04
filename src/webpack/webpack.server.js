@@ -1,6 +1,6 @@
 // https://webpack.js.org/configuration/dev-server
-// 需要配合webpack-dev-server启动
-// webpack-dev-server --inline --progress --config ./src/webpack/webpack.dev.js
+// 内置了webpack server，node命令启动
+// node ./src/webpack/webpack.server.js
 const path = require('path');
 const internalIP = require('internal-ip');
 const open = require('open');
@@ -41,4 +41,11 @@ const config = merge(base, {
   },
 });
 
-module.exports = config;
+webpackDevServer.addDevServerEntrypoints(config, config.devServer);
+const compiler = webpack(config);
+const server = new webpackDevServer(compiler, config.devServer);
+
+server.listen(port, host, () => {
+  console.log(`dev server listening on port ${port}`);
+  open(`http://${host}:${port}`);
+});
