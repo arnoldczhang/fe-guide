@@ -22,3 +22,15 @@ document.body.appendChild(title);
   r.keys().forEach(r);
 })(require.context('../test/', true, /\.js$/));
 Object.assign({}, { a: 1 });
+
+function hmr() {
+  if (!window.titleElement) window.titleElement = title;
+  return function _hmr() {
+    document.body.removeChild(window.titleElement);
+    window.titleElement = title;
+  };
+}
+
+/* HMR start */
+hmr();
+/* HMR end */

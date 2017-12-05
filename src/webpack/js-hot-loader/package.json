@@ -1,0 +1,26 @@
+{
+  "name": "js-hot-loader",
+  "version": "0.0.1",
+  "author": "arnold1205",
+  "bin": "./bin/js-hot-loader.js",
+  "description": "js-hot-loader module for webpack",
+  "license": "MIT",
+  "scripts": {
+    "release": "standard-version"
+  },
+  "devDependencies": {
+    "standard-version": "^4.2.0"
+  },
+  "files": [
+    "index.js",
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arnoldczhang/fe-guide.git"
+  },
+  "engines": {
+    "node": ">= 4.0.0",
+    "npm": ">= 3.0.0"
+  }
+}

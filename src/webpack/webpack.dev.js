@@ -3,7 +3,6 @@
 // webpack-dev-server --inline --progress --config ./src/webpack/webpack.dev.js
 const path = require('path');
 const internalIP = require('internal-ip');
-const open = require('open');
 const webpack = require('webpack');
 const webpackDevServer = require('webpack-dev-server');
 const merge = require('webpack-merge');
@@ -19,8 +18,21 @@ const config = merge(base, {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
   ],
+  module: {
+    rules: [
+      // js hot loader
+      {
+        test: /\.jsx?$/,
+        loader: path.resolve('src/webpack/js-hot-loader'),
+        options: {
+          // 
+        },
+      },
+    ],
+  },
   devServer: {
     contentBase: path.join(__dirname, "dist"),
+    historyApiFallback: true,
     compress: true,
     noInfo: false,
     useLocalIp: true,
