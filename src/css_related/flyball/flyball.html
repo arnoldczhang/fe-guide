@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xml:lang="zh-CN" style="font-size: 64px;">
+<head>
+    <title>外卖</title>
+    <link rel="dns-prefetch" href="//www.dpfile.com"/>
+    <link rel="dns-prefetch" href="//maf.meituan.com"/>
+    <link rel="dns-prefetch" href="//apis.map.qq.com"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5, user-scalable=no">
+    <meta name="apple-mobile-web-app-title" content="点评外卖-上海-大众点评网">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="applicable-device" content="mobile">
+    <style type="text/css">
+    .flyball {
+        will-change: transform;
+        transform: translateZ(0);
+        z-index: 111;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transition: transform .5s linear;
+    }
+    .inner {
+        will-change: transform;
+        transform: translateZ(0);
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 36px;
+        width: 36px;
+        border-radius: 50%;
+        background: #ffb000;
+        transition: transform .5s cubic-bezier(.3, -.2, 1, 0);
+    }
+    </style>
+</head>
+<body id="top">
+    <div class="flyball">
+        <svg class="inner" version="1.1" xmlns="http://www.w3.org/2000/svg" />
+    </div>
+    <script type="text/javascript">
+        var box = document.querySelector('.flyball');
+        var ball = document.querySelector('.inner');
+        box.style.top = '473.78px';
+        box.style.left = '570.92px';
+        // getRectBound()
+        var rect = {
+            top: 430.25,
+            left: -507.8203125,
+        };
+        setTimeout(() => {
+            box.style.transform = 'translate3d(' + rect.left + 'px, 0, 0)';
+            ball.style.transform = 'translate3d(0, ' + rect.top + 'px, 0)';
+        }, 1000);
+        ball.addEventListener('transitionend', function () {
+            // document.body.removeChild(box);
+        }, false);
+    </script>
+</body>
+</html>

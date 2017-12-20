@@ -1,0 +1,20 @@
+.flyball {
+  will-change: transform;
+  transform: translateZ(0);
+  z-index: 111;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: transform .5s linear;
+  .inner {
+    will-change: transform;
+    transform: translateZ(0);
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 36px;
+    width: 36px;
+    border-radius: 50%;
+    transition: transform .5s cubic-bezier(.3, -.2, 1, 0);
+  }
+}
