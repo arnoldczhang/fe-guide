@@ -45,7 +45,6 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 
 
-
 module.exports = {
   // devtool: 'inline-source-map',
 

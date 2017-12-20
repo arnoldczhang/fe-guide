@@ -1,4 +1,5 @@
-// webpack js hot loader without refreshing page;
+// 无刷新热加载（具体实现还是需要框架支持，做部分节点的替换）
+// 例子参考src/app.js
 const path = require('path');
 const hmrRE = /\/\*\s*HMR start\s*\*\/\n?([^\s\(\);]+)\(\);\n?\/\*\s*HMR end\s*\*\//;
 
