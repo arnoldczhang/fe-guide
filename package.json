@@ -19,16 +19,22 @@
     "g1:ts": "webpack --config ./src/webpack/webpack.ts.config.js",
     "g1:ts:server": "node ./src/webpack/ts-dist/bundle.js",
     "g1:env": "webpack --env.NODE_ENV=aaa --env.production --progress --config ./src/webpack/enviro-variable.js",
-    "g1:diy": "webpack --config ./src/webpack/webpack.diy.config.js -w --progress"
+    "g1:diy": "webpack --config ./src/webpack/webpack.diy.config.js -w --progress",
+    "g2": "webpack-dev-server --colors --inline --progress --config ./src/react/build/webpack.dev.js",
+    "g2:build": "webpack --progress --config ./src/react/build/webpack.dev.js",
+    "g2:build:w": "webpack -w --progress --config ./src/react/build/webpack.dev.js"
   },
   "author": "arnold",
   "license": "MIT",
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.0.0-beta.32",
     "autoprefixer": "^7.1.6",
+    "babel-preset-env": "^1.6.1",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.2",
     "babel-loader": "^7.1.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
@@ -62,6 +68,14 @@
     "postcss-loader": "^2.0.8",
     "posthtml": "^0.11.0",
     "posthtml-custom-elements": "^1.1.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-hot-loader": "^3.1.3",
+    "react-redux": "^5.0.6",
+    "react-scripts": "1.0.17",
+    "redux": "^3.7.2",
+    "redux-actions": "^2.2.1",
+    "reselect": "^3.0.1",
     "style-loader": "^0.19.0",
     "transform-runtime": "^0.0.0",
     "ts-loader": "^3.1.1",
@@ -80,5 +94,7 @@
     "webpack-numbers": "^1.0.1",
     "whatwg-fetch": "^2.0.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "babel-preset-stage-0": "^6.24.1"
+  }
 }
