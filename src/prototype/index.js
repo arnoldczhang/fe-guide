@@ -18,15 +18,17 @@ var promise = new Promise(function (resolve, reject) {
   var FUNC = function () {};
   var $define = Object.defineProperty;
   var CODE = {
+    ALL: 'all',
     PENDING: 'pending',
     RESOLVED: 'resolved',
     REJECTED: 'rejected',
   };
+  
   var KEY = {
     VALUE: '[[PromiseValue]]',
     STATUS: '[[PromiseStatus]]',
   };
-  
+
   /*
   utils
    */
@@ -38,11 +40,28 @@ var promise = new Promise(function (resolve, reject) {
     return typeof func === 'function';
   };
 
+  function isObject(obj) {
+    return typeof obj === 'object';
+  };
+
   function extend(source, target) {
     Object.keys(target).forEach(function(key) {
       source[key] = target[key];
     });
     return source;
+  };
+
+  function toArray(arrayLike) {
+    var length = arrayLike.length;
+    var result = [];
+    for (var i = 0; i < length; i += 1) {
+      result[i] = arrayLike[i];
+    }
+    return result;
+  };
+
+  function isPromise(promise) {
+    return promise instanceof Promise;
   };
 
   /*
@@ -82,8 +101,8 @@ var promise = new Promise(function (resolve, reject) {
       var result = store._get('single', key);
       if (result) {
         extend(result, value);
-        return store._set('single', key, result);
       }
+      return store._set('single', key, result || value);
     },
   });
 
@@ -112,6 +131,10 @@ var promise = new Promise(function (resolve, reject) {
     return code === CODE.REJECTED;
   };
 
+  function triggerPending(inst) {
+    return Promise.resolve(inst);
+  };
+
   function triggerSuccess(inst) {
     var result = store.getSingle(inst.uuid);
     var callback = result.success;
@@ -126,6 +149,38 @@ var promise = new Promise(function (resolve, reject) {
     if (isFunction(fallback)) {
       return reNewPromise(fallback(inst[KEY.VALUE]));
     }
+  };
+
+  function getBatchPromiseValue(input, resolve, reject) {
+    var result = [];
+    if (Array.isArray(input)) {
+      input.forEach((inp, index, array) => {
+        if (isPromise(inp)) {
+          if (isPending(inp[KEY.STATUS])) {
+            result[index] = inp;
+            inp.then((function(i) {
+              return function(res) {
+                result[i] = res;
+                checkResolve(resolve, result);
+              };
+            } (index)), function(err) {
+              reject(err);
+            });
+          } else {
+            result[index] = inp[KEY.VALUE];
+          }
+        } else {
+          result[index] = inp;
+        }
+      });
+    }
+  };
+
+  function checkResolve(resolve, data) {
+    const hasPromise = data.some(function(d) {
+      return isPromise(d);
+    });
+    if (!hasPromise) resolve(data);
   };
 
   function resolve(res) {
@@ -146,19 +201,48 @@ var promise = new Promise(function (resolve, reject) {
     if (!isFunction(callback)) {
       throw new TypeError('Promise resolver undefined is not a function');
     }
+    var thisResolve = resolve.bind(this);
+    var thisReject = reject.bind(this);
     initPromiseInst(this, callback);
-    callback(resolve.bind(this), reject.bind(this));
+    try {
+      callback(thisResolve, thisReject);
+    } catch(err) {
+      thisReject(err);
+    }
     return this;
   };
 
-  function reNewPromise(value) {
-    var promise = new Promise();
-    resolve.call(promise, value);
-    return promise;
+  function reNewPromise(value, options) {
+    options = options || {};
+    switch(options.type) {
+      case CODE.RESOLVED: {
+        return new Promise(value);
+      }
+      case CODE.REJECTED: {
+        return new Promise(function(resolve, reject) {
+          reject(value);
+        });
+      }
+      case CODE.ALL: {
+        return new Promise(function(resolve, reject) {
+          getBatchPromiseValue(value, resolve, reject);
+        });
+      }
+      default: {
+        return new Promise(function(resolve) {
+          resolve(value);
+        });
+      }
+    };
   };
 
   function initPromiseInst(inst) {
-    inst.uuid = genUUID();
+    $define(inst, 'uuid', {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+      value: genUUID(),
+    });
     inst[KEY.VALUE] = undefined;
     inst[KEY.STATUS] = CODE.PENDING;
     store.setSingle(inst.uuid, {
@@ -169,8 +253,11 @@ var promise = new Promise(function (resolve, reject) {
   function initPromise() {
     var proto = Promise.prototype;
     $define(Promise, 'all', {
-      value: function () {
-
+      value: function (iterator) {
+        var args = toArray(iterator);
+        return reNewPromise(args, {
+          type: CODE.ALL,
+        });
       },
     });
 
@@ -181,14 +268,26 @@ var promise = new Promise(function (resolve, reject) {
     });
 
     $define(Promise, 'resolve', {
-      value: function () {
-
+      value: function (input) {
+        var value = input;
+        if (isPromise(input)) {
+          value = input[KEY.VALUE];
+        } else if (isObject(input) && isFunction(input.then)) {
+            return reNewPromise(input.then, {
+              type: CODE.RESOLVED,
+            });
+        }
+        return reNewPromise(value, {
+          type: input[KEY.STATUS],
+        });
       },
     });
 
     $define(Promise, 'reject', {
-      value: function () {
-
+      value: function (input) {
+        return reNewPromise(input, {
+          type: CODE.REJECTED,
+        });
       },
     });
 
@@ -204,20 +303,23 @@ var promise = new Promise(function (resolve, reject) {
         var status = this[KEY.STATUS];
         if (isFunction(success)) data.success = success;
         if (isFunction(fail)) data.fail = fail;
-        store.setSingle(inst.uuid, data);
+        store.setSingle(this.uuid, data);
 
         if (isResolve(status)) {
           return triggerSuccess(this);
         } else if (isReject(status)) {
           return triggerFail(this);
         }
-        return this;
+        return triggerPending(this);
       },
     });
 
     $define(proto, 'catch', {
       value: function(fail) {
+        var data = {};
+        var status = this[KEY.STATUS];
         if (isFunction(fail)) data.fail = fail;
+        store.setSingle(this.uuid, data);
         if (isReject(status)) {
           return triggerFail(this);
         }
