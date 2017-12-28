@@ -19,6 +19,7 @@ var promise = new Promise(function (resolve, reject) {
   var $define = Object.defineProperty;
   var CODE = {
     ALL: 'all',
+    FULLFILL: 'fullfill',
     PENDING: 'pending',
     RESOLVED: 'resolved',
     REJECTED: 'rejected',
@@ -132,22 +133,36 @@ var promise = new Promise(function (resolve, reject) {
   };
 
   function triggerPending(inst) {
-    return Promise.resolve(inst);
+    var data = {};
+    var promise = new Promise(function(resolve, reject) {});
+    data.promise = promise;
+    store.setSingle(inst.uuid, data);
+    return promise;
   };
 
   function triggerSuccess(inst) {
     var result = store.getSingle(inst.uuid);
+    var thenable = result.promise;
     var callback = result.success;
+
     if (isFunction(callback)) {
-      return reNewPromise(callback(inst[KEY.VALUE]));
+      var callbackValue = callback(inst[KEY.VALUE]);
+      if (thenable) resolveHandler.call(thenable, callbackValue);
+      return reNewPromise(callbackValue);
     }
   };
 
   function triggerFail(inst) {
     var result = store.getSingle(inst.uuid);
+    var thenable = result.promise;
     var fallback = result.fail;
+
     if (isFunction(fallback)) {
-      return reNewPromise(fallback(inst[KEY.VALUE]));
+      var fallbackValue = fallback(inst[KEY.VALUE]);
+      if (thenable) resolveHandler.call(thenable, fallbackValue);
+      return reNewPromise(fallbackValue, {
+        type: CODE.REJECTED,
+      });
     }
   };
 
@@ -160,11 +175,13 @@ var promise = new Promise(function (resolve, reject) {
             result[index] = inp;
             inp.then((function(i) {
               return function(res) {
+                if (!result) return;
                 result[i] = res;
-                checkResolve(resolve, result);
+                return checkResolve(resolve, result), res;
               };
             } (index)), function(err) {
-              reject(err);
+              result = null;
+              return reject(err), err;
             });
           } else {
             result[index] = inp[KEY.VALUE];
@@ -183,26 +200,26 @@ var promise = new Promise(function (resolve, reject) {
     if (!hasPromise) resolve(data);
   };
 
-  function resolve(res) {
+  function resolveHandler(res) {
     if (!isPending(this[KEY.STATUS])) return;
     this[KEY.VALUE] = res;
     this[KEY.STATUS] = CODE.RESOLVED;
-    triggerSuccess(this);
+    return triggerSuccess(this);
   };
 
-  function reject(rej) {
+  function rejectHandler(rej) {
     if (!isPending(this[KEY.STATUS])) return;
     this[KEY.VALUE] = rej;
     this[KEY.STATUS] = CODE.REJECTED;
-    triggerFail(this);
+    return triggerFail(this);
   };
 
   function Promise(callback) {
     if (!isFunction(callback)) {
       throw new TypeError('Promise resolver undefined is not a function');
     }
-    var thisResolve = resolve.bind(this);
-    var thisReject = reject.bind(this);
+    var thisResolve = resolveHandler.bind(this);
+    var thisReject = rejectHandler.bind(this);
     initPromiseInst(this, callback);
     try {
       callback(thisResolve, thisReject);
@@ -215,7 +232,7 @@ var promise = new Promise(function (resolve, reject) {
   function reNewPromise(value, options) {
     options = options || {};
     switch(options.type) {
-      case CODE.RESOLVED: {
+      case CODE.FULLFILL: {
         return new Promise(value);
       }
       case CODE.REJECTED: {
@@ -228,6 +245,7 @@ var promise = new Promise(function (resolve, reject) {
           getBatchPromiseValue(value, resolve, reject);
         });
       }
+      case CODE.RESOLVED:
       default: {
         return new Promise(function(resolve) {
           resolve(value);
@@ -263,7 +281,7 @@ var promise = new Promise(function (resolve, reject) {
 
     $define(Promise, 'race', {
       value: function () {
-
+        // TODO
       },
     });
 
@@ -274,7 +292,7 @@ var promise = new Promise(function (resolve, reject) {
           value = input[KEY.VALUE];
         } else if (isObject(input) && isFunction(input.then)) {
             return reNewPromise(input.then, {
-              type: CODE.RESOLVED,
+              type: CODE.FULLFILL,
             });
         }
         return reNewPromise(value, {
@@ -293,7 +311,7 @@ var promise = new Promise(function (resolve, reject) {
 
     $define(Promise, 'try', {
       value: function () {
-
+        // TODO
       },
     });
 
@@ -303,14 +321,14 @@ var promise = new Promise(function (resolve, reject) {
         var status = this[KEY.STATUS];
         if (isFunction(success)) data.success = success;
         if (isFunction(fail)) data.fail = fail;
-        store.setSingle(this.uuid, data);
-
-        if (isResolve(status)) {
+        if (isPending(status)) {
+          store.setSingle(this.uuid, data);
+          return triggerPending(this, data);
+        } else {
+          if (isReject(status)) data.success = fail;
+          store.setSingle(this.uuid, data);
           return triggerSuccess(this);
-        } else if (isReject(status)) {
-          return triggerFail(this);
         }
-        return triggerPending(this);
       },
     });
 
@@ -340,6 +358,7 @@ var promise = new Promise(function (resolve, reject) {
 
     $define(proto, 'finally', {
       value: function(callback) {
+        // TODO
         // Promise.resolve()
       },
     });
