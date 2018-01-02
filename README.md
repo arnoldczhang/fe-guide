@@ -60,7 +60,7 @@
     - http 状态码
     - json 与 xml
     - 前端性能优化
-    - nodejs/npm 相关内容
+    - nodejs/npm/yarn 相关内容
 - 算法
     - 几种排序算法
     - 回文字符

@@ -38,7 +38,6 @@ describe('Promise', () => {
         // 未被调用
         return 'aabb';
       }, (reason) => {
-        console.log(reason);
         return 'cccc';
       });
       expect(p3[KEY.VALUE]).to.be.equal('Testing static reject');
@@ -157,6 +156,22 @@ describe('Promise', () => {
         });
         return res;
       });
+
+      // Test3
+      // const promise = new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     resolve('success')
+      //   }, 1000)
+      // });
+
+      // const start = Date.now()
+      // promise.then((res) => {
+      //   console.log(res, Date.now() - start, 1);
+      // });
+      
+      // promise.then((res) => {
+      //   console.log(res, Date.now() - start, 2);
+      // });
     });
 
     it('Promise.resolve', (done) => {
@@ -320,7 +335,6 @@ describe('Promise', () => {
           expect(p3[KEY.STATUS]).to.be.equal(CODE.RESOLVED);
           expect(p4[KEY.VALUE]).to.be.equal(undefined);
           expect(p4[KEY.STATUS]).to.be.equal(CODE.RESOLVED);
-          done();
         }, 210);
       });
 
@@ -385,7 +399,6 @@ describe('Promise', () => {
         });
 
         let p2 = p1.then(function(res) {
-          console.log(res);
           setTimeout(() => {
             expect(p1[KEY.VALUE]).to.be.equal(error);
             expect(p1[KEY.STATUS]).to.be.equal(CODE.REJECTED);
@@ -403,7 +416,6 @@ describe('Promise', () => {
         });
 
         let p2 = p1.then(function(res) {
-          console.log(res);
           setTimeout(() => {
             expect(p1[KEY.VALUE]).to.be.equal(100);
             expect(p1[KEY.STATUS]).to.be.equal(CODE.RESOLVED);
@@ -423,7 +435,6 @@ describe('Promise', () => {
         });
 
         let p2 = p1.then(function(res) {
-          console.log(res);
           setTimeout(() => {
             expect(p1[KEY.VALUE]).to.be.equal('aa');
             expect(p1[KEY.STATUS]).to.be.equal(CODE.RESOLVED);
@@ -444,7 +455,6 @@ describe('Promise', () => {
         setTimeout(resolve, 1000, 'aa');
       });
       p1.done(function(res) {
-        console.log(res);
         setTimeout(() => {
           expect(p1[KEY.VALUE]).to.be.equal('aa');
           expect(p1[KEY.STATUS]).to.be.equal(CODE.RESOLVED);

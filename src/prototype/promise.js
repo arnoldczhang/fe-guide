@@ -1,8 +1,8 @@
 /*
 Promise
 注意点：
-1.then、catch、finally相当于生成一个新的promise，
-  入参根据之前一个promise的resolve或reject的return决定；
+1.then、catch、finally相当于生成一个新的promise，入参根据之前一个promise的resolve或reject的return决定；
+2.promise 状态一旦改变则不能再变
 示例：
 var promise = new Promise(function (resolve, reject) {
   ...
@@ -35,7 +35,7 @@ var promise = new Promise(function (resolve, reject) {
   utils
    */
   function genUUID() {
-    return Number(String(Math.random()).substr(2)).toString(36);
+    return Math.random().toString(36).substring(2);
   };
 
   function isFunction (func) {
@@ -95,6 +95,27 @@ var promise = new Promise(function (resolve, reject) {
     },
   });
 
+  $define(store, 'setMergeQ', {
+    value: function (key, value) {
+      var result = store._get('Q', key);
+      if (result) {
+        Object.keys(value).forEach(function(key) {
+          var resValue = result[key];
+          var setValue = value[key];
+          if (Array.isArray(resValue)) {
+            value[key] = resValue.concat(setValue);
+          } else if (resValue) {
+            value[key] = [resValue, setValue];
+          } else {
+            value[key] = [setValue];
+          }
+        });
+        extend(result, value);
+      }
+      return store._set('Q', key, result || value);
+    },
+  });
+
   $define(store, 'getQ', {
     value: function (key) {
       return store._get('Q', key);
@@ -120,11 +141,29 @@ var promise = new Promise(function (resolve, reject) {
     return code === CODE.REJECTED;
   };
 
+  function iteratorCallback(thenable, handler, callback, value) {
+    if (arguments.length < 4) {
+      value = callback;
+      return thenable.forEach(function(_this) {
+        handler.call(_this, value);
+      });
+    }
+    return thenable.forEach(function(_this, index) {
+      var _callback = callback[index];
+      handler.call(_this, _callback(value));
+    });
+  };
+
   function triggerPending(inst) {
-    var data = {};
+    var instStore = store.getQ(inst.uuid);
     var promise = new Promise(function(resolve, reject) {});
-    data.promise = promise;
-    store.setQ(inst.uuid, data);
+    if (!instStore.promise) {
+      var data = {};
+      data.promise = [promise];
+      store.setQ(inst.uuid, data);
+    } else {
+      instStore.promise.push(promise);
+    }
     return promise;
   };
 
@@ -132,15 +171,26 @@ var promise = new Promise(function (resolve, reject) {
     var result = store.getQ(inst.uuid);
     var value = inst[KEY.VALUE];
     var thenable = result.promise;
+    var isThenableIterable = Array.isArray(thenable);
     var callback = result.success;
+    var isCallbackIterable = Array.isArray(callback);
     var callbackValue;
 
-    if (isFunction(callback)) {
-      callbackValue = callback(value);
-      if (thenable) resolveHandler.call(thenable, callbackValue);
-      return reNewPromise(callbackValue);
-    } else if (thenable) {
-      return resolveHandler.call(thenable, value);
+    if (callback) {
+      if (isCallbackIterable && callback.length === 1) {
+        callback = callback[0];
+        thenable = thenable[0];
+      }
+
+      if (isFunction(callback)) {
+        callbackValue = callback(value);
+        if (thenable) resolveHandler.call(thenable, callbackValue);
+        return reNewPromise(callbackValue);
+      } else if (isCallbackIterable && isThenableIterable) {
+        iteratorCallback(thenable, resolveHandler, callback, value);
+      }
+    } else if (isThenableIterable) {
+      return iteratorCallback(thenable, resolveHandler, value);
     }
   };
 
@@ -148,17 +198,28 @@ var promise = new Promise(function (resolve, reject) {
     var result = store.getQ(inst.uuid);
     var value = inst[KEY.VALUE];
     var thenable = result.promise;
+    var isThenableIterable = Array.isArray(thenable);
     var fallback = result.fail;
+    var isFallbackIterable = Array.isArray(fallback);
     var fallbackValue;
 
-    if (isFunction(fallback)) {
-      fallbackValue = fallback(value);
-      if (thenable) resolveHandler.call(thenable, fallbackValue);
-      return reNewPromise(fallbackValue, {
-        type: CODE.REJECTED,
-      });
-    } else if (thenable) {
-      return rejectHandler.call(thenable, value);
+    if(fallback) {
+      if (isFallbackIterable && fallback.length === 1) {
+        fallback = fallback[0];
+        thenable = thenable[0];
+      }
+
+      if (isFunction(fallback)) {
+        fallbackValue = fallback(value);
+        if (thenable) resolveHandler.call(thenable, fallbackValue);
+        return reNewPromise(fallbackValue, {
+          type: CODE.REJECTED,
+        });
+      } else if (isFallbackIterable && isThenableIterable) {
+        iteratorCallback(thenable, rejectHandler, fallback, value);
+      }
+    } else if (isThenableIterable) {
+      return iteratorCallback(thenable, rejectHandler, value);
     }
   };
 
@@ -358,7 +419,7 @@ var promise = new Promise(function (resolve, reject) {
         if (isFunction(fail)) data.fail = fail;
 
         if (isPending(status)) {
-          store.setQ(this.uuid, data);
+          store.setMergeQ(this.uuid, data);
           return triggerPending(this);
         } else {
           if (isReject(status)) data.success = fail;
@@ -373,11 +434,12 @@ var promise = new Promise(function (resolve, reject) {
         var data = {};
         var status = this[KEY.STATUS];
         if (isFunction(fail)) data.fail = fail;
-        store.setQ(this.uuid, data);
 
         if (isPending(status)) {
+          store.setMergeQ(this.uuid, data);
           return triggerPending(this);
         } else if (isReject(status)) {
+          store.setQ(this.uuid, data);
           return triggerFail(this);
         }
         return this;
