@@ -103,9 +103,25 @@ describe('Promise', () => {
         setTimeout(() => {
           expect(p13[KEY.VALUE]).to.be.equal('dd');
           expect(p13[KEY.STATUS]).to.be.equal(CODE.RESOLVED);
-          done();
         });
         return 'dd';
+      });
+      
+      // Test3
+      const promise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve('success');
+        }, 600);
+      });
+
+      const start = Date.now();
+      promise.then((res) => {
+        expect(res).to.be.equal('success');
+      });
+
+      promise.then((res) => {
+        expect(res).to.be.equal('success');
+        done();
       });
     });
 
@@ -156,22 +172,6 @@ describe('Promise', () => {
         });
         return res;
       });
-
-      // Test3
-      // const promise = new Promise((resolve, reject) => {
-      //   setTimeout(() => {
-      //     resolve('success')
-      //   }, 1000)
-      // });
-
-      // const start = Date.now()
-      // promise.then((res) => {
-      //   console.log(res, Date.now() - start, 1);
-      // });
-      
-      // promise.then((res) => {
-      //   console.log(res, Date.now() - start, 2);
-      // });
     });
 
     it('Promise.resolve', (done) => {
@@ -228,6 +228,11 @@ describe('Promise', () => {
       }, function(e) {
         expect(e).to.be.deep.equal(err);
       });
+
+      Promise.resolve(1)
+        .then(2)
+        .then(Promise.resolve(3))
+        .then(console.log); // log 1 is right
     });
 
     it('Promise.reject', (done) => {

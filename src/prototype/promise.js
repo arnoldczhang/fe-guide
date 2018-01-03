@@ -107,7 +107,7 @@ var promise = new Promise(function (resolve, reject) {
           } else if (resValue) {
             value[key] = [resValue, setValue];
           } else {
-            value[key] = [setValue];
+            value[key] = setValue;
           }
         });
         extend(result, value);
@@ -155,15 +155,10 @@ var promise = new Promise(function (resolve, reject) {
   };
 
   function triggerPending(inst) {
-    var instStore = store.getQ(inst.uuid);
+    var data = {};
     var promise = new Promise(function(resolve, reject) {});
-    if (!instStore.promise) {
-      var data = {};
-      data.promise = [promise];
-      store.setQ(inst.uuid, data);
-    } else {
-      instStore.promise.push(promise);
-    }
+    data.promise = promise;
+    store.setMergeQ(inst.uuid, data);
     return promise;
   };
 
@@ -171,17 +166,12 @@ var promise = new Promise(function (resolve, reject) {
     var result = store.getQ(inst.uuid);
     var value = inst[KEY.VALUE];
     var thenable = result.promise;
-    var isThenableIterable = Array.isArray(thenable);
     var callback = result.success;
+    var isThenableIterable = Array.isArray(thenable);
     var isCallbackIterable = Array.isArray(callback);
     var callbackValue;
 
     if (callback) {
-      if (isCallbackIterable && callback.length === 1) {
-        callback = callback[0];
-        thenable = thenable[0];
-      }
-
       if (isFunction(callback)) {
         callbackValue = callback(value);
         if (thenable) resolveHandler.call(thenable, callbackValue);
@@ -190,25 +180,23 @@ var promise = new Promise(function (resolve, reject) {
         iteratorCallback(thenable, resolveHandler, callback, value);
       }
     } else if (isThenableIterable) {
-      return iteratorCallback(thenable, resolveHandler, value);
+      iteratorCallback(thenable, resolveHandler, value);
+    } else if (thenable) {
+      return resolveHandler.call(thenable, value);
     }
+    return inst;
   };
 
   function triggerFail(inst) {
     var result = store.getQ(inst.uuid);
     var value = inst[KEY.VALUE];
     var thenable = result.promise;
-    var isThenableIterable = Array.isArray(thenable);
     var fallback = result.fail;
+    var isThenableIterable = Array.isArray(thenable);
     var isFallbackIterable = Array.isArray(fallback);
     var fallbackValue;
 
     if(fallback) {
-      if (isFallbackIterable && fallback.length === 1) {
-        fallback = fallback[0];
-        thenable = thenable[0];
-      }
-
       if (isFunction(fallback)) {
         fallbackValue = fallback(value);
         if (thenable) resolveHandler.call(thenable, fallbackValue);
@@ -219,8 +207,11 @@ var promise = new Promise(function (resolve, reject) {
         iteratorCallback(thenable, rejectHandler, fallback, value);
       }
     } else if (isThenableIterable) {
-      return iteratorCallback(thenable, rejectHandler, value);
+      iteratorCallback(thenable, rejectHandler, value);
+    } else if (thenable) {
+      return rejectHandler.call(thenable, value);
     }
+    return inst;
   };
 
   function getBatchPromiseValue(input, resolve, reject) {
