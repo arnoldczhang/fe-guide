@@ -12,6 +12,7 @@
     "react"
   ],
   "rules": {
+    "no-alert": "off",
     "react/forbid-prop-types": "off",
     "react/prefer-stateless-function": "off",
     "import/no-extraneous-dependencies": "off",

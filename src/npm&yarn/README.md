@@ -37,6 +37,7 @@
   - ##npm发布
     - npm c ls
     - npm config list
+    - npm config set @aa:registry http://r.npm.aa.com
       - `查看npm配置`
     - npm login [--register=...]
       - `指定域登录（如果没登录的话）`
