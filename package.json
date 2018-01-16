@@ -22,6 +22,7 @@
     "g2": "webpack-dev-server --colors --inline --progress --config ./src/react/build/webpack.dev.js",
     "g2:build": "webpack --progress --config ./src/react/build/webpack.dev.js",
     "g2:build:w": "webpack -w --progress --config ./src/react/build/webpack.dev.js",
+    "g3": "parcel src/parcel/index.html",
     "test": "mocha"
   },
   "author": "arnold",
@@ -80,6 +81,7 @@
     "mobx": "^3.4.1",
     "mocha": "^4.0.1",
     "mochawesome": "^1.3.4",
+    "node-less": "^1.0.0",
     "open": "^0.0.5",
     "postcss-loader": "^2.0.8",
     "posthtml": "^0.11.0",
@@ -114,6 +116,9 @@
     "babel-preset-stage-0": "^6.24.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha-reporter": "^2.2.5",
+    "node-sass": "^4.7.2",
+    "parcel-bundler": "^1.4.1",
+    "postcss-modules": "^1.1.0",
     "sinon-chai": "^2.14.0"
   }
 }
