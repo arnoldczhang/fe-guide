@@ -69,62 +69,65 @@ var promise = new Promise(function (resolve, reject) {
   /*
   store
    */
-  var store = {
-    Q: {},
-  };
+  var store = (function() {
+    var store = {
+      Q: {},
+    };
+    
+    $define(store, '_set', {
+      value: function (map, key, value) {
+        store[map][key] = value;
+      },
+    });
 
-  $define(store, '_set', {
-    value: function (map, key, value) {
-      store[map][key] = value;
-    },
-  });
+    $define(store, '_get', {
+      value: function (map, key) {
+        return store[map][key];
+      },
+    });
 
-  $define(store, '_get', {
-    value: function (map, key) {
-      return store[map][key];
-    },
-  });
+    $define(store, 'setQ', {
+      value: function (key, value) {
+        var result = store._get('Q', key);
+        if (result) {
+          extend(result, value);
+        }
+        return store._set('Q', key, result || value);
+      },
+    });
 
-  $define(store, 'setQ', {
-    value: function (key, value) {
-      var result = store._get('Q', key);
-      if (result) {
-        extend(result, value);
-      }
-      return store._set('Q', key, result || value);
-    },
-  });
+    $define(store, 'setMergeQ', {
+      value: function (key, value) {
+        var result = store._get('Q', key);
+        if (result) {
+          Object.keys(value).forEach(function(key) {
+            var resValue = result[key];
+            var setValue = value[key];
+            if (Array.isArray(resValue)) {
+              value[key] = resValue.concat(setValue);
+            } else if (resValue) {
+              value[key] = [resValue, setValue];
+            } else {
+              value[key] = setValue;
+            }
+          });
+          extend(result, value);
+        }
+        return store._set('Q', key, result || value);
+      },
+    });
 
-  $define(store, 'setMergeQ', {
-    value: function (key, value) {
-      var result = store._get('Q', key);
-      if (result) {
-        Object.keys(value).forEach(function(key) {
-          var resValue = result[key];
-          var setValue = value[key];
-          if (Array.isArray(resValue)) {
-            value[key] = resValue.concat(setValue);
-          } else if (resValue) {
-            value[key] = [resValue, setValue];
-          } else {
-            value[key] = setValue;
-          }
-        });
-        extend(result, value);
-      }
-      return store._set('Q', key, result || value);
-    },
-  });
+    $define(store, 'getQ', {
+      value: function (key) {
+        return store._get('Q', key);
+      },
+    });
 
-  $define(store, 'getQ', {
-    value: function (key) {
-      return store._get('Q', key);
-    },
-  });
-
-  if (Object.freeze) {
-    Object.freeze(store);
-  }
+    if (Object.freeze) {
+      Object.freeze(store);
+    }
+    return store;
+  } ());
 
   /*
   promise
