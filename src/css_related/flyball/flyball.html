@@ -35,6 +35,19 @@
     </style>
 </head>
 <body id="top">
+<svg viewBox="0 0 320 480"
+               xmlns="http://www.w3.org/2000/svg" 
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+              <path d="M20 20 C90,40 130,40 180,20"
+                   stroke-width="2" 
+                  fill="none" id="theMotionPath"/>
+
+              <circle cx="" cy="" r="5" fill="red">
+                <animateMotion dur="1s" repeatCount="1">
+                  <mpath xlink:href="#theMotionPath"/>
+                </animateMotion>
+              </circle>
+            </svg>
     <div class="flyball">
         <svg class="inner" version="1.1" xmlns="http://www.w3.org/2000/svg" />
     </div>
