@@ -9,11 +9,9 @@ def func(res):
 def to_json(str, encoding="utf-8"):
   return json.loads(str.decode(), encoding)
 
-
 def filter(str):
-  # str = 'Zepto1516182689335(\n{\"novels\":[]});\n';
-  zepto_tag = re.compile(r"(?:[zZ]epto\d+\(\n?|\);\n?)")
-  return zepto_tag.sub('', str)
+  other_tag = re.compile(r"(?:^[^\(\)]+\(|\)\;?\n?$)")
+  return other_tag.sub('', str)
 
 def config_sys_info():
   reload(sys)
@@ -33,8 +31,26 @@ OPTIONS = {
 class Crawler(object):
   def __init__(self, param):
     self.base_path = param['base_path']
-    # self.sina_crawler()
+    self.sina_crawler()
     self.net_ease_crawler()
+    self.sohu_crawler()
+    self.tencent_crawler()
+
+  def tencent_crawler(self):
+    host = 'xw.qq.com'
+    file_name = '%s%s' % (self.base_path, 'tecent.json')
+    return self.ajax(host, 'http://%s/public-api/feed?scene=CHANNEL&sceneId=8&page=1&size=20&callback=jQuery321027075685780325864_1516331283536&_=1516331283544' % (host), {
+      "file_name": file_name,
+      "req_data": {}
+    })
+
+  def sohu_crawler(self):
+    host = 'v2.sohu.com'
+    file_name = '%s%s' % (self.base_path, 'sohu.json')
+    return self.ajax(host, 'http://%s/public-api/feed?scene=CHANNEL&sceneId=8&page=1&size=20&callback=jQuery321027075685780325864_1516331283536&_=1516331283544' % (host), {
+      "file_name": file_name,
+      "req_data": {}
+    })
 
   def net_ease_script(self, res):
     script_match = re.compile(r"<script src\=\"(https?://(static\.ws\.126\.net)/f2e/wap/touch_index_\d{4}/trunk/js/newaplib\.[^\.]+\.\d+\.js)\"></script>").search(res)
@@ -46,7 +62,8 @@ class Crawler(object):
     return False
 
   def net_ease_script_cb(self, res):
-    script_match = re.compile(r"function\(\)\{\"use strict\";var e=(.+);this\._channelMap\=e\}\.call\(window\.NEWAP\)").search(res)
+    print res
+    script_match = re.compile(r"function\(\)\{\s?\"use strict\";\s?var e=(.+);this\._channelMap\=e\}\.call\(window\.NEWAP\)").search(res)
     if script_match:
       print script_match.group(1)
 
@@ -62,8 +79,13 @@ class Crawler(object):
   def net_ease_crawler(self):
     host = '3g.163.com';
     file_name = '%s%s' % (self.base_path, 'netease.json')
-    return self.ajax(host, 'https://%s/touch/news/subchannel/all?dataversion=A&uversion=A&version=v_standard' % (host), {
-      "callback": self.net_ease_html_cb
+    #
+    # return self.ajax(host, 'https://%s/touch/news/subchannel/all?dataversion=A&uversion=A&version=v_standard' % (host), {
+    #   "callback": self.net_ease_html_cb
+    # })
+    return self.ajax(host, 'https://%s/touch/reconstruct/article/list/BCR0CBQ2wangning/0-10.html' % (host), {
+      "file_name": file_name,
+      "req_data": {}
     })
 
   def sina_crawler(self):
