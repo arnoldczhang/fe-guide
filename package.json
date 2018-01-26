@@ -21,6 +21,7 @@
     "g1:diy": "webpack --config ./src/webpack/webpack.diy.config.js -w --progress",
     "g2": "webpack-dev-server --colors --inline --progress --config ./src/react/build/webpack.dev.js",
     "g2:build": "webpack --progress --config ./src/react/build/webpack.dev.js",
+    "g2:prod": "webpack --progress --config ./src/react/build/webpack.prod.js",
     "g2:build:w": "webpack -w --progress --config ./src/react/build/webpack.dev.js",
     "g3": "parcel src/parcel/index.html",
     "test": "mocha"
