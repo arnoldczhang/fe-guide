@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   entry: {
@@ -38,6 +39,7 @@ module.exports = {
       title: 'test',
       template: './src/react/public/index.html',
     }),
+    new BundleAnalyzerPlugin(),
   ],
   resolve: {
     extensions: ['.*', '.js', '.jsx', '.es6'],
