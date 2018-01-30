@@ -3,6 +3,7 @@ const _ = require('./lib');
 
 module.exports = function (content, sourcemap) {
   // TODO for debug
+  const callback = this.async();
   if (this.cacheable) this.cacheable();
   content = typeof content === 'string' ? content : String(content);
   const nameResult = _.nameRE.exec(this.resource);
