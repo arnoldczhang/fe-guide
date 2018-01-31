@@ -34,7 +34,7 @@ def config_sys_info():
     'key': 'unhandledrejection',
     'map': KEY_MAP,
     'path_name': '.',
-    'project': '',
+    'project': '%s%s%s%s' % ('take', 'away', '-wx', 'wallet'),
   }
 
 def get_now(format = '%Y-%m-%d', need_print = False):
@@ -64,6 +64,8 @@ class MainWindow(Frame):
     self.createWidgets()
 
   def run_test(self):
+    # num = str(5 / 10 * 100)
+    # print('%s%%' % (num))
     print(1)
 
   def get_cach(self):
@@ -86,14 +88,17 @@ class MainWindow(Frame):
     self.error_label.pack()
     self.error_input = ttk.Combobox(self)
     self.error_input['values'] = self.storage.get('error_list') or ()
-    self.error_input.bind('<<ComboboxSelected>>', self.combo_select)  
+    self.error_input.bind('<<ComboboxSelected>>', self.combo_select)
+    if len(self.error_input['values']) > 1:
+      self.error_input.current(1)
     self.error_input.pack()
 
     self.project_label = Label(self, text = '项目名称：')
     self.project_label.pack()
-    default_value = StringVar()
-    default_value.set('%s%s%s' % ('take', 'away-', 'wxwallet'))
-    self.project_input = Entry(self, textvariable = default_value)
+    self.project_input = ttk.Combobox(self)
+    self.project_input['values'] = self.storage.get('project_list') or ()
+    if len(self.project_input['values']) > 352:
+      self.project_input.current(352)
     self.project_input.pack()
 
     self.sample_label = Label(self, text = '样本数：')
@@ -191,7 +196,8 @@ class MainWindow(Frame):
       'start_time': start_time,
       'end_time': end_time
     }, {
-      'error_input': self.error_input
+      'error_input': self.error_input,
+      'project_input': self.project_input
     }, type)
 
 ## Application
@@ -248,7 +254,7 @@ class Application(object):
         uniq_result[element] = 1
     return append
 
-  def append_list(self, array):
+  def append_error_list(self, array):
     point_re = re.compile(r',')
     def append(index, item):
       children = self.q(item).children()
@@ -258,16 +264,31 @@ class Application(object):
       TEMP[error_key] = point_re.sub('', error_times)
     return append
 
+  def append_project_list(self, array):
+    def append(index, item):
+      array.append(self.q(item).text())
+    return append
+
   def simple_list_query(self):
     self.q = pq(self.response_text)
     input_values = []
-    self.q('table.table-striped tr').each(self.append_list(input_values))
+    project_values = []
+
+    self.q('table.table-striped tr').each(self.append_error_list(input_values))
     self.storage['error_list'] = input_values
     self.widget['error_input']['values'] = input_values
+    if len(input_values) > 1:
+      self.widget['error_input'].current(1)
+
+    self.storage['project_list'] = project_values
+    self.q('select#project option').each(self.append_project_list(project_values))
+    self.widget['project_input']['values'] = project_values
     messagebox.showinfo('提示', '获取错误信息列表成功')
 
-  def run_thread(self, index, callback):
-    self.q('table tr:eq(%s) td:eq(1)' % (index)).each(callback)
+  def run_thread(self, place, callback, index):
+    print('thread_%s is start' % (index))
+    self.q('table tr:eq(%s) td:eq(1)' % (place)).each(callback)
+    print('thread_%s is done' % (index))
 
   def simple_query(self):
     self.q = pq(self.response_text)
@@ -275,7 +296,7 @@ class Application(object):
     for index,key in enumerate(self.map):
       self.result[key] = {}
       append_result = self.append_result(key)
-      thread = threading.Thread(target=self.run_thread, args=(self.map[key], append_result,))
+      thread = threading.Thread(target=self.run_thread, args=(self.map[key], append_result, index,))
       thread.start()
       queue.append(thread)
     for thread in queue:
@@ -283,7 +304,6 @@ class Application(object):
 
   def cach_storage(self):
     f = open(CACH_FILE_NAME, 'w')
-    print(self.storage)
     f.write(json.dumps(self.storage, indent = 4, ensure_ascii=True))
     f.close()
 
@@ -312,10 +332,12 @@ class Application(object):
       worksheet = workbook.add_worksheet(result_key)
       worksheet.write(0, 0, '内容')
       worksheet.write(0, 1, '出现次数')
+      worksheet.write(0, 2, '占比')
       result = sorted(result.items(), key=lambda d: -d[1])
       for index, item in enumerate(result):
         worksheet.write(index + 1, 0, item[0])
         worksheet.write(index + 1, 1, item[1])
+        worksheet.write(index + 1, 2, '%s%%' % (round(int(item[1]) / int(self.limit) * 100)))
     workbook.close()
     messagebox.showinfo('提示', '保存成功')
     os.system('open %s' % (file_path))
