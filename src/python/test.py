@@ -10,23 +10,27 @@ import webbrowser
 CACH_FILE_NAME = './storage.json'
 HOST = '%s%s%s' % ('http://', 'cat.', 'dp/cat/r/frontend')
 KEY_MAP = {
-  '项目名': 2,
-  '项目地址': 3,
-  '项目真实地址': 5,
+  '项目': 2,
+  '页面URL': 3,
+  '实际URL': 5,
   '省份': 9,
   '运营商': 10,
   '操作系统': 11,
-  '运行环境': 12,
-  '网络环境': 13,
-  'UA': 14,
-  'IP地址': 16,
-  '错误内容': 17,
+  '容器类型': 12,
+  '网络类型': 13,
+  'User Agent': 14,
+  '用户IP': 16,
+  '日志内容': 17,
 }
 TYPE = {
   'DETAIL': 'logDetail',
   'LIST': 'logView'
 }
 TEMP = {}
+
+PROJ_INDEX = 356
+START_TIME = '00:00'
+END_TIME = '23:30'
 
 def config_sys_info():
   return {
@@ -64,9 +68,7 @@ class MainWindow(Frame):
     self.createWidgets()
 
   def run_test(self):
-    # num = str(5 / 10 * 100)
-    # print('%s%%' % (num))
-    print(1)
+    print('start test')
 
   def get_cach(self):
     try:
@@ -97,8 +99,8 @@ class MainWindow(Frame):
     self.project_label.pack()
     self.project_input = ttk.Combobox(self)
     self.project_input['values'] = self.storage.get('project_list') or ()
-    if len(self.project_input['values']) > 352:
-      self.project_input.current(352)
+    if len(self.project_input['values']) > PROJ_INDEX:
+      self.project_input.current(PROJ_INDEX)
     self.project_input.pack()
 
     self.sample_label = Label(self, text = '样本数：')
@@ -118,14 +120,14 @@ class MainWindow(Frame):
     self.start_time_label = Label(self, text = '开始时间：')
     self.start_time_label.pack()
     default_value = StringVar()
-    default_value.set(self.storage.get('start_time') or '00:00')
+    default_value.set(self.storage.get('start_time') or START_TIME)
     self.start_time_input = Entry(self, textvariable = default_value)
     self.start_time_input.pack()
 
     self.end_time_label = Label(self, text = '结束时间：')
     self.end_time_label.pack()
     default_value = StringVar()
-    default_value.set(self.storage.get('end_time') or '23:30')
+    default_value.set(self.storage.get('end_time') or END_TIME)
     self.end_time_input = Entry(self, textvariable = default_value)
     self.end_time_input.pack()
 
@@ -179,8 +181,8 @@ class MainWindow(Frame):
     session = self.session_input.get() or ''
     ssoid = self.ssoid_input.get() or ''
     date = self.date_input.get() or get_now()
-    start_time = self.start_time_input.get() or '00:00'
-    end_time = self.end_time_input.get() or '23:30'
+    start_time = self.start_time_input.get() or START_TIME
+    end_time = self.end_time_input.get() or END_TIME
     
     if is_list(type):
       content = 'all'
@@ -197,6 +199,8 @@ class MainWindow(Frame):
       'end_time': end_time
     }, {
       'error_input': self.error_input,
+      'project_input': self.project_input,
+      'sample_input': self.sample_input,
       'project_input': self.project_input
     }, type)
 
@@ -225,8 +229,8 @@ class Application(object):
     self.file_dir = param['file_dir'] or self.param['path_name']
     self.project = param['project'] or self.param['project']
     self.date = param['date']
-    self.start_time = param['start_time']
-    self.end_time = param['end_time']
+    self.start_time = param['start_time'] or START_TIME
+    self.end_time = param['end_time'] or END_TIME
 
   def update_storage(self, param = {}):
     try:
@@ -235,8 +239,8 @@ class Application(object):
       self.storage = {}
     self.cookie['JSESSIONID'] = self.storage['JSESSIONID'] = param['JSESSIONID'] or ''
     self.cookie['ssoid'] = self.storage['ssoid'] = param['ssoid'] or ''
-    self.storage['start_time'] = param['start_time'] or ''
-    self.storage['end_time'] = param['end_time'] or ''
+    self.storage['start_time'] = param['start_time'] or START_TIME
+    self.storage['end_time'] = param['end_time'] or END_TIME
 
   def create_widget(self):
     self.app = MainWindow(self.query_handler)
@@ -246,12 +250,12 @@ class Application(object):
 
   def append_result(self, uniq_key):
     uniq_result = self.result[uniq_key]
-    def append(index, item):
-      element = self.q(item).text()
-      if uniq_result.get(element) != None:
-        uniq_result[element] += 1
-      else:
-        uniq_result[element] = 1
+    def append(text):
+      if text:
+        if uniq_result.get(text) != None:
+          uniq_result[text] += 1
+        else:
+          uniq_result[text] = 1
     return append
 
   def append_error_list(self, array):
@@ -273,21 +277,32 @@ class Application(object):
     self.q = pq(self.response_text)
     input_values = []
     project_values = []
-
     self.q('table.table-striped tr').each(self.append_error_list(input_values))
     self.storage['error_list'] = input_values
     self.widget['error_input']['values'] = input_values
     if len(input_values) > 1:
       self.widget['error_input'].current(1)
-
-    self.storage['project_list'] = project_values
-    self.q('select#project option').each(self.append_project_list(project_values))
-    self.widget['project_input']['values'] = project_values
+      self.widget['sample_input'].delete(0, 'end')
+      self.widget['sample_input'].insert(0, TEMP.get(input_values[1]) or '1')      
+    # dont cach project list if is existed
+    if ('project_list' in self.storage) == False:
+      self.storage['project_list'] = project_values
+      self.q('select#project option').each(self.append_project_list(project_values))
+      self.widget['project_input']['values'] = project_values
+    # dont reset project value if is existed
+    if self.widget['project_input'].get():
+      print('project has default value')
+    else:
+      if len(project_values) > PROJ_INDEX:
+        self.widget['project_input'].current(PROJ_INDEX)
     messagebox.showinfo('提示', '获取错误信息列表成功')
 
-  def run_thread(self, place, callback, index):
+  def run_query_thread(self, place, callback, index):
     print('thread_%s is start' % (index))
-    self.q('table tr:eq(%s) td:eq(1)' % (place)).each(callback)
+    query_re = re.compile(r'<tr>\s*<td>%s</td>\s*<td\s*(?:class\=[\w\'\"]+|)\s*>\s*(?:<pre\s+style\=[^<>]+\s*>|)\s*([^<>]+)\s*(?:</pre>\s*|)</td>\s*</tr>' % (place))
+    query_text_arr = query_re.findall(self.response_text) or []
+    for query_text in query_text_arr:
+      callback(query_text)
     print('thread_%s is done' % (index))
 
   def simple_query(self):
@@ -296,7 +311,7 @@ class Application(object):
     for index,key in enumerate(self.map):
       self.result[key] = {}
       append_result = self.append_result(key)
-      thread = threading.Thread(target=self.run_thread, args=(self.map[key], append_result, index,))
+      thread = threading.Thread(target=self.run_query_thread, args=(key, append_result, index,))
       thread.start()
       queue.append(thread)
     for thread in queue:
@@ -323,7 +338,7 @@ class Application(object):
       messagebox.showinfo('提示', '当前未登录，请登录完之后，回填JSESSIONID 和 ssoid')
 
   def write_result(self):
-    restrict_re = re.compile(r'[,\/\s\|:]')
+    restrict_re = re.compile(r'[,\/\s\|:\'\"]')
     query_content = restrict_re.sub('', self.query_content)
     file_path = '%s/%s.xlsx' % (self.file_dir, query_content)
     workbook = xlsxwriter.Workbook(file_path)
