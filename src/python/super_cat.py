@@ -6,8 +6,11 @@ from xlwt import *
 import tkinter.filedialog as filedialog
 import tkinter.messagebox as messagebox
 import webbrowser
+from os.path import join, abspath
 
-CACH_FILE_NAME = './storage.json'
+requests.utils.DEFAULT_CA_BUNDLE_PATH = join(abspath('.'), 'cacert.pem')
+PATH = sys.path[0]
+CACH_FILE_NAME = '%s/storage.json' % (re.compile(r'(\/[^\/]+)$').sub('', PATH))
 HOST = '%s%s%s' % ('http://', 'cat.', 'dp/cat/r/frontend')
 KEY_MAP = {
   '项目': 2,
@@ -27,7 +30,6 @@ TYPE = {
   'LIST': 'logView'
 }
 TEMP = {}
-
 PROJ_INDEX = 356
 START_TIME = '00:00'
 END_TIME = '23:30'
@@ -78,7 +80,7 @@ class MainWindow(Frame):
       else:
         self.storage = {}
       f.close();
-    except FileNotFoundError as e:
+    except:
       self.storage = {}
 
   def createWidgets(self):
@@ -318,13 +320,16 @@ class Application(object):
       thread.join()
 
   def cach_storage(self):
-    f = open(CACH_FILE_NAME, 'w')
-    f.write(json.dumps(self.storage, indent = 4, ensure_ascii=True))
-    f.close()
+    try:
+      f = open(CACH_FILE_NAME, 'w')
+      f.write(json.dumps(self.storage, indent = 4, ensure_ascii=True))
+      f.close()
+    except:
+      print('permission denied')
 
   def ajax(self):
     url = '%s?op=%s&logQuery.day=%s&logQuery.startTime=%s&logQuery.endTime=%s&logQuery.project=%s&logQuery.pageUrl=all&logQuery.level=error&logQuery.category=jsError&logQuery.platform=-1&logQuery.city=-1&logQuery.network=-1&logQuery.operator=-1&logQuery.container=-1&logQuery.limit=%s&logQuery.offset=0&logQuery.secCategory=%s' % (HOST, self.log_type, self.date, self.start_time, self.end_time, self.project, self.limit, self.query_content)
-    self.response = requests.get(url, cookies = self.cookie)
+    self.response = requests.get(url, cookies = self.cookie, verify=False)
     self.response_text = self.response.text
     login_match = re.compile(r'注销').search(self.response_text)
     if login_match:

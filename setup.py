@@ -7,7 +7,7 @@ Usage:
 
 from setuptools import setup
 
-APP = ['./src/python/test.py']
+APP = ['./src/python/super_cat.py']
 DATA_FILES = []
 OPTIONS = {}
 
