@@ -24,6 +24,7 @@
     "g2:prod": "webpack --progress --config ./src/react/build/webpack.prod.js",
     "g2:build:w": "webpack -w --progress --config ./src/react/build/webpack.dev.js",
     "g3": "parcel src/parcel/index.html",
+    "g4": "parcel src/markdown/index.html",
     "test": "mocha"
   },
   "author": "arnold",
@@ -97,6 +98,7 @@
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "reselect": "^3.0.1",
+    "rxjs": "^5.5.6",
     "style-loader": "^0.19.0",
     "transform-runtime": "^0.0.0",
     "ts-loader": "^3.1.1",

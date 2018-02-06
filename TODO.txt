@@ -1,3 +1,6 @@
 marked
 immer.js
+mobx
+rxjs
+cyclejs
 Ukkonen
