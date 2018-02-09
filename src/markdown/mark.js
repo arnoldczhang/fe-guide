@@ -117,6 +117,9 @@
 
   lexerProto.getNormalStr = function getNormalStr() {
     var index = this.string.indexOf('\n');
+    if (index < 0) {
+      index = this.string.length;
+    }
     this.append({
       type: TYPE.WORD,
       content: this.string.substring(0, index),
