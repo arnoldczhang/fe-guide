@@ -8,3 +8,11 @@ form.target = ifr.name;
 form.action = '/thing/stuck/in/cache';
 document.body.appendChild(form);
 form.submit();
+document.body.removeChild(ifr);
+document.body.removeChild(form);
+
+// 正则转义字符
+* . ? + $ ^ [ ] ( ) { } | \ /
+
+
+

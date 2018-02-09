@@ -26,7 +26,8 @@
     "g3": "parcel src/parcel/index.html",
     "g4": "parcel src/markdown/index.html",
     "g4:test": "parcel src/markdown/test.html",
-    "g4:node": "node src/markdown/mark.js",
+    "g4:node": "node src/markdown/index.js",
+    "g4:nodetest": "node src/markdown/test.js",
     "test": "mocha"
   },
   "author": "arnold",
