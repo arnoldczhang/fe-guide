@@ -20,24 +20,6 @@
   };
 
   /**
-   * [TYPE description]
-   * @type {Object}
-   */
-  var TYPE = {
-    CONTAINER: 'container',
-    WORD: 'word',
-    LIST: 'list',
-  };
-
-  /**
-   * [TAG description]
-   * @type {Object}
-   */
-  var TAG = {
-    P: 'p',
-  };
-
-  /**
    * utils
    */
   function toArray(arrayLike) {
@@ -70,11 +52,54 @@
     return target;
   };
 
+  function wrap(tagName, vnode, options) {
+    var children = vnode.children;
+    return '<' + tagName + '>'
+      + (children.length ? ('\n' + renderChildren(children, options) + '\n') : vnode.content)
+      + '</' + tagName + '>';
+  };
+
+  /**
+   * [TYPE description]
+   * @type {Object}
+   */
+  var TYPE = {};
+
+  /**
+   * [TAG description]
+   * @type {Object}
+   */
+  var TAG = {
+    P: 'p',
+  };
+
+  var renderMap = {};
+
+  function genRenderFunc(type, renderFunc) {
+    TYPE[type.toUpperCase()] = type;
+    renderMap[type] = renderFunc;
+  };
+
+
+  // init render func
+  genRenderFunc('container', function(vnode, options) {
+    var tagName = options.tagName || 'div';
+    return wrap(tagName, vnode, options);
+  });
+
+  genRenderFunc('text', function(vnode, options) {
+    return wrap('p', vnode, options);
+  });
+
+  genRenderFunc('list', function(vnode, options) {
+
+  });
+
   /**
    * VNode
    */
   function VNode(props) {
-    props = props || this.defaultProps;
+    props = extend(false, {}, this.defaultProps, props || {});
     this.props = props;
     this.children = [];
     extend(false, this, props);
@@ -94,7 +119,8 @@
    * Lexer
    * @param {[type]} input [description]
    */
-  function Lexer(input) {
+  function Lexer(input, options) {
+    this.options = options;
     this.string = input;
     this.index = 0;
     this.parent = new VNode();
@@ -106,7 +132,6 @@
   };
 
   lexerProto.next = function next() {
-    console.log(this.string);
     this.nowChar = this.string[this.index];
     return this.nowChar || false;
   };
@@ -121,7 +146,7 @@
       index = this.string.length;
     }
     this.append({
-      type: TYPE.WORD,
+      type: TYPE.TEXT,
       content: this.string.substring(0, index),
     });
     this.toNextLine(index);
@@ -153,7 +178,7 @@
   function Compiler(input, options) {
     var combNextLine = false;
     input = input.trim();
-    var lexer = new Lexer(input);
+    var lexer = new Lexer(input, options);
     while(lexer.next()) {
       if (lexer.hasMarkPre() || combNextLine) {
 
@@ -165,11 +190,17 @@
   };
 
   /**
-   * [Render description]
+   * [render description]
    * @param {[type]} vnodes [description]
    */
-  function Render(vnodes) {
-    console.log(vnodes);
+  function render(vnode, tagName) {
+    return renderMap[vnode.type](vnode, tagName);
+  };
+
+  function renderChildren(children, options) {
+    return children.map(function(vnode) {
+      return render(vnode, options);
+    }).join('');
   };
 
   /**
@@ -180,8 +211,9 @@
    * @return {[type]}            [description]
    */
   function mark(input, options, callback) {
-    var vnodes = new Compiler(input, options);
-    return new Render(vnodes);
+    options = options || {};
+    var vnode = new Compiler(input, options);
+    return render(vnode, options);
   };
 
   return mark;
