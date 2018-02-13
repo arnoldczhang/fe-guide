@@ -10,19 +10,23 @@
     (global.mark = factory(global));
 } (this || window, function (w) {'use strict';
 
-  /**
-   * [REGEXP description]
-   * @type {Object}
-   */
   var REGEXP = {
-    markPrefix: /#>-`!=-\*\d\["\|/,
+    markPrefix: /([#>-`!\=_-\d\["\|\*])/,
+    markInnerfix: /([\*_`])((?:[\*_`]|[^\n\r]+))([\*_`])/,
     emptyLine: /^\n+|\n+$/g,
     line: /([^\n]+)\n/,
+    hn: /(#+)\s*([\s\S]+)(#*$)/,
+    starWord: /(\*+)((?:[^\*]+|\*))(\*+)/,
+    hashEnd: /#*$/,
   };
 
   /**
-   * utils
+   * Utils
    */
+  function log() {
+    Function.apply.call(console.log, console, arguments);
+  };
+
   function toArray(arrayLike) {
     var length = arrayLike.length;
     var result;
@@ -85,28 +89,33 @@
   };
 
   /**
-   * [TYPE description]
-   * @type {Object}
+   * Render
    */
   var TYPE = {};
 
-  /**
-   * [TAG description]
-   * @type {Object}
-   */
   var TAG = {
     P: 'p',
   };
 
   var renderMap = {};
 
+  function render(vnode, options) {
+    return renderMap[vnode.type](vnode, options);
+  };
+
+  function renderChildren(children, options) {
+    var lastIndex = children.length - 1;
+    return children.map(function(vnode, index) {
+      options.isLast = index === lastIndex;
+      return render(vnode, options);
+    }).join('');
+  };
+
   function genRenderFunc(type, renderFunc) {
     TYPE[type.toUpperCase()] = type;
     renderMap[type] = renderFunc;
   };
 
-
-  // init render func
   genRenderFunc('container', function(vnode, options) {
     var tagName = options.tagName || 'div';
     return wrap(tagName, vnode, options);
@@ -114,17 +123,59 @@
 
   genRenderFunc('text', function(vnode, options) {
     options.newLine = true;
-    return wrap('p', vnode, options);
+    return wrap('span', vnode, options);
   });
 
   genRenderFunc('h', function(vnode, options) {
     options.newLine = true;
-    return wrap('p', vnode, options);
+    return wrap('h' + vnode.size, vnode, options);
   });
 
   genRenderFunc('list', function(vnode, options) {
 
   });
+
+  genRenderFunc('word', function(vnode, options) {
+
+  });
+
+  /*
+  * Parser
+   */
+  function parseHn(_this) {
+    var line = _this.line.replace(REGEXP.hashEnd, '').match(REGEXP.hn);
+    if (line) {
+      _this.append({
+        type: TYPE.H,
+        content: line[2],
+        prefix: _this.space,
+        size: line[1].length,
+      });
+      _this.toNext();
+    }
+  };
+
+  function parseNorm(_this) {
+    _this.append({
+      type: TYPE.TEXT,
+      content: _this.getLineContent(),
+      prefix: _this.space,
+    });
+    _this.toNext();
+  };
+
+  function parseStar(_this) {
+    var result = _this.line.match(REGEXP.starWord);
+    if (result) {
+      _this.append({
+        type: TYPE.TEXT,
+        content: result[2],
+        prefix: _this.space,
+        size: result[1].length,
+      });
+      _this.toNext(result[0].length);
+    }
+  };
 
   /**
    * VNode
@@ -144,56 +195,70 @@
 
   vNodeProto.appendVNode = function appendVNode(vNode) {
     this.children.push(vNode);
+    // vNode.parent = this;
   };
 
   /**
    * Lexer
-   * @param {[type]} input [description]
    */
   function Lexer(input, options) {
-    this.options = options;
+    this.options = Object.create(options);
     this.string = input;
-    this.index = 0;
-    this.times = 0;
+    this.space = 4; // 前置空格数
+    this.line = ''; // 单行内容
+    this.index = 0; // 当前索引
     this.parent = new VNode();
+    this.times = 0;
+  };
+
+  Lexer.maxTimes = 100;
+  Lexer.parseMap = {
+    '#': parseHn,
+    '*': parseStar,
   };
 
   var lexerProto = Lexer.prototype;
-  lexerProto.maxTimes = 10;
-  lexerProto.resetIndex = function resetIndex() {
-    this.index = 0;
+  lexerProto.resetIndex = function resetIndex(index) {
+    index = arguments.length ? index : 0;
+    this.index = index;
   };
 
-  lexerProto.next = function next() {
-    if (this.times >= this.maxTimes) return;
+  lexerProto.hasNext = function hasNext() {
+    if (this.times >= Lexer.maxTimes) return;
     this.times += 1;
-    this.nowChar = this.string[this.index];
-    return this.nowChar || false;
+    return this.string.length;
   };
 
-  lexerProto.hasMarkPre = function hasMarkPre() {
-    return REGEXP.markPrefix.test(this.nowChar);
-  };
-
-  lexerProto.getMarkStr = function getMarkStr() {
-    var input = this.string.match(REGEXP.line, '');
-    if (input) {
-      input = input[1];
-
+  lexerProto.hasMarkContent = function hasMarkContent() {
+    this.updateLineIndex();
+    var firstChar = this.string[0];
+    var lineResult, firstResult, index;
+    firstResult = REGEXP.markPrefix.exec(firstChar);
+    if (firstResult) {
+      this.markPrefix = firstResult[1];
+      return firstResult;
     }
+    lineResult = REGEXP.markInnerfix.exec(this.string);
+    if (lineResult) {
+      index = lineResult.index;
+      this.needWrapper = this.index > index;
+      if (this.needWrapper) {
+        this.index = index;
+      }
+    }
+    return false;
   };
 
-  lexerProto.getNormalStr = function getNormalStr(space) {
-    var index = this.string.indexOf('\n');
-    if (index < 0) {
-      index = this.string.length;
+  lexerProto.updateLineIndex = function updateLineIndex() {
+    this.index = this.string.indexOf('\n');
+    if (this.index < 0) {
+      this.index = this.string.length;
     }
-    this.append({
-      type: TYPE.TEXT,
-      content: this.string.substring(0, index),
-      prefix: space,
-    });
-    this.toNextLine(index);
+    return this.index;
+  };
+
+  lexerProto.getLineContent = function getLineContent() {
+    return this.string.substring(0, this.index);
   };
 
   lexerProto.transParent = function transParent(parent) {
@@ -204,69 +269,68 @@
     return this.parent;
   };
 
+  lexerProto.wrap = function wrap(props) {
+    props = props || {};
+    this.parent = this.append(props);
+  };
+
   lexerProto.append = function append(props) {
     var childVNode = new VNode(props);
     this.parent.appendVNode(childVNode);
+    return childVNode;
   };
 
-  lexerProto.toNextLine = function toNextLine(index) {
+  lexerProto.getParent = function getParent(vnode) {
+    return (vnode || this.parent).parent;
+  };
+
+  lexerProto.getMarkString = function getMarkString(line) {
+    this.line = line || this.getLineContent();
+    if (this.needWrapper) this.wrap();
+    Lexer.parseMap[this.markPrefix](this);
+  };
+
+  lexerProto.getNormalString = function getNormalString() {
+    // if (this.needWrapper) this.wrap();
+    parseNorm(this);
+  };
+
+  lexerProto.toNext = function toNext(index) {
+    index = arguments.length ? index : this.index;
     this.string = trim(this.string.substr(index));
     this.resetIndex();
   };
 
   /**
-   * [Compiler description]
-   * @param {[type]} input   [description]
-   * @param {[type]} options [description]
+   * Compiler
    */
   function Compiler(input, options) {
     var combNextLine = false;
-    var preSpace = 4;
     input = trim(input);
     var lexer = new Lexer(input, options);
-    while(lexer.next()) {
-      // TODO table |
-      if (lexer.hasMarkPre() || combNextLine) {
+    while(lexer.hasNext()) {
+      // FIXME table |
+      if (lexer.hasMarkContent() || combNextLine) {
         if (combNextLine) {
 
         } else {
-          lexer.getMarkStr();
+          lexer.getMarkString();
         }
       } else {
-        lexer.getNormalStr(preSpace);
+        lexer.getNormalString();
       }
     }
     return lexer.getVNode();
   };
 
   /**
-   * [render description]
-   * @param {[type]} vnodes [description]
-   */
-  function render(vnode, options) {
-    return renderMap[vnode.type](vnode, options);
-  };
-
-  function renderChildren(children, options) {
-    var lastIndex = children.length - 1;
-    return children.map(function(vnode, index) {
-      options.isLast = index === lastIndex;
-      return render(vnode, options);
-    }).join('');
-  };
-
-  /**
    * mark
-   * @param  {[type]}   input    [description]
-   * @param  {[type]}   options  [description]
-   * @param  {Function} callback [description]
-   * @return {[type]}            [description]
    */
   function mark(input, options, callback) {
     options = extend({}, defaultOptions, options || {});
     var vnode = new Compiler(input, options);
+    // log(vnode);
     return render(vnode, options);
   };
-
   return mark;
 }));

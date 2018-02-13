@@ -1,4 +1,16 @@
-const marked = require('./mark');
+let marked = require('./mark');
+const fs = require('fs');
+const fsevents = require('fsevents');
+const watcher = fsevents(`${__dirname}/`);
 
-console.log(marked('adsfads###adasdz\ndfsaofdsa\nfasas\n\nsdaffasd\n\n#h1\n##h2\n\n\n\n'));
-// document.getElementById('container').innerHTML = marked('title | career | age | \n ---: | :---: | :--- |\n aa | bb | cc |\n aa | bb | cc |\n aa | bb | cc |');
+watcher.on('fsevent', function(path, flags, id) {
+  ;
+});
+
+watcher.on('change', function(path, info) {
+  const text = fs.readFileSync(`${__dirname}/test.txt`, 'utf8');
+  marked = require('./mark');
+  const result = marked(text);
+  console.log(result);
+});
+watcher.start();

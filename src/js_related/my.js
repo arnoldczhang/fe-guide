@@ -14,5 +14,7 @@ document.body.removeChild(form);
 // 正则转义字符
 * . ? + $ ^ [ ] ( ) { } | \ /
 
-
-
+//https证书
+openssl genrsa 1024 > ./ssl/private.pem
+openssl req -new -key ./ssl/private.pem -out csr.pem
+openssl x509 -req -days 365 -in csr.pem -signkey ./ssl/private.pem -out ./ssl/file.crt
