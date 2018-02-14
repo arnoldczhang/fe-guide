@@ -13,16 +13,22 @@
   var REGEXP = {
     markPrefix: /([#>-`!\=_-\d\["\|\*])/,
     markInnerfix: /([\*_`])((?:[\*_`]|[^\n\r]+))([\*_`])/,
+    emptyLinePre: /^\n+/,
     emptyLine: /^\n+|\n+$/g,
     line: /([^\n]+)\n/,
     hn: /(#+)\s*([\s\S]+)(#*$)/,
-    starWord: /(\*+)((?:[^\*]+|\*))(\*+)/,
+    starWord: /(\*{1,3})((?:[^\*]+|\*))(\*{1,3})/,
     hashEnd: /#*$/,
   };
+
+  var CONSTANT = {
+    SPACE: 4,
+  }
 
   /**
    * Utils
    */
+  var isArray = Array.isArray;
   function log() {
     Function.apply.call(console.log, console, arguments);
   };
@@ -62,15 +68,27 @@
   };
 
   function wrap(tagName, vnode, options) {
+    var args = arguments;
+    if (isArray(tagName)) {
+      return multiWrap(tagName, vnode, function(tag) {
+        return wrap.apply(null, args);
+      });
+    }
     var children = vnode.children;
     var startTag = '<' + tagName + '>';
     var endTag = '</' + tagName + '>';
+    var prefix = vnode.getPrefix();
     var innerContent = children.length
-      ? ('\n' + renderChildren(children, options) + '\n')
+      ? (renderChildren(children, options) + '\n')
       : vnode.content;
 
-    if (vnode.prefix) {
-      startTag = getRepeat(vnode.prefix) + startTag;
+    if (prefix) startTag = getRepeat(prefix) + startTag;
+    if (isContainer(vnode.type)) {
+      startTag = '\n' + startTag;
+      if (vnode.parent && isContainer(vnode.parent.type)) {
+        startTag += '\n';
+      }
+      endTag = getRepeat(prefix) + endTag;
     }
 
     if (options.newLine) {
@@ -79,8 +97,29 @@
     return startTag + innerContent + endTag;
   };
 
+  function multiWrap(tagArray, vnode, callback) {
+    var tag;
+    var line;
+    var startTag = '';
+    var endTag = '';
+    var prefix = vnode.prefix || 0;
+    while (tagArray.length > 1) {
+      tag = tagArray.shift();
+      line = prefix ? '' : '\n';
+      startTag += line + getRepeat(prefix) + '<' + tag + '>';
+      endTag = getRepeat(prefix) + '</' + tag + '>' + line + endTag;
+      prefix += CONSTANT.SPACE;
+    }
+    vnode.prefix = prefix;
+    return startTag + callback(tagArray[0]) + endTag;
+  };
+
   function trim(string) {
     return string.replace(REGEXP.emptyLine, '');
+  };
+
+  function isContainer(type) {
+    return type === TYPE.CONTAINER;
   };
 
   var defaultOptions = {
@@ -117,7 +156,8 @@
   };
 
   genRenderFunc('container', function(vnode, options) {
-    var tagName = options.tagName || 'div';
+    var props = vnode.props;
+    var tagName = props.tagName || options.tagName || 'div';
     return wrap(tagName, vnode, options);
   });
 
@@ -136,41 +176,42 @@
   });
 
   genRenderFunc('word', function(vnode, options) {
-
+    var tags = [null, 'em', 'strong', ['strong', 'em']][vnode.size];
+    return wrap(tags, vnode, options);
   });
 
   /*
   * Parser
    */
-  function parseHn(_this) {
+  function parseHn(_this, prefix) {
     var line = _this.line.replace(REGEXP.hashEnd, '').match(REGEXP.hn);
     if (line) {
       _this.append({
         type: TYPE.H,
         content: line[2],
-        prefix: _this.space,
+        prefix: _this.prefix,
         size: line[1].length,
       });
       _this.toNext();
     }
   };
 
-  function parseNorm(_this) {
+  function parseNorm(_this, prefix) {
     _this.append({
       type: TYPE.TEXT,
       content: _this.getLineContent(),
-      prefix: _this.space,
+      prefix: _this.prefix,
     });
     _this.toNext();
   };
 
-  function parseStar(_this) {
+  function parseStar(_this, prefix) {
     var result = _this.line.match(REGEXP.starWord);
     if (result) {
       _this.append({
-        type: TYPE.TEXT,
+        type: TYPE.WORD,
         content: result[2],
-        prefix: _this.space,
+        prefix: _this.prefix,
         size: result[1].length,
       });
       _this.toNext(result[0].length);
@@ -195,7 +236,17 @@
 
   vNodeProto.appendVNode = function appendVNode(vNode) {
     this.children.push(vNode);
-    // vNode.parent = this;
+    vNode.parent = this;
+  };
+
+  vNodeProto.getPrefix = function getPrefix() {
+    var parent = this.parent;
+    var prefix = this.prefix || 0;
+    while (parent) {
+      prefix += parent.prefix || 0;
+      parent = parent.parent;
+    }
+    return prefix;
   };
 
   /**
@@ -204,10 +255,10 @@
   function Lexer(input, options) {
     this.options = Object.create(options);
     this.string = input;
-    this.space = 4; // 前置空格数
+    this.prefix = CONSTANT.SPACE; // 前置空格数
     this.line = ''; // 单行内容
     this.index = 0; // 当前索引
-    this.parent = new VNode();
+    this.parent = this.container = new VNode();
     this.times = 0;
   };
 
@@ -226,6 +277,13 @@
   lexerProto.hasNext = function hasNext() {
     if (this.times >= Lexer.maxTimes) return;
     this.times += 1;
+    this.needWrapper = REGEXP.emptyLinePre.test(this.string);
+    if (this.needWrapper) {
+      this.string = trim(this.string);
+      if (this.parent.parent) {
+        this.parent = this.parent.parent;
+      }
+    }
     return this.string.length;
   };
 
@@ -241,9 +299,9 @@
     lineResult = REGEXP.markInnerfix.exec(this.string);
     if (lineResult) {
       index = lineResult.index;
-      this.needWrapper = this.index > index;
-      if (this.needWrapper) {
+      if (this.index > index) {
         this.index = index;
+        this.tagName = 'p';
       }
     }
     return false;
@@ -251,7 +309,8 @@
 
   lexerProto.updateLineIndex = function updateLineIndex() {
     this.index = this.string.indexOf('\n');
-    if (this.index < 0) {
+    this.end = this.index < 0;
+    if (this.end) {
       this.index = this.string.length;
     }
     return this.index;
@@ -265,12 +324,20 @@
     return this.parent = parent;
   };
 
-  lexerProto.getVNode = function getVNode() {
+  lexerProto.getParent = function getParent() {
+    while(this.parent.parent) {
+      this.parent = this.parent.parent;
+    }
     return this.parent;
   };
 
   lexerProto.wrap = function wrap(props) {
     props = props || {};
+    props.prefix = this.prefix;
+    if (this.tagName) {
+      props.tagName = this.tagName;
+      this.tagName = null;
+    }
     this.parent = this.append(props);
   };
 
@@ -280,10 +347,6 @@
     return childVNode;
   };
 
-  lexerProto.getParent = function getParent(vnode) {
-    return (vnode || this.parent).parent;
-  };
-
   lexerProto.getMarkString = function getMarkString(line) {
     this.line = line || this.getLineContent();
     if (this.needWrapper) this.wrap();
@@ -291,13 +354,13 @@
   };
 
   lexerProto.getNormalString = function getNormalString() {
-    // if (this.needWrapper) this.wrap();
+    if (this.needWrapper) this.wrap();
     parseNorm(this);
   };
 
   lexerProto.toNext = function toNext(index) {
     index = arguments.length ? index : this.index;
-    this.string = trim(this.string.substr(index));
+    this.string = this.string.substr(index);
     this.resetIndex();
   };
 
@@ -306,13 +369,12 @@
    */
   function Compiler(input, options) {
     var combNextLine = false;
-    input = trim(input);
     var lexer = new Lexer(input, options);
     while(lexer.hasNext()) {
       // FIXME table |
       if (lexer.hasMarkContent() || combNextLine) {
         if (combNextLine) {
-
+          // TODO list
         } else {
           lexer.getMarkString();
         }
@@ -320,7 +382,7 @@
         lexer.getNormalString();
       }
     }
-    return lexer.getVNode();
+    return lexer.getParent();
   };
 
   /**
@@ -329,8 +391,7 @@
   function mark(input, options, callback) {
     options = extend({}, defaultOptions, options || {});
     var vnode = new Compiler(input, options);
-    // log(vnode);
-    return render(vnode, options);
+    return trim(render(vnode, options));
   };
   return mark;
 }));
