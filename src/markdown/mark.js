@@ -1,8 +1,5 @@
 /**
  * markjs
- * @param  {[type]} global  [description]
- * @param  {[type]} factory [description]
- * @return {[type]}         [description]
  */
 ;(function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(global) :
@@ -13,11 +10,13 @@
   var REGEXP = {
     markPrefix: /([#>-`!\=_-\d\["\|\*])/,
     markInnerfix: /([\*_`])((?:[\*_`]|[^\n\r]+))([\*_`])/,
+    emptyLine: /\n+/g,
     emptyLinePre: /^\n+/,
-    emptyLine: /^\n+|\n+$/g,
+    emptyLinePreEnd: /^\n+|\n+$/g,
     line: /([^\n]+)\n/,
-    hn: /(#+)\s*([\s\S]+)(#*$)/,
-    starWord: /(\*{1,3})((?:[^\*]+|\*))(\*{1,3})/,
+    hn: /(#{1,6})\s*([\s\S]+)(#*$)/,
+    starWord: /(\*{1,4})((?:[^\*]+|\*))(\*{1,4})/,
+    listWord: /([\*\+-])\s+([\s\S]*)/,
     hashEnd: /#*$/,
   };
 
@@ -67,11 +66,15 @@
     return new Array(num).join(word || ' ');
   };
 
+  function clearMultiLine(input) {
+    return (input || '').replace(REGEXP.emptyLine, '\n');
+  };
+
   function wrap(tagName, vnode, options) {
     var args = arguments;
     if (isArray(tagName)) {
       return multiWrap(tagName, vnode, function(tag) {
-        return wrap.apply(null, args);
+        return wrap(tag, vnode, options);
       });
     }
     var children = vnode.children;
@@ -84,11 +87,12 @@
 
     if (prefix) startTag = getRepeat(prefix) + startTag;
     if (isContainer(vnode.type)) {
-      startTag = '\n' + startTag;
       if (vnode.parent && isContainer(vnode.parent.type)) {
-        startTag += '\n';
+        startTag = '\n' + startTag + '\n';
       }
       endTag = getRepeat(prefix) + endTag;
+    } else if (isFirstGenChild(vnode)) {
+      startTag = '\n' + startTag;
     }
 
     if (options.newLine) {
@@ -102,12 +106,12 @@
     var line;
     var startTag = '';
     var endTag = '';
-    var prefix = vnode.prefix || 0;
+    var prefix = vnode.getPrefix() || 0;
     while (tagArray.length > 1) {
       tag = tagArray.shift();
       line = prefix ? '' : '\n';
-      startTag += line + getRepeat(prefix) + '<' + tag + '>';
-      endTag = getRepeat(prefix) + '</' + tag + '>' + line + endTag;
+      startTag += line + getRepeat(prefix) + '<' + tag + '>\n';
+      endTag = getRepeat(prefix) + '</' + tag + '>' + line + endTag + '\n';
       prefix += CONSTANT.SPACE;
     }
     vnode.prefix = prefix;
@@ -115,12 +119,18 @@
   };
 
   function trim(string) {
-    return string.replace(REGEXP.emptyLine, '');
+    return string.replace(REGEXP.emptyLinePreEnd, '');
   };
 
   function isContainer(type) {
     return type === TYPE.CONTAINER;
   };
+
+  function isFirstGenChild(vnode) {
+    var lexer = vnode.lexer;
+    return lexer && lexer.container
+      && lexer.container === vnode.parent;
+  }
 
   var defaultOptions = {
     newLine: false,
@@ -155,28 +165,29 @@
     renderMap[type] = renderFunc;
   };
 
-  genRenderFunc('container', function(vnode, options) {
+  genRenderFunc('container', function containerWrap(vnode, options) {
     var props = vnode.props;
     var tagName = props.tagName || options.tagName || 'div';
     return wrap(tagName, vnode, options);
   });
 
-  genRenderFunc('text', function(vnode, options) {
+  genRenderFunc('text', function textWrap(vnode, options) {
     options.newLine = true;
     return wrap('span', vnode, options);
   });
 
-  genRenderFunc('h', function(vnode, options) {
+  genRenderFunc('h', function hWrap(vnode, options) {
     options.newLine = true;
     return wrap('h' + vnode.size, vnode, options);
   });
 
-  genRenderFunc('list', function(vnode, options) {
-
+  genRenderFunc('list', function listWrap(vnode, options) {
+    options.newLine = true;
+    return wrap(['ul','li'], vnode, options);
   });
 
-  genRenderFunc('word', function(vnode, options) {
-    var tags = [null, 'em', 'strong', ['strong', 'em']][vnode.size];
+  genRenderFunc('word', function wordWrap(vnode, options) {
+    var tags = [null, 'em', 'strong', ['strong', 'em'], ['strong', 'strong']][vnode.size];
     return wrap(tags, vnode, options);
   });
 
@@ -214,8 +225,18 @@
         prefix: _this.prefix,
         size: result[1].length,
       });
-      _this.toNext(result[0].length);
+    } else {
+      result = _this.line.match(REGEXP.listWord);
+      if (result) {
+        _this.append({
+          type: TYPE.LIST,
+          content: result[2],
+          prefix: _this.prefix,
+          sign: result[1],
+        });
+      }
     }
+    _this.toNext(result[0].length);
   };
 
   /**
@@ -256,6 +277,7 @@
     this.options = Object.create(options);
     this.string = input;
     this.prefix = CONSTANT.SPACE; // 前置空格数
+    this.initFlag = true;
     this.line = ''; // 单行内容
     this.index = 0; // 当前索引
     this.parent = this.container = new VNode();
@@ -277,33 +299,38 @@
   lexerProto.hasNext = function hasNext() {
     if (this.times >= Lexer.maxTimes) return;
     this.times += 1;
-    this.needWrapper = REGEXP.emptyLinePre.test(this.string);
+    this.needWrapper = REGEXP.emptyLinePre.test(this.string) || this.initFlag;
     if (this.needWrapper) {
       this.string = trim(this.string);
       if (this.parent.parent) {
         this.parent = this.parent.parent;
       }
     }
+    this.initFlag = false;
     return this.string.length;
   };
 
   lexerProto.hasMarkContent = function hasMarkContent() {
     this.updateLineIndex();
     var firstChar = this.string[0];
-    var lineResult, firstResult, index;
-    firstResult = REGEXP.markPrefix.exec(firstChar);
-    if (firstResult) {
-      this.markPrefix = firstResult[1];
-      return firstResult;
-    }
-    lineResult = REGEXP.markInnerfix.exec(this.string);
-    if (lineResult) {
-      index = lineResult.index;
-      if (this.index > index) {
-        this.index = index;
-        this.tagName = 'p';
+    var result, index;
+    result = REGEXP.markPrefix.exec(firstChar);
+    if (result) {
+      this.markPrefix = result[1];
+      this.needWrapper = false;
+      return result;
+    } else {
+      result = REGEXP.markInnerfix.exec(this.string);
+      if (result) {
+        index = result.index;
+        if (this.index > index) {
+          this.index = index;
+          this.tagName = 'p';
+          return false;
+        }
       }
     }
+    this.needWrapper = false;
     return false;
   };
 
@@ -343,6 +370,7 @@
 
   lexerProto.append = function append(props) {
     var childVNode = new VNode(props);
+    childVNode.lexer = this;
     this.parent.appendVNode(childVNode);
     return childVNode;
   };
@@ -391,7 +419,7 @@
   function mark(input, options, callback) {
     options = extend({}, defaultOptions, options || {});
     var vnode = new Compiler(input, options);
-    return trim(render(vnode, options));
+    return clearMultiLine(trim(render(vnode, options)));
   };
   return mark;
 }));
