@@ -36,6 +36,35 @@
    * utils
    */
   var isArray = Array.isArray;
+  function genRegExpFunc(regObject) {
+    function _genReg(key) {
+      var capitalKey = capitalize(key);
+      var funcName = 'exec' + capitalKey;
+      regObject[funcName] = function(input) {
+        return regObject[key].exec(input);
+      };
+
+      funcName = 'match' + capitalKey;
+      regObject[funcName] = function(input) {
+        return input.match(regObject[key]);
+      };
+
+      funcName = 'replace' + capitalKey;
+      regObject[funcName] = function(input, callback) {
+        return input.replace(regObject[key], callback || '');
+      };
+    };
+
+    for (var key in regObject) {
+      _genReg(key);
+    }
+  };
+
+  function capitalize(string) {
+    if (!string.length) return string;
+    return upper(string[0]) + string.substr(1);
+  };
+
   function log() {
     Function.apply.call(console.log, console, arguments);
   };
@@ -75,7 +104,7 @@
   };
 
   function clearMultiLine(input) {
-    return (input || '').replace(REGEXP.emptyLine, '\n');
+    return REGEXP.replaceEmptyLine(input || '', '\n');
   };
 
   function getFormatMark(vnode, options) {
@@ -126,8 +155,12 @@
     return startTag + callback(tagArray[0]) + endTag;
   };
 
+  function upper(string) {
+    return (string || '').toUpperCase();
+  };
+
   function trim(string) {
-    return string.replace(REGEXP.emptyLinePreEnd, '');
+    return REGEXP.replaceEmptyLinePreEnd(string);
   };
 
   function isContainer(type) {
@@ -138,7 +171,11 @@
     var lexer = vnode.lexer;
     return lexer && lexer.container
       && lexer.container === vnode.parent;
-  }
+  };
+
+  function run() {
+    genRegExpFunc(REGEXP);
+  };
 
   /**
    * Render
@@ -164,7 +201,7 @@
   };
 
   function genRenderFunc(type, renderFunc) {
-    TYPE[type.toUpperCase()] = type;
+    TYPE[upper(type)] = type;
     renderMap[type] = renderFunc;
   };
 
@@ -183,7 +220,7 @@
   });
 
   genRenderFunc('list', function listWrap(vnode, options) {
-    var listTagList = ['ul','li'];
+    var listTagList = 'li';
     return wrap(listTagList, vnode, options);
   });
 
@@ -197,7 +234,7 @@
   * Parser
    */
   function parseHn(_this, prefix) {
-    var line = _this.line.replace(REGEXP.hashEnd, '').match(REGEXP.hn);
+    var line = REGEXP.matchHn(REGEXP.replaceHashEnd(_this.line));
     if (line) {
       _this.append({
         type: TYPE.H,
@@ -219,6 +256,16 @@
   };
 
   function parseList(_this, res) {
+    var lastType = _this.lastType;
+    var thisType = TYPE.LIST + res[1];
+    if (!lastType || lastType !== thisType) {
+      _this.needWrapper = true;
+      _this.tagName = 'ul';
+      _this.wrap({
+        type: TYPE.CONTAINER,
+        skip: true,
+      });
+    }
     _this.append({
       type: TYPE.LIST,
       content: res[2],
@@ -238,11 +285,11 @@
   };
 
   function parseStar(_this, prefix) {
-    var result = _this.line.match(REGEXP.starWord);
+    var result = REGEXP.matchStarWord(_this.line);
     if (result) {
       parseEmphasize(_this, result);
     } else {
-      result = _this.line.match(REGEXP.listWord);
+      result = REGEXP.matchListWord(_this.line);
       if (result) {
         return parseList(_this, result);
       }
@@ -311,31 +358,46 @@
   lexerProto.hasNext = function hasNext() {
     if (this.times >= Lexer.maxTimes) return;
     this.times += 1;
-    var preEmptyLine = REGEXP.emptyLinePre.exec(this.string);
+    var preEmptyLine = REGEXP.execEmptyLinePre(this.string);
     this.needWrapper = preEmptyLine || this.initFlag;
-    if (preEmptyLine && preEmptyLine[0].length > 1) this.lastType = null;
-    if (this.needWrapper) {
-      this.string = trim(this.string);
-      if (this.parent && this.parent.parent) {
-        this.parent = this.parent.parent;
-      }
+    if (preEmptyLine && preEmptyLine[0].length > 1) {
+      this.lastType = null;
+      // this.parent = this.container;
     }
+    this.string = trim(this.string);
     this.initFlag = false;
     return this.string.length;
+  };
+
+  lexerProto.resetParent = function resetParent(props, vnode) {
+    if(props.tagName) return;
+    var sign = vnode.sign || '';
+    var type = vnode.type || '';
+    type += sign;
+    if (this.needWrapper
+      && this.parent
+      && this.parent.parent
+      && vnode.lastType !== type) {
+      this.parent = this.parent.parent;
+    }
   };
 
   lexerProto.hasMarkContent = function hasMarkContent() {
     this.updateLineIndex();
     var firstChar = this.string[0];
     var result, index;
-    result = REGEXP.markPrefix.exec(firstChar);
+    result = REGEXP.execMarkPrefix(firstChar);
     if (result) {
       this.markPrefix = result[1];
+      if (REGEXP.execMarkInnerfix(this.string)) {
+        this.tagName = 'p';
+        return result;
+      }
       this.needWrapper = false;
       return result;
     }
 
-    result = REGEXP.markInnerfix.exec(this.string);
+    result = REGEXP.execMarkInnerfix(this.string);
     if (result) {
       index = result.index;
       if (this.index > index) {
@@ -388,7 +450,10 @@
     childVNode.lexer = this;
     childVNode.lastType = this.lastType;
     this.parent.appendVNode(childVNode);
-    this.lastType = props.type;
+    if (!props.skip) {
+      this.lastType = props.type ? ((props.type + (props.sign || '')) || null) : null;
+    }
+    this.resetParent(props, childVNode);
     return childVNode;
   };
 
@@ -438,5 +503,7 @@
     var vnode = new Compiler(input, options);
     return getFormatMark(vnode, options);
   };
+
+  run();
   return mark;
 }));
