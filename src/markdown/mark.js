@@ -7,11 +7,14 @@
     (global.mark = factory(global));
 } (this || window, function (w) {'use strict';
 
+  /**
+   * const
+   */
   var REGEXP = {
     markPrefix: /([#>-`!\=_-\d\["\|\*])/,
     markInnerfix: /([\*_`])((?:[\*_`]|[^\n\r]+))([\*_`])/,
     emptyLine: /\n+/g,
-    emptyLinePre: /^\n+/,
+    emptyLinePre: /^(\n+)/,
     emptyLinePreEnd: /^\n+|\n+$/g,
     line: /([^\n]+)\n/,
     hn: /(#{1,6})\s*([\s\S]+)(#*$)/,
@@ -22,10 +25,15 @@
 
   var CONSTANT = {
     SPACE: 4,
-  }
+  };
+
+  var defaultOptions = {
+    newLine: false,
+    isLast: false,
+  };
 
   /**
-   * Utils
+   * utils
    */
   var isArray = Array.isArray;
   function log() {
@@ -70,6 +78,10 @@
     return (input || '').replace(REGEXP.emptyLine, '\n');
   };
 
+  function getFormatMark(vnode, options) {
+    return clearMultiLine(trim(render(vnode, options)));
+  };
+
   function wrap(tagName, vnode, options) {
     var args = arguments;
     if (isArray(tagName)) {
@@ -79,7 +91,7 @@
     }
     var children = vnode.children;
     var startTag = '<' + tagName + '>';
-    var endTag = '</' + tagName + '>';
+    var endTag = '</' + tagName + '>\n';
     var prefix = vnode.getPrefix();
     var innerContent = children.length
       ? (renderChildren(children, options) + '\n')
@@ -93,10 +105,6 @@
       endTag = getRepeat(prefix) + endTag;
     } else if (isFirstGenChild(vnode)) {
       startTag = '\n' + startTag;
-    }
-
-    if (options.newLine) {
-      endTag += options.isLast ? '' : '\n';
     }
     return startTag + innerContent + endTag;
   };
@@ -131,11 +139,6 @@
     return lexer && lexer.container
       && lexer.container === vnode.parent;
   }
-
-  var defaultOptions = {
-    newLine: false,
-    isLast: false,
-  };
 
   /**
    * Render
@@ -172,22 +175,21 @@
   });
 
   genRenderFunc('text', function textWrap(vnode, options) {
-    options.newLine = true;
     return wrap('span', vnode, options);
   });
 
   genRenderFunc('h', function hWrap(vnode, options) {
-    options.newLine = true;
     return wrap('h' + vnode.size, vnode, options);
   });
 
   genRenderFunc('list', function listWrap(vnode, options) {
-    options.newLine = true;
-    return wrap(['ul','li'], vnode, options);
+    var listTagList = ['ul','li'];
+    return wrap(listTagList, vnode, options);
   });
 
   genRenderFunc('word', function wordWrap(vnode, options) {
-    var tags = [null, 'em', 'strong', ['strong', 'em'], ['strong', 'strong']][vnode.size];
+    var wordTagList = [null, 'em', 'strong', ['strong', 'em'], ['strong', 'strong']];
+    var tags = wordTagList[vnode.size];
     return wrap(tags, vnode, options);
   });
 
@@ -207,6 +209,25 @@
     }
   };
 
+  function parseEmphasize(_this, res) {
+    _this.append({
+      type: TYPE.WORD,
+      content: res[2],
+      prefix: _this.prefix,
+      size: res[1].length,
+    });
+  };
+
+  function parseList(_this, res) {
+    _this.append({
+      type: TYPE.LIST,
+      content: res[2],
+      prefix: _this.prefix,
+      sign: res[1],
+    });
+    _this.toNext();
+  };
+
   function parseNorm(_this, prefix) {
     _this.append({
       type: TYPE.TEXT,
@@ -219,21 +240,11 @@
   function parseStar(_this, prefix) {
     var result = _this.line.match(REGEXP.starWord);
     if (result) {
-      _this.append({
-        type: TYPE.WORD,
-        content: result[2],
-        prefix: _this.prefix,
-        size: result[1].length,
-      });
+      parseEmphasize(_this, result);
     } else {
       result = _this.line.match(REGEXP.listWord);
       if (result) {
-        _this.append({
-          type: TYPE.LIST,
-          content: result[2],
-          prefix: _this.prefix,
-          sign: result[1],
-        });
+        return parseList(_this, result);
       }
     }
     _this.toNext(result[0].length);
@@ -281,6 +292,7 @@
     this.line = ''; // 单行内容
     this.index = 0; // 当前索引
     this.parent = this.container = new VNode();
+    this.lastType = null; // 上一个mark类型
     this.times = 0;
   };
 
@@ -299,10 +311,12 @@
   lexerProto.hasNext = function hasNext() {
     if (this.times >= Lexer.maxTimes) return;
     this.times += 1;
-    this.needWrapper = REGEXP.emptyLinePre.test(this.string) || this.initFlag;
+    var preEmptyLine = REGEXP.emptyLinePre.exec(this.string);
+    this.needWrapper = preEmptyLine || this.initFlag;
+    if (preEmptyLine && preEmptyLine[0].length > 1) this.lastType = null;
     if (this.needWrapper) {
       this.string = trim(this.string);
-      if (this.parent.parent) {
+      if (this.parent && this.parent.parent) {
         this.parent = this.parent.parent;
       }
     }
@@ -319,15 +333,15 @@
       this.markPrefix = result[1];
       this.needWrapper = false;
       return result;
-    } else {
-      result = REGEXP.markInnerfix.exec(this.string);
-      if (result) {
-        index = result.index;
-        if (this.index > index) {
-          this.index = index;
-          this.tagName = 'p';
-          return false;
-        }
+    }
+
+    result = REGEXP.markInnerfix.exec(this.string);
+    if (result) {
+      index = result.index;
+      if (this.index > index) {
+        this.index = index;
+        this.tagName = 'p';
+        return false;
       }
     }
     this.needWrapper = false;
@@ -359,6 +373,7 @@
   };
 
   lexerProto.wrap = function wrap(props) {
+    if (!this.needWrapper) return;
     props = props || {};
     props.prefix = this.prefix;
     if (this.tagName) {
@@ -371,18 +386,20 @@
   lexerProto.append = function append(props) {
     var childVNode = new VNode(props);
     childVNode.lexer = this;
+    childVNode.lastType = this.lastType;
     this.parent.appendVNode(childVNode);
+    this.lastType = props.type;
     return childVNode;
   };
 
   lexerProto.getMarkString = function getMarkString(line) {
     this.line = line || this.getLineContent();
-    if (this.needWrapper) this.wrap();
+    this.wrap();
     Lexer.parseMap[this.markPrefix](this);
   };
 
   lexerProto.getNormalString = function getNormalString() {
-    if (this.needWrapper) this.wrap();
+    this.wrap();
     parseNorm(this);
   };
 
@@ -419,7 +436,7 @@
   function mark(input, options, callback) {
     options = extend({}, defaultOptions, options || {});
     var vnode = new Compiler(input, options);
-    return clearMultiLine(trim(render(vnode, options)));
+    return getFormatMark(vnode, options);
   };
   return mark;
 }));

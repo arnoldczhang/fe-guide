@@ -29,6 +29,7 @@
     "g4:node": "node src/markdown/index.js",
     "g4:nodetest": "node src/markdown/test.js",
     "g5": "node src/leancloud/test.js",
+    "g6": "node src/markdown/test.js",
     "test": "mocha"
   },
   "author": "arnold",
