@@ -1,5 +1,22 @@
 marked
+=======
+cycle {
+  this.string = ...;
+  if (this.string.match(reg1)) {
+    get index1;
+    vnode.push({...});
+    this.string = this.string.substr(index1);
+  }
+  
+  if (this.string.match(reg2)) {
+    get index2;
+    vnode.push({...});
+    this.string = this.string.substr(index2);
+  }
+  ...
+}
 immer.js
+========
 mobx
 rxjs
 cyclejs
