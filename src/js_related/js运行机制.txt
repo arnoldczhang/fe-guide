@@ -2,6 +2,8 @@
   - https://www.jianshu.com/p/0983e69d58ec
   - ![运行机制](2954145-5bb92d1fbdb9df41.png)
 
+- - -
+
 #过程
 
 * 函数被调用
@@ -18,7 +20,17 @@
 * 执行完成，往上一层 执行上下文  返回数据
 * 从执行上下文栈pop出一个新的执行上下文执行
 
+- - -
 
-#任务（宏任务 -> 微任务 -> 宏任务 -> 微任务 -> ...）
-* macro-task(宏任务)：包括整体代码script，setTimeout，setInterval
-* micro-task(微任务)：Promise，process.nextTick
+#任务队列
+![任务队列](68747470733a2f2f736661756c742d696d6167652e62302e7570616979756e2e636f6d2f3134392f3930352f313439393035313630392d356138616434376663653736345f61727469636c6578.png)
+（宏任务 -> 清空微任务 -> render -> 宏任务 -> 清空微任务 -> render ->...）
+* macrotask(宏任务) `task`，包含：
+    * 整体代码script
+    * setTimeout，setInterval，setImmediate（node）
+    * I/O
+    * UI交互事件
+* microtask(微任务) `job`，包含：
+    * Promise
+    * process.nextTick（node）
+    * MutaionObserver
