@@ -12,10 +12,11 @@ module.exports = {
   entry: {
     // app: "./views/vue/src/app.js",
     flyball: './src/css_related/flyball/flyball.js',
+    immer: ['immer', './src/immer/test.js'],
   },
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: '[name].123.js',
+    filename: '[name].min.js',
     // filename: '[name].[hash].js',
     publicPath: '/dist/',
   },
