@@ -31,65 +31,98 @@ const markChanges = () => {
 };
 
 const finalize = (proxy) => {
-  if (proxy.modified) {
-    const state = proxy[PROXY_STATE];
-    if (state.finalized) {
-      return state.copy;
+  if (proxy && proxy[PROXY_STATE]) {
+    if (proxy.modified) {
+      const state = proxy[PROXY_STATE];
+      if (state.finalized) {
+        return state.copy;
+      }
+      state.finalized = true;
+      state.copy = shallowCopy(proxy);
+      const base = state.base;
+      each(state.copy, (key, value) => {
+        if (value !== base[key]) {
+          copy[key] = finalize(value);
+        }
+      });
+      Object.freeze(copy);
+    } else {
+      return state.base;
     }
-    state.finalized = true;
-    state.copy = shallowCopy(proxy);
-    const base = state.base;
-    each
   }
-};
-
-// shallowCopy
-const proxy = Object.assign({}, base);
-
-// createPropertyProxy
-Object.keys(base).forEach((key) => {
-  Object.defineProperty(proxy, key, cach[key] || {
-    configurable: true,
-    enumerable: true,
-    get() {
-        return get(this[PROXY_STATE], key)
-    },
-    set(value) {
-        set(this[PROXY_STATE], key, value)
+  aa: each(proxy, (index, child) => {
+    if (proxy && proxy[PROXY_STATE]) {
+      proxy[index] = finalize(child);
+    } else {
+      aa(child);
     }
   });
-});
-
-// createState
-const state = {
-  modified: false,
-  hasCopy: false,
-  parent: undefined,
-  base,
-  proxy,
-  copy: undefined,
-  finished: false,
-  finalizing: false,
-  finalized: false,
+  return proxy;
 };
 
-// createHiddenProperty
-Object.defineProperty(proxy, PROXY_STATE, {
-  value: state,
-  enumerable: false,
-  writable: true
-});
-states.push(state);
+const prev = states;
 
-const returnValue = producer.call(proxy, proxy);
+try{
+  // shallowCopy
+  const proxy = Object.assign({}, base);
 
-states.forEach(state => state.finalizeing = true);
+  // createPropertyProxy
+  Object.keys(base).forEach((key) => {
+    Object.defineProperty(proxy, key, cach[key] || {
+      configurable: true,
+      enumerable: true,
+      get() {
+          return get(this[PROXY_STATE], key)
+      },
+      set(value) {
+          set(this[PROXY_STATE], key, value)
+      }
+    });
+  });
 
-markChanges();
+  // createState
+  const state = {
+    modified: false,
+    hasCopy: false,
+    parent: undefined,
+    base,
+    proxy,
+    copy: undefined,
+    finished: false,
+    finalizing: false,
+    finalized: false,
+  };
 
-const proxyState = base[PROXY_STATE];
+  // createHiddenProperty
+  Object.defineProperty(proxy, PROXY_STATE, {
+    value: state,
+    enumerable: false,
+    writable: true
+  });
+  states.push(state);
 
-finalize(proxy);
+  const returnValue = producer.call(proxy, proxy);
+
+  states.forEach(state => state.finalizing = true);
+
+  markChanges();
+
+  result = finalize(proxy);
+
+  if (returnValue !== undefined && returnValue !== proxy) {
+    if (proxy[PROXY_STATE].modified) {
+      throw new Error('');
+    }
+    result = returnValue;
+  }
+
+  each(states, (i, state) => {
+    state.finished = true;
+  });
+  return result;
+} finally {
+  states = prev;
+}
 
 
 

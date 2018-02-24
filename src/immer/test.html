@@ -5,9 +5,25 @@
   <body>
     <div id="container">
     </div>
-    <script type="text/javascript" src="../../dist/immer.min.br.js"></script>
+    <!-- <script type="text/javascript" src="../../dist/immer.min.js"></script> -->
     <script type="text/javascript">
-    
+    var proxy1 = new Proxy(function(x, y) {
+      return x + y;
+    }, {
+      get(target, prop) {
+
+      },
+      apply(target, thisBinding, args) {
+        return args[0];
+      },
+      construct() {
+        return {aaa: 123};
+      },
+    });
+
+    var proxy2 = new Proxy({a: 1}, {});
+
+    var proxy3 = new proxy1(3, 4);
     </script>
   </body>
 </html>
