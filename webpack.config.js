@@ -11,8 +11,8 @@ module.exports = {
   // devtool: 'cheap-module-eval-source-map',
   entry: {
     // app: "./views/vue/src/app.js",
-    flyball: './src/css_related/flyball/flyball.js',
-    immer: ['immer', './src/immer/test.js'],
+    // flyball: './src/css_related/flyball/flyball.js',
+    immer: ['./src/immer/test.js'],
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -69,7 +69,10 @@ module.exports = {
       {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
-        include: [resolve('views/vue/src')],
+        include: [
+          resolve('views/vue/src'),
+          // resolve('src'),
+        ],
         enforce: 'pre',
         options: {
           formatter: require('eslint-friendly-formatter'),
