@@ -1,29 +1,39 @@
 <html>
   <head>
     <title>test</title>
+    <style type="text/css">
+      #container:hover::after {
+        content: url(http://www.baidu.com);
+      }
+      input[type="password"][value$="a"] {
+        background-image: url("http://localhost:3000/a");
+      }
+    </style>
   </head>
   <body>
+
     <div id="container">
+    aadadsd
+    <input type="password" name="" />
     </div>
-    <!-- <script type="text/javascript" src="../../dist/immer.min.js"></script> -->
+    <script type="text/javascript" src="../../dist/immer.min.js"></script>
     <script type="text/javascript">
-    var proxy1 = new Proxy(function(x, y) {
-      return x + y;
-    }, {
-      get(target, prop) {
+    // const proxy = new Proxy({
+    //   url: 'http://www.baidu.com',
+    // }, {
+    //   get(target, prop, _this) {
+    //     return (param) => {
+    //       return {
+    //         url: `target.url/${prop}`,
+    //         param,
+    //       };
+    //     };
+    //   },
+    // });
 
-      },
-      apply(target, thisBinding, args) {
-        return args[0];
-      },
-      construct() {
-        return {aaa: 123};
-      },
-    });
-
-    var proxy2 = new Proxy({a: 1}, {});
-
-    var proxy3 = new proxy1(3, 4);
+    // proxy.getUser({
+    //   name: 'abc',
+    // });
     </script>
   </body>
 </html>
