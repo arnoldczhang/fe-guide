@@ -1,23 +1,28 @@
-import produce from './immer';
-// import produce from 'immer';
+// import produce from './immer';
+import produce from 'immer';
 
-var res = produce({
+const base = {
   a: {
     b: [{b1: 1}, {b2: 2},{b3: 3}],
   },
-}, function(draft) {
-  console.log(draft.a);
-  console.log(draft.a.b);
-  console.log(draft.a.b[0]);
-  console.log(draft.a.b[0].b1);
-  console.log(draft.a.b[1]);
-  console.log(draft.a.b[1].b2);
+};
+
+const res = produce(base, function(draft) {
+  // console.log(draft.a);
+  // console.log(draft.a.b);
+  // console.log(draft.a.b[0]);
+  // console.log(draft.a.b[0].b1);
+  // console.log(draft.a.b[1]);
+  // console.log(draft.a.b[1].b2);
   draft.a.b[1].b2 = 100;
-  console.log(draft.a.b[1].b2);
-  draft.a.b[0] = 100;
-  draft.a.b[0]
-  console.log(draft, this);
+  draft.a.b[1].b2 = 101;
+  // console.log(draft.a.b[1].b2);
+  // draft.a.b[0] = 100;
+  // draft.a.b[0]
+  // console.log(draft, this);
 });
+
+console.log(res, base === res);
 
 // res({a: 1});
 // res(1);

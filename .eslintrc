@@ -11,9 +11,13 @@
   "plugins": [
   ],
   "rules": {
+    "no-void": "off",
+    "wrap-iife": "off",
+    "no-nested-ternary": "off",
+    "padded-blocks": "off",
     "import/no-extraneous-dependencies": "off",
     "import/extensions": "off",
-    "import/first": "off",
+    "import/first": "on",
     "no-underscore-dangle": "off",
     "arrow-body-style": "off",
     "allow-import-export-everywhere": "on",
