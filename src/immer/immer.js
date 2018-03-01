@@ -72,53 +72,83 @@ void function __immer(global, factory) {
     return isObject(state) && isObject(state.valueOf());
   };
 
+  function shallowCopy(target) {
+    var result = {};
+    if (!isProxyable(target)) return target;
+    if (isArray(target)) return toArray(target);
+    Object.keys(target).forEach((key) => {
+      result[key] = target[key];
+    });
+    return result;
+  };
+
 
   /**
    * Proxy
    */
   function $Proxy(target, handler) {
-    this.draft = {};
-    this[KEY.TARGET] = target;
-    this['[[Handler]]'] = handler;
-    this.proxy();
-    return this.draft;
+    this.target = target;
+    this.handler = handler;
+    return this.init().proxy().get();
   };
 
   var proxyPro = $Proxy.prototype;
-  proxyPro.proxy = function proxy(target, draft) {
-    var _this = this;
-    target = target || _this[KEY.TARGET];
-    draft = draft || _this.draft;
-    Object.keys(target).forEach(function(key) {
-      var value = target[key];
-      var objValue;
-      if (isObject(value)) {
-        value = isArray(value) || 'length' in value ? [] : {};
-        objValue = _this.proxy(target[key], value);
+  proxyPro.init = function init() {
+    this.isArray = isArray(this.target);
+    this['[[Handler]]'] = handler;
+    this[KEY.TARGET] = this.target;
+    this.copy = shallowCopy(this.target);
+    // this.children = this.isArray ? [] : {};
+    this.draft = this.isArray ? [] : {};
+  };
+
+  proxyPro.get = function get() {
+    return this.draft;
+  };
+
+  proxyPro.listen = function listen() {
+    if (isObject(value)) {
+          value = isArray(value) ? [] : {};
+          objValue = _this.proxy(target[key], value);
+          Object.defineProperty(draft, key, {
+            get: function _getter() {
+              return objValue;
+            },
+            set: function _setter(val) {
+              if (val !== objValue) {
+                target[key] = objValue = val;
+              }
+            },
+          });
+          return;
+        }
+
         Object.defineProperty(draft, key, {
           get: function _getter() {
-            return objValue;
+            return target[key];
           },
           set: function _setter(val) {
-            if (val !== objValue) {
-              target[key] = objValue = val;
+            if (val !== target[key]) {
+              target[key] = val;
             }
-          },
-        });
-        return;
-      }
-
-      Object.defineProperty(draft, key, {
-        get: function _getter() {
-          return target[key];
-        },
-        set: function _setter(val) {
-          if (val !== target[key]) {
-            target[key] = val;
           }
-        }
+        });
+  };
+
+  proxyPro.proxy = function proxy(copy, draft) {
+    var _this = this;
+    copy = copy || _this.copy;
+    draft = draft || _this.draft;
+    if (!_this.isArray) {
+      Object.keys(copy).forEach(function objectKeyEach(key) {
+        var value = copy[key];
+        _this.listen(key, true);
       });
-    });
+    } else {
+      copy.forEach(function copyEach(item, index) {
+        _this.listen(, false);
+      });
+    }
     return draft;
   };
 

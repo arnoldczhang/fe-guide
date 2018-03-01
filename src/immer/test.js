@@ -1,28 +1,44 @@
-// import produce from './immer';
-import produce from 'immer';
+import produce from './immer';
+// import produce from 'immer';
 
-const base = {
-  a: {
-    b: [{b1: 1}, {b2: 2},{b3: 3}],
-  },
-};
+// const base = {
+//   a: {
+//     b: [{b1: 1}, {b2: 2},{b3: 3}],
+//   },
+// };
 
-const res = produce(base, function(draft) {
-  // console.log(draft.a);
-  // console.log(draft.a.b);
-  // console.log(draft.a.b[0]);
-  // console.log(draft.a.b[0].b1);
-  // console.log(draft.a.b[1]);
-  // console.log(draft.a.b[1].b2);
-  draft.a.b[1].b2 = 100;
-  draft.a.b[1].b2 = 101;
-  // console.log(draft.a.b[1].b2);
-  // draft.a.b[0] = 100;
-  // draft.a.b[0]
-  // console.log(draft, this);
-});
+// const res = produce(base, function(draft) {
+//   console.log(draft.a);
+//   console.log(draft.a.b);
+//   console.log(draft.a.b[0]);
+//   console.log(draft.a.b[0].b1);
+//   console.log(draft.a.b[1]);
+//   console.log(draft.a.b[1].b2);
+//   draft.a.b[1].b2 = 100;
+//   draft.a.b[1].b2 = 101;
+//   console.log(draft.a.b[1].b2);
+//   draft.a.b[0] = 100;
+//   draft.a.b[0]
+//   console.log(draft, this);
+// });
 
-console.log(res, base === res);
+// console.log(base, res);
+
+
+// async function load() {
+//   try {
+//     return new Promise((resolve, reject) => {
+//       // resolve(111);
+//       throw new Error('');
+//     });
+//   } catch(err) {
+//     console.log(err);
+//   }
+// };
+
+// const res = await load();
+// console.log(res);
+
 
 // res({a: 1});
 // res(1);
