@@ -1,9 +1,10 @@
 import produce from './immer';
 // import produce from 'immer';
 
+const arr = [{b1: 1}, {b2: 2},{b3: 3}];
 const base = {
   a: {
-    b: [{b1: 1}, {b2: 2},{b3: 3}],
+    b: arr,
   },
 };
 
@@ -14,15 +15,15 @@ const res = produce(base, function(draft) {
   // console.log(draft.a.b[0].b1);
   // console.log(draft.a.b[1]);
   // console.log(draft.a.b[1].b2);
-  // draft.a.b[1].b2 = 100;
-  // draft.a.b[1].b2 = 101;
+  draft.a.b[1].b2 = 101;
+  draft.a.b[0] = { b100: 100 };
   // console.log(draft.a.b[1].b2);
   // draft.a.b[0] = 100;
   // draft.a.b[0]
   // console.log(draft, this);
 });
 
-// console.log(base, res);
+console.log(base, res);
 
 
 // async function load() {

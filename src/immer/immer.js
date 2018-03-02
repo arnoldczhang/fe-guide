@@ -27,12 +27,22 @@ void function __immer(global, factory) {
 
   var KEY = {
     TARGET: '[[Target]]',
+    HANDLER: '[[HANDLER]]',
+    SYMBOL: '[[immer]]',
   };
 
   /**
    * utils
    */
   var isArray = Array.isArray;
+  function bindDraft(parent, value, draft) {
+    return draft[KEY.SYMBOL] = {
+      parent: parent,
+      value: value,
+      copy: null,
+    };
+  };
+
   function isFunction(func) {
     return typeof func === 'function';
   };
@@ -88,67 +98,67 @@ void function __immer(global, factory) {
    */
   function $Proxy(target, handler) {
     this.target = target;
-    this['[[Handler]]'] = handler;
-    return this.init().proxy().get();
+    this[KEY.TARGET] = target;
+    this[KEY.HANDLER] = handler;
+    return this.init();
   };
 
   var proxyPro = $Proxy.prototype;
   proxyPro.init = function init() {
     this.isArray = isArray(this.target);
-    this[KEY.TARGET] = this.target;
-    this.copy = shallowCopy(this.target);
-    // this.children = this.isArray ? [] : {};
+    // this.copy = shallowCopy(this.target);
     this.draft = this.isArray ? [] : {};
-    return this;
+    return this.proxy().get();
   };
 
   proxyPro.get = function get() {
     return this.draft;
   };
 
-  proxyPro.listen = function listen(parent, key, value, draft) {
-    var childDraft, objValue;
+  proxyPro.listen = function listen(target, key, value, draft) {
+    var childDraft, draftValue;
     if (isObject(value)) {
+      draftValue = isArray(value) ? [] : {};
       Object.defineProperty(draft, key, {
         get: function _getter() {
-          return value;
+          return draftValue;
         },
         set: function _setter(val) {
-          if (val !== value) {
-            value = val;
+          if (val !== draftValue) {
             target[key] = val;
           }
         },
       });
-      this.proxy(value, draft[key]);
+      bindDraft(target, value, draft);
+      this.proxy(value, draftValue);
     } else {
       Object.defineProperty(draft, key, {
         get: function _getter() {
-          return target[key];
+          return draftValue;
         },
         set: function _setter(val) {
-          if (val !== target[key]) {
-            target[key] = val;
+          if (val !== draftValue) {
+            draftValue = val;
           }
-        }
+        },
       });
     }
   };
 
   proxyPro.proxy = function proxy(copy, draft) {
     var _this = this;
-    copy = copy || _this.copy;
+    copy = copy || _this.copy || this.target;
     draft = draft || _this.draft;
-    if (!_this.isArray) {
+    if (!isArray(copy)) {
       Object.keys(copy).forEach(function objectKeyEach(key) {
-        _this.listen(copy, key, copy[key], draft, true);
+        _this.listen(copy, key, copy[key], draft);
       });
     } else {
       copy.forEach(function copyEach(item, index) {
-        _this.listen(copy, index, item, draft, false);
+        _this.listen(copy, index, item, draft);
       });
     }
-    return draft;
+    return this;
   };
 
   /**
