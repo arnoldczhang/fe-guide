@@ -15,6 +15,7 @@ const res = produce(base, function(draft) {
   // console.log(draft.a.b[0].b1);
   // console.log(draft.a.b[1]);
   // console.log(draft.a.b[1].b2);
+  console.log(base);
   draft.a.b[1].b2 = 101;
   draft.a.b[0] = { b100: 100 };
   // console.log(draft.a.b[1].b2);
