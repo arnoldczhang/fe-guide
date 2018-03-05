@@ -35,17 +35,21 @@ void function __immer(global, factory) {
    * utils
    */
   var isArray = Array.isArray;
-  function updateSymbol(inst, value, key) {
+  function updateSymbol(inst, draft, value, key) {
     var draft;
     var copy = 'copy' in this ? this.copy : shallowCopy(this.value);
     copy[key] = value;
+    // draft[key] = value;
     this.copy = copy;
-    if (isObject(copy)) {
-      draft = isArray(copy) ? [] : {}
-      bindSymbol(this, key, copy, draft);
+    if (isProxyable(value)) {
+      // draft = isArray(value) ? [] : {}
+      // bindSymbol(this, key, value, draft);
+      // inst.proxy(value, draft);
     }
-    inst.proxy(copy, this);
-    return copy;
+    return {
+      value: copy,
+      draft: draft,
+    };
   };
 
   function bindSymbol(parent, key, value, draft) {
@@ -60,12 +64,21 @@ void function __immer(global, factory) {
     });
   };
 
+  function finalUpdate(inst, value, symbol) {
+    var draft = isArray(value) ? [] : {};
+    bindSymbol(symbol, draft);
+    inst.proxy(value, draft);
+    inst.draft = draft;
+  };
+
   function batchUpdate(draft, value, key) {
     var draftSymbol = draft[KEY.SYMBOL];
-    var copyValue = draftSymbol.update(this, value, key);
+    var copy = draftSymbol.update(this, draft, value, key);
+    var parent;
     if (draftSymbol.parent) {
-      batchUpdate.call(this, draftSymbol.parent, copyValue, draftSymbol.key);
+      return this.batchUpdate(draftSymbol.parent, copy.value, draftSymbol.key);
     }
+    return copy.draft;
   };
 
   function isFunction(func) {
@@ -131,6 +144,7 @@ void function __immer(global, factory) {
   };
 
   var proxyPro = $Proxy.prototype;
+  proxyPro.batchUpdate = batchUpdate;
   proxyPro.init = function init() {
     this.draft = isArray(this.target) ? [] : {};
     bindSymbol(null, null, this.target, this.draft);
@@ -149,12 +163,14 @@ void function __immer(global, factory) {
       draftValue = isArray(value) ? [] : {};
       Object.defineProperty(draft, key, {
         get: function _getter() {
+          console.log(value, key);
           return draftValue;
         },
         set: function _setter(val) {
-          if (val !== draftValue) {
-            batchUpdate.call(_this, draft, val, key);
-            draftValue = val;
+          if (val !== value) {
+            var aa = _this.batchUpdate(draft, val, key);
+            // draftValue = 
+            value = val;
           }
         },
       });
@@ -163,12 +179,12 @@ void function __immer(global, factory) {
     } else {
       Object.defineProperty(draft, key, {
         get: function _getter() {
-          return draftValue;
+          return value;
         },
         set: function _setter(val) {
-          if (val !== draftValue) {
-            batchUpdate.call(_this, draft, val, key);
-            draftValue = val;
+          if (val !== value) {
+            _this.batchUpdate(draft, val, key);
+            value = val;
           }
         },
       });
