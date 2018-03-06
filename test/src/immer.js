@@ -5,25 +5,33 @@ const produce = require('../../src/immer/immer.js');
 
 describe('Immer', () => {
   it('normal produce', (done) => {
-    const base = {
-      a: {
-        b: [{b1: 1}, {b2: 2},{b3: 3}],
-      },
-    };
-    
-    const res = produce(base, function(draft) {
-      expect(draft.a).to.be.deep.equal({
-        b: [{b1: 1}, {b2: 2},{b3: 3}],
-      });
-      expect(draft.a.b).to.be.deep.equal([{b1: 1}, {b2: 2},{b3: 3}]);
-      expect(draft.a.b[0]).to.be.deep.equal({b1: 1});
-      expect(draft.a.b[0].b1).to.be.equal(1);
-      expect(draft.a.b[1]).to.be.deep.equal({b2: 2});
-      expect(draft.a.b[1].b2).to.be.equal(2);
-      draft.a.b[1].b2 = 100;
-      expect(draft.a.b[1].b2).to.be.equal(100);
-      draft.a.b[0] = 100;
+    const baseState = [
+        {
+            todo: "Learn typescript",
+            done: true
+        },
+        {
+            todo: "Try immer",
+            done: false
+        }
+    ];
+
+    const nextState = produce(baseState, draftState => {
+        draftState.push({ todo: "Tweet about it" })
+        draftState[1].done = true
     });
+    
+    expect(baseState.length).toBe(2)
+    expect(nextState.length).toBe(3)
+
+    // same for the changed 'done' prop
+    expect(baseState[1].done).toBe(false)
+    expect(nextState[1].done).toBe(true)
+
+    // unchanged data is structurally shared
+    expect(nextState[0]).toBe(baseState[0])
+    // changed data not (dûh)
+    expect(nextState[1]).not.toBe(baseState[1])
     done();
   });
 });

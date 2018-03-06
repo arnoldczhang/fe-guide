@@ -1,30 +1,53 @@
 import produce from './immer';
 // import produce from 'immer';
 
-const arr = [{b1: 1}, {b2: 2},{b3: 3}];
-const base = {
-  a: {
-    b: arr,
-  },
-};
 
-const res = produce(base, function(draft) {
-  // console.log(draft.a);
-  // console.log(draft.a.b);
-  // console.log(draft.a.b[0]);
-  // console.log(draft.a.b[0].b1);
-  // console.log(draft.a.b[1]);
-  // console.log(draft.a.b[1].b2);
-  console.log(base);
-  // draft.a.b[1].b2 = 101;
-  draft.a.b[0] = { b100: 100 };
-  // console.log(draft.a.b[1].b2);
-  // draft.a.b[0] = 100;
-  // draft.a.b[0]
-  // console.log(draft, this);
+
+const baseState = [
+    {
+        todo: "Learn typescript",
+        done: true
+    },
+    {
+        todo: "Try immer",
+        done: false
+    }
+];
+
+const nextState = produce(baseState, draftState => {
+    draftState.push({ todo: "Tweet about it" })
+    draftState[1].done = true
 });
 
-console.log(base, res);
+console.log(nextState, baseState);
+
+
+
+// const arr = [{b1: 1}, {b2: 2},{b3: 3}];
+// const base = {
+//   a: {
+//     b: arr,
+//   },
+// };
+
+// const res = produce(base, function(draft) {
+//   // console.log(draft.a);
+//   // console.log(draft.a.b);
+//   // console.log(draft.a.b[0]);
+//   // console.log(draft.a.b[0].b1);
+//   // console.log(draft.a.b[1]);
+//   // console.log(draft.a.b[1].b2);
+//   console.log(base);
+//   draft.a.b[1].b2 = 101;
+//   draft.a.b[0] = { b100: 100 };
+//   draft.a.b[0].b100 = { b100: 100 };
+//   // console.log(draft.a.b[1].b2);
+//   // draft.a.b[0] = 100;
+//   // draft.a.b[0]
+//   // console.log(draft, this);
+// });
+
+// console.log(base, res);
 
 
 // async function load() {
