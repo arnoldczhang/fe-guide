@@ -57,6 +57,17 @@ void function __immer(global, factory) {
     });
   };
 
+  function getSymbol(object) {
+    if (isProxyable(object)) {
+      return object[KEY.SYMBOL];
+    }
+    return false;
+  };
+
+  function getSymbolValue(symbol) {
+    return 'copy' in symbol ? symbol.copy : symbol.value;
+  };
+
   function batchUpdate(draft, value, key) {
     var draftSymbol = draft[KEY.SYMBOL];
     var result = draftSymbol.update(this, draft, value, key);
@@ -90,12 +101,27 @@ void function __immer(global, factory) {
     return result;
   };
 
+  function keyEach(object, callback) {
+    if (isProxyable(object)) {
+      Object.keys(object).forEach(function innerKeyEach(key) {
+        callback(object[key], key, object);
+      });
+    }
+  };
+
   function getResult(proxy, base) {
     if (isUndefined(proxy)) {
       proxy = base;
     }
-    proxy = proxy[KEY.SYMBOL];
-    return proxy.copy || proxy.value;
+    var result = isArray(proxy) ? [] : {};
+    keyEach(proxy, function resultKeyEach(value, key) {
+      var hasSymbol = getSymbol(value);
+      if (hasSymbol) {
+        return result[key] = getSymbolValue(hasSymbol);
+      }
+      result[key] = value;
+    });
+    return result;
   };
 
   function bindProxy(state) {
@@ -110,8 +136,8 @@ void function __immer(global, factory) {
     var result = {};
     if (!isProxyable(target)) return target;
     if (isArray(target)) return toArray(target);
-    Object.keys(target).forEach((key) => {
-      result[key] = target[key];
+    keyEach(target, function shallowEach(value, key) {
+      result[key] = value;
     });
     return result;
   };
@@ -142,7 +168,6 @@ void function __immer(global, factory) {
 
   proxyPro.listen = function listen(key, value, draft) {
     var _this = this;
-    var childDraft;
     var proxyValue = value;
 
     if (isProxyable(value)) {
@@ -161,20 +186,8 @@ void function __immer(global, factory) {
           proxyValue = value = newValue;
         }
       },
+      enumerable: true,
     });
-    // } else {
-    //   Object.defineProperty(draft, key, {
-    //     get: function _getter() {
-    //       return value;
-    //     },
-    //     set: function _setter(val) {
-    //       if (val !== value) {
-    //         _this.batchUpdate(draft, val, key);
-    //         value = val;
-    //       }
-    //     },
-    //   });
-    // }
   };
 
   proxyPro.proxy = function proxy(copy, draft) {
@@ -183,8 +196,8 @@ void function __immer(global, factory) {
     draft = draft || _this.draft;
     if (!isProxyable(copy)) return copy;
     if (!isArray(copy)) {
-      Object.keys(copy).forEach(function objectKeyEach(key) {
-        _this.listen(key, copy[key], draft);
+      keyEach(copy, function objectKeyEach(value, key) {
+        _this.listen(key, value, draft);
       });
     } else {
       copy.forEach(function copyEach(item, index) {
