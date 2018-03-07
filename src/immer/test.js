@@ -1,25 +1,73 @@
 import produce from './immer';
 // import produce from 'immer';
 
-
-
-const baseState = [
-    {
-        todo: "Learn typescript",
-        done: true
-    },
-    {
-        todo: "Try immer",
-        done: false
+const byId = (state, action) =>
+  produce(state, draft => {
+    switch (action.type) {
+      case 'aa':
+        action.products.forEach(product => {
+          draft[product.id] = product
+        })
     }
-];
+  });
 
-const nextState = produce(baseState, draftState => {
-    draftState.push({ todo: "Tweet about it" })
-    draftState[1].done = true
-});
 
-console.log(nextState, baseState);
+const state = {
+  a: 1,
+};
+
+const action = {
+  type: 'aa',
+  products: [
+    { id: 'a1', type: 'car', color: 'red' },
+    { id: 'a2', type: 'bike', color: 'red2' },
+    { id: 'a3', type: 'airplane', color: 'red3' },
+  ],
+};
+
+const result = byId(state, action);
+console.log(result.a1 === action.products[0]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const baseState = [
+//     {
+//         todo: "Learn typescript",
+//         done: true
+//     },
+//     {
+//         todo: "Try immer",
+//         done: false
+//     }
+// ];
+
+// const nextState = produce(baseState, draftState => {
+//     draftState.push({ todo: "Tweet about it" })
+//     draftState[1].done = true
+// });
+
+// console.log(nextState, baseState);
 
 
 
