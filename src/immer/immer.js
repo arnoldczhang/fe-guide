@@ -109,7 +109,7 @@ void function __immer(global, factory) {
     }
   };
 
-  function getResult(proxy, base) {
+  function getProduceResult(proxy, base) {
     if (isUndefined(proxy)) {
       proxy = base;
     }
@@ -212,29 +212,30 @@ void function __immer(global, factory) {
    */
   function produce(baseState, callback) {
     var base;
+    var argsQueue = [];
     if (arguments.length) {
       if (arguments.length === 1) {
         if (isFunction(baseState)) {
           callback = baseState;
           baseState = null;
-          var argsLength = callback.length;
-          var argsQueue = [];
-          function curry() {
+          var funcLength = callback.length;
+          function argsCurry() {
             var args = toArray(arguments);
             if (args.length) {
-              argsQueue = argsQueue.concat(args);
-              if (argsQueue.length >= argsLength) {
-                base = argsQueue[0];
+              var queue = argsQueue.concat(args);
+              if (queue.length >= funcLength) {
+                argsQueue = [];
+                base = queue[0];
                 if (isProxyable(base)) {
                   baseState = bindProxy(base);
-                  argsQueue[0] = baseState;
-                  return getResult(callback.apply(baseState, argsQueue), base);
+                  queue[0] = baseState;
+                  return getProduceResult(callback.apply(baseState, queue), baseState);
                 }
               }
             }
-            return curry;
+            return argsCurry;
           };
-          return curry;
+          return argsCurry;
         } else {
           throw new Error('at least one param is need which typeof `function`');
         }
@@ -242,7 +243,7 @@ void function __immer(global, factory) {
         base = baseState;
         if (isProxyable(base)) {
           baseState = bindProxy(base);
-          return getResult(callback.call(baseState, baseState), baseState);
+          return getProduceResult(callback.call(baseState, baseState), baseState);
         }
       }
     } else {

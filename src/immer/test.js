@@ -1,32 +1,15 @@
 import produce from './immer';
 // import produce from 'immer';
 
-const byId = (state, action) =>
-  produce(state, draft => {
-    switch (action.type) {
-      case 'aa':
-        action.products.forEach(product => {
-          draft[product.id] = product
-        })
-    }
-  });
 
+const base = { counter: 0 }
 
-const state = {
-  a: 1,
-};
+const next = produce(base, function(draft) {
+  draft.counter++;
+  draft = {};
+})
+console.log(next.counter) // 1
 
-const action = {
-  type: 'aa',
-  products: [
-    { id: 'a1', type: 'car', color: 'red' },
-    { id: 'a2', type: 'bike', color: 'red2' },
-    { id: 'a3', type: 'airplane', color: 'red3' },
-  ],
-};
-
-const result = byId(state, action);
-console.log(result.a1 === action.products[0]);
 
 
 

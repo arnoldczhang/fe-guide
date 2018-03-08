@@ -12,6 +12,7 @@ const KEY = {
   STATUS: '[[PromiseStatus]]',
 };
 
+/*
 describe('Promise', () => {
     it('promise.then', (done) => {
       // Test1
@@ -472,3 +473,4 @@ describe('Promise', () => {
       done();
     });
 });
+*/
