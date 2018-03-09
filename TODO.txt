@@ -1,4 +1,4 @@
-marked
+marked -DONE
 =======
 cycle {
   this.string = ...;
@@ -15,9 +15,28 @@ cycle {
   }
   ...
 }
-immer.js
+
+
+immer.js - DONE
 ========
+
+
+
 mobx
+=======
+
+
+
+
 rxjs
+
+
+
+
 cyclejs
+
+
+
+
+
 Ukkonen
