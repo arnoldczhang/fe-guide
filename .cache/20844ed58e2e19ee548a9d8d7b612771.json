@@ -1,0 +1,1 @@
+{"dependencies":[{"name":"./src/foo.js","dynamic":true}],"generated":{"html":"<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"UTF-8\">\n    <title>Development</title>\n  </head>\n  <body>\n  <script type=\"text/javascript\" src=\"/dist/081feb549c4670e93748a90d9b08a184.js\"></script></body>\n</html>"},"hash":"59d5013e3e86d9d10902f4176984dcea"}

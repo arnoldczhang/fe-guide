@@ -1,24 +1,58 @@
+// webpack基础配置
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   entry: {
-    foo: "./src/mobx/src/foo.js",
+    common: [
+      'react',
+      'react-dom'
+    ],
+    index: [
+      "./src/mobx/src/App.jsx",
+    ],
   },
   output: {
-    path: path.resolve(__dirname, '../dist'),
-    filename: '[name].bundle.js',
-    publicPath: '/',
+    path: path.join(__dirname, '../dist'),
+    filename: '[name].[hash].js',
+    chunkFilename: '[name].[chunkhash].js',
+    sourceMapFilename: '[file].[chunkhash].map',
+    crossOriginLoading: 'anonymous',
+    publicPath: '',
   },
   plugins: [
-    new CleanWebpackPlugin(['../dist']),
+    new ExtractTextPlugin({
+      filename: "[chunkhash:5].bundle.css",
+      allChunks: true,
+      disable: false,
+    }),
+    new CleanWebpackPlugin(['./src/mobx/dist']),
     new HtmlWebpackPlugin({
-      title: 'Development'
+      title: 'Development',
+      template: './src/mobx/index.html',
     }),
   ],
+  resolve: {
+    extensions: ['.*', '.js', '.jsx', '.es6'],
+  },
   module: {
-      rules: [{
+    rules: [
+      {
+        test: /\.jsx?$/,
+        enforce: 'pre',
+        loader: 'eslint-loader',
+        include: path.resolve(__dirname, "../src"),
+        exclude: /node_modules/,
+        options: {
+          failOnError: false,
+        },
+      },
+      {
         test: /\.jsx?$/,
         include: path.resolve(__dirname, "../src"),
         exclude: /node_modules/,
@@ -26,11 +60,64 @@ module.exports = {
           {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env'],
-              plugins: ['syntax-async-generators'],
+              babelrc: false,
+              presets: ['react', 'es2015', 'stage-2'],
+              plugins: [
+                'transform-runtime',
+                'transform-decorators-legacy',
+                'transform-class-properties',
+                'syntax-async-generators',
+              ],
             },
           },
         ],
-      }],
-  },
-};
+      },
+      {
+        test: /\.(le|c|sa)ss$/,
+        use: ExtractTextPlugin.extract({
+          use:[
+            {
+              loader: 'css-loader',
+              options:{
+                modules:true,
+                importLoaders:1,
+                localIdentName: '[name]__[local]___[hash:base64:5]',
+              },
+            },
+            'less-loader',
+
+            // css module + autoprefixer
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: (loader) => [
+                  require('autoprefixer')({
+                    browsers: [
+                      'Android >= 4.0',
+                      'last 3 versions',
+                      'iOS > 6'
+                    ],
+                  }),
+                ],
+              },
+            },
+          ],
+          fallback: 'style-loader',
+          publicPath: '/dist',
+        })
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          'file-loader',
+        ],
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        use: [
+          'file-loader',
+        ],
+      },
+    ]
+  }
+}

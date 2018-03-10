@@ -9,18 +9,19 @@
     "jest": true
   },
   "plugins": [
+    "react"
   ],
   "rules": {
-    "no-void": "off",
-    "wrap-iife": "off",
-    "no-nested-ternary": "off",
-    "padded-blocks": "off",
+    "no-alert": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "react/forbid-prop-types": "off",
+    "react/prefer-stateless-function": "off",
     "import/no-extraneous-dependencies": "off",
     "import/extensions": "off",
-    "import/first": 2,
+    "import/first": "off",
     "no-underscore-dangle": "off",
     "arrow-body-style": "off",
-    "allow-import-export-everywhere": "on",
+    "allow-import-export-everywhere": 0,
     "linebreak-style": "off",
     "global-require": "off",
     "no-console": "off"
