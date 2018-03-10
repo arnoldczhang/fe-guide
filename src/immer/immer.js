@@ -31,10 +31,21 @@ void function __immer(global, factory) {
     SYMBOL: '[[immer]]',
   };
 
+  var MSG = {
+    '001': 'at least one param is need which typeof `function`',
+    '002': 'missing arguments',
+  };
+
   /**
    * utils
    */
   var isArray = Array.isArray;
+  function invariant(check, message) {
+    if (!check) {
+      throw new Error(message);
+    }
+  };
+
   function updateSymbol(inst, draft, value, key) {
     var copy = 'copy' in this ? this.copy : shallowCopy(this.value);
     copy[key] = value;
@@ -155,7 +166,9 @@ void function __immer(global, factory) {
   };
 
   var proxyPro = $Proxy.prototype;
+
   proxyPro.batchUpdate = batchUpdate;
+
   proxyPro.init = function init() {
     this.draft = isArray(this.target) ? [] : {};
     bindSymbol(null, null, this.target, this.draft);
@@ -213,41 +226,36 @@ void function __immer(global, factory) {
   function produce(baseState, callback) {
     var base;
     var argsQueue = [];
-    if (arguments.length) {
-      if (arguments.length === 1) {
-        if (isFunction(baseState)) {
-          callback = baseState;
-          baseState = null;
-          var funcLength = callback.length;
-          function argsCurry() {
-            var args = toArray(arguments);
-            if (args.length) {
-              var queue = argsQueue.concat(args);
-              if (queue.length >= funcLength) {
-                argsQueue = [];
-                base = queue[0];
-                if (isProxyable(base)) {
-                  baseState = bindProxy(base);
-                  queue[0] = baseState;
-                  return getProduceResult(callback.apply(baseState, queue), baseState);
-                }
-              }
+    invariant(!!arguments.length, MSG['002']);
+    if (arguments.length === 1) {
+      invariant(isFunction(baseState), MSG['001']);
+      callback = baseState;
+      baseState = null;
+      var funcLength = callback.length;
+
+      function argsCurry() {
+        var args = toArray(arguments);
+        if (args.length) {
+          var queue = argsQueue.concat(args);
+          if (queue.length >= funcLength) {
+            argsQueue = [];
+            base = queue[0];
+            if (isProxyable(base)) {
+              baseState = bindProxy(base);
+              queue[0] = baseState;
+              return getProduceResult(callback.apply(baseState, queue), baseState);
             }
-            return argsCurry;
-          };
-          return argsCurry;
-        } else {
-          throw new Error('at least one param is need which typeof `function`');
+          }
         }
-      } else {
-        base = baseState;
-        if (isProxyable(base)) {
-          baseState = bindProxy(base);
-          return getProduceResult(callback.call(baseState, baseState), baseState);
-        }
-      }
+        return argsCurry;
+      };
+      return argsCurry;
     } else {
-      throw new Error('missing arguments');
+      base = baseState;
+      if (isProxyable(base)) {
+        baseState = bindProxy(base);
+        return getProduceResult(callback.call(baseState, baseState), baseState);
+      }
     }
   };
   return produce;
