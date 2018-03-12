@@ -165,11 +165,13 @@ var promise = new Promise(function (resolve, reject) {
     return promise;
   };
 
-  function triggerSuccess(inst) {
+  function abstractTrigger(inst, type, handler) {
+    type = type || CODE.RESOLVED;
+    handler = handler || resolveHandler;
     var result = store.getQ(inst.uuid);
     var value = inst[KEY.VALUE];
     var thenable = result.promise;
-    var callback = result.success;
+    var callback = result[isResolve(type) ? 'success' : 'fail'];
     var isThenableIterable = Array.isArray(thenable);
     var isCallbackIterable = Array.isArray(callback);
     var callbackValue;
@@ -178,43 +180,26 @@ var promise = new Promise(function (resolve, reject) {
       if (isFunction(callback)) {
         callbackValue = callback(value);
         if (thenable) resolveHandler.call(thenable, callbackValue);
-        return reNewPromise(callbackValue);
+        return reNewPromise(callbackValue, {
+          type: type,
+        });
       } else if (isCallbackIterable && isThenableIterable) {
-        iteratorCallback(thenable, resolveHandler, callback, value);
+        iteratorCallback(thenable, handler, callback, value);
       }
     } else if (isThenableIterable) {
-      iteratorCallback(thenable, resolveHandler, value);
+      iteratorCallback(thenable, handler, value);
     } else if (thenable) {
-      return resolveHandler.call(thenable, value);
+      return handler.call(thenable, value);
     }
     return inst;
   };
 
-  function triggerFail(inst) {
-    var result = store.getQ(inst.uuid);
-    var value = inst[KEY.VALUE];
-    var thenable = result.promise;
-    var fallback = result.fail;
-    var isThenableIterable = Array.isArray(thenable);
-    var isFallbackIterable = Array.isArray(fallback);
-    var fallbackValue;
+  function triggerSuccess(inst) {
+    return abstractTrigger(inst);
+  };
 
-    if(fallback) {
-      if (isFunction(fallback)) {
-        fallbackValue = fallback(value);
-        if (thenable) resolveHandler.call(thenable, fallbackValue);
-        return reNewPromise(fallbackValue, {
-          type: CODE.REJECTED,
-        });
-      } else if (isFallbackIterable && isThenableIterable) {
-        iteratorCallback(thenable, rejectHandler, fallback, value);
-      }
-    } else if (isThenableIterable) {
-      iteratorCallback(thenable, rejectHandler, value);
-    } else if (thenable) {
-      return rejectHandler.call(thenable, value);
-    }
-    return inst;
+  function triggerFail(inst) {
+    return abstractTrigger(inst, CODE.REJECTED, rejectHandler);
   };
 
   function getBatchPromiseValue(input, resolve, reject) {
@@ -274,18 +259,21 @@ var promise = new Promise(function (resolve, reject) {
     if (!hasPromise) resolve(data);
   };
 
+  function abstractHandler(inst, res, status, callback) {
+    status = status || CODE.RESOLVED;
+    callback = callback || triggerSuccess;
+    if (!isPending(inst[KEY.STATUS])) return;
+    inst[KEY.VALUE] = res;
+    inst[KEY.STATUS] = status;
+    return callback(inst);
+  };
+
   function resolveHandler(res) {
-    if (!isPending(this[KEY.STATUS])) return;
-    this[KEY.VALUE] = res;
-    this[KEY.STATUS] = CODE.RESOLVED;
-    return triggerSuccess(this);
+    return abstractHandler(this, res);
   };
 
   function rejectHandler(rej) {
-    if (!isPending(this[KEY.STATUS])) return;
-    this[KEY.VALUE] = rej;
-    this[KEY.STATUS] = CODE.REJECTED;
-    return triggerFail(this);
+    return abstractHandler(this, rej, CODE.REJECTED, triggerFail);
   };
 
   function Promise(callback) {
