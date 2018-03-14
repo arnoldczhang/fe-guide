@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react';
 import {
+  action,
+  // computed,
+} from 'mobx';
+import {
   inject,
-  // action,
   observer,
 } from 'mobx-react';
 import PropTypes from 'prop-types';
@@ -40,6 +43,7 @@ class App extends PureComponent {
     console.log(inited, result);
   }
 
+  @action
   counter() {
     const {
       store,
@@ -64,7 +68,12 @@ class App extends PureComponent {
     return (
       <div>
         {
-          store.color.map(color => (<div key="hello" onClick={this.counter} onKeyDown={() => {}} >{color}</div>))
+          store.color.map((color, index) => {
+            const key = `color_${index}`;
+            return (
+              <div key={key} onClick={this.counter} onKeyDown={() => {}} >{color}</div>
+            );
+          })
         }
       </div>
     );

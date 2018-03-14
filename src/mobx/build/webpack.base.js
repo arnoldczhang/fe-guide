@@ -9,12 +9,15 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 module.exports = {
   entry: {
-    common: [
-      'react',
-      'react-dom'
-    ],
-    index: [
-      "./src/mobx/src/App.jsx",
+    // common: [
+    //   'react',
+    //   'react-dom',
+    // ],
+    // index: [
+    //   "./src/mobx/src/App.jsx",
+    // ],
+    app: [
+      './src/mobx/mobx.js',
     ],
   },
   output: {
@@ -31,7 +34,9 @@ module.exports = {
       allChunks: true,
       disable: false,
     }),
-    new CleanWebpackPlugin(['./src/mobx/dist']),
+    new CleanWebpackPlugin(['./dist'], {
+      root: path.join(__dirname, '..'),
+    }),
     new HtmlWebpackPlugin({
       title: 'Development',
       template: './src/mobx/index.html',
@@ -43,7 +48,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.jsx$/,
         enforce: 'pre',
         loader: 'eslint-loader',
         include: path.resolve(__dirname, "../src"),
@@ -52,8 +57,33 @@ module.exports = {
           failOnError: false,
         },
       },
+      // {
+      //   test: /\.js$/,
+      //   include: path.resolve(__dirname, "../src"),
+      //   exclude: /node_modules/,
+      //   use: [
+      //     {
+      //       loader: 'babel-loader',
+      //       options: {
+      //         babelrc: false,
+      //         presets: ['babel-preset-env'],
+      //         plugins: [require(path.resolve(__dirname, '../../babel/diy.js'))],
+      //       },
+      //     },
+      //   ],
+      // },
       {
-        test: /\.jsx?$/,
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "babel-loader",
+        options: {
+          plugins: [
+            path.resolve(__dirname, '../../babel/diy.js'),
+          ]
+        }
+      },
+      {
+        test: /\.jsx$/,
         include: path.resolve(__dirname, "../src"),
         exclude: /node_modules/,
         use: [
@@ -61,7 +91,7 @@ module.exports = {
             loader: 'babel-loader',
             options: {
               babelrc: false,
-              presets: ['react', 'es2015', 'stage-2'],
+              presets: ['es2015', 'react', 'stage-2'],
               plugins: [
                 'transform-runtime',
                 'transform-decorators-legacy',

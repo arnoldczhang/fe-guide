@@ -12,8 +12,6 @@ const store = observable({
   color: ['red'],
 });
 
-window.store = store;
-
 render(
   <Provider store={store}>
     <App />
