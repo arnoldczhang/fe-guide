@@ -57,21 +57,6 @@ module.exports = {
           failOnError: false,
         },
       },
-      // {
-      //   test: /\.js$/,
-      //   include: path.resolve(__dirname, "../src"),
-      //   exclude: /node_modules/,
-      //   use: [
-      //     {
-      //       loader: 'babel-loader',
-      //       options: {
-      //         babelrc: false,
-      //         presets: ['babel-preset-env'],
-      //         plugins: [require(path.resolve(__dirname, '../../babel/diy.js'))],
-      //       },
-      //     },
-      //   ],
-      // },
       {
         test: /\.js$/,
         exclude: /node_modules/,
