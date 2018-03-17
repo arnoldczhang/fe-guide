@@ -1,13 +1,8 @@
-export default {
-  props: {
-    msg: {
-      type: String,
-      default: ''
-    }
-  },
-  data () {
-    return {
-      type: 'component'
-    }
-  }
+import { observable } from "mobx"
+
+class Todo {
+    id = Math.random();
+    @observable title = "";
+    @observable finished = false;
+    @observable list = [];
 }

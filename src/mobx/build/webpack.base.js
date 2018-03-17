@@ -16,7 +16,7 @@ module.exports = {
     // index: [
     //   "./src/mobx/src/App.jsx",
     // ],
-    app: [
+    mobx: [
       './src/mobx/mobx.js',
     ],
   },
