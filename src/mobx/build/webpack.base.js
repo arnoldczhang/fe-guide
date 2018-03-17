@@ -58,34 +58,20 @@ module.exports = {
         },
       },
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: "babel-loader",
-        options: {
-          plugins: [
-            path.resolve(__dirname, '../../babel/diy.js'),
-          ]
-        }
-      },
-      {
-        test: /\.jsx$/,
+        test: /\.jsx?$/,
         include: path.resolve(__dirname, "../src"),
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              babelrc: false,
-              presets: ['es2015', 'react', 'stage-2'],
-              plugins: [
-                'transform-runtime',
-                'transform-decorators-legacy',
-                'transform-class-properties',
-                'syntax-async-generators',
-              ],
-            },
-          },
-        ],
+        loader: 'babel-loader',
+        options: {
+          babelrc: false,
+          presets: ['es2015', 'react', 'stage-2'],
+          plugins: [
+            'transform-runtime',
+            'transform-decorators-legacy',
+            'transform-class-properties',
+            'syntax-async-generators',
+          ],
+        },
       },
       {
         test: /\.(le|c|sa)ss$/,

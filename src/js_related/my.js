@@ -73,6 +73,23 @@ readystate
 
 
 
+// Object.getOwnPropertyDescriptor
+var obj = {};
+Object.defineProperty(obj, aa, {
+  get() {/*...*/},
+  set() {/*...*/},
+});
+
+Object.getOwnPropertyDescriptor(obj);
+/*
+  {
+    get(){},
+    set(){},
+    configurable: true,
+    enumerable: true,
+  }
+*/
+
 
 
 
