@@ -92,4 +92,69 @@ Object.getOwnPropertyDescriptor(obj);
 
 
 
+// JSON.stringify
+//如果对象中定义了 toJSON() 方法，JSON 字符串化时会首先调用该方法，然后用它的返回 值来进行序列化。
+
+
+
+
+
+// valueOf和toString
+//类型转换时，如果Object含有valueOf或toString，则调用valueOf()方法，然后通过ToString抽象 操作将返回值转换为字符串
+
+
+
+
+
+// this
+//(1)函数是否在new中调用(new绑定)?如果是的话this绑定的是新创建的对象。
+var bar = new foo();
+//(2)函数是否通过call、apply(显式绑定)或者硬绑定调用?如果是的话，this绑定的是 指定的对象。
+var bar = foo.call(obj2);
+var bar2 = foo.apply(obj2);
+var bar3 = foo.bind(obj2);
+//(3)函数是否在某个上下文对象中调用(隐式绑定)?如果是的话，this 绑定的是那个上 下文对象。
+var bar = obj1.foo();
+//(4)如果都不是的话，使用默认绑定。如果在严格模式下，就绑定到undefined，否则绑定到 全局对象。
+var bar = foo();
+
+
+
+
+
+// +是相加还是拼接
+//（1）操作数是string，做拼接，否则做相加；
+//（2）操作数是object，做toPrimitive（valueOf或toString），再按（1）判断；
+
+
+
+
+
+// ==和===
+// == 允许在相等比较中进行强制类型转换，而 === 不允许。
+var a = 42;
+var b = "42";
+
+a == b; //true
+
+// 字符串和数字之间的相等比较
+// （1） 如果 Type(x) 是数字，Type(y) 是字符串，则返回 x == ToNumber(y) 的结果。 
+// （2）如果 Type(x) 是字符串，Type(y) 是数字，则返回 ToNumber(x) == y 的结果。
+// （3）否则返回 ToBoolean(x) == ToBoolean(y)的结果。
+
+// 对象和非对象之间的相等比较
+// （1）如果 Type(x) 是字符串或数字，Type(y) 是对象，则返回 x == ToPrimitive(y) 的结果；
+// （2）如果 Type(x) 是对象，Type(y) 是字符串或数字，则返回 ToPromitive(x) == y 的结果；
+// 注：ToPromitive默认转数字；
+
+
+
+
+// 在 ES6 中，如果参数被省略或者值为 undefined，则取该参数的默认值
+
+
+
+
+// 函数声明不可以省略函数名
+
 

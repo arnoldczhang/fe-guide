@@ -27,6 +27,12 @@ mobx
 
 
 
+javascript ASI
+=======
+https://segmentfault.com/a/1190000004548664
+
+
+
 
 rxjs
 
@@ -40,3 +46,8 @@ cyclejs
 
 
 Ukkonen
+
+
+
+
+anujs

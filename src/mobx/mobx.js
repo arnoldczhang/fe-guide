@@ -1,5 +1,6 @@
 import {
   observable,
+  intercept,
   extendObservable,
 } from "mobx"
 
@@ -9,11 +10,16 @@ function Todo() {
         title: "",
         finished: false,
         arr: [],
+        attrs: {
+          aa: 1,
+        },
     });
 };
 
-window.todo = new Todo();
-console.log(todo);
+window.todo = new Todo;
+intercept(todo, 'title', function(change) {
+  console.log(212122, change);
+});
 
 
 // class Todo {
