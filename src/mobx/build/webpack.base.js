@@ -9,13 +9,13 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 module.exports = {
   entry: {
-    // common: [
-    //   'react',
-    //   'react-dom',
-    // ],
-    // index: [
-    //   "./src/mobx/src/App.jsx",
-    // ],
+    common: [
+      'react',
+      'react-dom',
+    ],
+    index: [
+      "./src/mobx/src/App.jsx",
+    ],
     mobx: [
       './src/mobx/mobx.js',
     ],

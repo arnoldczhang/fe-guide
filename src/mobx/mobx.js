@@ -21,7 +21,6 @@ intercept(todo, 'title', function(change) {
   console.log(212122, change);
 });
 
-
 // class Todo {
 //     id = Math.random();
 //     @observable title = "";

@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from 'react-dom';
-import App from './app/index.jsx';
 import {
   Provider,
 } from 'mobx-react';
@@ -8,12 +7,12 @@ import {
   observable,
 } from 'mobx';
 
-const store = observable({
-  color: ['red'],
-});
+import App from './app/main.jsx';
+import stores from './stores';
 
+console.log(121221);
 render(
-  <Provider store={store}>
+  <Provider store={observable(stores)}>
     <App />
   </Provider>,
   document.getElementById('root'),

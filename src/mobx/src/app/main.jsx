@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
   action,
   // computed,
@@ -9,22 +9,25 @@ import {
 } from 'mobx-react';
 import PropTypes from 'prop-types';
 
+import List from '../pages/listPage/index.jsx';
+import selector from '../selectors/main';
+
 const {
   number,
   object,
 } = PropTypes;
 
-@inject('store')
+@inject(selector)
 @observer
-class App extends PureComponent {
+class App extends Component {
   static propTypes = {
     inited: number,
-    store: object,
+    indexStore: object,
   };
 
   static defaultProps = {
     inited: 0,
-    store: {},
+    indexStore: {},
   };
 
   constructor(props) {
@@ -39,22 +42,26 @@ class App extends PureComponent {
     const {
       inited,
     } = this.props;
-    const result = await fetch('https://takeaway.dianping.com/waimai/ajax/wxwallet/getweixinjsconfig');
-    console.log(inited, result);
+    console.log(inited);
+    // const result = await fetch('https://takeaway.dianping.com/waimai/ajax/wxwallet/getweixinjsconfig');
+    // console.log(inited, result);
   }
 
   @action
   counter() {
     const {
-      store,
+      indexStore,
     } = this.props;
-    store.color.push('green');
+    indexStore.title = Math.random();
   }
 
   render() {
     const {
       inited,
-      store,
+      indexStore: {
+        mainTitle,
+        title,
+      },
     } = this.props;
 
     this.getData();
@@ -67,14 +74,8 @@ class App extends PureComponent {
 
     return (
       <div>
-        {
-          store.color.map((color, index) => {
-            const key = `color_${index}`;
-            return (
-              <div key={key} onClick={this.counter} onKeyDown={() => {}} >{color}</div>
-            );
-          })
-        }
+        <div onClick={this.counter} onKeyDown={() => {}} >{mainTitle}</div>
+        <List title={title} />
       </div>
     );
   }
