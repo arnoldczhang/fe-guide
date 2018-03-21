@@ -44,6 +44,9 @@ module.exports = {
   ],
   resolve: {
     extensions: ['.*', '.js', '.jsx', '.es6'],
+    alias: {
+      
+    },
   },
   module: {
     rules: [
