@@ -52,6 +52,7 @@ class App extends Component {
     const {
       indexStore,
     } = this.props;
+    console.log(11221);
     indexStore.title = Math.random();
   }
 
