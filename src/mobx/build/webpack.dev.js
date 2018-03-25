@@ -12,7 +12,8 @@ const config = merge(base, {
   devtool: 'inline-source-map',
   mode: 'development',
   devServer: {
-    contentBase: './dist'
+    port: 2222,
+    contentBase: './dist',
    },
 });
 
