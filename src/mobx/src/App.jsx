@@ -10,7 +10,11 @@ import {
 import App from './app/main.jsx';
 import stores from './stores';
 
-console.log(121221);
+if (process.env.NODE_ENV !== 'production') {
+  const { reactopt } = require('reactopt');
+  reactopt(React);
+}
+
 render(
   <Provider store={observable(stores)}>
     <App />
