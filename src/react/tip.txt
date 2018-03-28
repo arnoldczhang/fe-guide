@@ -11,7 +11,7 @@
  *
  *       Update Phases:
  *       - componentWillReceiveProps (only called if parent updated)
- *       - shouldComponentUpdate
+ *       - shouldComponentUpdate (if `shouldComponentUpdate` existed or is pure component)
  *         - componentWillUpdate
  *           - render
  *           - [children's constructors or receive props phases]

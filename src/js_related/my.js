@@ -158,3 +158,6 @@ a == b; //true
 // 函数声明不可以省略函数名
 
 
+
+//ES5 对象的扩展(Object.preventExtensions)、密封(Object.seal)和冻结(Object.freeze)
+http://www.cnblogs.com/snandy/p/5278474.html
