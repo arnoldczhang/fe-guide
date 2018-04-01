@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { hydrate } from 'react-dom';
 import {
   Provider,
 } from 'mobx-react';
@@ -14,8 +14,9 @@ if (process.env.NODE_ENV !== 'production') {
   const { reactopt } = require('reactopt');
   reactopt(React);
 }
+console.log(12);
 
-render(
+hydrate(
   <Provider store={observable(stores)}>
     <App />
   </Provider>,

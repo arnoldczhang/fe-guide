@@ -1,3 +1,12 @@
+
+/**
+ * ------------------ steps ------------------
+ * 1. jsx -> babel -> ast
+ * 2. ast -> [options.presets, options.plugins] -> transform-react-jsx(jsxIdentifier, pragma, ...) -> js
+ * 3. js -> react16-init
+ * 4. update -> react16-diff -> react16-rerender
+ */
+
 /**
  * ------------------ The Life-Cycle of a Composite Component ------------------
  *

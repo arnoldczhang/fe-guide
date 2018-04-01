@@ -77,6 +77,9 @@ module.exports = {
             'transform-decorators-legacy',
             'transform-class-properties',
             'syntax-async-generators',
+            ['transform-react-jsx', {
+              "pragma": "React.createElement",
+            }],
           ],
         },
       },

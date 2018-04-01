@@ -7,6 +7,7 @@ const merge = require('webpack-merge');
 const base = require('./webpack.base.js');
 module.exports = merge(base, {
   devtool: 'source-map',
+  mode: 'production',
   plugins: [
     new UglifyJSPlugin({
       sourceMap: true,
@@ -14,8 +15,10 @@ module.exports = merge(base, {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production'),
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-    }),
   ],
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
 });
