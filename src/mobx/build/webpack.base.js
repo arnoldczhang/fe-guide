@@ -45,7 +45,11 @@ module.exports = {
   resolve: {
     extensions: ['.*', '.js', '.jsx', '.es6'],
     alias: {
-      
+      'react': 'anujs',
+      'react-dom': 'anujs',
+      'prop-types': 'anujs/lib/ReactPropTypes',
+      'create-react-class': 'anujs/lib/createClass',
+      'react-tap-event-plugin': 'anujs/lib/injectTapEventPlugin'
     },
   },
   module: {
