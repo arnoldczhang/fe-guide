@@ -1,11 +1,19 @@
 #参考
   - https://www.jianshu.com/p/0983e69d58ec
+  - https://zhuanlan.zhihu.com/p/30744300
   - ![运行机制](2954145-5bb92d1fbdb9df41.png)
 
 - - -
 
-#过程
 
+# Event Loop、Call Stack、Web APIs
+  - Event Loop - 事件循环
+  - Call Stack - 调用栈
+  - Web APIs - 宿主环境
+
+- - -
+
+#Call Stack
 * 函数被调用
 * 创建执行上下文
     * a) 创建作用域链
@@ -22,7 +30,7 @@
 
 - - -
 
-#任务队列
+#Event Loop（异步）
 ![任务队列](68747470733a2f2f736661756c742d696d6167652e62302e7570616979756e2e636f6d2f3134392f3930352f313439393035313630392d356138616434376663653736345f61727469636c6578.png)
 （宏任务 -> 清空微任务 -> render -> 宏任务 -> 清空微任务 -> render ->...）
 * macrotask(宏任务) `task`，包含：
@@ -34,3 +42,8 @@
     * Promise
     * process.nextTick（node）
     * MutaionObserver
+
+- - -
+
+#Web APIs
+前端：浏览器、node环境

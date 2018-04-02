@@ -1,6 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
   action,
+  autorun,
 } from 'mobx';
 import {
   inject,
@@ -19,9 +20,16 @@ const {
   object,
 } = PropTypes;
 
+const add = function _add() {
+  const {
+    title,
+  } = this.props;
+  console.log(222, title);
+};
+
 @inject(selector)
 @observer
-class ListPage extends PureComponent {
+class ListPage extends Component {
   static propTypes = {
     title: oneOfType([string, number]),
     indexStore: object,
@@ -37,6 +45,7 @@ class ListPage extends PureComponent {
   constructor(props) {
     super(props);
     this.counter = this.counter.bind(this);
+    autorun(add, this);
   }
 
   @action

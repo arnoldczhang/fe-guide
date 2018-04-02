@@ -7,15 +7,27 @@ import {
   inject,
   observer,
 } from 'mobx-react';
+import Loadable from 'react-loadable';
 import PropTypes from 'prop-types';
 
-import List from '../pages/listPage/index.jsx';
 import selector from '../selectors/main';
 
 const {
   number,
   object,
 } = PropTypes;
+
+const Loading = () => {
+  return (
+    <div>Loading...</div>
+  );
+};
+
+// react-loadable
+const LoadableComponent = Loadable({
+  loader: () => import('../pages/listPage/index.jsx'),
+  loading: Loading,
+});
 
 @inject(selector)
 @observer
@@ -76,7 +88,7 @@ class App extends Component {
     return (
       <div>
         <div onClick={this.counter} onKeyDown={() => {}} >{mainTitle}</div>
-        <List title={title} />
+        <LoadableComponent title={title} />
       </div>
     );
   }

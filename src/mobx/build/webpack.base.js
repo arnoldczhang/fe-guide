@@ -83,6 +83,14 @@ module.exports = {
           ],
         },
       },
+      // ts-node
+      // https://webpack.js.org/configuration/configuration-languages/
+      {
+        test: /\.(tsx|ts)?$/,
+        include: path.resolve(__dirname, "../src"),
+        exclude: /node_modules/,
+        use: ["ts-loader"],
+      },
       {
         test: /\.(le|c|sa)ss$/,
         use: ExtractTextPlugin.extract({

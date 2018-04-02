@@ -19,7 +19,7 @@ cycle {
 
 immer.js - DONE
 ========
-
+Proxy or Object.defineProperty
 
 
 mobx
