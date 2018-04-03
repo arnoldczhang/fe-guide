@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  // action,
   autorun,
 } from 'mobx';
 import {
@@ -18,7 +17,6 @@ const {
   string,
   number,
   oneOfType,
-  // array,
   object,
 } = PropTypes;
 
@@ -35,13 +33,13 @@ const add = function _add() {
 class ListPage extends Component {
   static propTypes = {
     title: oneOfType([string, number]),
-    // indexStore: object,
+    indexStore: object,
     list: object,
   };
 
   static defaultProps = {
     title: '',
-    // indexStore: {},
+    indexStore: {},
     list: {},
   };
 
@@ -56,7 +54,10 @@ class ListPage extends Component {
     const {
       title,
       list,
+      indexStore,
     } = this.props;
+
+    console.log(indexStore);
 
     return (
       <div>

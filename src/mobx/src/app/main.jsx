@@ -62,15 +62,6 @@ class App extends Component {
     // console.log(inited, result);
   }
 
-  // @action
-  // counter() {
-  //   const {
-  //     indexStore,
-  //   } = this.props;
-  //   console.log(11221);
-  //   indexStore.title = Math.random();
-  // }
-
   render() {
     const {
       inited,
