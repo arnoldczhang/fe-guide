@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import {
-  action,
-  // computed,
-} from 'mobx';
+// import {
+//   action,
+//   // computed,
+// } from 'mobx';
 import {
   inject,
   observer,
@@ -11,6 +11,8 @@ import Loadable from 'react-loadable';
 import PropTypes from 'prop-types';
 
 import selector from '../selectors/main';
+import actions from '../actions/main';
+import bindAct from '../bind';
 
 const {
   number,
@@ -30,6 +32,7 @@ const LoadableComponent = Loadable({
 });
 
 @inject(selector)
+@bindAct(actions)
 @observer
 class App extends Component {
   static propTypes = {
@@ -59,14 +62,14 @@ class App extends Component {
     // console.log(inited, result);
   }
 
-  @action
-  counter() {
-    const {
-      indexStore,
-    } = this.props;
-    console.log(11221);
-    indexStore.title = Math.random();
-  }
+  // @action
+  // counter() {
+  //   const {
+  //     indexStore,
+  //   } = this.props;
+  //   console.log(11221);
+  //   indexStore.title = Math.random();
+  // }
 
   render() {
     const {

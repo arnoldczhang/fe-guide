@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  action,
+  // action,
   autorun,
 } from 'mobx';
 import {
@@ -11,6 +11,8 @@ import PropTypes from 'prop-types';
 
 import ListBox from './ListBox.jsx';
 import selector from '../../selectors/listPage';
+import actions from '../../actions/listpage';
+import bindAct from '../../bind';
 
 const {
   string,
@@ -28,32 +30,26 @@ const add = function _add() {
 };
 
 @inject(selector)
+@bindAct(actions)
 @observer
 class ListPage extends Component {
   static propTypes = {
     title: oneOfType([string, number]),
-    indexStore: object,
+    // indexStore: object,
     list: object,
   };
 
   static defaultProps = {
     title: '',
-    indexStore: {},
+    // indexStore: {},
     list: {},
   };
 
   constructor(props) {
     super(props);
+    console.log(1221);
     this.counter = this.counter.bind(this);
     autorun(add, this);
-  }
-
-  @action
-  counter() {
-    const {
-      indexStore,
-    } = this.props;
-    indexStore.mainTitle = Math.random();
   }
 
   render() {
