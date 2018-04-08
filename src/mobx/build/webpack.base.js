@@ -17,7 +17,7 @@ module.exports = {
       "./src/mobx/src/App.jsx",
     ],
     mobx: [
-      './src/mobx/mobx.js',
+      './src/mobx/test.js',
     ],
   },
   output: {

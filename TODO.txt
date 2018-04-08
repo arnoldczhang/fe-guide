@@ -24,7 +24,7 @@ Proxy or Object.defineProperty
 
 mobx - DONE
 =======
-
+https://segmentfault.com/a/1190000013682735
 
 
 javascript ASI
@@ -51,3 +51,7 @@ Ukkonen
 
 
 anujs
+
+
+
+sicp

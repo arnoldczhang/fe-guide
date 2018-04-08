@@ -1,5 +1,8 @@
 ## mobx
 
+### 参考
+  1. https://segmentfault.com/a/1190000013682735
+
 ### 标注解释
   1. @observer：`mixin`部分hooks - `componentWillMount`、`componentWillUnmount`、`componentDidMount`、`componentDidUpdate`到目标组件，
 如果组件不存在`shouldComponentUpdate`，则也使用observer的`shouldComponentUpdate`，类似PureComponent效果，浅比较。
