@@ -109,30 +109,60 @@ void function __mobx(global, factory) {
   };
 
   /*************inner methods****************/
-  function listenTo(listener, state) {
+
+  function setValue(obj, state) {
+    var value;
+    var result = false;
+    if ('values' in obj) {
+      value = obj.values;
+    } else {
+      if (isProxyable(state)) {
+        value = isArray(state) ? [] : {};
+        result = true;
+      } else {
+        value = state;
+      }
+    }
+    defValue(obj, 'values', value);
+    return result;
+  };
+
+  function listenTo(listener, state, options) {
+    options = options || {};
+    var parentWatcher = options.watcher || { values: {} };
+    if (!options.skipSetValue) {
+      setValue(listener, state);
+    }
+
     keyEach(state, function __keyEachC(key, value) {
       var result = value;
+      var watcher = parentWatcher.values[key] || new Watcher(value, {
+        parent: options.parent || listener,
+        $id: key,
+      });
+
+      listener.values[key] = watcher;
+
       if (isProxyable(value)) {
-        listener.values = listener.values || (isArray(value) ? [] : {});
         result = isArray(value) ? [] : {};
-        listener.values[key] = new Watcher(result, {
-          parent: listener,
-          $id: key,
+        listenTo(result, value, {
+          parent: watcher,
+          watcher: watcher,
         });
-        listenTo(result, value);
       }
 
       defPojo(listener, key, function __getter() {
         return result;
       }, function __setter(newVal) {
-        result = newVal;
+        if (newVal !== result) {
+          result = newVal;
+        }
       });
     });
   };
 
   function Watcher(state, options) {
-    listenTo(this, state);
-    this.init(options);
+    this.init(state, options);
   };
 
   var watcherProto = Watcher.prototype;
@@ -141,18 +171,29 @@ void function __mobx(global, factory) {
 
   watcherProto.KEY_OPT = '__options';
 
-  watcherProto.init = function init(options) {
+  watcherProto.listen = function listen(state, options) {
+    options = options || {};
+    if (setValue(this, state)) {
+      listenTo(this, state, {
+        skipSetValue: true,
+      });
+    }
+    return this;
+  };
+
+  watcherProto.init = function init(state, options) {
     return this.extend$id(options)
+      .listen(state, options)
       .done();
   };
   
   watcherProto.extend$id = function extend$id(options) {
     options = options || {};
     var parent = options.parent;
-    var $id = options.$id;
+    var id = options.$id;
     defValue(this, this.KEY_OPT, options);
     if (parent) {
-      this.$id = parent.$id + '@' + $id;
+      this.$id = parent.$id + '@' + id;
     }
     return this;
   };
@@ -162,7 +203,8 @@ void function __mobx(global, factory) {
   };
 
   function getBasicWatcher(state) {
-
+    state = state.valueOf();
+    return new Watcher(state);
   };
 
   function getObjectWatcher(state) {
