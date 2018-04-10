@@ -17,8 +17,9 @@ const bankUser = observable({
 // const bankUser = observable(new String('aa'));
 
 window.bankUser = bankUser;
+console.log(bankUser);
 
-autorun(() => {
+autorun(function() {
   // console.log('张三的账户存款:', bankUser.income);
   console.log('张三的账户存款:', bankUser.other.age);
 });

@@ -14,14 +14,19 @@ void function __mobx(global, factory) {
   /*************const****************/
   var MSG = {
     '001': 'the object must be observable',
+    '002': 'the first arg of `autorun` must be function',
+    '003': 'the key must be a string',
   };
 
   var CONST = {
+    PENDING: false,
   };
 
   var FUNC = function FUNC(value) {
     return value;
   };
+
+  var runtimeFunc;
 
   /*************common methods****************/
   function invariant(condition, format) {
@@ -73,6 +78,10 @@ void function __mobx(global, factory) {
     return typeof obj === 'object';
   };
 
+  function isString(str) {
+    return typeof str === 'string';
+  };
+
   function isFunction(func) {
     return typeof func === 'function';
   };
@@ -108,8 +117,16 @@ void function __mobx(global, factory) {
     });
   };
 
-  /*************inner methods****************/
+  function startRecode(func) {
+    CONST.PENDING = true;
+    runtimeFunc = func;
+  };
 
+  function endRecode(func) {
+    CONST.PENDING = false;
+    runtimeFunc = null;
+  };
+  /*************inner methods****************/
   function setValue(obj, state) {
     var value;
     var result = false;
@@ -135,11 +152,31 @@ void function __mobx(global, factory) {
     }
 
     keyEach(state, function __keyEachC(key, value) {
+      var defTarget;
       var result = value;
+      var parent = options.parent || listener;
       var watcher = parentWatcher.values[key] || new Watcher(value, {
-        parent: options.parent || listener,
+        parent: parent,
         $id: key,
       });
+
+      function getter(_this) {
+        return function __getter() {
+          if (CONST.PENDING) {
+            _this.watcher.addReaction(_this, runtimeFunc);
+          }
+          return result;
+        };
+      };
+
+      function setter(_this) {
+        return function __setter(newVal) {
+          if (newVal !== result) {
+            result = newVal;
+            _this.watcher.triggerReaction();
+          }
+        };
+      };
 
       listener.values[key] = watcher;
 
@@ -151,13 +188,12 @@ void function __mobx(global, factory) {
         });
       }
 
-      defPojo(listener, key, function __getter() {
-        return result;
-      }, function __setter(newVal) {
-        if (newVal !== result) {
-          result = newVal;
-        }
-      });
+      defTarget = {
+        watcher: parent.getValue(key),
+        key: key,
+      };
+
+      defPojo(listener, key, getter(defTarget), setter(defTarget));
     });
   };
 
@@ -170,6 +206,25 @@ void function __mobx(global, factory) {
   watcherProto.$id = '@Watcher';
 
   watcherProto.KEY_OPT = '__options';
+
+  watcherProto.triggerReaction = function triggerReaction() {
+    var reactions = this.reactions;
+    if (reactions && reactions.length) {
+      reactions.forEach(function _reactionEach(reaction) {
+        return reaction.runtime();
+      });
+    }
+  };
+
+  watcherProto.addReaction = function addReaction(target, func) {
+    var key = target.key;
+    var watcher = target.watcher;
+    if (!('reactions' in watcher)) {
+      defValue(watcher, 'reactions', []);
+    }
+    watcher.reactions.push(new Reaction(watcher, key, func));
+    return this;
+  };
 
   watcherProto.listen = function listen(state, options) {
     options = options || {};
@@ -193,14 +248,30 @@ void function __mobx(global, factory) {
     var id = options.$id;
     defValue(this, this.KEY_OPT, options);
     if (parent) {
-      this.$id = parent.$id + '@' + id;
+      defValue(this, '$id', parent.$id + '@' + id);
     }
     return this;
+  };
+
+  watcherProto.getValue = function getValue(key) {
+    invariant(isString(key), MSG['003']);
+    return this.values[key];
   };
 
   watcherProto.done = function done() {
     return freeze(this[this.KEY_OPT]), this;
   };
+
+  function Reaction(watcher, key, func) {
+    this.watcher = watcher;
+    this.$key = key;
+    this.runtime = func;
+  };
+
+  var reactionProto = Reaction.prototype;
+
+  reactionProto.$id = '@Reaction';
+
 
   function getBasicWatcher(state) {
     state = state.valueOf();
@@ -220,8 +291,11 @@ void function __mobx(global, factory) {
     return getBasicWatcher(obj);
   };
 
-  function autorun() {
-
+  function autorun(func) {
+    invariant(isFunction(func), MSG['002']);
+    startRecode(func);
+    func();
+    endRecode(func);
   };
 
   return {
