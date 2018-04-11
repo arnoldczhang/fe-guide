@@ -26,7 +26,9 @@ void function __mobx(global, factory) {
     return value;
   };
 
-  var runtimeFunc;
+  var REACTION_CACH = {};
+
+  var RUNTIME_FUNC;
 
   /*************common methods****************/
   function invariant(condition, format) {
@@ -105,6 +107,7 @@ void function __mobx(global, factory) {
       value: value,
       enumerable: false,
       configurable: true,
+      writable: true,
     });
   };
 
@@ -119,13 +122,14 @@ void function __mobx(global, factory) {
 
   function startRecode(func) {
     CONST.PENDING = true;
-    runtimeFunc = func;
+    RUNTIME_FUNC = func;
   };
 
   function endRecode(func) {
     CONST.PENDING = false;
-    runtimeFunc = null;
+    RUNTIME_FUNC = null;
   };
+
   /*************inner methods****************/
   function setValue(obj, state) {
     var value;
@@ -144,59 +148,86 @@ void function __mobx(global, factory) {
     return result;
   };
 
+  function syncReaction(listener, key) {
+    var watcher = listener.values[key];
+    var id = watcher.$id;
+    if (REACTION_CACH[id]) {
+      defValue(watcher, watcher.KEY_REACT, REACTION_CACH[id]);
+    }
+    return watcher;
+  };
+
+  function bindWatcher(listener, key, value, options) {
+    options = options || {};
+    var parentWatcher = options.parentWatcher;
+    var defTarget;
+    var result = value;
+    var parent = options.parent || listener;
+    var watcher = parentWatcher && parentWatcher.values[key] || new Watcher(value, {
+      parent: parent,
+      $id: key,
+    });
+
+    function getter(_this) {
+      return function __getter() {
+        if (CONST.PENDING) {
+          _this.watcher.addReaction(_this, RUNTIME_FUNC);
+        }
+        return result;
+      };
+    };
+
+    function setter(_this) {
+      return function __setter(newValue) {
+        var watcher = _this.watcher;
+        var key = _this.key;
+        if (newValue !== result) {
+          if (!isProxyable(newValue)) {
+            result = newValue;
+            watcher.updateValue(key, newValue);
+          } else {
+            watcher.batchUpdate(newValue);
+          }
+        }
+      };
+    };
+
+    listener.values[key] = watcher;
+
+    if (isProxyable(value)) {
+      result = isArray(value) ? [] : {};
+      listenTo(result, value, {
+        parent: watcher,
+        watcher: watcher,
+      });
+    }
+
+    defTarget = {
+      watcher: parent.getValue(key),
+      key: key,
+    };
+
+    defPojo(listener, key, getter(defTarget), setter(defTarget));
+    return syncReaction(listener, key);
+  };
+
   function listenTo(listener, state, options) {
     options = options || {};
-    var parentWatcher = options.watcher || { values: {} };
     if (!options.skipSetValue) {
       setValue(listener, state);
     }
 
     keyEach(state, function __keyEachC(key, value) {
-      var defTarget;
-      var result = value;
-      var parent = options.parent || listener;
-      var watcher = parentWatcher.values[key] || new Watcher(value, {
-        parent: parent,
-        $id: key,
-      });
-
-      function getter(_this) {
-        return function __getter() {
-          if (CONST.PENDING) {
-            _this.watcher.addReaction(_this, runtimeFunc);
-          }
-          return result;
-        };
-      };
-
-      function setter(_this) {
-        return function __setter(newVal) {
-          if (newVal !== result) {
-            result = newVal;
-            _this.watcher.triggerReaction();
-          }
-        };
-      };
-
-      listener.values[key] = watcher;
-
-      if (isProxyable(value)) {
-        result = isArray(value) ? [] : {};
-        listenTo(result, value, {
-          parent: watcher,
-          watcher: watcher,
-        });
-      }
-
-      defTarget = {
-        watcher: parent.getValue(key),
-        key: key,
-      };
-
-      defPojo(listener, key, getter(defTarget), setter(defTarget));
+      bindWatcher(listener, key, value, options);
     });
+    return listener;
   };
 
+  /**
+   * [Watcher description]
+   * @param {[type]} state   [description]
+   * @param {[type]} options [description]
+   */
   function Watcher(state, options) {
     this.init(state, options);
   };
@@ -205,24 +236,65 @@ void function __mobx(global, factory) {
 
   watcherProto.$id = '@Watcher';
 
+  watcherProto.KEY_PROP = '__props';
+
   watcherProto.KEY_OPT = '__options';
 
+  watcherProto.KEY_REACT = '__reactions';
+
+  watcherProto.getOpts = function getOpts() {
+    return this[this.KEY_OPT];
+  };
+
+  watcherProto.getOptsParent = function getOptsParent() {
+    return this.getOpts().parent;
+  };
+
+  watcherProto.updateValue = function updateValue(key, newValue) {
+    if (this.values === newValue) return;
+    var parent = this.getOptsParent();
+    this.values = newValue;
+    if (parent) {
+      parent[key] = newValue;
+    }
+    this.triggerReaction();
+    return this;
+  };
+
+  watcherProto.batchUpdate = function batchUpdate(newValue, preOptions) {
+    preOptions = preOptions || {};
+    var options = this.getOpts();
+    var parent = this.getOptsParent();
+    if (parent) {
+      return parent.batchUpdate(newValue, options);
+    }
+    bindWatcher(this, preOptions.$id, newValue, preOptions).triggerReaction();
+    return this;
+  };
+
   watcherProto.triggerReaction = function triggerReaction() {
-    var reactions = this.reactions;
+    var reactions = this[this.KEY_REACT];
     if (reactions && reactions.length) {
-      reactions.forEach(function _reactionEach(reaction) {
+      reactions.forEach(function __reactionEach(reaction) {
         return reaction.runtime();
       });
     }
+    return this;
   };
 
   watcherProto.addReaction = function addReaction(target, func) {
     var key = target.key;
     var watcher = target.watcher;
-    if (!('reactions' in watcher)) {
-      defValue(watcher, 'reactions', []);
+    var id = watcher.$id;
+    var reaction = new Reaction(watcher, key, func);
+
+    if (!(this.KEY_REACT in watcher)) {
+      defValue(watcher, this.KEY_REACT, []);
     }
-    watcher.reactions.push(new Reaction(watcher, key, func));
+
+    REACTION_CACH[id] = REACTION_CACH[id] || (REACTION_CACH[id] = []);
+    REACTION_CACH[id].push(reaction)
+    watcher[this.KEY_REACT].push(reaction);
     return this;
   };
 
@@ -248,7 +320,8 @@ void function __mobx(global, factory) {
     var id = options.$id;
     defValue(this, this.KEY_OPT, options);
     if (parent) {
-      defValue(this, '$id', parent.$id + '@' + id);
+      id = id ? '@' + id : '';
+      defValue(this, '$id', parent.$id + id);
     }
     return this;
   };
@@ -259,9 +332,15 @@ void function __mobx(global, factory) {
   };
 
   watcherProto.done = function done() {
-    return freeze(this[this.KEY_OPT]), this;
+    return freeze(this.getOpts()), this;
   };
 
+  /**
+   * [Reaction description]
+   * @param {[type]} watcher [description]
+   * @param {[type]} key     [description]
+   * @param {[type]} func    [description]
+   */
   function Reaction(watcher, key, func) {
     this.watcher = watcher;
     this.$key = key;
@@ -273,22 +352,22 @@ void function __mobx(global, factory) {
   reactionProto.$id = '@Reaction';
 
 
-  function getBasicWatcher(state) {
+  function getBasicWatcher(state, options) {
     state = state.valueOf();
-    return new Watcher(state);
+    return new Watcher(state, options);
   };
 
-  function getObjectWatcher(state) {
-    return new Watcher(state);
+  function getObjectWatcher(state, options) {
+    return new Watcher(state, options);
   };
 
   /*************mobx core methods****************/
-  function observable(obj) {
+  function observable(obj, options) {
     invariant(obj, MSG['001']);
     if (isProxyable(obj)) {
-      return getObjectWatcher(obj);
+      return getObjectWatcher(obj, options);
     }
-    return getBasicWatcher(obj);
+    return getBasicWatcher(obj, options);
   };
 
   function autorun(func) {
