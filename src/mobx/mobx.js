@@ -16,21 +16,38 @@ void function __mobx(global, factory) {
     '001': 'the object must be observable',
     '002': 'the first arg of `autorun` must be function',
     '003': 'the key must be a string',
+    '004': 'the key must be an object',
   };
 
   var CONST = {
-    PENDING: false,
   };
 
   var FUNC = function FUNC(value) {
     return value;
   };
 
-  var REACTION_CACH = {};
+  var WATCHER = {
+    INDEX: 0,
+  };
 
-  var RUNTIME_FUNC;
+  var REACTION = {
+    INDEX: 0,
+    PENDING: false,
+    CACH: {},
+    NAME: null,
+    FUNC: null,
+  };
 
   /*************common methods****************/
+  function getMessage(id) {
+    var msg = MSG[id];
+    if (isString(msg)) {
+      return msg;
+    }
+    var args = slice(toArray(id), 1);
+    return msg.apply(null, args);
+  };
+
   function invariant(condition, format) {
     var args = arguments;
     var message;
@@ -49,13 +66,13 @@ void function __mobx(global, factory) {
     }
   };
 
-  function slice(arraylike) {
+  function slice(arraylike, startIndex) {
     var result = arraylike;
     if (result.length) {
       if (!result.slice) {
         result = toArray(result);
       }
-      result = result.slice(2);
+      result = result.slice(startIndex);
     }
     return result;
   };
@@ -92,6 +109,10 @@ void function __mobx(global, factory) {
     return obj && isObject(obj) && isObject(obj.valueOf());
   };
 
+  function isObserver(obj) {
+    return obj instanceof Watcher;
+  };
+
   function keyEach(obj, callback) {
     callback = callback || FUNC;
     if (isProxyable(obj)) {
@@ -121,13 +142,15 @@ void function __mobx(global, factory) {
   };
 
   function startRecode(func) {
-    CONST.PENDING = true;
-    RUNTIME_FUNC = func;
+    ++REACTION.INDEX;
+    REACTION.PENDING = true;
+    REACTION.FUNC = func;
   };
 
   function endRecode(func) {
-    CONST.PENDING = false;
-    RUNTIME_FUNC = null;
+    REACTION.PENDING = false;
+    REACTION.FUNC = null;
+    REACTION.NAME = null;
   };
 
   /*************inner methods****************/
@@ -151,8 +174,8 @@ void function __mobx(global, factory) {
   function syncReaction(listener, key) {
     var watcher = listener.values[key];
     var id = watcher.$id;
-    if (REACTION_CACH[id]) {
-      defValue(watcher, watcher.KEY_REACT, REACTION_CACH[id]);
+    if (REACTION.CACH[id]) {
+      defValue(watcher, watcher.KEY_REACT, REACTION.CACH[id]);
     }
     return watcher;
   };
@@ -170,8 +193,8 @@ void function __mobx(global, factory) {
 
     function getter(_this) {
       return function __getter() {
-        if (CONST.PENDING) {
-          _this.watcher.addReaction(_this, RUNTIME_FUNC);
+        if (REACTION.PENDING) {
+          _this.watcher.addReaction(_this, REACTION.FUNC);
         }
         return result;
       };
@@ -194,7 +217,7 @@ void function __mobx(global, factory) {
 
     listener.values[key] = watcher;
 
-    if (isProxyable(value)) {
+    if (!isObserver(value) && isProxyable(value)) {
       result = isArray(value) ? [] : {};
       listenTo(result, value, {
         parent: watcher,
@@ -229,6 +252,9 @@ void function __mobx(global, factory) {
    * @param {[type]} options [description]
    */
   function Watcher(state, options) {
+    if (state instanceof Watcher) {
+      return state.updateProps(options);
+    }
     this.init(state, options);
   };
 
@@ -248,6 +274,12 @@ void function __mobx(global, factory) {
 
   watcherProto.getOptsParent = function getOptsParent() {
     return this.getOpts().parent;
+  };
+
+  watcherProto.updateProps = function updateProps(options) {
+    options = options || {};
+    defValue(this, this.KEY_OPT, options);
+    return this;
   };
 
   watcherProto.updateValue = function updateValue(key, newValue) {
@@ -292,8 +324,8 @@ void function __mobx(global, factory) {
       defValue(watcher, this.KEY_REACT, []);
     }
 
-    REACTION_CACH[id] = REACTION_CACH[id] || (REACTION_CACH[id] = []);
-    REACTION_CACH[id].push(reaction)
+    REACTION.CACH[id] = REACTION.CACH[id] || (REACTION.CACH[id] = []);
+    REACTION.CACH[id].push(reaction)
     watcher[this.KEY_REACT].push(reaction);
     return this;
   };
@@ -317,17 +349,19 @@ void function __mobx(global, factory) {
   watcherProto.extend$id = function extend$id(options) {
     options = options || {};
     var parent = options.parent;
-    var id = options.$id;
+    var idStr = options.$id;
     defValue(this, this.KEY_OPT, options);
     if (parent) {
-      id = id ? '@' + id : '';
-      defValue(this, '$id', parent.$id + id);
+      idStr = idStr ? '.' + idStr : '';
+      defValue(this, '$id', parent.$id +  idStr);
+    } else {
+      defValue(this, '$id', this.$id + '@' + WATCHER.INDEX);
     }
     return this;
   };
 
   watcherProto.getValue = function getValue(key) {
-    invariant(isString(key), MSG['003']);
+    invariant(isString(key), getMessage('003'));
     return this.values[key];
   };
 
@@ -343,14 +377,24 @@ void function __mobx(global, factory) {
    */
   function Reaction(watcher, key, func) {
     this.watcher = watcher;
-    this.$key = key;
     this.runtime = func;
+    defValue(this, '$key', key);
+    this.init();
   };
 
   var reactionProto = Reaction.prototype;
 
   reactionProto.$id = '@Reaction';
 
+  reactionProto.init = function init() {
+    this.extend$id();
+  };
+
+  reactionProto.extend$id = function extend$id() {
+    if (REACTION.NAME) {
+      defValue(this, '$id', this.$id + '@' + REACTION.INDEX + '@' + REACTION.NAME);
+    }
+  };
 
   function getBasicWatcher(state, options) {
     state = state.valueOf();
@@ -363,17 +407,28 @@ void function __mobx(global, factory) {
 
   /*************mobx core methods****************/
   function observable(obj, options) {
-    invariant(obj, MSG['001']);
+    invariant(obj, getMessage('001'));
+    ++WATCHER.INDEX;
     if (isProxyable(obj)) {
       return getObjectWatcher(obj, options);
     }
     return getBasicWatcher(obj, options);
   };
 
-  function autorun(func) {
-    invariant(isFunction(func), MSG['002']);
+  function autorun(name, func, context) {
+    if (isString(name)) {
+      REACTION.NAME = name;
+    } else if (isFunction(name)) {
+      REACTION.NAME = null;
+      func = name;
+      context = func;
+    }
+
+    context = context || null;
+    invariant(isFunction(func), getMessage('002'));
+    invariant(isObject(context), getMessage('004'));
     startRecode(func);
-    func();
+    func.call(context || window);
     endRecode(func);
   };
 
