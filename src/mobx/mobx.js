@@ -8,6 +8,7 @@ void function __mobx(global, factory) {
   }
 
   global.mobx = factory(global);
+  return global.mobx;
 }(this || window, function __globalFactory(G) {
   'use strict';
 
@@ -406,7 +407,7 @@ void function __mobx(global, factory) {
   };
 
   /*************mobx core methods****************/
-  function observable(obj, options) {
+  function observable(obj, options, a) {
     invariant(obj, getMessage('001'));
     ++WATCHER.INDEX;
     if (isProxyable(obj)) {

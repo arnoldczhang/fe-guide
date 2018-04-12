@@ -66,12 +66,15 @@ module.exports = {
       },
       {
         test: /\.jsx?$/,
-        include: path.resolve(__dirname, "../src"),
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
           babelrc: false,
-          presets: ['es2015', 'react', 'stage-2'],
+          presets: [
+            "react",
+            "es2015",
+            "stage-2",
+          ],
           plugins: [
             'transform-runtime',
             'transform-decorators-legacy',
