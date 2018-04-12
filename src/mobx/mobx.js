@@ -428,7 +428,7 @@ void function __mobx(global, factory) {
     invariant(isFunction(func), getMessage('002'));
     invariant(isObject(context), getMessage('004'));
     startRecode(func);
-    func.call(context || window);
+    func.call(context || G);
     endRecode(func);
   };
 
