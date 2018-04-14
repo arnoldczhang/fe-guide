@@ -45,6 +45,9 @@ void function __mobx(global, factory) {
   var isArray = Array.isArray;
   var freeze = Object.freeze;
   var def = Object.defineProperty;
+  var keys = Object.keys;
+  var arrayEach = Array.prototype.forEach;
+  var call = arrayEach.call;
 
   function getMessage(id) {
     var msg = MSG[id];
@@ -71,6 +74,13 @@ void function __mobx(global, factory) {
       }
       throw new Error(message);
     }
+  };
+
+  function forEach(arrayLike) {
+    if (arrayLike && arrayLike.length) {
+      call.apply(arrayEach, arguments);
+    }
+    return arrayLike;
   };
 
   function slice(arraylike, startIndex) {
@@ -129,10 +139,11 @@ void function __mobx(global, factory) {
         || 'value' in descriptor);
   };
 
-  function keyEach(obj, callback) {
+  function listenEachState(obj, callback) {
     callback = callback || FUNC;
     if (isProxyable(obj)) {
-      Object.keys(obj).forEach(function __keyEach(key, index) {
+      obj = hasValue(obj) && getValue(obj) || obj;
+      forEach(keys(obj), function __keyEach(key, index) {
         callback(key, obj[key], index);
       });
     }
@@ -174,11 +185,15 @@ void function __mobx(global, factory) {
     return CONST.VALUES in obj;
   };
 
+  function getValue(obj) {
+    return obj[CONST.VALUES];
+  };
+
   function setValue(obj, state) {
     var value = arguments.length > 1 ? state : {};
     var result = false;
-    if (CONST.VALUES in obj) {
-      value = obj[CONST.VALUES];
+    if (hasValue(obj)) {
+      value = getValue(obj);
     } else {
       if (isProxyable(state)) {
         value = isArray(state) ? [] : {};
@@ -190,7 +205,7 @@ void function __mobx(global, factory) {
   };
 
   function syncReaction(listener, key) {
-    var watcher = listener[CONST.VALUES][key];
+    var watcher = getValue(listener)[key];
     var id = watcher.$id;
     if (REACTION.CACH[id]) {
       defValue(watcher, watcher.KEY_REACT, REACTION.CACH[id]);
@@ -198,8 +213,11 @@ void function __mobx(global, factory) {
     return watcher;
   };
 
-  function pushWatcher(listener, key, watcher) {
-    listener[CONST.VALUES][key] = watcher;
+  function pushWatcher(listener, key, value, watcher, callback) {
+    getValue(listener)[key] = watcher;
+    if (!isObserver(value) && isProxyable(value) && isFunction(callback)) {
+      callback(value);
+    }
   };
 
   function bindWatcher(listener, key, value, options) {
@@ -208,8 +226,10 @@ void function __mobx(global, factory) {
     var defTarget;
     var result = value;
     var parent = options.parent || listener;
-    var watcher = parentWatcher && parentWatcher[CONST.VALUES][key] || new Watcher(value, {
+    invariant(isObject(parent), getMessage('004'));
+    var watcher = parentWatcher && getValue(parentWatcher)[key] || new Watcher(value, {
       parent: parent,
+      parentKey: options.parentKey,
       $id: key,
     });
 
@@ -229,7 +249,11 @@ void function __mobx(global, factory) {
         if (newValue !== result) {
           if (!isProxyable(newValue)) {
             result = newValue;
-            watcher.updateValue(key, newValue);
+            if (watcher.updateValue) {
+              watcher.updateValue(key, newValue);
+            } else {
+              watcher[key] = newValue;
+            }
           } else {
             watcher.batchUpdate(newValue);
           }
@@ -237,18 +261,16 @@ void function __mobx(global, factory) {
       };
     };
 
-    pushWatcher(listener, key, watcher);
-
-    if (!isObserver(value) && isProxyable(value)) {
-      result = isArray(value) ? [] : {};
-      listenTo(result, value, {
+    pushWatcher(listener, key, value, watcher, function __pushCallback(val) {
+      result = isArray(val) ? [] : {};
+      listenTo(result, val, {
         parent: watcher,
         watcher: watcher,
       });
-    }
+    });
 
     defTarget = {
-      watcher: parent.getValue(key),
+      watcher: parent.getValue && parent.getValue(key) || listener,
       key: key,
     };
 
@@ -262,23 +284,30 @@ void function __mobx(global, factory) {
       setValue(listener, state);
     }
 
-    keyEach(state, function __keyEachC(key, value) {
+    listenEachState(state, function __keyEachC(key, value) {
       bindWatcher(listener, key, value, options);
     });
     return listener;
   };
 
-  function listenChildWatcher(target, includeArray) {
+  function listenChildWatcher(target, options) {
+    var includeArray = options.include;
     if (isArray(includeArray)) {
-      includeArray.forEach(function(key) {
-        var watcher = new Watcher(target[key], {
-          parent: new Watcher({}),
+      var parent = new Watcher({});
+      forEach(includeArray, function __includeEach(key) {
+        var value = target[key];
+        var result = value;
+        var watcher = new Watcher(value, {
+          parent: parent,
           $id: key,
         });
-        pushWatcher(target, key, watcher);
+        pushWatcher(target, key, value, watcher);
       });
     } else if (includeArray) {
-      
+      forEach(keys(target), function __keyEach(key) {
+        bindWatcher(target, key, target[key], options);
+      });
+      WATCHER.INDEX--;
     }
   };
 
@@ -288,7 +317,7 @@ void function __mobx(global, factory) {
     function getter() {
       if (REACTION.PENDING) {
         createPureWatcher(this);
-        // this[CONST.VALUES][key] = observable(result);
+        // TODO addReaction
         // addReaction(this, key, REACTION.FUNC);
       }
       return result;
@@ -296,27 +325,34 @@ void function __mobx(global, factory) {
 
     function setter(newValue) {
       if (result !== newValue) {
+        // TODO update value
         result = newValue;
       }
     };
 
     if (isProxyable(result)) {
-      result = createPureWatcher(result, true);
+      result = createPureWatcher(result, {
+        key: key,
+        isAll: true,
+      });
     }
     return defPojo(input, key, getter, setter);
   };
 
-  function createPureWatcher(target, isAll) {
+  function createPureWatcher(target, options) {
+    options = options || {};
     if (!hasValue(target)) {
       setValue(target);
       observable(target, {
-        include: isAll || target[CONST.KLASS_REACTION],
+        parentKey: options.key,
+        include: options.isAll || target[CONST.KLASS_REACTION],
       });
     }
+    return target;
   };
 
   /**
-   * [Watcher description]
+   * Watcher
    * @param {[type]} state   [description]
    * @param {[type]} options [description]
    */
@@ -353,7 +389,7 @@ void function __mobx(global, factory) {
   };
 
   watcherProto.updateValue = function updateValue(key, newValue) {
-    if (this[CONST.VALUES] === newValue) return;
+    if (getValue(this) === newValue) return;
     var parent = this.getOptsParent();
     this[CONST.VALUES] = newValue;
     if (parent) {
@@ -377,7 +413,7 @@ void function __mobx(global, factory) {
   watcherProto.triggerReaction = function triggerReaction() {
     var reactions = this[this.KEY_REACT];
     if (reactions && reactions.length) {
-      reactions.forEach(function __reactionEach(reaction) {
+      forEach(reactions, function __reactionEach(reaction) {
         return reaction.runtime();
       });
     }
@@ -416,14 +452,21 @@ void function __mobx(global, factory) {
   };
   
   watcherProto.extend$id = function extend$id(options) {
+    var parentKey = options.parentKey;
     var parent = options.parent;
     var idStr = options.$id;
+    var parentId;
+    var defaultId = this.$id + '@' + WATCHER.INDEX;
     defValue(this, this.KEY_OPT, options);
     if (parent) {
+      parentId = parent.$id || defaultId;
+      if (parentKey) {
+        parentId += '.' + parentKey;
+      }
       idStr = idStr ? '.' + idStr : '';
-      defValue(this, '$id', parent.$id +  idStr);
+      defValue(this, '$id', parentId +  idStr);
     } else {
-      defValue(this, '$id', this.$id + '@' + WATCHER.INDEX);
+      defValue(this, '$id', defaultId);
     }
     return this;
   };
@@ -438,7 +481,7 @@ void function __mobx(global, factory) {
   };
 
   /**
-   * [Reaction description]
+   * Reaction
    * @param {[type]} watcher [description]
    * @param {[type]} key     [description]
    * @param {[type]} func    [description]
@@ -484,7 +527,7 @@ void function __mobx(global, factory) {
     ++WATCHER.INDEX;
 
     if (options.include) {
-      return listenChildWatcher(input, options.include);
+      return listenChildWatcher(input, options);
     }
 
     if (args.length === 3) {
