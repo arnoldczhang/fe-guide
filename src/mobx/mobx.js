@@ -268,11 +268,18 @@ void function __mobx(global, factory) {
     return listener;
   };
 
-  function listenChildWatcher(target, keyArray) {
-    keyArray.forEach(function(key) {
-      var watcher = new Watcher(target[key]);
-      pushWatcher(target, key, watcher);
-    });
+  function listenChildWatcher(target, includeArray) {
+    if (isArray(includeArray)) {
+      includeArray.forEach(function(key) {
+        var watcher = new Watcher(target[key], {
+          parent: new Watcher({}),
+          $id: key,
+        });
+        pushWatcher(target, key, watcher);
+      });
+    } else if (includeArray) {
+      
+    }
   };
 
   function bindDecorator(input, key, descriptor) {
@@ -280,12 +287,7 @@ void function __mobx(global, factory) {
 
     function getter() {
       if (REACTION.PENDING) {
-        if (!hasValue(this)) {
-          setValue(this);
-          observable(this, {
-            include: this[CONST.KLASS_REACTION],
-          });
-        }
+        createPureWatcher(this);
         // this[CONST.VALUES][key] = observable(result);
         // addReaction(this, key, REACTION.FUNC);
       }
@@ -297,7 +299,20 @@ void function __mobx(global, factory) {
         result = newValue;
       }
     };
+
+    if (isProxyable(result)) {
+      result = createPureWatcher(result, true);
+    }
     return defPojo(input, key, getter, setter);
+  };
+
+  function createPureWatcher(target, isAll) {
+    if (!hasValue(target)) {
+      setValue(target);
+      observable(target, {
+        include: isAll || target[CONST.KLASS_REACTION],
+      });
+    }
   };
 
   /**
@@ -385,7 +400,7 @@ void function __mobx(global, factory) {
     return this;
   };
 
-  watcherProto.listen = function listen(state, options) {
+  watcherProto.listen = function listen(state) {
     if (setValue(this, state)) {
       listenTo(this, state, {
         skipSetValue: true,
@@ -468,7 +483,7 @@ void function __mobx(global, factory) {
     invariant(input, getMessage('001'));
     ++WATCHER.INDEX;
 
-    if (isArray(options.include)) {
+    if (options.include) {
       return listenChildWatcher(input, options.include);
     }
 

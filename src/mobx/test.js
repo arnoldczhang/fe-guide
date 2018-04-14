@@ -44,6 +44,10 @@ class OrderLine {
 
     @observable amount = 5;
 
+    @observable orderInfo = {
+      orderId: 123,
+    };
+
     @observable aa() {
 
     }
