@@ -29,6 +29,8 @@ bankUser.other = { a: 'abc' };
 bankUser.other.a = 'aaa';
 console.log(bankUser.other);
 bankUser.other.age = 30191;
+bankUser.other = { age: 'abc' };
+bankUser.other.age = 30191;
 
 let bankUser2 = observable(new String('aa'));
 // console.log(bankUser2);
@@ -65,14 +67,15 @@ var orderline = new OrderLine();
 window.orderline = orderline;
 
 autorun(function() {
-  console.log(111, orderline.amount);
+  console.log(111, orderline.orderInfo.orderId);
+  // console.log(111, orderline.amount);
 });
 
 autorun(function() {
   console.log(222, orderline.price);
 });
 
-console.log(1);
+console.log(orderline);
 
 
 
