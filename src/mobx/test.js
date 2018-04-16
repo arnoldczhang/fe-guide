@@ -42,7 +42,9 @@ window.bankUser = bankUser;
 
 
 class OrderLine {
-    @observable price = 12;
+    @observable price = {
+      detail: 100,
+    };
 
     @observable amount = 5;
 
@@ -67,17 +69,19 @@ var orderline = new OrderLine();
 window.orderline = orderline;
 
 autorun(function() {
-  console.log(111, orderline.orderInfo.orderId);
+  console.log('订单号', orderline.orderInfo.orderId.d);
   // console.log(111, orderline.amount);
 });
 
 autorun(function() {
-  console.log(222, orderline.price);
+  console.log('价格', orderline.price.detail);
 });
 
 console.log(orderline);
 
-
+orderline.price = { pp: 1 };
+orderline.price = { detail: 101 };
+orderline.price.detail = 200;
 
 
 

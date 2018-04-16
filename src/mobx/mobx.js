@@ -12,6 +12,9 @@ void function __mobx(global, factory) {
 }(this || window, function __globalFactory(G) {
   'use strict';
 
+  var Symbol = typeof G.Symbol !== undefined ? G.Symbol : function Symbol(value) {
+    return value;
+  };
   /*************const****************/
   var CONST = {
     KLASS_REACTION: '__mobx_observer_klass_reaction',
@@ -199,8 +202,18 @@ void function __mobx(global, factory) {
     return CONST.VALUES in obj;
   };
 
-  function getValue(obj) {
-    return obj[CONST.VALUES];
+  function getValue(obj, key) {
+    var _this = obj;
+    if (this) {
+      key = obj;
+      _this = this;
+    }
+
+    var value = _this[CONST.VALUES];
+    if (key && isString(key)) {
+      return value[key];
+    }
+    return value;
   };
 
   function setValue(obj, state) {
@@ -240,8 +253,29 @@ void function __mobx(global, factory) {
     return _this;
   };
 
+  function batchUpdate(target, newValue, preOptions) {
+    if (arguments.length <= 2) {
+      preOptions = newValue;
+      newValue = target;
+    }
+    var _this = this || target;
+    preOptions = preOptions || {};
+    if (isObserver(_this)) {
+      var options = _this.getOpts();
+      var parent = _this.getOptsParent();
+      if (parent) {
+        if (isObserver(parent)) {
+          return parent.batchUpdate(newValue, options);
+        }
+        return batchUpdate(parent, newValue, options);
+      }
+    }
+    bindWatcher(_this, preOptions.$id, newValue, preOptions).triggerReaction();
+    return _this;
+  };
+
   function syncReaction(listener, key) {
-    var watcher = getValue(listener)[key];
+    var watcher = getValue(listener, key);
     var id = watcher[CONST.WATCHER_ID];
     if (REACTION.CACH[id]) {
       defValue(watcher, watcher.KEY_REACT, REACTION.CACH[id]);
@@ -263,7 +297,7 @@ void function __mobx(global, factory) {
     var result = value;
     var parent = options.parent || listener;
     invariant(isObject(parent), getMessage('004'));
-    var watcher = parentWatcher && getValue(parentWatcher)[key] || new Watcher(value, {
+    var watcher = parentWatcher && getValue(parentWatcher, key) || new Watcher(value, {
       parent: parent,
       parentKey: options.parentKey,
       $id: key,
@@ -271,8 +305,10 @@ void function __mobx(global, factory) {
 
     function getter(_this) {
       return function __getter() {
-        if (REACTION.PENDING && _this.watcher.addReaction) {
-          _this.watcher.addReaction(_this, REACTION.FUNC);
+        if (REACTION.PENDING) {
+          if (isObserver(_this.watcher)) {
+            _this.watcher.addReaction(_this, REACTION.FUNC);
+          }
         }
         return result;
       };
@@ -290,8 +326,10 @@ void function __mobx(global, factory) {
             } else {
               watcher[key] = newValue;
             }
-          } else {
+          } else if (isObserver(watcher)) {
             watcher.batchUpdate(newValue);
+          } else {
+            batchUpdate(watcher, newValue, { $id: key });
           }
         }
       };
@@ -333,12 +371,11 @@ void function __mobx(global, factory) {
     startBind();
 
     if (isArray(includeArray)) {
-      var parent = new Watcher({});
       forEach(includeArray, function __includeEach(key) {
         var value = target[key];
         var result = value;
         var watcher = new Watcher(value, {
-          parent: parent,
+          parent: target,
           $id: key,
         });
         pushWatcher(target, key, value, watcher);
@@ -359,9 +396,8 @@ void function __mobx(global, factory) {
       return function __getter() {
         if (REACTION.PENDING) {
           createPureWatcher(_this);
-          // TODO addReaction reaction队列错位
           if (!REACTION.BINDING) {
-            addReaction(_this, key, REACTION.FUNC);
+            addReaction(getValue(_this, key), key, REACTION.FUNC);
           }
         }
         return result;
@@ -371,9 +407,17 @@ void function __mobx(global, factory) {
     function setter(_this) {
       return function __setter(newValue) {
         if (result !== newValue) {
-          // TODO update value
-          result = newValue;
-          console.log(_this, key);
+          var watcher = getValue(_this, key);
+          if (!isProxyable(newValue)) {
+            result = newValue;
+            if (watcher.updateValue) {
+              watcher.updateValue(key, newValue);
+            } else {
+              watcher[key] = newValue;
+            }
+          } else {
+            watcher.batchUpdate(newValue);
+          }
         }
       }
     };
@@ -423,6 +467,12 @@ void function __mobx(global, factory) {
 
   watcherProto.KEY_REACT = CONST.REACTION_KEY;
 
+  watcherProto.addReaction = addReaction;
+
+  watcherProto.getValue = getValue;
+
+  watcherProto.batchUpdate = batchUpdate;
+
   watcherProto.getId = function getId() {
     return this[CONST.WATCHER_ID];
   };
@@ -452,17 +502,6 @@ void function __mobx(global, factory) {
     return this;
   };
 
-  watcherProto.batchUpdate = function batchUpdate(newValue, preOptions) {
-    preOptions = preOptions || {};
-    var options = this.getOpts();
-    var parent = this.getOptsParent();
-    if (parent) {
-      return parent.batchUpdate(newValue, options);
-    }
-    bindWatcher(this, preOptions.$id, newValue, preOptions).triggerReaction();
-    return this;
-  };
-
   watcherProto.triggerReaction = function triggerReaction() {
     var reactions = this[this.KEY_REACT];
     if (reactions && reactions.length) {
@@ -472,8 +511,6 @@ void function __mobx(global, factory) {
     }
     return this;
   };
-
-  watcherProto.addReaction = addReaction;
 
   watcherProto.listen = function listen(state) {
     if (setValue(this, state)) {
@@ -508,11 +545,6 @@ void function __mobx(global, factory) {
       defValue(this, CONST.WATCHER_ID, defaultId);
     }
     return this;
-  };
-
-  watcherProto.getValue = function getValue(key) {
-    invariant(isString(key), getMessage('003'));
-    return this[CONST.VALUES][key];
   };
 
   watcherProto.done = function done() {
