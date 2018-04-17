@@ -70,7 +70,6 @@ window.orderline = orderline;
 
 autorun(function() {
   console.log('订单号', orderline.orderInfo.orderId.d);
-  // console.log(111, orderline.amount);
 });
 
 autorun(function() {
@@ -79,11 +78,17 @@ autorun(function() {
 
 console.log(orderline);
 
-orderline.price = { pp: 1 };
+// orderline.price = { pp: 1 };
 orderline.price = { detail: 101 };
 orderline.price.detail = 200;
+orderline.price.detail = 201;
+orderline.price.detail = 202;
+orderline.price.detail = 203;
 
-
+orderline.orderInfo.orderId.d = 1;
+orderline.orderInfo.orderId.d = 12;
+orderline.orderInfo.orderId.d = 123;
+orderline.orderInfo.orderId.d = 1234;
 
 // console.log(bankUser);
 

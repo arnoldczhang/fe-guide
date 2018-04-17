@@ -23,6 +23,7 @@ void function __mobx(global, factory) {
     WATCHER_ID: '__mobx_watcher_id',
     REACTION_ID: '__mobx_reaction_id',
     REACTION_KEY: '__reactions',
+    OPT_KEY: '__options',
   };
 
   var MSG = {
@@ -253,6 +254,34 @@ void function __mobx(global, factory) {
     return _this;
   };
 
+  function updateValue(target, key, newValue) {
+    if (arguments.length <= 2) {
+      newValue = key;
+      key = target;
+    }
+
+    var watcher;
+    var _this = this || target;
+    var valueKey = CONST.VALUES;
+    if (getValue(_this) === newValue) return;
+
+    if (this) {
+      var parent = this.getOptsParent();
+      this[valueKey] = newValue;
+      if (parent) {
+        parent[key] = newValue;
+      }
+      this.triggerReaction();
+      return this;
+    }
+
+    _this[key] = newValue;
+    watcher = _this[valueKey][key];
+    watcher[valueKey] = newValue;
+    triggerReaction(watcher);
+    return _this;
+  };
+
   function batchUpdate(target, newValue, preOptions) {
     if (arguments.length <= 2) {
       preOptions = newValue;
@@ -271,6 +300,29 @@ void function __mobx(global, factory) {
       }
     }
     bindWatcher(_this, preOptions.$id, newValue, preOptions).triggerReaction();
+    return _this;
+  };
+
+  function getOpts(target) {
+    var _this = this || target;
+    var opts = _this.KEY_OPT || CONST.OPT_KEY;
+    return _this[opts] || {};
+  };
+
+  function getOptsParent(target) {
+    var _this = this || target;
+    return (this ? _this.getOpts() : getOpts(_this)).parent;
+  };
+
+  function triggerReaction(target) {
+    var _this = this || target;
+    var reactKey = _this.KEY_REACT || CONST.REACTION_KEY;
+    var reactions = _this[reactKey];
+    if (reactions && reactions.length) {
+      forEach(reactions, function __reactionEach(reaction) {
+        return reaction.runtime();
+      });
+    }
     return _this;
   };
 
@@ -299,7 +351,7 @@ void function __mobx(global, factory) {
     invariant(isObject(parent), getMessage('004'));
     var watcher = parentWatcher && getValue(parentWatcher, key) || new Watcher(value, {
       parent: parent,
-      parentKey: options.parentKey,
+      parentKey: options.parentKey || '',
       $id: key,
     });
 
@@ -308,6 +360,11 @@ void function __mobx(global, factory) {
         if (REACTION.PENDING) {
           if (isObserver(_this.watcher)) {
             _this.watcher.addReaction(_this, REACTION.FUNC);
+          } else {
+            var childWatcher = getValue(_this.watcher, key);
+            if (childWatcher) {
+              addReaction(childWatcher, key, REACTION.FUNC);
+            }
           }
         }
         return result;
@@ -324,7 +381,7 @@ void function __mobx(global, factory) {
             if (watcher.updateValue) {
               watcher.updateValue(key, newValue);
             } else {
-              watcher[key] = newValue;
+              updateValue(watcher, key, newValue);
             }
           } else if (isObserver(watcher)) {
             watcher.batchUpdate(newValue);
@@ -384,7 +441,7 @@ void function __mobx(global, factory) {
       forEach(keys(target), function __keyEach(key) {
         bindWatcher(target, key, target[key], options);
       });
-      WATCHER.INDEX--;
+      // WATCHER.INDEX--;
     }
     endBind();
   };
@@ -413,7 +470,7 @@ void function __mobx(global, factory) {
             if (watcher.updateValue) {
               watcher.updateValue(key, newValue);
             } else {
-              watcher[key] = newValue;
+              ;
             }
           } else {
             watcher.batchUpdate(newValue);
@@ -463,7 +520,7 @@ void function __mobx(global, factory) {
 
   watcherProto.KEY_PROP = '__props';
 
-  watcherProto.KEY_OPT = '__options';
+  watcherProto.KEY_OPT = CONST.OPT_KEY;
 
   watcherProto.KEY_REACT = CONST.REACTION_KEY;
 
@@ -473,42 +530,21 @@ void function __mobx(global, factory) {
 
   watcherProto.batchUpdate = batchUpdate;
 
+  watcherProto.updateValue = updateValue;
+
+  watcherProto.getOpts = getOpts;
+
+  watcherProto.getOptsParent = getOptsParent;
+
+  watcherProto.triggerReaction = triggerReaction;
+
   watcherProto.getId = function getId() {
     return this[CONST.WATCHER_ID];
-  };
-
-  watcherProto.getOpts = function getOpts() {
-    return this[this.KEY_OPT];
-  };
-
-  watcherProto.getOptsParent = function getOptsParent() {
-    return this.getOpts().parent;
   };
 
   watcherProto.updateProps = function updateProps(options) {
     options = options || {};
     defValue(this, this.KEY_OPT, options);
-    return this;
-  };
-
-  watcherProto.updateValue = function updateValue(key, newValue) {
-    if (getValue(this) === newValue) return;
-    var parent = this.getOptsParent();
-    this[CONST.VALUES] = newValue;
-    if (parent) {
-      parent[key] = newValue;
-    }
-    this.triggerReaction();
-    return this;
-  };
-
-  watcherProto.triggerReaction = function triggerReaction() {
-    var reactions = this[this.KEY_REACT];
-    if (reactions && reactions.length) {
-      forEach(reactions, function __reactionEach(reaction) {
-        return reaction.runtime();
-      });
-    }
     return this;
   };
 
@@ -595,7 +631,6 @@ void function __mobx(global, factory) {
     var descriptor;
 
     invariant(input, getMessage('001'));
-    ++WATCHER.INDEX;
 
     if (options.pure) {
       return getPureWatcher(input, options);
@@ -613,6 +648,8 @@ void function __mobx(global, factory) {
         return bindDecorator(input, options, descriptor);
       }
     }
+
+    ++WATCHER.INDEX;
 
     if (isObserver(input)) {
       return input;
