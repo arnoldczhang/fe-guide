@@ -1,8 +1,8 @@
 import {
   observable,
   // intercept,
+  computed,
   autorun,
-  // testDe,
 } from "./mobx"
 
 let bankUser = observable({
@@ -33,10 +33,8 @@ bankUser.other = { age: 'abc' };
 bankUser.other.age = 30191;
 
 let bankUser2 = observable(new String('aa'));
-// console.log(bankUser2);
 
 let bankUser3 = observable([1, 2, 3]);
-// console.log(bankUser3);
 
 window.bankUser = bankUser;
 
@@ -50,12 +48,19 @@ class OrderLine {
 
     @observable orderInfo = {
       orderId: {
-        d: 123,
+        d: 1,
       },
     };
 
     @observable aa() {
 
+    };
+
+    @computed
+    get priceAll() {
+      return {
+        a: this.price.detail * 10000,
+      };
     }
 
     a = 1;
@@ -78,7 +83,7 @@ autorun(function() {
 
 console.log(orderline);
 
-// orderline.price = { pp: 1 };
+orderline.price = { pp: 1 };
 orderline.price = { detail: 101 };
 orderline.price.detail = 200;
 orderline.price.detail = 201;
@@ -90,11 +95,6 @@ orderline.orderInfo.orderId.d = 12;
 orderline.orderInfo.orderId.d = 123;
 orderline.orderInfo.orderId.d = 1234;
 
-// console.log(bankUser);
 
-
-
-
-// console.log(bankUser);
 
 

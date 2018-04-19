@@ -18,6 +18,7 @@ void function __mobx(global, factory) {
   /*************const****************/
   var CONST = {
     KLASS_REACTION: '__mobx_observer_klass_reaction',
+    KLASS_COMPUTED: '__mobx_observer_klass_computed',
     VALUES: '__mobx_values',
     WATCHER: '@Watcher',
     WATCHER_ID: '__mobx_watcher_id',
@@ -49,6 +50,10 @@ void function __mobx(global, factory) {
     CACH: {},
     NAME: null,
     FUNC: null,
+  };
+
+  var COMPUTED = {
+    BINDING: false,
   };
 
   /*************common methods****************/
@@ -146,7 +151,9 @@ void function __mobx(global, factory) {
     return 'enumerable' in descriptor
       && 'configurable' in descriptor
       && ('initializer' in descriptor
-        || 'value' in descriptor);
+        || 'value' in descriptor
+        || ('get' in descriptor
+          || 'set' in descriptor));
   };
 
   function listenEachState(obj, callback) {
@@ -178,12 +185,23 @@ void function __mobx(global, factory) {
     });
   };
 
-  function startBind() {
-    REACTION.BINDING = true;
+  function handleBind(target, bool) {
+    bool = bool || false;
+    if (isArray(target)) {
+      forEach(target, function __each(t) {
+        t.BINDING = bool;
+      });
+    } else {
+      target.BINDING = bool;
+    }
   };
 
-  function endBind() {
-    REACTION.BINDING = false;
+  function startBind(target) {
+    handleBind(target, true);
+  };
+
+  function endBind(target) {
+    handleBind(target, false);
   };
 
   function startRecode(func) {
@@ -215,6 +233,14 @@ void function __mobx(global, factory) {
       return value[key];
     }
     return value;
+  };
+
+  function modifyValue(obj, key, state) {
+    invariant(isString(key), getMessage('003'));
+    if (!hasValue(obj)) {
+      obj[CONST.VALUES] = {};
+    }
+    obj[CONST.VALUES][key] = state;
   };
 
   function setValue(obj, state) {
@@ -425,7 +451,7 @@ void function __mobx(global, factory) {
     var includeArray = options.include;
     invariant(!(CONST.WATCHER_ID in target), getMessage('005'));
     defValue(target, CONST.WATCHER_ID, CONST.WATCHER + '@' + WATCHER.INDEX);
-    startBind();
+    startBind([REACTION, COMPUTED]);
 
     if (isArray(includeArray)) {
       forEach(includeArray, function __includeEach(key) {
@@ -441,9 +467,8 @@ void function __mobx(global, factory) {
       forEach(keys(target), function __keyEach(key) {
         bindWatcher(target, key, target[key], options);
       });
-      // WATCHER.INDEX--;
     }
-    endBind();
+    endBind([REACTION, COMPUTED]);
   };
 
   function bindDecorator(input, key, descriptor) {
@@ -452,7 +477,14 @@ void function __mobx(global, factory) {
     function getter(_this) {
       return function __getter() {
         if (REACTION.PENDING) {
+          COMPUTED.BINDING
           createPureWatcher(_this);
+
+          // TODO
+          // if (!COMPUTED.BINDING) {
+          //   createComputedWatcher(_this);
+          // }
+
           if (!REACTION.BINDING) {
             addReaction(getValue(_this, key), key, REACTION.FUNC);
           }
@@ -469,8 +501,6 @@ void function __mobx(global, factory) {
             result = newValue;
             if (watcher.updateValue) {
               watcher.updateValue(key, newValue);
-            } else {
-              ;
             }
           } else {
             watcher.batchUpdate(newValue);
@@ -486,6 +516,19 @@ void function __mobx(global, factory) {
       });
     }
     return defPojo(input, key, getter(input), setter(input));
+  };
+
+  function createComputedWatcher(target, options) {
+    options = options || {};
+    var computeds = target[CONST.KLASS_COMPUTED];
+    if (isArray(computeds) && computeds.length) {
+      computeds.forEach(function(key) {
+        var watcher = new Watcher(target[key], {
+          computed: true,
+        });
+        modifyValue(target, key, watcher);
+      });
+    }
   };
 
   function createPureWatcher(target, options) {
@@ -510,6 +553,11 @@ void function __mobx(global, factory) {
     options = options || {};
     if (state instanceof Watcher) {
       return state.updateProps(options);
+    }
+
+    if (options.computed) {
+      this[CONST.VALUES] = state;
+      return this;
     }
     this.init(state, options);
   };
@@ -679,7 +727,25 @@ void function __mobx(global, factory) {
   };
 
   function computed(input, key, descriptor) {
-    // defPojo(input, key, descriptor.get);
+    var args = arguments;
+    var input;
+    var key;
+    var descriptor;
+
+    if (args.length === 3) {
+      input = args[0];
+      key = args[1];
+      descriptor = args[2];
+      invariant(isString(key), getMessage('003'));
+
+      if (isDescriptor(descriptor)) {
+        if (!(CONST.KLASS_COMPUTED in input)) {
+          defValue(input, CONST.KLASS_COMPUTED, []);
+        }
+        input[CONST.KLASS_COMPUTED].push(key);
+        return;
+      }
+    }
   };
 
   return {
