@@ -171,8 +171,8 @@ void function __mobx(global, factory) {
 
   function defPojo(obj, key, getter, setter) {
     return def(obj, key, {
-      get: getter,
-      set: setter,
+      get: getter || FUNC,
+      set: setter || FUNC,
       enumerable: false,
       configurable: true,
     });
@@ -678,8 +678,13 @@ void function __mobx(global, factory) {
     endRecode(func);
   };
 
+  function computed(input, key, descriptor) {
+    // defPojo(input, key, descriptor.get);
+  };
+
   return {
     observable: observable,
     autorun: autorun,
+    computed: computed,
   };
 });
