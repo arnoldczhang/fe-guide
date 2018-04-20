@@ -15,6 +15,7 @@ void function __mobx(global, factory) {
   var Symbol = typeof G.Symbol !== undefined ? G.Symbol : function Symbol(value) {
     return value;
   };
+
   /*************const****************/
   var CONST = {
     KLASS_REACTION: '__mobx_observer_klass_reaction',
@@ -238,7 +239,7 @@ void function __mobx(global, factory) {
   function modifyValue(obj, key, state) {
     invariant(isString(key), getMessage('003'));
     if (!hasValue(obj)) {
-      obj[CONST.VALUES] = {};
+      defValue(obj, CONST.VALUES, {});
     }
     obj[CONST.VALUES][key] = state;
   };
@@ -383,6 +384,10 @@ void function __mobx(global, factory) {
 
     function getter(_this) {
       return function __getter() {
+        if (COMPUTED.BINDING) {
+          return result;
+        }
+
         if (REACTION.PENDING) {
           if (isObserver(_this.watcher)) {
             _this.watcher.addReaction(_this, REACTION.FUNC);
@@ -451,7 +456,7 @@ void function __mobx(global, factory) {
     var includeArray = options.include;
     invariant(!(CONST.WATCHER_ID in target), getMessage('005'));
     defValue(target, CONST.WATCHER_ID, CONST.WATCHER + '@' + WATCHER.INDEX);
-    startBind([REACTION, COMPUTED]);
+    startBind(REACTION);
 
     if (isArray(includeArray)) {
       forEach(includeArray, function __includeEach(key) {
@@ -468,7 +473,7 @@ void function __mobx(global, factory) {
         bindWatcher(target, key, target[key], options);
       });
     }
-    endBind([REACTION, COMPUTED]);
+    endBind(REACTION);
   };
 
   function bindDecorator(input, key, descriptor) {
@@ -476,14 +481,13 @@ void function __mobx(global, factory) {
 
     function getter(_this) {
       return function __getter() {
-        if (REACTION.PENDING) {
-          COMPUTED.BINDING
-          createPureWatcher(_this);
+        if (COMPUTED.BINDING) {
+          return result;
+        }
 
-          // TODO
-          // if (!COMPUTED.BINDING) {
-          //   createComputedWatcher(_this);
-          // }
+        if (REACTION.PENDING) {
+          createPureWatcher(_this);
+          createComputedWatcher(_this);
 
           if (!REACTION.BINDING) {
             addReaction(getValue(_this, key), key, REACTION.FUNC);
@@ -521,13 +525,19 @@ void function __mobx(global, factory) {
   function createComputedWatcher(target, options) {
     options = options || {};
     var computeds = target[CONST.KLASS_COMPUTED];
-    if (isArray(computeds) && computeds.length) {
-      computeds.forEach(function(key) {
-        var watcher = new Watcher(target[key], {
+    var computedKey;
+
+    if (isArray(computeds)) {
+      startBind(COMPUTED);
+      while (computeds.length) {
+        computedKey = computeds.pop();
+        var watcher = new Watcher(target[computedKey], {
           computed: true,
         });
-        modifyValue(target, key, watcher);
-      });
+        modifyValue(target, computedKey, watcher);
+      }
+      target[CONST.KLASS_COMPUTED] = null;
+      endBind(COMPUTED);
     }
   };
 
@@ -556,7 +566,7 @@ void function __mobx(global, factory) {
     }
 
     if (options.computed) {
-      this[CONST.VALUES] = state;
+      defValue(this, CONST.VALUES, state);
       return this;
     }
     this.init(state, options);
@@ -745,7 +755,9 @@ void function __mobx(global, factory) {
         input[CONST.KLASS_COMPUTED].push(key);
         return;
       }
+      return;
     }
+    
   };
 
   return {

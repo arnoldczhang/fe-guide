@@ -3,7 +3,7 @@ import {
   // intercept,
   computed,
   autorun,
-} from "./mobx"
+} from "mobx"
 
 let bankUser = observable({
   name: '张三',
@@ -59,15 +59,11 @@ class OrderLine {
     @computed
     get priceAll() {
       return {
-        a: this.price.detail * 10000,
+        a: this.price.detail * 7,
       };
     }
 
     a = 1;
-
-    // @computed get total() {
-    //     return this.price * this.amount;
-    // }
 }
 
 var orderline = new OrderLine();
@@ -78,8 +74,16 @@ autorun(function() {
 });
 
 autorun(function() {
-  console.log('价格', orderline.price.detail);
+  console.log('原价', orderline.price.detail);
 });
+
+autorun(function() {
+  console.log('兑换价', orderline.priceAll);
+});
+
+// var divisor = computed(function() {
+//   return orderline.price.detail * 10000;
+// });
 
 console.log(orderline);
 
