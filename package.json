@@ -40,6 +40,7 @@
     "g9:dev:w": "webpack --watch --progress --config ./src/mobx/build/webpack.dev.js",
     "g9:server": "webpack-dev-server --open --progress --config ./src/mobx/build/webpack.dev.js",
     "g9:server:prod": "webpack-dev-server --open --progress --config ./src/mobx/build/webpack.prod.js",
+    "g10:dev": "vuepress dev src/vuepress/docs",
     "test": "mocha"
   },
   "author": "arnold",
@@ -163,6 +164,7 @@
     "reactopt": "^1.5.5",
     "sinon-chai": "^2.14.0",
     "ts-loader": "^3.5.0",
+    "vuepress": "^0.7.1",
     "webpack-bundle-analyzer": "^2.9.2",
     "webpack-cli": "^2.0.10",
     "webpack-dev-middleware": "^1.12.2",
