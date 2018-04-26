@@ -161,3 +161,68 @@ a == b; //true
 
 //ES5 对象的扩展(Object.preventExtensions)、密封(Object.seal)和冻结(Object.freeze)
 http://www.cnblogs.com/snandy/p/5278474.html
+
+
+
+
+
+// 删除不需要的属性
+const obj = {
+  a: 1,
+  b: 2,
+  c: 3,
+  d: 4,
+};
+
+const {
+  a,
+  b,
+  ...cleanObject,
+} = obj;
+
+console.log(cleanObject);
+
+
+
+// 合并对象
+const obj = {
+  a: 1,
+  b: 2,
+};
+
+const obj2 = {
+  c: 3,
+  d: 4,
+};
+
+const obj3 = {...obj, ...obj2};
+console.log(obj3);
+
+
+// 使用Set实现数组去重
+let arr = [1, 1, 2, 2, 3, 3];
+let deduped = [...new Set(arr)];
+
+
+
+
+// 接收函数返回的多个结果
+async function getFullPost() {
+  return await Promise.all([
+    fetch('/aa'),
+    fetch('/bb')
+  ]);
+};
+
+const [aa, bb] = getFullPost();
+
+
+
+
+
+
+
+
+
+
+
