@@ -60,9 +60,10 @@
 
 * macrotask(宏任务) `task`，包含：
     * 整体代码script
-    * setTimeout，setInterval，setImmediate（node）
+    * setTimeout（标准4ms），setInterval，setImmediate（node）
     * I/O
     * UI交互事件
+    * postMessage
 * microtask(微任务) `job`，包含：
     * Promise
     * process.nextTick（node）
