@@ -63,7 +63,7 @@
     * setTimeout（标准4ms），setInterval，setImmediate（node）
     * I/O
     * UI交互事件
-    * postMessage
+    * postMessage（MessageChannel）
 * microtask(微任务) `job`，包含：
     * Promise
     * process.nextTick（node）
