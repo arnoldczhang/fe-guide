@@ -27,7 +27,7 @@ mobx - DONE
 https://segmentfault.com/a/1190000013682735
 
 
-javascript ASI
+javascript ASI - DONE
 =======
 https://segmentfault.com/a/1190000004548664
 
