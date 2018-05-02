@@ -71,12 +71,12 @@ const expt2 = (num, times) => {
 // console.log(expt2(2, 5));
 
 
-// 素数
+// 素数-寻找最小因子
 const prime = (num) => {
   if (num < 3) return true;
   const min = 2;
-  const max = Math.floor(Math.log2(num));
-  for (let i = min; i < max; i += 1) {
+  const max = Math.floor(Math.sqrt(num));
+  for (let i = min; i <= max; i += 1) {
     if (!(num % i)) {
       return false;
     }
@@ -89,31 +89,66 @@ const prime = (num) => {
 // console.log(prime(37));
 
 
+// 素数-寻找最小因子-增强
+const primeImprove = (num) => {
+  if (num < 3) return true;
+  const min = 2;
+  const max = Math.floor(Math.sqrt(num));
+  for (let i = min; i <= max; i += i === 2 ? 1 : 2) {
+    if (!(num % i)) {
+      return false;
+    }
+  }
+  return true;
+};
+// console.log(primeImprove(10000));
+
+
+
 // 费马小定理：如果n是素数，a为小于n的任意正整数，则a的n次方与a，模n同余
+// TODO js精度问题，无法证实定理
 const famaS = (num) => {
   num = parseInt(num);
   if (prime(num)) {
     if (num === 1) return true;
     for (let a = 1; a < num; a += 1) {
       if (expt2(a, num) % num !== a % num) {
-        console.log(a, num);
         return false;
       }
     }
     return true;
   }
-  throw new Error('num is not a prime');
+  return 'is not prime';
+};
+// console.log(famaS(561));
+// console.log(famaS(1105));
+
+
+// 找素数花费时间
+const searchPrimeTime = (func, range = [0, 1]) => {
+  let globalStartTime = Date.now();
+  let [start = 0, end = 1] = range;
+  const result = {};
+  if (end < start) {
+    [start, end] = [end, start];
+  }
+
+  let startTime = Date.now();
+  for (let i = start ; i < end; i += 1) {
+    if (func(i)) {
+      result[i] = Date.now() - startTime;
+      startTime = Date.now();
+    }
+  }
+  return {
+    name: func.name,
+    // result,
+    cost: Date.now() - globalStartTime,
+  };
 };
 
-console.log(famaS(5));
-console.log(famaS(37));
-console.log(famaS(561));
-console.log(famaS(1105));
-
-
-
-
-
+// console.log(searchPrimeTime(primeImprove, [, 100000]));
+// console.log(searchPrimeTime(prime, [, 100000]));
 
 
 
