@@ -205,6 +205,39 @@ const production = (start = 2, end = 10) => iter(start, start + 1, end);
 
 
 
+// 不动点
+const closeEnough = (func, input = 1, tolerance = 0.0001) => {
+  const result = func(input);
+  if (Math.abs(result - input) <= tolerance) {
+    return result;
+  }
+  return closeEnough(func, result, tolerance);
+};
+
+// console.log(closeEnough(Math.cos, 1, 0.0000001)); // 余弦不动点
+// console.log(closeEnough(x => Math.sin(x) + Math.cos(x), 1));
+// console.log(closeEnough(x => 1 + 1 / x, 1)); // 黄金分割数1.618
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ast
 const scripts = `
  const a = {
