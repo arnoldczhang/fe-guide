@@ -222,10 +222,28 @@ const closeEnough = (func, input = 1, tolerance = 0.0001) => {
 
 
 
+const average = (num1, num2) => (num1 +num2) / 2;
+const averageFunc = func => num => average(num, func(num));
 
+// 平均阻尼
+const averageDump = averageFunc(square);
 
+// 求平方根
+const sqrt = x => closeEnough(averageFunc(y => x / y), 1);
 
+// 求立方根
+const cube = x => closeEnough(averageFunc(y => x / square(y)), 1);
+// console.log(averageDump(10)); //55
+// console.log(sqrt(10)); // 3.1622
+// console.log(sqrt(100));
+// console.log(cube(100));
 
+// 求导数
+const deriv = func => (num, tolerance = 0.0001) => (func(num + tolerance) - func(num)) / tolerance;
+const newtonTransform = func => num => num - func(num) / deriv(num);
+const newTonMethod = (func, guess = 1) =>  closeEnough(newtonTransform(func), guess);
+const sqrt2 = x => newTonMethod(y => square(y) - x);
+console.log(sqrt2(100));
 
 
 
