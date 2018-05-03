@@ -17,6 +17,9 @@ const gcd = (a, b) => {
 // console.log(gcd(206, 40));
 
 
+
+
+
 // 帕斯卡三角
 const paska = (line = 1, result = {}) => {
   line = line || 1;
@@ -45,6 +48,9 @@ const paska = (line = 1, result = {}) => {
 // console.log(paska(8));
 
 
+
+
+
 // 幂
 const isEven = num => num % 2 === 0;
 const square = num => num * num;
@@ -71,6 +77,9 @@ const expt2 = (num, times) => {
 // console.log(expt2(2, 5));
 
 
+
+
+
 // 素数-寻找最小因子
 const prime = (num) => {
   if (num < 3) return true;
@@ -87,6 +96,9 @@ const prime = (num) => {
 // console.log(prime(5));
 // console.log(prime(12));
 // console.log(prime(37));
+
+
+
 
 
 // 素数-寻找最小因子-增强
@@ -124,6 +136,9 @@ const famaS = (num) => {
 // console.log(famaS(1105));
 
 
+
+
+
 // 找素数花费时间
 const searchPrimeTime = (func, range = [0, 1]) => {
   let globalStartTime = Date.now();
@@ -154,6 +169,37 @@ const searchPrimeTime = (func, range = [0, 1]) => {
 
 
 
+// 高阶函数-过程作为参数
+const sum = (term, start = 0, next, end = 0) => {
+  let result = 0;
+  if (start > end) {
+    return result;
+  }
+
+  for (let i = start; i <= end; ) {
+    result += term(i);
+    i = next(i);
+  }
+  return result;
+};
+
+const increment = num => num += 1;
+const pow = num => Math.pow(num, 3);
+const identity = num => num;
+
+const sumIncrement = (start, end) => sum(pow, start, increment, end);
+const sumIdentity = (start, end) => sum(identity, start, increment, end);
+
+// console.log(sumIncrement(1, 10));
+// console.log(sumIdentity(1, 10));
+
+
+
+
+// production
+const iter = (min = 1, max = 2, end = 10) => max >= end ? 1 : min / max * iter(max + 1, min + 1, end);
+const production = (start = 2, end = 10) => iter(start, start + 1, end);
+// console.log(production(2, 9));
 
 
 
