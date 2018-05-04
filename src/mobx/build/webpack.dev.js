@@ -11,8 +11,15 @@ const port = 2222;
 const config = merge(base, {
   devtool: 'source-map',
   mode: 'development',
+  plugins: [
+    new webpack.DllReferencePlugin({
+      context: __dirname,
+      manifest: require("../build/common-manifest.json"),
+      extensions: [".js", ".jsx"],
+    }),
+  ],
   devServer: {
-    port: 2222,
+    port,
     contentBase: './dist',
    },
 });

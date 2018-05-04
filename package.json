@@ -35,6 +35,7 @@
     "g7": "node src/immer/test.js",
     "g8:parcel": "parcel src/mobx/index.html",
     "g9:base": "webpack --watch --config ./src/mobx/build/webpack.base.js",
+    "g9:dll": "webpack --config ./src/mobx/build/webpack.dll.config.js",
     "g9:prod": "webpack --progress --config ./src/mobx/build/webpack.prod.js",
     "g9:dev": "webpack --progress --config ./src/mobx/build/webpack.dev.js",
     "g9:dev:w": "webpack --watch --progress --config ./src/mobx/build/webpack.dev.js",

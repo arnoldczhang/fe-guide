@@ -29,18 +29,6 @@ module.exports = {
     publicPath: '',
   },
   plugins: [
-    new webpack.DllPlugin({
-      context: __dirname,
-      name: "[name]_[hash]",
-      path: path.join(__dirname, "manifest.json"),
-    }),
-    // new webpack.DllReferencePlugin({
-    //   context: __dirname,
-    //   manifest: require("../build/manifest.json"),
-    //   name: "./dll.js",
-    //   scope: "xyz",
-    //   sourceType: "commonjs2"
-    // }),
     new ExtractTextPlugin({
       filename: "[chunkhash:5].bundle.css",
       allChunks: true,
