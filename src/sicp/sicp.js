@@ -54,6 +54,7 @@ const paska = (line = 1, result = {}) => {
 // 幂
 const isEven = num => num % 2 === 0;
 const square = num => num * num;
+const cube = num => square(num) * num;
 const expt = (num, times) => {
   if (times <= 1) {
     return num;
@@ -205,26 +206,66 @@ const production = (start = 2, end = 10) => iter(start, start + 1, end);
 
 
 
-// 不动点
-const closeEnough = (func, input = 1, tolerance = 0.0001) => {
+// 不动点f(x) === x
+const fixPoint = (func, input = 1, tolerance = 0.0001) => {
   const result = func(input);
   if (Math.abs(result - input) <= tolerance) {
     return result;
   }
-  return closeEnough(func, result, tolerance);
+  return fixPoint(func, result, tolerance);
 };
 
-// console.log(closeEnough(Math.cos, 1, 0.0000001)); // 余弦不动点
-// console.log(closeEnough(x => Math.sin(x) + Math.cos(x), 1));
-// console.log(closeEnough(x => 1 + 1 / x, 1)); // 黄金分割数1.618
+// console.log(fixPoint(Math.cos, 1, 0.0000001)); // 余弦不动点
+// console.log(fixPoint(x => Math.sin(x) + Math.cos(x), 1));
+// console.log(fixPoint(x => 1 + 1 / x, 1)); // 黄金分割数1.618
 
 
 
 
 
+const average = (num1, num2) => (num1 +num2) / 2;
+const averageFunc = func => num => average(num, func(num));
+
+// 平均阻尼
+const averageDump = averageFunc(square);
+
+// 求平方根
+const sqrt = x => fixPoint(averageFunc(y => x / y), 1);
+
+// 求立方根
+const cubert = x => fixPoint(averageFunc(y => x / square(y)), 1);
+// console.log(averageDump(10)); //55
+// console.log(sqrt(10)); // 3.1622
+// console.log(sqrt(100));
+// console.log(cubert(100));
+
+
+// 求导数
+const deriv = func => (num, dx = 0.0001) => (func(num + dx) - func(num)) / dx;
+// 求x -> x3的导数（3x2）
+const derivCube = deriv(cube);
+// console.log(derivCube(5));
 
 
 
+
+// 求平方根（牛顿法）
+const newtonTransform = func => num => num - func(num) / deriv(func)(num);
+const newTonMethod = (func, guess = 1) =>  fixPoint(newtonTransform(func), guess);
+// y -> y2 - x
+const sqrt2 = x => newTonMethod(y => square(y) - x);
+// console.log(sqrt2(100));
+
+
+const fixPointTransform = (func, transform, guess = 1) => fixPoint(transform(func), guess);
+
+// 求平方根（平均阻尼不动点-第一级抽象）
+const sqrt3 = x => fixPointTransform(y => x / y, averageFunc);
+
+// 求平方根（牛顿法-第一级抽象）
+const sqrt4 = x => fixPointTransform(y => square(y) - x, newtonTransform);
+// console.log(sqrt3(100));
+// console.log(sqrt4(100));
 
 
 
