@@ -242,7 +242,7 @@ const cubert = x => fixPoint(averageFunc(y => x / square(y)), 1);
 
 // 求导数
 const deriv = func => (num, dx = 0.0001) => (func(num + dx) - func(num)) / dx;
-// 求x -> x3的导数（3x2）
+// 求x -> x^3的导数（3x^2）
 const derivCube = deriv(cube);
 // console.log(derivCube(5));
 
@@ -252,11 +252,16 @@ const derivCube = deriv(cube);
 // 求平方根（牛顿法）
 const newtonTransform = func => num => num - func(num) / deriv(func)(num);
 const newTonMethod = (func, guess = 1) =>  fixPoint(newtonTransform(func), guess);
-// y -> y2 - x
+// y -> y^2 - x
 const sqrt2 = x => newTonMethod(y => square(y) - x);
 // console.log(sqrt2(100));
 
 
+
+
+
+
+// 第一级抽象：最少限制元素
 const fixPointTransform = (func, transform, guess = 1) => fixPoint(transform(func), guess);
 
 // 求平方根（平均阻尼不动点-第一级抽象）
@@ -266,6 +271,28 @@ const sqrt3 = x => fixPointTransform(y => x / y, averageFunc);
 const sqrt4 = x => fixPointTransform(y => square(y) - x, newtonTransform);
 // console.log(sqrt3(100));
 // console.log(sqrt4(100));
+
+// 求立方根
+const cubert2 = x => fixPointTransform(y => x / square(y), averageFunc);
+// console.log(cubert2(100));
+
+// x^3 + ax^2 + bx + c
+const newTonCubic = (a, b, c) => newTonMethod(x => cubert2(x) + a * sqrt3(x) + b * x + c);
+
+
+
+// f(g(x))
+const compose = (f, g) => x => f(g(x));
+// (x + 1)^2
+const squareInc = compose(square, x => x + 1);
+// console.log(squareInc(6)); // 49
+
+// x^2^n
+const repeated = x => expt(5, x);
+const squareN = x => expt(2, x);
+const squareRepeat = compose(repeated, squareN);
+// console.log(squareRepeat(2)); // 625
+
 
 
 
