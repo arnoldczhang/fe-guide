@@ -1,5 +1,5 @@
-#npm & yarn基本操作 & 相关常识
-  - ##相关常识
+# npm & yarn基本操作 & 相关常识
+  - ## 相关常识
     - 格式
       - 大版本.次要版本.小版本
     - 依赖
@@ -11,7 +11,7 @@
       - 插入号^：大版本.x.x升级最新版（大版本不升级）
       - 波浪号~：大版本.次要版本.x升级最新版（大版本、次要版本不升级）
       - latest：最新版
-  - ##npm&yarn
+  - ## npm&yarn
     - 初始化
       - npm init
       - yarn init
@@ -34,7 +34,7 @@
     - 锁
       - yarn.lock
       - package-lock.json
-  - ##npm发布
+  - ## npm发布
     - npm c ls
     - npm config list
     - npm config set @aa:registry http://r.npm.aa.com
@@ -45,3 +45,5 @@
     - npm run xxx
       - `发布前打包一下`
     - npm publish
+  - ## 其他操作
+    - npm owner add 
