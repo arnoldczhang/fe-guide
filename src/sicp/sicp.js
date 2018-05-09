@@ -335,8 +335,6 @@ const addRat = (x, y) => divide(
   ),
   multi(denom(x), denom(y)),
 );
-// console.log(addRat(0.8, 0.3));
-// console.log(addRat(0.05, 0.3));
 
 const multRat = (x, y) => divide(
   multi(
@@ -348,6 +346,9 @@ const multRat = (x, y) => divide(
     denom(y),
   ),
 );
+
+// console.log(addRat(0.8, 0.3));
+// console.log(addRat(0.05, 0.3));
 // console.log(multRat(0.8, 0.3));
 // console.log(multRat(0.05, 0.3));
 
@@ -365,15 +366,67 @@ const oneThird = makeRat(1, 3);
 
 const makeRat2 = (x, y) => {
   const g = gcd(x, y);
+  if (divide(x, y) < 0) {
+    x = -Math.abs(x);
+    y = Math.abs(y);
+  }
   return cons(divide(x, g), divide(y, g));
 };
 
-const oneHalf2 = makeRat(1, 2);
-const oneThird2 = makeRat(1, 3);
+const oneHalf2 = makeRat2(1, 2);
+const oneThird2 = makeRat2(1, 3);
 
 // console.log(addRat(oneHalf2, oneThird2));// 5 / 6
 // console.log(multRat(oneHalf2, oneThird2));// 1 / 6
 // console.log(addRat(oneThird2, oneThird2));// 6 / 9
+
+
+const numer2 =  (x) => {
+  const g = gcd(car(x), cdr(x));
+  return car(x) / g;
+};
+const denom2 =  (x) => {
+  const g = gcd(car(x), cdr(x));
+  return cdr(x) / g;
+};
+// console.log(numer2(0.8));
+// console.log(denom2(0.8));
+
+// 线段
+class Segment {
+  start(x, y) {
+    if (this.isStart) {
+      return;
+    }
+    this.isStart = true;
+    this.startX = x;
+    this.startY = y;
+  }
+
+  end(x, y) {
+    if (this.isEnd) {
+      return;
+    }
+    this.isEnd = true;
+    this.endX = x;
+    this.endY = y;
+  }
+
+  mid() {
+    if (this.isStart && this.isEnd) {
+      return [
+        divide(add(this.endX, this.startX), 2),
+        divide(add(this.endY, this.startY), 2)
+      ];
+    }
+    throw new Error('the line is not complete');
+  }
+}
+
+// const segment = new Segment;
+// segment.start(1, 2);
+// segment.end(4, 5);
+// console.log(segment.mid());
 
 
 
