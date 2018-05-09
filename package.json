@@ -45,6 +45,7 @@
     "g11:server": "webpack-dev-server --open --progress --config ./src/rxjs/build/webpack.dev.js",
     "g11:server:prod": "webpack-dev-server --open --progress --config ./src/rxjs/build/webpack.prod.js",
     "g12:server": "node ./src/webassembly/app.js",
+    "g13": "node ./src/sicp/sicp.js",
     "test": "mocha"
   },
   "author": "arnold",

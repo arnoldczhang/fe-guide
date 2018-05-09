@@ -296,7 +296,84 @@ const squareRepeat = compose(repeated, squareN);
 
 
 
+// 有理数运算
+const divide = (x, y) => y != 0 ? x / y : 0;
+const multi = (x, y) => x * y;
+const add = (...args) => args.reduce((x = 0, y = 0) => x + y, 0);
 
+const getRat = (x, options = {}) => {
+  let num = x;
+  let times = 1;
+  while (num % 1) {
+    times *= 10;
+    num = x * times;
+  }
+
+  if (options.toInt) {
+    return `${num}/${times}`;
+  }
+
+  return {
+    numer: num,
+    denom: times,
+  };
+};
+
+const cons = divide;
+const car = x => getRat(x).numer;
+const cdr = x => getRat(x).denom;
+
+const makeRat = (x, y) => cons(x, y);
+const numer = x => car(x);
+const denom = x => cdr(x);
+
+// 有理数操作
+const addRat = (x, y) => divide(
+  add(
+    multi(numer(x), denom(y)),
+    multi(numer(y), denom(x)),
+  ),
+  multi(denom(x), denom(y)),
+);
+// console.log(addRat(0.8, 0.3));
+// console.log(addRat(0.05, 0.3));
+
+const multRat = (x, y) => divide(
+  multi(
+    numer(x),
+    numer(y),
+  ),
+  multi(
+    denom(x),
+    denom(y),
+  ),
+);
+// console.log(multRat(0.8, 0.3));
+// console.log(multRat(0.05, 0.3));
+
+
+
+
+// 序对
+const oneHalf = makeRat(1, 2);
+const oneThird = makeRat(1, 3);
+
+// console.log(addRat(oneHalf, oneThird));// 5 / 6
+// console.log(multRat(oneHalf, oneThird));// 1 / 6
+// console.log(addRat(oneThird, oneThird));// 6 / 9
+
+
+const makeRat2 = (x, y) => {
+  const g = gcd(x, y);
+  return cons(divide(x, g), divide(y, g));
+};
+
+const oneHalf2 = makeRat(1, 2);
+const oneThird2 = makeRat(1, 3);
+
+// console.log(addRat(oneHalf2, oneThird2));// 5 / 6
+// console.log(multRat(oneHalf2, oneThird2));// 1 / 6
+// console.log(addRat(oneThird2, oneThird2));// 6 / 9
 
 
 
@@ -339,41 +416,4 @@ const scripts = `
 
 // console.log(JSON.stringify(esprima.parseScript(scripts), null, '  '));
 // console.log(JSON.stringify(babel.transform(scripts), null, '  '));
-
-
-
-// 有理数运算
-const divide = (x, y) => y != 0 ? x / y : 0;
-const multi = (x, y) => x *y;
-const add = (...args) => args.reduce((x = 0, y = 0) => x + y, 0);
-const makeRat = divide;
-const getRat = (x) => {
-  let num = x;
-  let times = 1;
-  while (num % 1) {
-    times *= 10;
-    num = x * times;
-  }
-  return {
-    numer: num,
-    denom: times,
-  };
-};
-const numer = x => getRat(x).numer;
-const denom = x => getRat(x).denom;
-
-// 有理数相加
-const addRat = (x, y) => divide(
-  add(
-    multi(numer(x), denom(y)),
-    multi(numer(y), denom(x)),
-  ),
-  multi(denom(x), denom(y)),
-);
-// console.log(addRat(0.8, 0.3));
-// console.log(addRat(0.05, 0.3));
-
-
-
-
 

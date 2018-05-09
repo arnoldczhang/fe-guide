@@ -1,5 +1,6 @@
 import Rx, {
   Observable,
+  Subject,
   Scheduler,
 } from'rxjs/Rx';
 
@@ -13,9 +14,6 @@ const btn = document.querySelector('#btn');
 //     return count + x;
 //   }, 0);
 // const observer3 = observer2.subscribe(count => console.log(`${count} times~`));
-
-
-
 
 
 
@@ -54,7 +52,9 @@ const btn = document.querySelector('#btn');
 //     observer.next(42);
 //     observer.next(43);
 //     observer.next(44);
-//     observer.next(45);
+//     setTimeout(() => {
+//       observer.next(45);
+//     }, 1000);
 //     observer.complete();
 //   } catch (err) {
 //     observer.error(err);
@@ -63,8 +63,57 @@ const btn = document.querySelector('#btn');
 
 // console.log('before');
 // ob2.subscribe(x => console.log('x', x));
-// ob2.subscribe(y => console.log('y', y));
+// const subscription = ob2.subscribe(y => console.log('y', y));
+// subscription.unsubscribe();
+// ob2.subscribe(z => console.log('z', z));
 // console.log('after');
+
+
+
+// const observer1 = Observable.interval(1000);
+// const observer2 = Observable.interval(800);
+
+// const subscription1 = observer1.subscribe(x => console.log(`x: ${x}`));
+// const subscription2 = observer2.subscribe(y => console.log(`y: ${y}`));
+// subscription1.add(subscription2);
+
+// setTimeout(() => {
+//   subscription1.unsubscribe();
+// }, 2000);
+
+
+
+
+// const subject = new Subject();
+// const observer =  new Observable();
+
+// subject.subscribe({
+//   next: count => console.log(count),
+// });
+// subject.next(1);
+// subject.next(2);
+// subject.next(3);
+
+// const source = Observable.from(['a', 'b', 'c']);
+// source.subscribe(subject);
+// source.subscribe(count => console.log(count));
+
+
+const source = Observable.from(['a', 'b', 'c']);
+const subject = new Subject();
+const multicast = source.multicast(subject);
+
+multicast.subscribe({
+  next: count => console.log(`A -> ${count}`),
+});
+
+const subscription = multicast.subscribe({
+  next: count => console.log(`B -> ${count}`),
+});
+
+subscription.unsubscribe();
+
+multicast.connect();
 console.log(Rx);
 
 
@@ -81,6 +130,3 @@ console.log(Rx);
 
 
 
-// Scheduler.async.schedule(val => console.trace(val), 1000, 'abc');
-
-// console.log(observer, observer2, observer3);
