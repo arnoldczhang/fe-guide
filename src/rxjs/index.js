@@ -1,4 +1,6 @@
 import Rx, {
+  BehaviorSubject,
+  ReplaySubject,
   Observable,
   Subject,
   Scheduler,
@@ -99,21 +101,86 @@ const btn = document.querySelector('#btn');
 // source.subscribe(count => console.log(count));
 
 
-const source = Observable.from(['a', 'b', 'c']);
+// const source = Observable.from(['a', 'b', 'c']);
+// const subject = new Subject();
+// const multicast = source.multicast(subject);
+
+// multicast.subscribe({
+//   next: count => console.log(`A -> ${count}`),
+// });
+
+// const subscription = multicast.subscribe({
+//   next: count => console.log(`B -> ${count}`),
+// });
+// subscription.unsubscribe();
+// multicast.connect();
+
+
+// const source = Observable.interval(1000);
+// const multicast = source.multicast(new Subject).refCount();
+
+// const m1 = multicast.subscribe(count => console.log(`A -> ${count}`));
+
+// setTimeout(() => {
+//   const m2 = multicast.subscribe(count => console.log(`B -> ${count}`));
+//   setTimeout(() => {
+//     m2.unsubscribe();
+//   }, 2500);
+// }, 1500);
+
+// setTimeout(() => {
+//   m1.unsubscribe();
+// }, 5000);
+
+
+
+
 const subject = new Subject();
-const multicast = source.multicast(subject);
 
-multicast.subscribe({
-  next: count => console.log(`A -> ${count}`),
+subject.next(1);
+subject.subscribe({
+  next: count => console.log(count),
 });
+subject.next(2);
+subject.next(3);
 
-const subscription = multicast.subscribe({
-  next: count => console.log(`B -> ${count}`),
-});
 
-subscription.unsubscribe();
+const behavior = new BehaviorSubject(0);
+behavior.subscribe(count => console.log(`count A: ${count}`));
+behavior.next(1);
+behavior.next(2);
+behavior.subscribe(count => console.log(`count B: ${count}`));
+behavior.next(3);
 
-multicast.connect();
+
+
+
+
+// const subject = new ReplaySubject(3); // 为新的订阅者缓冲3个值
+
+// subject.subscribe({
+//   next: (v) => console.log('observerA: ' + v)
+// });
+
+// subject.next(1);
+// subject.next(2);
+// subject.next(3);
+// subject.next(4);
+
+// subject.subscribe({
+//   next: (v) => console.log('observerB: ' + v)
+// });
+
+// subject.next(5);
+
+
+
+
+
+
+
+
+
 console.log(Rx);
 
 

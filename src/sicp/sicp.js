@@ -299,6 +299,7 @@ const squareRepeat = compose(repeated, squareN);
 // 有理数运算
 const divide = (x, y) => y != 0 ? x / y : 0;
 const multi = (x, y) => x * y;
+const minus = (...args) => args.reduce((x = 0, y = 0) => x - y);
 const add = (...args) => args.reduce((x = 0, y = 0) => x + y, 0);
 
 const getRat = (x, options = {}) => {
@@ -319,15 +320,19 @@ const getRat = (x, options = {}) => {
   };
 };
 
+/**
+ * 抽象屏障
+ */
+
+// 1-序对
 const cons = divide;
 const car = x => getRat(x).numer;
 const cdr = x => getRat(x).denom;
-
+// 2-分子分母有理数
 const makeRat = (x, y) => cons(x, y);
 const numer = x => car(x);
 const denom = x => cdr(x);
-
-// 有理数操作
+// 3-有理数操作
 const addRat = (x, y) => divide(
   add(
     multi(numer(x), denom(y)),
@@ -335,7 +340,6 @@ const addRat = (x, y) => divide(
   ),
   multi(denom(x), denom(y)),
 );
-
 const multRat = (x, y) => divide(
   multi(
     numer(x),
@@ -355,7 +359,6 @@ const multRat = (x, y) => divide(
 
 
 
-// 序对
 const oneHalf = makeRat(1, 2);
 const oneThird = makeRat(1, 3);
 
@@ -394,46 +397,117 @@ const denom2 =  (x) => {
 
 // 线段
 class Segment {
-  start(x, y) {
-    if (this.isStart) {
+  constructor(...args) {
+    const argsLength = args.length;
+    if (!argsLength) {
       return;
     }
-    this.isStart = true;
+
+    const {
+      start,
+      end,
+    } = this;
+    const iterateArray = [start, end];
+    const iterator = argsLength === 1 ? args[0] : args;
+
+    this.checkStatus('isAllArray', iterator);
+    iterator.length = 2;
+    iterator.forEach((item, index) => {
+      iterateArray[index].apply(this, item);
+    });
+  }
+
+  start(x, y) {
+    if (this.begin) {
+      return;
+    }
+    this.begin = true;
     this.startX = x;
     this.startY = y;
   }
 
   end(x, y) {
-    if (this.isEnd) {
+    if (this.ended) {
       return;
     }
-    this.isEnd = true;
+    this.ended = true;
     this.endX = x;
     this.endY = y;
   }
 
-  mid() {
-    if (this.isStart && this.isEnd) {
-      return [
-        divide(add(this.endX, this.startX), 2),
-        divide(add(this.endY, this.startY), 2)
-      ];
+  checkStatus(status, input) {
+    switch(status) {
+      case 'completed':
+        const completed = this.begin && this.ended;
+        if (completed) {
+          return true;
+        }
+        throw new Error('the line is not completed');
+      case 'isAllArray':
+        const isAllArray = input && Array.isArray(input) && input.every(item => Array.isArray);
+        if (isAllArray) {
+          return true;
+        }
+        throw new Error(`${input} is not all array`);
+      default:
+        break;
     }
-    throw new Error('the line is not complete');
+  }
+
+  getMiddlePoint() {
+    this.checkStatus('completed');
+    return [
+      divide(add(this.endX, this.startX), 2),
+      divide(add(this.endY, this.startY), 2)
+    ];
+  }
+
+  getStartPoint() {
+    return [this.startX, this.startY];
+  }
+
+  getEndPoint() {
+    return [this.endX, this.endY];
+  }
+
+  getLength() {
+    this.checkStatus('complete');
+    return sqrt3(
+      add(
+        square(minus(this.startX, this.endX)),
+        square(minus(this.startY, this.endY)),
+      )
+    );
   }
 }
 
 // const segment = new Segment;
-// segment.start(1, 2);
-// segment.end(4, 5);
-// console.log(segment.mid());
+// segment.start(1, 1);
+// segment.end(2, 2);
+// console.log(segment.getMiddlePoint());
+// console.log(segment.getLength());
 
+// const segment2 = new Segment([1, 1], [2, 2]);
+// console.log(segment2.getMiddlePoint());
+// console.log(segment2.getLength());
 
+// const segment3 = new Segment([[1, 1], [2, 2]]);
+// console.log(segment3.getMiddlePoint());
+// console.log(segment3.getLength());
 
+// const segment4 = new Segment([[1, 1]]);
+// segment4.end(2, 2);
+// console.log(segment4.getMiddlePoint());
+// console.log(segment4.getLength());
 
+class Rect {
+  constructor() {
 
+  }
+}
 
-
+// const rat = makeRat2(1, 2);
+// console.log(numer(rat) / denom(rat) === rat);
 
 
 // ast
