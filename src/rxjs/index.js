@@ -135,22 +135,22 @@ const btn = document.querySelector('#btn');
 
 
 
-const subject = new Subject();
+// const subject = new Subject();
 
-subject.next(1);
-subject.subscribe({
-  next: count => console.log(count),
-});
-subject.next(2);
-subject.next(3);
+// subject.next(1);
+// subject.subscribe({
+//   next: count => console.log(count),
+// });
+// subject.next(2);
+// subject.next(3);
 
 
-const behavior = new BehaviorSubject(0);
-behavior.subscribe(count => console.log(`count A: ${count}`));
-behavior.next(1);
-behavior.next(2);
-behavior.subscribe(count => console.log(`count B: ${count}`));
-behavior.next(3);
+// const behavior = new BehaviorSubject(0);
+// behavior.subscribe(count => console.log(`count A: ${count}`));
+// behavior.next(1);
+// behavior.next(2);
+// behavior.subscribe(count => console.log(`count B: ${count}`));
+// behavior.next(3);
 
 
 
@@ -173,6 +173,26 @@ behavior.next(3);
 
 // subject.next(5);
 
+
+// const subject = new ReplaySubject(100, 500);
+
+// subject.subscribe({
+//   next: (v) => console.log('observerA: ' + v)
+// });
+
+// let i = 0;
+// setInterval(() => subject.next(i++), 200);
+
+// setTimeout(() => {
+//   const subscription1 = subject.subscribe({
+//     next: (v) => console.log('observerB: ' + v)
+//   });
+//   setTimeout(() => {
+//     subscription1.unsubscribe();
+//   }, 1000);
+// }, 1000);
+
+// subject.next(5);
 
 
 
