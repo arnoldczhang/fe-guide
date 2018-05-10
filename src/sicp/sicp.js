@@ -297,10 +297,17 @@ const squareRepeat = compose(repeated, squareN);
 
 
 // 有理数运算
-const divide = (x, y) => y != 0 ? x / y : 0;
+const divide = (x, y) => {
+  if (y) {
+    return x / y;
+  }
+  throw new Error('the denor can`t be zero');
+};
 const multi = (x, y) => x * y;
 const minus = (...args) => args.reduce((x = 0, y = 0) => x - y);
 const add = (...args) => args.reduce((x = 0, y = 0) => x + y, 0);
+const min = (...args) => Math.min.apply(null, args);
+const max = (...args) => Math.max.apply(null, args);
 
 const getRat = (x, options = {}) => {
   let num = x;
@@ -508,6 +515,89 @@ class Rect {
 
 // const rat = makeRat2(1, 2);
 // console.log(numer(rat) / denom(rat) === rat);
+
+
+const cons2 = (x, y) => (m) => [x, y][m];
+const z = cons2(1, 5);
+const car2 = z(0);
+const cdr2 = z(1);
+// console.log(car2, cdr2);
+
+
+const countAdd = (x = 0) => ++x;
+const addL = (func, times) => {
+  let result = 0;
+  while (times--) {
+    result = func(result);
+  }
+  return result;
+};
+// console.log(addL(countAdd, 5));
+
+
+// 区间算数
+const lowerBound = interval => interval[0];
+const upperBound = interval => interval[1];
+const makeInterval = (x, y) => [x, y];
+// 区间相加
+const addInterval = (x, y) => makeInterval(
+  add(lowerBound(x), lowerBound(y)),
+  add(upperBound(x), upperBound(y)),
+);
+// 相减
+const subInterval = (x, y) => makeInterval(
+  minus(lowerBound(x), lowerBound(y)),
+  minus(upperBound(x), upperBound(y)),
+);
+// 相乘
+const mulInterval = (x, y) => {
+  const mArray = [
+    multi(lowerBound(x), lowerBound(y)),
+    multi(lowerBound(x), upperBound(y)),
+    multi(upperBound(x), lowerBound(y)),
+    multi(upperBound(x), upperBound(y)),
+  ];
+  return makeInterval(
+    min.apply(null, mArray),
+    max.apply(null, mArray),
+  );
+};
+// 相除
+const divInterval = (x, y) => mulInterval(
+  x,
+  makeInterval(
+    divide(1, lowerBound(y)),
+    divide(1, upperBound(y)),
+  ),
+);
+
+const getIntervalWidth = x => divide(upperBound(x) - lowerBound(x), 2);
+const intv1 = [1, 2];
+const intv2 = [3, 4];
+console.log(addInterval(intv1, intv2));
+console.log(subInterval(intv1, intv2));
+console.log(mulInterval(intv1, intv2));
+console.log(divInterval(intv1, intv2));
+console.log(getIntervalWidth(addInterval(intv1, intv2)) === add(getIntervalWidth(intv1), getIntervalWidth(intv2)));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // ast
