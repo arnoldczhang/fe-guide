@@ -1,4 +1,5 @@
 import Rx, {
+  AsyncSubject,
   BehaviorSubject,
   ReplaySubject,
   Observable,
@@ -196,8 +197,28 @@ const btn = document.querySelector('#btn');
 
 
 
+// const subject = new AsyncSubject();
 
+// subject.subscribe({
+//   next: (v) => console.log('observerA: ' + v)
+// });
 
+// subject.next(1);
+// subject.next(2);
+// subject.next(3);
+// subject.next(4);
+// subject.subscribe({
+//   next: (v) => console.log('observerB: ' + v)
+// });
+
+// subject.next(5);
+// subject.complete();
+
+const input = Observable.from(['a', 'b', 'c']);
+const observable = Observable.create(observer => (
+  input.subscribe(word => observer.next(word.toUpperCase()))
+));
+observable.subscribe(ct => console.log(ct));
 
 
 
