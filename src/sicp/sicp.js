@@ -532,6 +532,7 @@ const addL = (func, times) => {
   }
   return result;
 };
+const one = x => addL(countAdd, 1);
 // console.log(addL(countAdd, 5));
 
 
@@ -551,11 +552,15 @@ const subInterval = (x, y) => makeInterval(
 );
 // 相乘
 const mulInterval = (x, y) => {
+  const lowerX = lowerBound(x);
+  const lowerY = lowerBound(y);
+  const upperX = upperBound(x);
+  const upperY = upperBound(y);
   const mArray = [
-    multi(lowerBound(x), lowerBound(y)),
-    multi(lowerBound(x), upperBound(y)),
-    multi(upperBound(x), lowerBound(y)),
-    multi(upperBound(x), upperBound(y)),
+    multi(lowerX, lowerY),
+    multi(lowerX, upperY),
+    multi(upperX, lowerY),
+    multi(upperX, upperY),
   ];
   return makeInterval(
     min.apply(null, mArray),
@@ -574,24 +579,91 @@ const divInterval = (x, y) => mulInterval(
 const getIntervalWidth = x => divide(upperBound(x) - lowerBound(x), 2);
 const intv1 = [1, 2];
 const intv2 = [3, 4];
-console.log(addInterval(intv1, intv2));
-console.log(subInterval(intv1, intv2));
-console.log(mulInterval(intv1, intv2));
-console.log(divInterval(intv1, intv2));
-console.log(getIntervalWidth(addInterval(intv1, intv2)) === add(getIntervalWidth(intv1), getIntervalWidth(intv2)));
+// console.log(addInterval(intv1, intv2));
+// console.log(subInterval(intv1, intv2));
+// console.log(mulInterval(intv1, intv2));
+// console.log(divInterval(intv1, intv2));
+// console.log(getIntervalWidth(addInterval(intv1, intv2)) === add(getIntervalWidth(intv1), getIntervalWidth(intv2)));
+
+// 按需相乘
+const mulInterval2 = (x, y) => {
+  let interval = new Array(2);
+  const lowerX = lowerBound(x);
+  const lowerY = lowerBound(y);
+  const upperX = upperBound(x);
+  const upperY = upperBound(y);
+
+  switch(
+    Number(lowerX > 0 && 1)
+      | Number(lowerY > 0 && 2)
+      | Number(upperX > 0 && 4)
+      | Number(upperY > 0 && 8)
+  ) {
+    case 0:
+      interval[0] = multi(upperX, upperY);
+      interval[1] = multi(lowerX, lowerY);
+      break;
+    case 4:
+      interval[0] = multi(lowerY, upperX); 
+      interval[1] = multi(lowerX, lowerY); 
+      break;
+    case 8:
+      interval[0] = multi(lowerX, upperY); 
+      interval[1] = multi(lowerX, lowerY);
+      break;
+    case 10:
+      interval[0] = multi(lowerX, upperY); 
+      interval[1] = multi(lowerY, upperX);
+      break;
+    case 12:
+      interval[0] = min.apply(null, [multi(lowerX, upperY), multi(lowerY, upperX)]);
+      interval[1] = max.apply(null, [multi(upperX, upperY), multi(lowerX, lowerY)]);
+      break;
+    case 13:
+      interval[0] = multi(upperX, lowerY);
+      interval[1] = multi(upperX, upperY);
+      break;
+    case 14:
+      interval[0] = multi(upperY, lowerX);
+      interval[1] = multi(upperX, upperY);
+      break;
+    case 15:
+      interval[0] = multi(lowerX, lowerY);
+      interval[1] = multi(upperX, upperY);
+      break;
+  }
+  return makeInterval.apply(null, interval);
+};
+
+// console.log(mulInterval2([1, 2], [3, 4]));
+// console.log(mulInterval2([-1, 2], [3, 4]));
+// console.log(mulInterval2([-1, 2], [-3, 4]));
+// console.log(mulInterval2([-1, 2], [-4, -3]));
+// console.log(mulInterval2([-2, -1], [3, 4]));
+// console.log(mulInterval2([-2, -1], [-3, 4]));
+// console.log(mulInterval2([-2, -1], [-4, -3]));
 
 
 
+const makeCenterInterval = (x, width) => makeInterval(minus(x, width), add(x,width));
+const getCenter = x => divide(add(lowerBound(x), upperBound(x)), 2);
+const getWidth = getIntervalWidth;
+const makeCenterPercent = (center, percent) => [
+  minus(center, multi(center, percent)),
+  add(center, multi(center, percent)),
+];
+const gerPercent = (interval) => {
+  const center = getCenter(interval);
+  return divide(minus(upperBound(interval), center), center);
+};
+// console.log(makeCenterPercent(3, 0.5));
+// console.log(gerPercent([1.5, 4.5]));
 
 
-
-
-
-
-
-
-
-
+const R1 = 4;
+const R2 = 5;
+// console.log(divide(multi(R1, R2), add(R1, R2)));
+// console.log(divide(one(), add(divide(one(), R1), divide(one(), R2))));
 
 
 
