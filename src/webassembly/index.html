@@ -1,0 +1,25 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <div id='con'>this is con</div>
+    <script type="text/javascript">
+      let square;
+
+      function loadWebAssembly(fileName) {
+        return fetch(fileName)
+          .then(response => response.arrayBuffer())
+          .then(bits => WebAssembly.compile(bits))
+          .then(module => { return new WebAssembly.Instance(module) });
+      };
+
+      loadWebAssembly('test.wasm')
+        .then(instance => {
+          console.log(instance);
+          square = instance.exports.square;
+          console.log('Finished compiling! Ready when you are...');
+        });
+    </script>
+  </body>
+</html>
+

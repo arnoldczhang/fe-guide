@@ -44,6 +44,8 @@
     "g10:dev": "vuepress dev src/vuepress/docs",
     "g11:server": "webpack-dev-server --open --progress --config ./src/rxjs/build/webpack.dev.js",
     "g11:server:prod": "webpack-dev-server --open --progress --config ./src/rxjs/build/webpack.prod.js",
+    "g12:server": "node ./src/webassembly/app.js",
+    "g13": "node ./src/sicp/sicp.js",
     "test": "mocha"
   },
   "author": "arnold",
@@ -145,7 +147,8 @@
     "redux-saga": "^0.16.0",
     "request-idle-callback": "^1.0.2",
     "reselect": "^3.0.1",
-    "rxjs": "^5.5.10",
+    "rxjs": "^6.1.0",
+    "rxjs-compat": "^6.1.0",
     "style-loader": "^0.19.0",
     "transform-runtime": "^0.0.0",
     "typescript": "^2.6.1",

@@ -242,7 +242,7 @@ const cubert = x => fixPoint(averageFunc(y => x / square(y)), 1);
 
 // 求导数
 const deriv = func => (num, dx = 0.0001) => (func(num + dx) - func(num)) / dx;
-// 求x -> x3的导数（3x2）
+// 求x -> x^3的导数（3x^2）
 const derivCube = deriv(cube);
 // console.log(derivCube(5));
 
@@ -252,11 +252,16 @@ const derivCube = deriv(cube);
 // 求平方根（牛顿法）
 const newtonTransform = func => num => num - func(num) / deriv(func)(num);
 const newTonMethod = (func, guess = 1) =>  fixPoint(newtonTransform(func), guess);
-// y -> y2 - x
+// y -> y^2 - x
 const sqrt2 = x => newTonMethod(y => square(y) - x);
 // console.log(sqrt2(100));
 
 
+
+
+
+
+// 第一级抽象：最少限制元素
 const fixPointTransform = (func, transform, guess = 1) => fixPoint(transform(func), guess);
 
 // 求平方根（平均阻尼不动点-第一级抽象）
@@ -267,10 +272,398 @@ const sqrt4 = x => fixPointTransform(y => square(y) - x, newtonTransform);
 // console.log(sqrt3(100));
 // console.log(sqrt4(100));
 
+// 求立方根
+const cubert2 = x => fixPointTransform(y => x / square(y), averageFunc);
+// console.log(cubert2(100));
+
+// x^3 + ax^2 + bx + c
+const newTonCubic = (a, b, c) => newTonMethod(x => cubert2(x) + a * sqrt3(x) + b * x + c);
+
+
+
+// f(g(x))
+const compose = (f, g) => x => f(g(x));
+// (x + 1)^2
+const squareInc = compose(square, x => x + 1);
+// console.log(squareInc(6)); // 49
+
+// x^2^n
+const repeated = x => expt(5, x);
+const squareN = x => expt(2, x);
+const squareRepeat = compose(repeated, squareN);
+// console.log(squareRepeat(2)); // 625
 
 
 
 
+// 有理数运算
+const divide = (x, y) => {
+  if (y) {
+    return x / y;
+  }
+  throw new Error('the denor can`t be zero');
+};
+const multi = (x, y) => x * y;
+const minus = (...args) => args.reduce((x = 0, y = 0) => x - y);
+const add = (...args) => args.reduce((x = 0, y = 0) => x + y, 0);
+const min = (...args) => Math.min.apply(null, args);
+const max = (...args) => Math.max.apply(null, args);
+
+const getRat = (x, options = {}) => {
+  let num = x;
+  let times = 1;
+  while (num % 1) {
+    times *= 10;
+    num = x * times;
+  }
+
+  if (options.toInt) {
+    return `${num}/${times}`;
+  }
+
+  return {
+    numer: num,
+    denom: times,
+  };
+};
+
+/**
+ * 抽象屏障
+ */
+
+// 1-序对
+const cons = divide;
+const car = x => getRat(x).numer;
+const cdr = x => getRat(x).denom;
+// 2-分子分母有理数
+const makeRat = (x, y) => cons(x, y);
+const numer = x => car(x);
+const denom = x => cdr(x);
+// 3-有理数操作
+const addRat = (x, y) => divide(
+  add(
+    multi(numer(x), denom(y)),
+    multi(numer(y), denom(x)),
+  ),
+  multi(denom(x), denom(y)),
+);
+const multRat = (x, y) => divide(
+  multi(
+    numer(x),
+    numer(y),
+  ),
+  multi(
+    denom(x),
+    denom(y),
+  ),
+);
+
+// console.log(addRat(0.8, 0.3));
+// console.log(addRat(0.05, 0.3));
+// console.log(multRat(0.8, 0.3));
+// console.log(multRat(0.05, 0.3));
+
+
+
+
+const oneHalf = makeRat(1, 2);
+const oneThird = makeRat(1, 3);
+
+// console.log(addRat(oneHalf, oneThird));// 5 / 6
+// console.log(multRat(oneHalf, oneThird));// 1 / 6
+// console.log(addRat(oneThird, oneThird));// 6 / 9
+
+
+const makeRat2 = (x, y) => {
+  const g = gcd(x, y);
+  if (divide(x, y) < 0) {
+    x = -Math.abs(x);
+    y = Math.abs(y);
+  }
+  return cons(divide(x, g), divide(y, g));
+};
+
+const oneHalf2 = makeRat2(1, 2);
+const oneThird2 = makeRat2(1, 3);
+
+// console.log(addRat(oneHalf2, oneThird2));// 5 / 6
+// console.log(multRat(oneHalf2, oneThird2));// 1 / 6
+// console.log(addRat(oneThird2, oneThird2));// 6 / 9
+
+
+const numer2 =  (x) => {
+  const g = gcd(car(x), cdr(x));
+  return car(x) / g;
+};
+const denom2 =  (x) => {
+  const g = gcd(car(x), cdr(x));
+  return cdr(x) / g;
+};
+// console.log(numer2(0.8));
+// console.log(denom2(0.8));
+
+// 线段
+class Segment {
+  constructor(...args) {
+    const argsLength = args.length;
+    if (!argsLength) {
+      return;
+    }
+
+    const {
+      start,
+      end,
+    } = this;
+    const iterateArray = [start, end];
+    const iterator = argsLength === 1 ? args[0] : args;
+
+    this.checkStatus('isAllArray', iterator);
+    iterator.length = 2;
+    iterator.forEach((item, index) => {
+      iterateArray[index].apply(this, item);
+    });
+  }
+
+  start(x, y) {
+    if (this.begin) {
+      return;
+    }
+    this.begin = true;
+    this.startX = x;
+    this.startY = y;
+  }
+
+  end(x, y) {
+    if (this.ended) {
+      return;
+    }
+    this.ended = true;
+    this.endX = x;
+    this.endY = y;
+  }
+
+  checkStatus(status, input) {
+    switch(status) {
+      case 'completed':
+        const completed = this.begin && this.ended;
+        if (completed) {
+          return true;
+        }
+        throw new Error('the line is not completed');
+      case 'isAllArray':
+        const isAllArray = input && Array.isArray(input) && input.every(item => Array.isArray);
+        if (isAllArray) {
+          return true;
+        }
+        throw new Error(`${input} is not all array`);
+      default:
+        break;
+    }
+  }
+
+  getMiddlePoint() {
+    this.checkStatus('completed');
+    return [
+      divide(add(this.endX, this.startX), 2),
+      divide(add(this.endY, this.startY), 2)
+    ];
+  }
+
+  getStartPoint() {
+    return [this.startX, this.startY];
+  }
+
+  getEndPoint() {
+    return [this.endX, this.endY];
+  }
+
+  getLength() {
+    this.checkStatus('complete');
+    return sqrt3(
+      add(
+        square(minus(this.startX, this.endX)),
+        square(minus(this.startY, this.endY)),
+      )
+    );
+  }
+}
+
+// const segment = new Segment;
+// segment.start(1, 1);
+// segment.end(2, 2);
+// console.log(segment.getMiddlePoint());
+// console.log(segment.getLength());
+
+// const segment2 = new Segment([1, 1], [2, 2]);
+// console.log(segment2.getMiddlePoint());
+// console.log(segment2.getLength());
+
+// const segment3 = new Segment([[1, 1], [2, 2]]);
+// console.log(segment3.getMiddlePoint());
+// console.log(segment3.getLength());
+
+// const segment4 = new Segment([[1, 1]]);
+// segment4.end(2, 2);
+// console.log(segment4.getMiddlePoint());
+// console.log(segment4.getLength());
+
+class Rect {
+  constructor() {
+
+  }
+}
+
+// const rat = makeRat2(1, 2);
+// console.log(numer(rat) / denom(rat) === rat);
+
+
+const cons2 = (x, y) => (m) => [x, y][m];
+const z = cons2(1, 5);
+const car2 = z(0);
+const cdr2 = z(1);
+// console.log(car2, cdr2);
+
+
+const countAdd = (x = 0) => ++x;
+const addL = (func, times) => {
+  let result = 0;
+  while (times--) {
+    result = func(result);
+  }
+  return result;
+};
+const one = x => addL(countAdd, 1);
+// console.log(addL(countAdd, 5));
+
+
+// 区间算数
+const lowerBound = interval => interval[0];
+const upperBound = interval => interval[1];
+const makeInterval = (x, y) => [x, y];
+// 区间相加
+const addInterval = (x, y) => makeInterval(
+  add(lowerBound(x), lowerBound(y)),
+  add(upperBound(x), upperBound(y)),
+);
+// 相减
+const subInterval = (x, y) => makeInterval(
+  minus(lowerBound(x), lowerBound(y)),
+  minus(upperBound(x), upperBound(y)),
+);
+// 相乘
+const mulInterval = (x, y) => {
+  const lowerX = lowerBound(x);
+  const lowerY = lowerBound(y);
+  const upperX = upperBound(x);
+  const upperY = upperBound(y);
+  const mArray = [
+    multi(lowerX, lowerY),
+    multi(lowerX, upperY),
+    multi(upperX, lowerY),
+    multi(upperX, upperY),
+  ];
+  return makeInterval(
+    min.apply(null, mArray),
+    max.apply(null, mArray),
+  );
+};
+// 相除
+const divInterval = (x, y) => mulInterval(
+  x,
+  makeInterval(
+    divide(1, lowerBound(y)),
+    divide(1, upperBound(y)),
+  ),
+);
+
+const getIntervalWidth = x => divide(upperBound(x) - lowerBound(x), 2);
+const intv1 = [1, 2];
+const intv2 = [3, 4];
+// console.log(addInterval(intv1, intv2));
+// console.log(subInterval(intv1, intv2));
+// console.log(mulInterval(intv1, intv2));
+// console.log(divInterval(intv1, intv2));
+// console.log(getIntervalWidth(addInterval(intv1, intv2)) === add(getIntervalWidth(intv1), getIntervalWidth(intv2)));
+
+// 按需相乘
+const mulInterval2 = (x, y) => {
+  let interval = new Array(2);
+  const lowerX = lowerBound(x);
+  const lowerY = lowerBound(y);
+  const upperX = upperBound(x);
+  const upperY = upperBound(y);
+
+  switch(
+    Number(lowerX > 0 && 1)
+      | Number(lowerY > 0 && 2)
+      | Number(upperX > 0 && 4)
+      | Number(upperY > 0 && 8)
+  ) {
+    case 0:
+      interval[0] = multi(upperX, upperY);
+      interval[1] = multi(lowerX, lowerY);
+      break;
+    case 4:
+      interval[0] = multi(lowerY, upperX); 
+      interval[1] = multi(lowerX, lowerY); 
+      break;
+    case 8:
+      interval[0] = multi(lowerX, upperY); 
+      interval[1] = multi(lowerX, lowerY);
+      break;
+    case 10:
+      interval[0] = multi(lowerX, upperY); 
+      interval[1] = multi(lowerY, upperX);
+      break;
+    case 12:
+      interval[0] = min.apply(null, [multi(lowerX, upperY), multi(lowerY, upperX)]);
+      interval[1] = max.apply(null, [multi(upperX, upperY), multi(lowerX, lowerY)]);
+      break;
+    case 13:
+      interval[0] = multi(upperX, lowerY);
+      interval[1] = multi(upperX, upperY);
+      break;
+    case 14:
+      interval[0] = multi(upperY, lowerX);
+      interval[1] = multi(upperX, upperY);
+      break;
+    case 15:
+      interval[0] = multi(lowerX, lowerY);
+      interval[1] = multi(upperX, upperY);
+      break;
+  }
+  return makeInterval.apply(null, interval);
+};
+
+// console.log(mulInterval2([1, 2], [3, 4]));
+// console.log(mulInterval2([-1, 2], [3, 4]));
+// console.log(mulInterval2([-1, 2], [-3, 4]));
+// console.log(mulInterval2([-1, 2], [-4, -3]));
+// console.log(mulInterval2([-2, -1], [3, 4]));
+// console.log(mulInterval2([-2, -1], [-3, 4]));
+// console.log(mulInterval2([-2, -1], [-4, -3]));
+
+
+
+const makeCenterInterval = (x, width) => makeInterval(minus(x, width), add(x,width));
+const getCenter = x => divide(add(lowerBound(x), upperBound(x)), 2);
+const getWidth = getIntervalWidth;
+const makeCenterPercent = (center, percent) => [
+  minus(center, multi(center, percent)),
+  add(center, multi(center, percent)),
+];
+const gerPercent = (interval) => {
+  const center = getCenter(interval);
+  return divide(minus(upperBound(interval), center), center);
+};
+// console.log(makeCenterPercent(3, 0.5));
+// console.log(gerPercent([1.5, 4.5]));
+
+
+const R1 = 4;
+const R2 = 5;
+// console.log(divide(multi(R1, R2), add(R1, R2)));
+// console.log(divide(one(), add(divide(one(), R1), divide(one(), R2))));
 
 
 
@@ -312,3 +705,4 @@ const scripts = `
 
 // console.log(JSON.stringify(esprima.parseScript(scripts), null, '  '));
 // console.log(JSON.stringify(babel.transform(scripts), null, '  '));
+

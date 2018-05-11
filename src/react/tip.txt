@@ -8,7 +8,7 @@
  */
 
 /**
- * ------------------ The Life-Cycle of a Composite Component ------------------
+ * ------------------ The Life-Cycle of a Composite Component （before 16）------------------
  *
  * - constructor: Initialization of state. The instance is now retained.
  *   - componentWillMount
