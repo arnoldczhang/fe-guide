@@ -665,14 +665,68 @@ const R2 = 5;
 // console.log(divide(multi(R1, R2), add(R1, R2)));
 // console.log(divide(one(), add(divide(one(), R1), divide(one(), R2))));
 
+
+
+
+
+
+
+
+
+// 序列
 const listify = (...args) => {
   if (!args.length) {
     return null;
   }
   return [args.shift(), listify.apply(null, args)];
 };
+const flatten = (list, res = []) => {
+  if (list) {
+    res.push(list[0]);
+    return flatten(list[1], res);
+  }
+  return res;
+};
+const listCons = (el, list) => ([el, list]);
+const listCar = list => list[0];
+const listCdr = (list) => {
+  if (list && list.length > 1) {
+    return flatten(list[1]);
+  }
+  return null;
+};
 const oneThroughFour = () => listify(1, 2, 3, 4);
 // console.log(listify(1,2,3));
+// console.log(oneThroughFour());
+// console.log(listCar(oneThroughFour()));
+// console.log(listCdr(oneThroughFour()));
+// console.log(listCar(listCdr(oneThroughFour())));
+// console.log(listCons(10, oneThroughFour()));
+// console.log(listCons(5, oneThroughFour()));
+
+
+const listRef = (list, index) => {
+  if (list && list.length) {
+    if (!index) {
+      return listCar(list);
+    }
+    return listCdr(list)[index - 1];
+  }
+  throw new Error('miss the list');
+};
+const listOdd = () => listify(1, 3, 5, 7);
+const listSqures = () => listify(1, 4, 9, 16, 25);
+// console.log(listRef(listSqures(), 3));
+
+
+const listLength = list => !list ? 0 : (listCdr(list).length + 1);
+// console.log(listLength(listOdd())); // 4
+
+
+
+
+
+
 
 
 
