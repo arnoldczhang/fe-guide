@@ -665,8 +665,14 @@ const R2 = 5;
 // console.log(divide(multi(R1, R2), add(R1, R2)));
 // console.log(divide(one(), add(divide(one(), R1), divide(one(), R2))));
 
-
-
+const listify = (...args) => {
+  if (!args.length) {
+    return null;
+  }
+  return [args.shift(), listify.apply(null, args)];
+};
+const oneThroughFour = () => listify(1, 2, 3, 4);
+// console.log(listify(1,2,3));
 
 
 
