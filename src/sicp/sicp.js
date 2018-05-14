@@ -678,20 +678,33 @@ const listify = (...args) => {
   if (!args.length) {
     return null;
   }
+
+  if (args.length === 1) {
+    return args.shift();
+  }
   return [args.shift(), listify.apply(null, args)];
 };
 const flatten = (list, res = []) => {
   if (list) {
-    res.push(list[0]);
-    return flatten(list[1], res);
+    if (list.length) {
+      res.push(list[0]);
+      return flatten(list[1], res);
+    }
+    res.push(list);
   }
   return res;
 };
 const listCons = (el, list) => ([el, list]);
-const listCar = list => list[0];
-const listCdr = (list) => {
-  if (list && list.length > 1) {
-    return flatten(list[1]);
+const listCar = list => list && list.length ? list[0] : list;
+const listCdr = (list, noFlatten) => {
+  if (list) {
+    if (list.length > 1) {
+      if (noFlatten) {
+        return list[1];
+      }
+      return flatten(list[1]);
+    }
+    return list[0];
   }
   return null;
 };
@@ -721,6 +734,56 @@ const listSqures = () => listify(1, 4, 9, 16, 25);
 
 const listLength = list => !list ? 0 : (listCdr(list).length + 1);
 // console.log(listLength(listOdd())); // 4
+
+const listAppend = (list1, list2) => {
+  if (!list1) {
+    return list2;
+  }
+  return listCons(listCar(list1), listAppend(listCdr(list1, true), list2));
+};
+// console.log(JSON.stringify(listAppend(listOdd(), listSqures())));
+
+const listLastPair = (list) => {
+  const cdrList = listCdr(list);
+  return cdrList[cdrList.length - 1];
+};
+// console.log(listLastPair(listOdd()));
+// console.log(listLastPair(listSqures()));
+
+const listReverse = (list) => {
+  list = flatten(list);
+  return listify.apply(null, list.reverse());
+};
+// console.log(listReverse(listOdd()));
+
+
+// 算硬币
+const getMap = (list) => (list.reduce((map, value, index) => {
+  map[index + 1] = value;
+  return map;
+}, {}));
+const usCoins = () => getMap([50, 25, 10, 5, 1]);
+const ukCoins = () => getMap([100, 50, 20, 10, 5, 2, 1, 0.5]);
+const listCC = (
+  amount,
+  coinList,
+  kind = Object.keys(coinList).length,
+) => {
+  if (!amount) {
+    return 1;
+  }
+
+  if (amount < 0 || kind === 0) {
+    return 0;
+  } else {
+    return listCC(amount, coinList, kind - 1) + listCC(amount - coinList[kind], coinList, kind);
+  }  
+};
+console.log(listCC(100, usCoins())); // 292
+console.log(listCC(100, ukCoins()));
+
+
+
 
 
 
