@@ -687,14 +687,19 @@ const listify = (...args) => {
 const flatten = (list, res = []) => {
   if (list) {
     if (list.length) {
-      res.push(list[0]);
+      let first = list[0];
+      if (Array.isArray(first)) {
+        flatten(first, res);
+      } else {
+        res.push(first);
+      }
       return flatten(list[1], res);
     }
     res.push(list);
   }
   return res;
 };
-const listCons = (el, list) => ([el, list]);
+const listCons = (el, list) => (list ? [el, list] : el);
 const listCar = list => list && list.length ? list[0] : list;
 const listCdr = (list, noFlatten) => {
   if (list) {
@@ -779,8 +784,46 @@ const listCC = (
     return listCC(amount, coinList, kind - 1) + listCC(amount - coinList[kind], coinList, kind);
   }  
 };
-console.log(listCC(100, usCoins())); // 292
-console.log(listCC(100, ukCoins()));
+// console.log(listCC(100, usCoins())); // 292
+// console.log(listCC(100, ukCoins()));
+
+
+const listScale = (list, factor) => (
+  list
+    ? listCons(listCar(list) * factor, listScale(listCdr(list, true), factor))
+    : null
+);
+// console.log(JSON.stringify(listScale(listify(1, 2, 3, 4, 5), 10)));
+
+
+const listMap = (proc, list) => (
+  list
+    ? listCons(proc(listCar(list)), listMap(proc, listCdr(list, true)))
+    : null
+);
+const listForEach = (proc, list) => {
+  if (list) {
+    proc(listCar(list));
+    listForEach(proc, listCdr(list, true));
+  }
+};
+const listScale2 = (list, factor) => listMap(x => x * factor, list);
+const listSquare = (list, factor) => listMap(square, list);
+// console.log(listMap(Math.abs, listify(-1, 2, -3, 4)));
+// console.log(listMap(x => x * x, listify(-1, 2, -3, 4)));
+// console.log(listScale2(listify(-1, 2, -3, 4), 10));
+// console.log(listSquare(listify(-1, 2, -3, 4)));
+// listForEach(x => console.log(x), listify(1, -2, 3, 4));
+// console.log(listReverse(listify(listify(1, 2), listify(3, 4))));
+
+const listX = () => listify(listify(1, 2), listify(3, 4));
+const fringe = list => flatten(list);
+// console.log(fringe(listX()));
+// console.log(fringe(listify(listX(), listX())));
+
+
+
+
 
 
 
