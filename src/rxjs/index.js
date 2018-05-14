@@ -7,6 +7,8 @@ import Rx, {
   Scheduler,
 } from'rxjs/Rx';
 
+require('../ow/ow');
+
 const btn = document.querySelector('#btn');
 
 // const observer = Observable.fromEvent(btn, 'click')
@@ -223,7 +225,6 @@ observable.subscribe(ct => console.log(ct));
 
 
 console.log(Rx);
-
 
 
 

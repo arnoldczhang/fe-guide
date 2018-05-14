@@ -1,5 +1,6 @@
 import React from 'react';
 import { hydrate } from 'react-dom';
+import { Log, VisualizerProvider } from 'react-lifecycle-visualizer';
 import {
   Provider,
 } from 'mobx-react';
@@ -18,7 +19,12 @@ console.log('enter');
 
 hydrate(
   <Provider store={observable(stores)} aa="1">
-    <App />
+    <VisualizerProvider>
+      <div>
+        <App />
+        <Log />
+      </div>
+    </VisualizerProvider>
   </Provider>,
   document.getElementById('root'),
 );
