@@ -41,6 +41,10 @@ module.exports = {
       title: 'Development',
       template: './src/mobx/index.html',
     }),
+    new webpack.DllPlugin({
+      name: '[name]_[hash]',
+      path: path.join(__dirname, '[name]-manifest.json'),
+    }),
   ],
   resolve: {
     extensions: ['.*', '.js', '.jsx', '.es6'],

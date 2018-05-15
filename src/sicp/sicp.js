@@ -818,8 +818,32 @@ const listSquare = (list, factor) => listMap(square, list);
 
 const listX = () => listify(listify(1, 2), listify(3, 4));
 const fringe = list => flatten(list);
+const makeMobile = (left, right) => listify(left, right);
 // console.log(fringe(listX()));
 // console.log(fringe(listify(listX(), listX())));
+
+const listMapDeep = (proc, list) => {
+  if (list) {
+    if (Array.isArray(listCar(list))) {
+      return listCons(
+        listMapDeep(proc, listCar(list)),
+        listMapDeep(proc, listCdr(list, true)),
+      );
+    }
+    return listCons(
+      proc(listCar(list)),
+      listMapDeep(proc, listCdr(list, true)),
+    );
+  }
+  return null;
+};
+const listSquareDeep = list => listMapDeep(square, list);
+// console.log(listMapDeep(x => x * 10, listify(1, listify(2, listify(3, 4), 5), listify(6, 7))));
+// [10,[[20,[[30,40],50]],[60,70]]]
+// console.log(JSON.stringify(listSquareDeep(listify(1, listify(2, listify(3, 4), 5), listify(6, 7)))));
+
+
+
 
 
 
