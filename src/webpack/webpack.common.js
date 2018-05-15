@@ -8,11 +8,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-  entry: {
-    rxjs: [
-      './src/rxjs/index.js',
-    ],
-  },
   output: {
     path: path.join(__dirname, '../dist'),
     filename: '[name].[hash].js',
@@ -29,10 +24,6 @@ module.exports = {
     }),
     new CleanWebpackPlugin(['./dist'], {
       root: path.join(__dirname, '..'),
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Development',
-      template: './src/rxjs/index.html',
     }),
   ],
   resolve: {
