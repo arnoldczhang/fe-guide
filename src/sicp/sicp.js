@@ -53,6 +53,7 @@ const paska = (line = 1, result = {}) => {
 
 // 幂
 const isEven = num => num % 2 === 0;
+const isOdd = num => !isEven(num);
 const square = num => num * num;
 const cube = num => square(num) * num;
 const expt = (num, times) => {
@@ -699,7 +700,9 @@ const flatten = (list, res = []) => {
   }
   return res;
 };
-const listCons = (el, list) => (list ? [el, list] : el);
+const listCons = (el, list) => (
+  el ? list ? [el, list] : el : list
+);
 const listCar = list => list && list.length ? list[0] : list;
 const listCdr = (list, noFlatten) => {
   if (list) {
@@ -787,7 +790,7 @@ const listCC = (
 // console.log(listCC(100, usCoins())); // 292
 // console.log(listCC(100, ukCoins()));
 
-
+// 序列循环
 const listScale = (list, factor) => (
   list
     ? listCons(listCar(list) * factor, listScale(listCdr(list, true), factor))
@@ -838,25 +841,84 @@ const listMapDeep = (proc, list) => {
   return null;
 };
 const listSquareDeep = list => listMapDeep(square, list);
-// console.log(listMapDeep(x => x * 10, listify(1, listify(2, listify(3, 4), 5), listify(6, 7))));
+// console.log(listMapDeep(x => x * 10, ));
 // [10,[[20,[[30,40],50]],[60,70]]]
 // console.log(JSON.stringify(listSquareDeep(listify(1, listify(2, listify(3, 4), 5), listify(6, 7)))));
 
 
+const sumOddSqures = (list) => {
+  let result = 0;
+  listForEach((value) => {
+    if (isOdd(value)) {
+      result += square(value);
+    }
+  }, list);
+  return result;
+};
+
+const sumOddSqures2 = (list) => {
+  if (list && list.length) {
+    return list.reduce((count, value) => {
+      if (Array.isArray(value)) {
+        return count + sumOddSqures2(value);
+      }
+      return count + (isOdd(value) ? square(value) : 0);
+    }, 0);
+  }
+  return 0;
+};
+
+// console.log(sumOddSqures(listify(1, 2, 3, 4, 5)));
+// console.log(sumOddSqures2(listify(1, 2, 3, 4, 5)));
+
+// 信号流
+const listFilter = (predicate, list) => {
+  if (list) {
+    if (Array.isArray(list)) {
+      let car = listCar(list);
+      if (predicate(car)) {
+        return listCons(car, listFilter(predicate, listCdr(list, true)));
+      }
+      return listFilter(predicate, listCdr(list, true));
+    }
+    return list;
+  }
+};
+
+const listAccumulate = (op, initValue, list) => {
+  if (list) {
+    if (Array.isArray(list)) {
+      initValue = op(initValue, listCar(list));
+      return listAccumulate(op, initValue, listCdr(list, true));
+    }
+    return op(initValue, list);
+  }
+  return 0;
+};
+// console.log(listFilter(isOdd, listify(1, 2, 3, 4, 5))); // [ 1, [ 3, 5 ] ]
+// console.log(listAccumulate(add, 0, listify(1, 2, 3, 4, 5))); // 15
+// console.log(listAccumulate(multi, 1, listify(1, 2, 3, 4, 5))); // 120
+// console.log(JSON.stringify(listAccumulate(listCons, null, listify(1, 2, 3, 4, 5)))); // [[[[1,2],3],4],5]
 
 
+// 区间整数序列
+const enumerableInterval = (low, high) => {
+  if (low > high) {
+    return null;
+  }
+  return listCons(low, enumerableInterval(low + 1, high));
+};
+// console.log(JSON.stringify(enumerableInterval(1, 4)));
 
-
-
-
-
-
-
-
-
-
-
-
+const sumOddSqures3 = (list) => listAccumulate(
+  add,
+  0,
+  listMapDeep(
+    square,
+    listFilter(isOdd, list),
+  ),
+);
+// console.log(sumOddSqures3(listify(1, 2, 3, 4, 5)));
 
 
 
