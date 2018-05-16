@@ -964,8 +964,10 @@ const hornerEval = (x, list) => {
 // console.log(hornerEval(2, listify(1, 3, 0, 5, 0, 1))); // 79
 
 
-
-
+const countLeaves = list => listAccumulate((count, next) => {
+  return add(count, 1);
+}, 0, list);
+console.log(countLeaves(listify(1, 2, 3, 4, 5)));
 
 
 
