@@ -57,7 +57,11 @@ const isOdd = num => !isEven(num);
 const square = num => num * num;
 const cube = num => square(num) * num;
 const expt = (num, times) => {
-  if (times <= 1) {
+  if (times < 1) {
+    return 1;
+  }
+
+  if (times === 1) {
     return num;
   }
 
@@ -883,6 +887,7 @@ const listFilter = (predicate, list) => {
     }
     return list;
   }
+  return null;
 };
 
 const listAccumulate = (op, initValue, list) => {
@@ -919,6 +924,49 @@ const sumOddSqures3 = (list) => listAccumulate(
   ),
 );
 // console.log(sumOddSqures3(listify(1, 2, 3, 4, 5)));
+
+const listEvenFibs = high => (
+  listAccumulate(listCons, null, listFilter(isEven, enumerableInterval(0, high)))
+);
+// console.log(JSON.stringify(listEvenFibs(10)));
+
+// 斐波那契数
+const getFibs = (high, list = [0, 1]) => {
+  const length = list.length;
+  const next = list[length - 2] + list[length - 1];
+  if (length > high) {
+    return list;
+  }
+  list.push(next);
+  return getFibs(high, list);
+};
+// console.log(getFibs(10)); // [ 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 ]
+
+// 斐波那契数-平方
+const listFibSquare = high => listMap(square, listify.apply(null, getFibs(high)));
+// console.log(JSON.stringify(listFibSquare(10))); // [1,[1,[4,[9,[25,[64,[169,[441,[1156,3025]]]]]]]]]
+
+// 奇数平方积
+const productOddSquare = list => listAccumulate(multi, 1, listMap(square, listFilter(isOdd, list)));
+// console.log(productOddSquare(listify(1, 2, 3, 4, 5))); // 225
+
+// 多项式
+const hornerEval = (x, list) => {
+  const op = (() => {
+    let times = 0;
+    return (count, next) => {
+      return add(count, multi(next, expt(x, times++)));
+    };
+  })();
+  return listAccumulate(op, 0, list);
+};
+// 设x = 2, 求1 + 3x + 5x^3 + x^5
+// console.log(hornerEval(2, listify(1, 3, 0, 5, 0, 1))); // 79
+
+
+
+
+
 
 
 
