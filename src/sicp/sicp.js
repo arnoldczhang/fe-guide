@@ -967,7 +967,56 @@ const hornerEval = (x, list) => {
 const countLeaves = list => listAccumulate((count, next) => {
   return add(count, 1);
 }, 0, list);
-console.log(countLeaves(listify(1, 2, 3, 4, 5)));
+// console.log(countLeaves(listify(1, 2, 3, 4, 5))); // 5
+
+
+const foldLeft = (op, initValue, list) => {
+    const iter = (init, array) => {
+      if (array && array.length) {
+        return iter(op(init, listCar(array)), listCdr(array, true));
+      }
+      return op(init, array);
+    };
+    return iter(initValue, list);
+};
+// console.log(foldLeft(add, 0, listify(1, 2, 3, 4, 5))); // 15
+
+
+const listifyRight = (...args) => {
+  if (args.length) {
+    return args.reduce((result, value, index) => {
+      if (index < 2) {
+        result.push(value);
+        return result;
+      }
+      return [result, value];
+    }, []);
+  }
+  return null;
+};
+
+const foldRight = (op, initValue, list) => {
+  if (list && list.length) {
+    let suffix = list.pop();
+    while (Array.isArray(suffix)) {
+      list = suffix;
+      suffix = suffix.pop();
+    }
+    initValue = op(initValue, suffix);
+    return foldRight(op, initValue, list);
+  }
+  return initValue;
+};
+// console.log(JSON.stringify(listifyRight(1, 2, 3, 4, 5))); // [[[[1,2],3],4],5]
+// console.log(foldRight(add, 0, listifyRight(1, 2, 3, 4, 5))); // 15
+// console.log(foldLeft(divide, 1, listify(1, 2, 3)));
+// console.log(foldRight(divide, 1, listifyRight(1, 2, 3)));
+// console.log(foldLeft(listify, null, listify(1, 2, 3))); // 15
+// console.log(foldRight(listifyRight, null, listifyRight(1, 2, 3))); // 15
+
+
+
+
 
 
 
