@@ -1011,14 +1011,36 @@ const foldRight = (op, initValue, list) => {
 // console.log(foldRight(add, 0, listifyRight(1, 2, 3, 4, 5))); // 15
 // console.log(foldLeft(divide, 1, listify(1, 2, 3)));
 // console.log(foldRight(divide, 1, listifyRight(1, 2, 3)));
-// console.log(foldLeft(listify, null, listify(1, 2, 3))); // 15
-// console.log(foldRight(listifyRight, null, listifyRight(1, 2, 3))); // 15
+// console.log(foldLeft(listify, null, listify(1, 2, 3))); // [ [ [ null, 1 ], 2 ], 3 ]
+// console.log(foldRight(listifyRight, null, listifyRight(1, 2, 3))); // [ [ [ null, 3 ], 2 ], 1 ]
+// console.log(foldLeft(add, null, listify(1, 2, 3))); // 6
+// console.log(foldRight(add, null, listifyRight(1, 2, 3))); // 6
 
+// 自然序对和为素数（i <= n，j < i，i + j是素数）
+const getCountPrime = (n, result = []) => {
+  const list = enumerableInterval(2, n);
+  listForEach((item) => {
+    const childList = enumerableInterval(1, item);
+    listForEach((child) => {
+      const sum = child + item;
+      if (prime(sum)) {
+        result.push([item, child, sum]);
+      }
+    }, childList);
+  }, list);
+  return result;
+};
 
-
-
-
-
+const primeSum = list => list.reduce((sum, next) => sum + next[2], 0);
+// 过滤序列字段
+const removeSeq = (removeItem, list) => listFilter(item => removeItem !== item, list);
+// 排列组合
+const permutation = (list) => {
+  // n(n-1)(n-2)……(n-m+1)
+};
+// console.log(JSON.stringify(getCountPrime(6))); // [[2,1,3],[3,2,5],[4,1,5],[4,3,7],[5,2,7],[6,1,7],[6,5,11]]
+// console.log(primeSum(getCountPrime(6)));
+console.log(removeSeq(3, listify(1, 2, 3, 4, 5)));
 
 
 
