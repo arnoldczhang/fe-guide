@@ -1034,13 +1034,55 @@ const getCountPrime = (n, result = []) => {
 const primeSum = list => list.reduce((sum, next) => sum + next[2], 0);
 // 过滤序列字段
 const removeSeq = (removeItem, list) => listFilter(item => removeItem !== item, list);
+// console.log(JSON.stringify(getCountPrime(6))); // [[2,1,3],[3,2,5],[4,1,5],[4,3,7],[5,2,7],[6,1,7],[6,5,11]]
+// console.log(primeSum(getCountPrime(6)));
+// console.log(removeSeq(3, listify(1, 2, 3, 4, 5)));
+
+
 // 排列组合
 const permutation = (list) => {
   // n(n-1)(n-2)……(n-m+1)
+  if (list) {
+    if (!list.length) {
+      list = [list];
+    }
+    list = flatten(list);
+    let result = 1;
+    let length = list.length;
+    while (length) {
+      result = multi(result, length--);
+    }
+    return result;
+  }
+  return 0;
 };
-// console.log(JSON.stringify(getCountPrime(6))); // [[2,1,3],[3,2,5],[4,1,5],[4,3,7],[5,2,7],[6,1,7],[6,5,11]]
-// console.log(primeSum(getCountPrime(6)));
-console.log(removeSeq(3, listify(1, 2, 3, 4, 5)));
+// console.log(permutation(listify(1, 2, 3, 4)));
+// console.log(permutation(listify(1, 2, 3)));
+// console.log(permutation(listify(1, 2)));
+// console.log(permutation(listify(1)));
+
+
+const makeVect = (x, y) => [x, y];
+const addVect = (vect1, vect2) => [vect1[0] + vect2[0], vect1[1] + vect2[1]];
+const subVect = (vect1, vect2) => [vect2[0] - vect1[0], vect2[1] - vect1[0]];
+const scaleVect = (scale, vect) => [scale * vect[0], scale * vect[1]];
+const makeFrame = (origin, edge1, edge2) => [origin, edge1, edge2];
+const makeSegment = (vect1, vect2) => [vect1, vect2];
+const startSegment = (origin, start) => subVect(origin, start);
+const endSegment = (origin, end) => subVect(origin, end);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
