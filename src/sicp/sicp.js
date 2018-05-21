@@ -1138,7 +1138,7 @@ const shrinkToUpperRight = painter => transformPainter(
 );
 
 // 逆时针转90°
-const shrinkToUpperRight = painter => transformPainter(
+const rotate90 = painter => transformPainter(
   painter,
   makeVect(1, 0),
   makeVect(1, 1),
@@ -1146,7 +1146,7 @@ const shrinkToUpperRight = painter => transformPainter(
 );
 
 // 图像中心收缩
-const shrinkToUpperRight = painter => transformPainter(
+const shrinkInwards = painter => transformPainter(
   painter,
   makeVect(0, 0),
   makeVect(0.65, 0.35),
