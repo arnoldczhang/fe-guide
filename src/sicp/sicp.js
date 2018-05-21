@@ -1062,24 +1062,96 @@ const permutation = (list) => {
 // console.log(permutation(listify(1)));
 
 
+// TODO 画家 + 向量这块没看懂。。。。
 const makeVect = (x, y) => [x, y];
 const addVect = (vect1, vect2) => [vect1[0] + vect2[0], vect1[1] + vect2[1]];
-const subVect = (vect1, vect2) => [vect2[0] - vect1[0], vect2[1] - vect1[0]];
+const subVect = (vect1, vect2) => [vect2[0] - vect1[0], vect2[1] - vect1[1]];
 const scaleVect = (scale, vect) => [scale * vect[0], scale * vect[1]];
-const makeFrame = (origin, edge1, edge2) => [origin, edge1, edge2];
+const makeFrame = (origin, edgeX, edgeY) => ({
+  origin,
+  edgeX,
+  edgeY,
+});
 const makeSegment = (vect1, vect2) => [vect1, vect2];
 const startSegment = (origin, start) => subVect(origin, start);
 const endSegment = (origin, end) => subVect(origin, end);
+// 画家
+const segmentsPainter = (list, origin = [0, 0]) => {
+  const getX = arr => arr[0];
+  const getY = arr => arr[1];
 
+  if (list && list.length) {
+    const edges = [];
+    let x = 0;
+    let y = 0;
+    list.forEach((segment) => {
+      const start = startSegment(origin, segment[0]);
+      const end = endSegment(origin, segment[1]);
+      x = Math.max(getX(start), getX(end), x);
+      y = Math.max(getY(start), getY(end), y);
+      edges.push([start, end]);
+    });
 
+    const frame = makeFrame(
+      origin,
+      makeVect(x, getY(origin)),
+      makeVect(getX(origin), y)
+    );
+    return {
+      edges,
+      frame,
+    };
+  }
+};
+// console.log(JSON.stringify(segmentsPainter([[[1, 1], [2, 1]], [[0, 1], [1, 2]]]))); // 画十
+// console.log(JSON.stringify(segmentsPainter([[[1, 1], [2, 2]], [[2, 1], [1, 2]]]))); // 画X
 
+// 画家变换
+const transformPainter = (painter, origin, corner1, corner2) => {
+  const start = startSegment(origin, corner1);
+  const end = endSegment(origin, corner2);
+  painter.frame = makeFrame(origin, start, end);
+  painter.edges = painter.edges.map((edge) => {
+    let [edgeStart, edgeEnd] = edge;
+    edgeStart = startSegment(origin, edgeStart);
+    edgeEnd = endSegment(origin, edgeEnd);
+    return [edgeStart, edgeEnd];
+  });
+  return painter;
+};
+// console.log(JSON.stringify(transformPainter(segmentsPainter([[[1, 1], [2, 1]], [[0, 1], [1, 2]]]), [0, 1], [1, 1], [0, 0])));
 
+// 垂直反转
+const flipVert = painter => transformPainter(
+  painter,
+  makeVect(0, 1),
+  makeVect(1, 1),
+  makeVect(0, 0),
+);
 
+// 右上角收缩
+const shrinkToUpperRight = painter => transformPainter(
+  painter,
+  makeVect(0.5, 0.5),
+  makeVect(1, 0.5),
+  makeVect(0.5, 1),
+);
 
+// 逆时针转90°
+const shrinkToUpperRight = painter => transformPainter(
+  painter,
+  makeVect(1, 0),
+  makeVect(1, 1),
+  makeVect(0, 0),
+);
 
-
-
-
+// 图像中心收缩
+const shrinkToUpperRight = painter => transformPainter(
+  painter,
+  makeVect(0, 0),
+  makeVect(0.65, 0.35),
+  makeVect(0.35, 0.65),
+);
 
 
 
