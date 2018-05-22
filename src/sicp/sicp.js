@@ -1153,6 +1153,42 @@ const shrinkInwards = painter => transformPainter(
   makeVect(0.35, 0.65),
 );
 
+// 判断包含
+const memq = (item, list) => {
+  if (list) {
+    const car = listCar(list);
+    if (item === car) {
+      return true;
+    }
+    return memq(item, listCdr(list, true));
+  }
+  return false;
+};
+// console.log(memq(5, listify(1, 2, 3, 4, 5)));
+// console.log(listFilter(v => v === 5, listify(1, 2, 3, 4, 5)));
+
+
+const getIndexItem = (array, index = 0) => (Array.isArray(array) ? array[index] : null);
+const cad = (expression, symbol) => {
+  const reg = new RegExp(`\\(?\\${symbol}\\s*(\\d+)\\s+(\\d+)\\s*\\)?`);
+  const result = reg.exec(expression);
+  if (result) {
+    return [result[1], result[2]];
+  }
+  throw new Error(`the expression: ${expression} is not match`);
+};
+const cadr = (expression, symbol = '+') => (getIndexItem(cad(expression, symbol), 0));
+const caddr = (expression, symbol = '+') => (getIndexItem(cad(expression, symbol), 1));
+const addend = expression => cadr(expression);
+const augend = expression => caddr(expression);
+const multiplier = expression => cadr(expression, '*');
+const multiplicand = expression => caddr(expression, '*');
+// console.log(cad('+ 5 1'));
+// console.log(addend('+ 5 1'));  // 5
+// console.log(augend('+ 5  1')); // 1
+// console.log(multiplier('* 5 1'));  // 5
+// console.log(multiplicand('* 5  1')); // 1
+
 
 
 

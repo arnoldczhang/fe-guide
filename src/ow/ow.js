@@ -1,3 +1,6 @@
+/**
+ * 校验schema
+ */
 const ow = require('ow');
 const unicorn = input => {
   ow(input, ow.string.minLength(5));
