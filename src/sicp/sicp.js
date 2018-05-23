@@ -1,5 +1,8 @@
 const esprima = require('esprima');
 const babel = require('babel-core');
+const signale = require('signale');
+
+console.log = signale.success;
 
 // 求最大公约数
 const gcd = (a, b) => {
@@ -1247,7 +1250,7 @@ const makeProduct = (a1, a2) => {
 // console.log(makeProduct(5, 2)); // 10
 // console.log(cadcalc('+ 5 2'));
 // console.log(cadMultiCalc('*7 5')); // 35
-// console.log(cadMultiCalc('/(-(+(*7 5) 5) 5) 7')); // 5
+console.log(cadMultiCalc('/(-(+(*7 5) 5) 5) 7')); // 5
 
 
 
