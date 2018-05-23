@@ -1169,25 +1169,92 @@ const memq = (item, list) => {
 
 
 const getIndexItem = (array, index = 0) => (Array.isArray(array) ? array[index] : null);
-const cad = (expression, symbol) => {
-  const reg = new RegExp(`\\(?\\${symbol}\\s*(\\d+)\\s+(\\d+)\\s*\\)?`);
-  const result = reg.exec(expression);
+
+const cad = (expression, options = {}) => {
+  const symbol = '[-+*/]';
+  const symbolReg = new RegExp(symbol);
+  const exprReg = new RegExp(`\\(?(${symbol})\\s*(-?\\d+)\\s+(-?\\d+)\\s*\\)?`);
+  const result = exprReg.exec(expression);
   if (result) {
-    return [result[1], result[2]];
+    const [expr, symbol, cadrNum, caddrNum] = result;
+    return [cadrNum, caddrNum, symbol, expr];
   }
-  throw new Error(`the expression: ${expression} is not match`);
+
+  if (!options.silence) {
+    if (!symbolReg.exec(expression)) {
+      return expression;
+    }
+    throw new Error(`the expression: ${expression} is incorrect`);
+  }
+  return null;
 };
-const cadr = (expression, symbol = '+') => (getIndexItem(cad(expression, symbol), 0));
-const caddr = (expression, symbol = '+') => (getIndexItem(cad(expression, symbol), 1));
+
+const getSymbolMap = symbol => (
+  {
+    '+': add,
+    '-': minus,
+    '/': divide,
+    '*': multi,
+  }[symbol]
+);
+
+const cadcalc = (...args) => {
+  const [cadrNum, caddrNum, symbol] = cad.apply(null, args);
+  const symbolFunc = getSymbolMap(symbol);
+  if (symbolFunc) {
+    return symbolFunc.call(null, Number(cadrNum), Number(caddrNum));
+  }
+  throw new Error('the ${symbol} is incorrect');
+};
+
+const cadMultiCalc = (expression) => {
+  let result = cad(expression);
+  while (result && Array.isArray(result)) {
+    const expr = result[3];
+    expression = expression.replace(expr, cadcalc(expr));
+    result = cad(expression);
+  }
+  return +expression;
+};
+
+const cadr = expression => getIndexItem(cad(expression), 0);
+const caddr = expression => getIndexItem(cad(expression), 1);
 const addend = expression => cadr(expression);
 const augend = expression => caddr(expression);
-const multiplier = expression => cadr(expression, '*');
-const multiplicand = expression => caddr(expression, '*');
+const multiplier = expression => cadr(expression);
+const multiplicand = expression => caddr(expression);
+const isNumber = num => typeof num === 'number';
+const makeSum = (a1, a2) => {
+  a1 = isNumber(a1) ? a1 : 0;
+  a2 = isNumber(a2) ? a2 : 0;
+  return cadcalc(`+ ${a1} ${a2}`);
+};
+const makeProduct = (a1, a2) => {
+  a1 = isNumber(a1) ? a1 : 0;
+  a2 = isNumber(a2) ? a2 : 0;
+
+  if (!a1 || !a2) {
+    return 0;
+  }
+  return cadcalc(`* ${a1} ${a2}`);
+};
 // console.log(cad('+ 5 1'));
 // console.log(addend('+ 5 1'));  // 5
 // console.log(augend('+ 5  1')); // 1
 // console.log(multiplier('* 5 1'));  // 5
-// console.log(multiplicand('* 5  1')); // 1
+// console.log(multiplicand('(* 5  1)')); // 1
+// console.log(makeSum(5, 2)); // 7
+// console.log(makeProduct(5, 2)); // 10
+// console.log(cadcalc('+ 5 2'));
+// console.log(cadMultiCalc('*7 5')); // 35
+// console.log(cadMultiCalc('/(-(+(*7 5) 5) 5) 7')); // 5
+
+
+
+
+
+
+
 
 
 
