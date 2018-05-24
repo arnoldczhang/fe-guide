@@ -3,6 +3,7 @@ const internalIP = require('internal-ip');
 const open = require('open');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const base = require('./webpack.base.js');
 const host = internalIP.v4() || '0.0.0.0';
@@ -17,6 +18,7 @@ const config = merge(base, {
       manifest: require("../build/common-manifest.json"),
       extensions: [".js", ".jsx"],
     }),
+    new BundleAnalyzerPlugin(),
   ],
   devServer: {
     port,

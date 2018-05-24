@@ -1,7 +1,8 @@
 const esprima = require('esprima');
 const babel = require('babel-core');
 const signale = require('signale');
-
+const chai = require('chai');
+const expect = chai.expect;
 console.log = signale.success;
 
 // 求最大公约数
@@ -18,8 +19,6 @@ const gcd = (a, b) => {
 
 // console.log(gcd(16, 28));
 // console.log(gcd(206, 40));
-
-
 
 
 
@@ -313,7 +312,7 @@ const divide = (x, y) => {
 };
 const multi = (x, y) => x * y;
 const minus = (...args) => args.reduce((x = 0, y = 0) => x - y);
-const add = (...args) => args.reduce((x = 0, y = 0) => x + y, 0);
+const add = (...args) => args.reduce((x = 0, y = 0) => x + Number(y), 0);
 const min = (...args) => Math.min.apply(null, args);
 const max = (...args) => Math.max.apply(null, args);
 
@@ -1172,19 +1171,27 @@ const memq = (item, list) => {
 
 
 const getIndexItem = (array, index = 0) => (Array.isArray(array) ? array[index] : null);
+const identify = v => v;
 
 const cad = (expression, options = {}) => {
-  const symbol = '[-+*/]';
-  const symbolReg = new RegExp(symbol);
-  const exprReg = new RegExp(`\\(?(${symbol})\\s*(-?\\d+)\\s+(-?\\d+)\\s*\\)?`);
-  const result = exprReg.exec(expression);
+  const {
+    optSymbol,
+    optSymbolRe,
+    optExprRe,
+  } = options;
+  const symbol = optSymbol || '[\\*\\/\\+-]+';
+  const symbolRe = optSymbolRe || new RegExp(symbol);
+  const exprRe = optExprRe || new RegExp(`\\(?(${symbol})((?:\\s*[-\\+]?(?:\\d+|\\d*\\.\\d+)){2,})\\s*\\)?`);
+  const result = exprRe.exec(expression);
+
   if (result) {
-    const [expr, symbol, cadrNum, caddrNum] = result;
-    return [cadrNum, caddrNum, symbol, expr];
+    const [expr, symbol, numString] = result;
+    const numArray = numString.split(/\s+/g).filter(identify);
+    return [expr, symbol, ...numArray];
   }
 
   if (!options.silence) {
-    if (!symbolReg.exec(expression)) {
+    if (!symbolRe.exec(expression)) {
       return expression;
     }
     throw new Error(`the expression: ${expression} is incorrect`);
@@ -1198,30 +1205,32 @@ const getSymbolMap = symbol => (
     '-': minus,
     '/': divide,
     '*': multi,
+    '**': expt,
   }[symbol]
 );
 
 const cadcalc = (...args) => {
-  const [cadrNum, caddrNum, symbol] = cad.apply(null, args);
+  const [, symbol, ...cadNums] = cad.apply(null, args);
   const symbolFunc = getSymbolMap(symbol);
   if (symbolFunc) {
-    return symbolFunc.call(null, Number(cadrNum), Number(caddrNum));
+    return symbolFunc.apply(null, cadNums);
   }
   throw new Error('the ${symbol} is incorrect');
 };
 
-const cadMultiCalc = (expression) => {
-  let result = cad(expression);
+const cadMultiCalc = (...args) => {
+  let [expression, ...opts] = args;
+  let result = cad.apply(null, args);
   while (result && Array.isArray(result)) {
-    const expr = result[3];
+    const [expr] = result;
     expression = expression.replace(expr, cadcalc(expr));
-    result = cad(expression);
+    result = cad.apply(null, [expression].concat(opts));
   }
-  return +expression;
+  return Number(expression);
 };
 
-const cadr = expression => getIndexItem(cad(expression), 0);
-const caddr = expression => getIndexItem(cad(expression), 1);
+const cadr = expression => Number(getIndexItem(cad(expression), 2));
+const caddr = expression => Number(getIndexItem(cad(expression), 3));
 const addend = expression => cadr(expression);
 const augend = expression => caddr(expression);
 const multiplier = expression => cadr(expression);
@@ -1241,16 +1250,20 @@ const makeProduct = (a1, a2) => {
   }
   return cadcalc(`* ${a1} ${a2}`);
 };
-// console.log(cad('+ 5 1'));
-// console.log(addend('+ 5 1'));  // 5
-// console.log(augend('+ 5  1')); // 1
-// console.log(multiplier('* 5 1'));  // 5
-// console.log(multiplicand('(* 5  1)')); // 1
-// console.log(makeSum(5, 2)); // 7
-// console.log(makeProduct(5, 2)); // 10
-// console.log(cadcalc('+ 5 2'));
-// console.log(cadMultiCalc('*7 5')); // 35
-console.log(cadMultiCalc('/(-(+(*7 5) 5) 5) 7')); // 5
+// console.log(expect(cad('+ 5 1').toString()).to.be.equal('+ 5 1,+,5,1'));
+// console.log(expect(addend('+ 5 1')).to.be.equal(5));
+// console.log(expect(augend('+ 5  1')).to.be.equal(1));
+// console.log(expect(multiplier('* 5 1')).to.be.equal( 5));
+// console.log(expect(multiplicand('(* 5  1)')).to.be.equal(1));
+// console.log(expect(makeSum(5, 2)).to.be.equal(7));
+// console.log(expect(makeProduct(5, 2)).to.be.equal(10));
+// console.log(expect(cadcalc('+ 5 2')).to.be.equal(7));
+// console.log(expect(cadMultiCalc('*7 5')).to.be.equal(35));
+// console.log(expect(cadMultiCalc('/(-(+(*7 5) 5) 5) 7')).to.be.equal(5));
+// console.log(expect(cadMultiCalc('/(-(+(*7 5) 5) 5) 7)')).to.be.equal(5));
+// console.log(expect(cadMultiCalc('**(/(-(+(*7 5) 5) 5) 7) 3')).to.be.equal(125));
+// console.log(expect(cadMultiCalc('**(+ (- 3 -2.125) -3.125) 4')).to.be.equal(16));
+// console.log(expect(cadMultiCalc('**(+ (- 3 -.125 4) -.125 4) 4')).to.be.equal(81));
 
 
 

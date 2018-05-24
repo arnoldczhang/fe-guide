@@ -207,6 +207,7 @@ let deduped = [...new Set(arr)];
 
 
 // 接收函数返回的多个结果
+// 只要一个结果是reject就进error
 async function getFullPost() {
   return await Promise.all([
     fetch('/aa'),
