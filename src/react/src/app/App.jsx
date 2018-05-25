@@ -25,11 +25,16 @@ class App extends PureComponent {
   static defaultProps = {
   };
 
-  onKeyDown(e) {
-    console.log(e);
+  constructor() {
+    super();
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentDidMount() {
+  }
+
+  onKeyDown(e) {
+    console.log(e, this);
   }
 
   render() {
@@ -43,12 +48,11 @@ class App extends PureComponent {
     return [
       <div className={styles.App} key="App">
         <header className={styles['App-header']}>
-          <img src={logo} className={styles['App-logo']} alt="logo" />
           <h1 className={styles['App-title']}>{inited ? 'Welcome to React' : 'Waiting'}</h1>
         </header>
         <Hotkeys
           keyName="shift+a,alt+s"
-          onKeyDown={this.onKeyDown.bind(this)}
+          onKeyDown={this.onKeyDown}
         >
           <input type="text" />
         </Hotkeys>
