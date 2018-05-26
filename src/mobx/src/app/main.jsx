@@ -7,6 +7,7 @@ import {
   inject,
   observer,
 } from 'mobx-react';
+import Hotkeys from 'react-hot-keys';
 import Loadable from 'react-loadable';
 import PropTypes from 'prop-types';
 
@@ -48,9 +49,14 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.counter = this.counter.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentDidMount() {
+  }
+
+  onKeyDown(e) {
+    console.log(e, this.props);
   }
 
   async getData() {
@@ -81,6 +87,12 @@ class App extends Component {
 
     return (
       <div>
+        <Hotkeys
+          keyName="shift+a,alt+s"
+          onKeyDown={this.onKeyDown}
+        >
+          <input type="text" />
+        </Hotkeys>
         <div onClick={this.counter} onKeyDown={() => {}} >{mainTitle}</div>
         <LoadableComponent title={title} />
       </div>

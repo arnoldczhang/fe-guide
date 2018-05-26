@@ -1,5 +1,9 @@
 const esprima = require('esprima');
 const babel = require('babel-core');
+const signale = require('signale');
+const chai = require('chai');
+const expect = chai.expect;
+console.log = signale.success;
 
 // 求最大公约数
 const gcd = (a, b) => {
@@ -15,8 +19,6 @@ const gcd = (a, b) => {
 
 // console.log(gcd(16, 28));
 // console.log(gcd(206, 40));
-
-
 
 
 
@@ -53,10 +55,15 @@ const paska = (line = 1, result = {}) => {
 
 // 幂
 const isEven = num => num % 2 === 0;
+const isOdd = num => !isEven(num);
 const square = num => num * num;
 const cube = num => square(num) * num;
 const expt = (num, times) => {
-  if (times <= 1) {
+  if (times < 1) {
+    return 1;
+  }
+
+  if (times === 1) {
     return num;
   }
 
@@ -305,7 +312,7 @@ const divide = (x, y) => {
 };
 const multi = (x, y) => x * y;
 const minus = (...args) => args.reduce((x = 0, y = 0) => x - y);
-const add = (...args) => args.reduce((x = 0, y = 0) => x + y, 0);
+const add = (...args) => args.reduce((x = 0, y = 0) => x + Number(y), 0);
 const min = (...args) => Math.min.apply(null, args);
 const max = (...args) => Math.max.apply(null, args);
 
@@ -664,6 +671,734 @@ const R1 = 4;
 const R2 = 5;
 // console.log(divide(multi(R1, R2), add(R1, R2)));
 // console.log(divide(one(), add(divide(one(), R1), divide(one(), R2))));
+
+
+
+
+
+
+
+
+
+// 序列
+const listify = (...args) => {
+  if (!args.length) {
+    return null;
+  }
+
+  if (args.length === 1) {
+    return args.shift();
+  }
+  return [args.shift(), listify.apply(null, args)];
+};
+const flatten = (list, res = []) => {
+  if (list) {
+    if (list.length) {
+      let first = list[0];
+      if (Array.isArray(first)) {
+        flatten(first, res);
+      } else {
+        res.push(first);
+      }
+      return flatten(list[1], res);
+    }
+    res.push(list);
+  }
+  return res;
+};
+const listCons = (el, list) => (
+  el ? list ? list.length ? [el, list] : [el] : el : list
+);
+const listCar = list => list ? list.length ? list[0] : list : list;
+const listCdr = (list, noFlatten) => {
+  if (list) {
+    if (list.length > 1) {
+      if (noFlatten) {
+        return list[1];
+      }
+      return flatten(list[1]);
+    }
+    return list[0];
+  }
+  return null;
+};
+const oneThroughFour = () => listify(1, 2, 3, 4);
+// console.log(listify(1,2,3));
+// console.log(oneThroughFour());
+// console.log(listCar(oneThroughFour()));
+// console.log(listCdr(oneThroughFour()));
+// console.log(listCar(listCdr(oneThroughFour())));
+// console.log(listCons(10, oneThroughFour()));
+// console.log(listCons(5, oneThroughFour()));
+
+
+const listRef = (list, index) => {
+  if (list && list.length) {
+    if (!index) {
+      return listCar(list);
+    }
+    return listCdr(list)[index - 1];
+  }
+  throw new Error('miss the list');
+};
+const listOdd = () => listify(1, 3, 5, 7);
+const listSqures = () => listify(1, 4, 9, 16, 25);
+// console.log(listRef(listSqures(), 3));
+
+
+const listLength = list => !list ? 0 : (listCdr(list).length + 1);
+// console.log(listLength(listOdd())); // 4
+
+const listAppend = (list1, list2) => {
+  if (!list1) {
+    return list2;
+  }
+  return listCons(listCar(list1), listAppend(listCdr(list1, true), list2));
+};
+// console.log(JSON.stringify(listAppend(listOdd(), listSqures())));
+
+const listLastPair = (list) => {
+  const cdrList = listCdr(list);
+  return cdrList[cdrList.length - 1];
+};
+// console.log(listLastPair(listOdd()));
+// console.log(listLastPair(listSqures()));
+
+const listReverse = (list) => {
+  list = flatten(list);
+  return listify.apply(null, list.reverse());
+};
+// console.log(listReverse(listOdd()));
+
+
+// 算硬币
+const getMap = (list) => (list.reduce((map, value, index) => {
+  map[index + 1] = value;
+  return map;
+}, {}));
+const usCoins = () => getMap([50, 25, 10, 5, 1]);
+const ukCoins = () => getMap([100, 50, 20, 10, 5, 2, 1, 0.5]);
+const listCC = (
+  amount,
+  coinList,
+  kind = Object.keys(coinList).length,
+) => {
+  if (!amount) {
+    return 1;
+  }
+
+  if (amount < 0 || kind === 0) {
+    return 0;
+  } else {
+    return listCC(amount, coinList, kind - 1) + listCC(amount - coinList[kind], coinList, kind);
+  }  
+};
+// console.log(listCC(100, usCoins())); // 292
+// console.log(listCC(100, ukCoins()));
+
+// 序列循环
+const listScale = (list, factor) => (
+  list
+    ? listCons(listCar(list) * factor, listScale(listCdr(list, true), factor))
+    : null
+);
+// console.log(JSON.stringify(listScale(listify(1, 2, 3, 4, 5), 10)));
+
+
+const listMap = (proc, list) => (
+  list
+    ? listCons(proc(listCar(list)), listMap(proc, listCdr(list, true)))
+    : null
+);
+const listForEach = (proc, list) => {
+  if (list) {
+    proc(listCar(list));
+    listForEach(proc, listCdr(list, true));
+  }
+};
+const listScale2 = (list, factor) => listMap(x => x * factor, list);
+const listSquare = (list, factor) => listMap(square, list);
+// console.log(listMap(Math.abs, listify(-1, 2, -3, 4)));
+// console.log(listMap(x => x * x, listify(-1, 2, -3, 4)));
+// console.log(listScale2(listify(-1, 2, -3, 4), 10));
+// console.log(listSquare(listify(-1, 2, -3, 4)));
+// listForEach(x => console.log(x), listify(1, -2, 3, 4));
+// console.log(listReverse(listify(listify(1, 2), listify(3, 4))));
+
+const listX = () => listify(listify(1, 2), listify(3, 4));
+const fringe = list => flatten(list);
+const makeMobile = (left, right) => listify(left, right);
+// console.log(fringe(listX()));
+// console.log(fringe(listify(listX(), listX())));
+
+const listMapDeep = (proc, list) => {
+  if (list) {
+    if (Array.isArray(listCar(list))) {
+      return listCons(
+        listMapDeep(proc, listCar(list)),
+        listMapDeep(proc, listCdr(list, true)),
+      );
+    }
+    return listCons(
+      proc(listCar(list)),
+      listMapDeep(proc, listCdr(list, true)),
+    );
+  }
+  return null;
+};
+const listSquareDeep = list => listMapDeep(square, list);
+// console.log(listMapDeep(x => x * 10, ));
+// [10,[[20,[[30,40],50]],[60,70]]]
+// console.log(JSON.stringify(listSquareDeep(listify(1, listify(2, listify(3, 4), 5), listify(6, 7)))));
+
+
+const sumOddSqures = (list) => {
+  let result = 0;
+  listForEach((value) => {
+    if (isOdd(value)) {
+      result += square(value);
+    }
+  }, list);
+  return result;
+};
+
+const sumOddSqures2 = (list) => {
+  if (list && list.length) {
+    return list.reduce((count, value) => {
+      if (Array.isArray(value)) {
+        return count + sumOddSqures2(value);
+      }
+      return count + (isOdd(value) ? square(value) : 0);
+    }, 0);
+  }
+  return 0;
+};
+
+// console.log(sumOddSqures(listify(1, 2, 3, 4, 5)));
+// console.log(sumOddSqures2(listify(1, 2, 3, 4, 5)));
+
+// 信号流
+const listFilter = (predicate, list) => {
+  if (list) {
+    if (Array.isArray(list)) {
+      let car = listCar(list);
+      if (predicate(car)) {
+        return listCons(car, listFilter(predicate, listCdr(list, true)));
+      }
+      return listFilter(predicate, listCdr(list, true));
+    }
+    return list;
+  }
+  return null;
+};
+
+const listAccumulate = (op, initValue, list) => {
+  if (list) {
+    if (Array.isArray(list)) {
+      initValue = op(initValue, listCar(list));
+      return listAccumulate(op, initValue, listCdr(list, true));
+    }
+    return op(initValue, list);
+  }
+  return 0;
+};
+// console.log(listFilter(isOdd, listify(1, 2, 3, 4, 5))); // [ 1, [ 3, 5 ] ]
+// console.log(listAccumulate(add, 0, listify(1, 2, 3, 4, 5))); // 15
+// console.log(listAccumulate(multi, 1, listify(1, 2, 3, 4, 5))); // 120
+// console.log(JSON.stringify(listAccumulate(listCons, null, listify(1, 2, 3, 4, 5)))); // [[[[1,2],3],4],5]
+
+
+// 区间整数序列
+const enumerableInterval = (low, high) => {
+  if (low > high) {
+    return null;
+  }
+  return listCons(low, enumerableInterval(low + 1, high));
+};
+// console.log(JSON.stringify(enumerableInterval(1, 4)));
+
+const sumOddSqures3 = (list) => listAccumulate(
+  add,
+  0,
+  listMapDeep(
+    square,
+    listFilter(isOdd, list),
+  ),
+);
+// console.log(sumOddSqures3(listify(1, 2, 3, 4, 5)));
+
+const listEvenFibs = high => (
+  listAccumulate(listCons, null, listFilter(isEven, enumerableInterval(0, high)))
+);
+// console.log(JSON.stringify(listEvenFibs(10)));
+
+// 斐波那契数
+const getFibs = (high, list = [0, 1]) => {
+  const length = list.length;
+  const next = list[length - 2] + list[length - 1];
+  if (length > high) {
+    return list;
+  }
+  list.push(next);
+  return getFibs(high, list);
+};
+// console.log(getFibs(10)); // [ 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 ]
+
+// 斐波那契数-平方
+const listFibSquare = high => listMap(square, listify.apply(null, getFibs(high)));
+// console.log(JSON.stringify(listFibSquare(10))); // [1,[1,[4,[9,[25,[64,[169,[441,[1156,3025]]]]]]]]]
+
+// 奇数平方积
+const productOddSquare = list => listAccumulate(multi, 1, listMap(square, listFilter(isOdd, list)));
+// console.log(productOddSquare(listify(1, 2, 3, 4, 5))); // 225
+
+// 多项式
+const hornerEval = (x, list) => {
+  const op = (() => {
+    let times = 0;
+    return (count, next) => {
+      return add(count, multi(next, expt(x, times++)));
+    };
+  })();
+  return listAccumulate(op, 0, list);
+};
+// 设x = 2, 求1 + 3x + 5x^3 + x^5
+// console.log(hornerEval(2, listify(1, 3, 0, 5, 0, 1))); // 79
+
+
+const countLeaves = list => listAccumulate((count, next) => {
+  return add(count, 1);
+}, 0, list);
+// console.log(countLeaves(listify(1, 2, 3, 4, 5))); // 5
+
+
+const foldLeft = (op, initValue, list) => {
+    const iter = (init, array) => {
+      if (array && array.length) {
+        return iter(op(init, listCar(array)), listCdr(array, true));
+      }
+      return op(init, array);
+    };
+    return iter(initValue, list);
+};
+// console.log(foldLeft(add, 0, listify(1, 2, 3, 4, 5))); // 15
+
+
+const listifyRight = (...args) => {
+  if (args.length) {
+    return args.reduce((result, value, index) => {
+      if (index < 2) {
+        result.push(value);
+        return result;
+      }
+      return [result, value];
+    }, []);
+  }
+  return null;
+};
+
+const foldRight = (op, initValue, list) => {
+  if (list && list.length) {
+    let suffix = list.pop();
+    while (Array.isArray(suffix)) {
+      list = suffix;
+      suffix = suffix.pop();
+    }
+    initValue = op(initValue, suffix);
+    return foldRight(op, initValue, list);
+  }
+  return initValue;
+};
+// console.log(JSON.stringify(listifyRight(1, 2, 3, 4, 5))); // [[[[1,2],3],4],5]
+// console.log(foldRight(add, 0, listifyRight(1, 2, 3, 4, 5))); // 15
+// console.log(foldLeft(divide, 1, listify(1, 2, 3)));
+// console.log(foldRight(divide, 1, listifyRight(1, 2, 3)));
+// console.log(foldLeft(listify, null, listify(1, 2, 3))); // [ [ [ null, 1 ], 2 ], 3 ]
+// console.log(foldRight(listifyRight, null, listifyRight(1, 2, 3))); // [ [ [ null, 3 ], 2 ], 1 ]
+// console.log(foldLeft(add, null, listify(1, 2, 3))); // 6
+// console.log(foldRight(add, null, listifyRight(1, 2, 3))); // 6
+
+// 自然序对和为素数（i <= n，j < i，i + j是素数）
+const getCountPrime = (n, result = []) => {
+  const list = enumerableInterval(2, n);
+  listForEach((item) => {
+    const childList = enumerableInterval(1, item);
+    listForEach((child) => {
+      const sum = child + item;
+      if (prime(sum)) {
+        result.push([item, child, sum]);
+      }
+    }, childList);
+  }, list);
+  return result;
+};
+
+const primeSum = list => list.reduce((sum, next) => sum + next[2], 0);
+// 过滤序列字段
+const removeSeq = (removeItem, list) => listFilter(item => removeItem !== item, list);
+// console.log(JSON.stringify(getCountPrime(6))); // [[2,1,3],[3,2,5],[4,1,5],[4,3,7],[5,2,7],[6,1,7],[6,5,11]]
+// console.log(primeSum(getCountPrime(6)));
+// console.log(removeSeq(3, listify(1, 2, 3, 4, 5)));
+
+
+// 排列组合
+const permutation = (list) => {
+  // n(n-1)(n-2)……(n-m+1)
+  if (list) {
+    if (!list.length) {
+      list = [list];
+    }
+    list = flatten(list);
+    let result = 1;
+    let length = list.length;
+    while (length) {
+      result = multi(result, length--);
+    }
+    return result;
+  }
+  return 0;
+};
+// console.log(permutation(listify(1, 2, 3, 4)));
+// console.log(permutation(listify(1, 2, 3)));
+// console.log(permutation(listify(1, 2)));
+// console.log(permutation(listify(1)));
+
+
+// TODO 画家 + 向量这块没看懂。。。。
+const makeVect = (x, y) => [x, y];
+const addVect = (vect1, vect2) => [vect1[0] + vect2[0], vect1[1] + vect2[1]];
+const subVect = (vect1, vect2) => [vect2[0] - vect1[0], vect2[1] - vect1[1]];
+const scaleVect = (scale, vect) => [scale * vect[0], scale * vect[1]];
+const makeFrame = (origin, edgeX, edgeY) => ({
+  origin,
+  edgeX,
+  edgeY,
+});
+const makeSegment = (vect1, vect2) => [vect1, vect2];
+const startSegment = (origin, start) => subVect(origin, start);
+const endSegment = (origin, end) => subVect(origin, end);
+// 画家
+const segmentsPainter = (list, origin = [0, 0]) => {
+  const getX = arr => arr[0];
+  const getY = arr => arr[1];
+
+  if (list && list.length) {
+    const edges = [];
+    let x = 0;
+    let y = 0;
+    list.forEach((segment) => {
+      const start = startSegment(origin, segment[0]);
+      const end = endSegment(origin, segment[1]);
+      x = Math.max(getX(start), getX(end), x);
+      y = Math.max(getY(start), getY(end), y);
+      edges.push([start, end]);
+    });
+
+    const frame = makeFrame(
+      origin,
+      makeVect(x, getY(origin)),
+      makeVect(getX(origin), y)
+    );
+    return {
+      edges,
+      frame,
+    };
+  }
+};
+// console.log(JSON.stringify(segmentsPainter([[[1, 1], [2, 1]], [[0, 1], [1, 2]]]))); // 画十
+// console.log(JSON.stringify(segmentsPainter([[[1, 1], [2, 2]], [[2, 1], [1, 2]]]))); // 画X
+
+// 画家变换
+const transformPainter = (painter, origin, corner1, corner2) => {
+  const start = startSegment(origin, corner1);
+  const end = endSegment(origin, corner2);
+  painter.frame = makeFrame(origin, start, end);
+  painter.edges = painter.edges.map((edge) => {
+    let [edgeStart, edgeEnd] = edge;
+    edgeStart = startSegment(origin, edgeStart);
+    edgeEnd = endSegment(origin, edgeEnd);
+    return [edgeStart, edgeEnd];
+  });
+  return painter;
+};
+// console.log(JSON.stringify(transformPainter(segmentsPainter([[[1, 1], [2, 1]], [[0, 1], [1, 2]]]), [0, 1], [1, 1], [0, 0])));
+
+// 垂直反转
+const flipVert = painter => transformPainter(
+  painter,
+  makeVect(0, 1),
+  makeVect(1, 1),
+  makeVect(0, 0),
+);
+
+// 右上角收缩
+const shrinkToUpperRight = painter => transformPainter(
+  painter,
+  makeVect(0.5, 0.5),
+  makeVect(1, 0.5),
+  makeVect(0.5, 1),
+);
+
+// 逆时针转90°
+const rotate90 = painter => transformPainter(
+  painter,
+  makeVect(1, 0),
+  makeVect(1, 1),
+  makeVect(0, 0),
+);
+
+// 图像中心收缩
+const shrinkInwards = painter => transformPainter(
+  painter,
+  makeVect(0, 0),
+  makeVect(0.65, 0.35),
+  makeVect(0.35, 0.65),
+);
+
+// 判断包含
+const memq = (item, list) => {
+  if (list) {
+    const car = listCar(list);
+    if (item === car) {
+      return true;
+    }
+    return memq(item, listCdr(list, true));
+  }
+  return false;
+};
+// console.log(memq(5, listify(1, 2, 3, 4, 5)));
+// console.log(listFilter(v => v === 5, listify(1, 2, 3, 4, 5)));
+
+
+const getIndexItem = (array, index = 0) => (Array.isArray(array) ? array[index] : null);
+const identify = v => v;
+
+const cad = (expression, options = {}) => {
+  const {
+    optSymbol,
+    optSymbolRe,
+    optExprRe,
+  } = options;
+  const symbol = optSymbol || '[\\*\\/\\+-]+';
+  const symbolRe = optSymbolRe || new RegExp(symbol);
+  const exprRe = optExprRe || new RegExp(`\\(?(${symbol})((?:\\s*[-\\+]?(?:\\d+|\\d*\\.\\d+)){2,})\\s*\\)?`);
+  const result = exprRe.exec(expression);
+
+  if (result) {
+    const [expr, symbol, numString] = result;
+    const numArray = numString.split(/\s+/g).filter(identify);
+    return [expr, symbol, ...numArray];
+  }
+
+  if (!options.silence) {
+    if (!symbolRe.exec(expression)) {
+      return expression;
+    }
+    throw new Error(`the expression: ${expression} is incorrect`);
+  }
+  return null;
+};
+
+const getSymbolMap = symbol => (
+  {
+    '+': add,
+    '-': minus,
+    '/': divide,
+    '*': multi,
+    '**': expt,
+  }[symbol]
+);
+
+const cadcalc = (...args) => {
+  const [, symbol, ...cadNums] = cad.apply(null, args);
+  const symbolFunc = getSymbolMap(symbol);
+  if (symbolFunc) {
+    return symbolFunc.apply(null, cadNums);
+  }
+  throw new Error('the ${symbol} is incorrect');
+};
+
+const cadMultiCalc = (...args) => {
+  let [expression, ...opts] = args;
+  let result = cad.apply(null, args);
+  while (result && Array.isArray(result)) {
+    const [expr] = result;
+    expression = expression.replace(expr, cadcalc(expr));
+    result = cad.apply(null, [expression].concat(opts));
+  }
+  return Number(expression);
+};
+
+const cadr = expression => Number(getIndexItem(cad(expression), 2));
+const caddr = expression => Number(getIndexItem(cad(expression), 3));
+const addend = expression => cadr(expression);
+const augend = expression => caddr(expression);
+const multiplier = expression => cadr(expression);
+const multiplicand = expression => caddr(expression);
+const isNumber = num => typeof num === 'number';
+const makeSum = (a1, a2) => {
+  a1 = isNumber(a1) ? a1 : 0;
+  a2 = isNumber(a2) ? a2 : 0;
+  return cadcalc(`+ ${a1} ${a2}`);
+};
+const makeProduct = (a1, a2) => {
+  a1 = isNumber(a1) ? a1 : 0;
+  a2 = isNumber(a2) ? a2 : 0;
+
+  if (!a1 || !a2) {
+    return 0;
+  }
+  return cadcalc(`* ${a1} ${a2}`);
+};
+// console.log(expect(cad('+ 5 1').toString()).to.be.equal('+ 5 1,+,5,1'));
+// console.log(expect(addend('+ 5 1')).to.be.equal(5));
+// console.log(expect(augend('+ 5  1')).to.be.equal(1));
+// console.log(expect(multiplier('* 5 1')).to.be.equal( 5));
+// console.log(expect(multiplicand('(* 5  1)')).to.be.equal(1));
+// console.log(expect(makeSum(5, 2)).to.be.equal(7));
+// console.log(expect(makeProduct(5, 2)).to.be.equal(10));
+// console.log(expect(cadcalc('+ 5 2')).to.be.equal(7));
+// console.log(expect(cadMultiCalc('*7 5')).to.be.equal(35));
+// console.log(expect(cadMultiCalc('/(-(+(*7 5) 5) 5) 7')).to.be.equal(5));
+// console.log(expect(cadMultiCalc('/(-(+(*7 5) 5) 5) 7)')).to.be.equal(5));
+// console.log(expect(cadMultiCalc('**(/(-(+(*7 5) 5) 5) 7) 3')).to.be.equal(125));
+// console.log(expect(cadMultiCalc('**(+ (- 3 -2.125) -3.125) 4')).to.be.equal(16));
+// console.log(expect(cadMultiCalc('**(+ (- 3 -.125 4) -.125 4) 4')).to.be.equal(81));
+
+// 插入集合（去重）
+const adjoinSet = (set, el) => {
+  if (memq(el, set)) {
+    return set;
+  }
+  return listCons(el, set);
+};
+// console.log(expect(adjoinSet(listify(1, 2, 3, 4, 5), 6)).to.be.deep.equal([6,[1,[2,[3,[4,5]]]]]));
+
+// 求集合交集（排过序的情况下）
+const intersectionSet = (set1, set2, result = []) => {
+  if (!set1 || !set2) {
+    return result;
+  }
+
+  const car1 = listCar(set1);
+  const car2 = listCar(set2);
+
+  if (car1 === car2) {
+    result = listCons(car1, result);
+    return intersectionSet(listCdr(set1, true), listCdr(set2, true), result);
+  } else if (car1 > car2) {
+    return intersectionSet(listCdr(set2, true), set1, result);
+  }
+  return intersectionSet(listCdr(set1, true), set2, result);
+};
+// console.log(expect(intersectionSet(listify(1, 2, 3, 4, 5), listify(1, 4, 5))).to.be.deep.equal([5,[4,[1]]]));
+
+
+class List {
+  constructor(...args) {
+    this._els = args || [];
+  }
+
+  getElement() {
+    return this._els;
+  }
+
+  setElement(newList) {
+    return this._els = newList;
+  }
+
+  car () {}
+
+  cdr () {}
+
+  cons(el) {}
+  
+  has(el) {}
+  
+  getLength () {
+    return this._els.length;
+  }
+  
+  adjoin(el) {}
+  
+  intersection(list) {}
+}
+
+class SSet extends List {
+  constructor(...args) {
+    super(...args);
+    this.sort();
+  }
+
+  sort() {
+    const set = this.getElement().sort((a, b) => a - b);
+    return this.setElement(set);
+  }
+
+  car() {
+    return this.getElement()[0];
+  }
+
+  cdr() {
+    return this.getElement().slice(1);
+  }
+
+  cons(el) {
+    const set = this.getElement();
+    set.push(el);
+    return set;
+  }
+
+  has(el) {
+    if (this.getLength()) {
+      const car = this.car();
+      const cdr = this.cdr();
+
+      if (el === car) {
+        return true;
+      }
+
+      if (cdr.length) {
+        return (new SSet(...cdr)).has(el);
+      }
+    }
+    return false;
+  }
+
+  adjoin(el) {
+    if (this.has(el)) {
+      return this.getElement();
+    }
+    return this.cons(el);
+  }
+
+  intersection(set, result = new SSet()) {
+    if (!this.getLength() || !set || !set.getLength()) {
+      return result.getElement();
+    }
+
+    const car = this.car();
+    const otherCar = set.car();
+
+    if (car === otherCar) {
+      result.adjoin(car);
+      return new SSet(...this.cdr()).intersection(new SSet(...set.cdr()), result);
+    } else if (car < otherCar) {
+      return new SSet(...this.cdr()).intersection(set, result);
+    }
+    return this.intersection(new SSet(...set.cdr()), result);
+  } 
+}
+
+const set1 = new SSet(1, 2, 3, 4, 5);
+const set2 = new SSet(1, 4, 6);
+// console.log(expect(set1.has(4)).to.be.deep.equal(true));
+// console.log(expect(set1.adjoin(2)).to.be.deep.equal([1,2,3,4,5]));
+// console.log(expect(set1.adjoin(6)).to.be.deep.equal([1,2,3,4,5,6]));
+// console.log(expect(set1.intersection(set2)).to.be.deep.equal([1,4,6]));
+
+
+
 
 
 

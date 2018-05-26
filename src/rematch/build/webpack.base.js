@@ -9,8 +9,12 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 module.exports = {
   entry: {
-    rxjs: [
-      './src/rxjs/index.js',
+    common: [
+      'react',
+      'react-dom',
+    ],
+    index: [
+      "./src/rematch/src/index.jsx",
     ],
   },
   output: {
@@ -32,8 +36,12 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       title: 'Development',
-      template: './src/rxjs/index.html',
+      template: './src/mobx/index.html',
     }),
+    // new webpack.DllPlugin({
+    //   name: '[name]_[hash]',
+    //   path: path.join(__dirname, '[name]-manifest.json'),
+    // }),
   ],
   resolve: {
     extensions: ['.*', '.js', '.jsx', '.es6'],
@@ -65,7 +73,7 @@ module.exports = {
           babelrc: false,
           presets: [
             "react",
-            "es2015",
+            ['es2015', { modules: 'umd' }],
             "stage-2",
           ],
           plugins: [
@@ -100,7 +108,6 @@ module.exports = {
               },
             },
             'less-loader',
-
             // css module + autoprefixer
             {
               loader: 'postcss-loader',

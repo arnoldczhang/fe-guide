@@ -8,18 +8,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-  entry: {
-    common: [
-      'react',
-      'react-dom',
-    ],
-    index: [
-      "./src/mobx/src/App.jsx",
-    ],
-    mobx: [
-      './src/mobx/test.js',
-    ],
-  },
   output: {
     path: path.join(__dirname, '../dist'),
     filename: '[name].[hash].js',
@@ -37,14 +25,6 @@ module.exports = {
     new CleanWebpackPlugin(['./dist'], {
       root: path.join(__dirname, '..'),
     }),
-    new HtmlWebpackPlugin({
-      title: 'Development',
-      template: './src/mobx/index.html',
-    }),
-    // new webpack.DllPlugin({
-    //   name: '[name]_[hash]',
-    //   path: path.join(__dirname, '[name]-manifest.json'),
-    // }),
   ],
   resolve: {
     extensions: ['.*', '.js', '.jsx', '.es6'],
