@@ -16,6 +16,8 @@
     "no-nested-ternary": "off",
     "padded-blocks": "off",
     "import/no-extraneous-dependencies": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
     "import/extensions": "off",
     "import/first": 2,
     "no-underscore-dangle": "off",

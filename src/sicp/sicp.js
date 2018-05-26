@@ -707,9 +707,9 @@ const flatten = (list, res = []) => {
   return res;
 };
 const listCons = (el, list) => (
-  el ? list ? [el, list] : el : list
+  el ? list ? list.length ? [el, list] : [el] : el : list
 );
-const listCar = list => list && list.length ? list[0] : list;
+const listCar = list => list ? list.length ? list[0] : list : list;
 const listCdr = (list, noFlatten) => {
   if (list) {
     if (list.length > 1) {
@@ -1265,8 +1265,137 @@ const makeProduct = (a1, a2) => {
 // console.log(expect(cadMultiCalc('**(+ (- 3 -2.125) -3.125) 4')).to.be.equal(16));
 // console.log(expect(cadMultiCalc('**(+ (- 3 -.125 4) -.125 4) 4')).to.be.equal(81));
 
+// 插入集合（去重）
+const adjoinSet = (set, el) => {
+  if (memq(el, set)) {
+    return set;
+  }
+  return listCons(el, set);
+};
+// console.log(expect(adjoinSet(listify(1, 2, 3, 4, 5), 6)).to.be.deep.equal([6,[1,[2,[3,[4,5]]]]]));
+
+// 求集合交集（排过序的情况下）
+const intersectionSet = (set1, set2, result = []) => {
+  if (!set1 || !set2) {
+    return result;
+  }
+
+  const car1 = listCar(set1);
+  const car2 = listCar(set2);
+
+  if (car1 === car2) {
+    result = listCons(car1, result);
+    return intersectionSet(listCdr(set1, true), listCdr(set2, true), result);
+  } else if (car1 > car2) {
+    return intersectionSet(listCdr(set2, true), set1, result);
+  }
+  return intersectionSet(listCdr(set1, true), set2, result);
+};
+// console.log(expect(intersectionSet(listify(1, 2, 3, 4, 5), listify(1, 4, 5))).to.be.deep.equal([5,[4,[1]]]));
 
 
+class List {
+  constructor(...args) {
+    this._els = args || [];
+  }
+
+  getElement() {
+    return this._els;
+  }
+
+  setElement(newList) {
+    return this._els = newList;
+  }
+
+  car () {}
+
+  cdr () {}
+
+  cons(el) {}
+  
+  has(el) {}
+  
+  getLength () {
+    return this._els.length;
+  }
+  
+  adjoin(el) {}
+  
+  intersection(list) {}
+}
+
+class SSet extends List {
+  constructor(...args) {
+    super(...args);
+    this.sort();
+  }
+
+  sort() {
+    const set = this.getElement().sort((a, b) => a - b);
+    return this.setElement(set);
+  }
+
+  car() {
+    return this.getElement()[0];
+  }
+
+  cdr() {
+    return this.getElement().slice(1);
+  }
+
+  cons(el) {
+    const set = this.getElement();
+    set.push(el);
+    return set;
+  }
+
+  has(el) {
+    if (this.getLength()) {
+      const car = this.car();
+      const cdr = this.cdr();
+
+      if (el === car) {
+        return true;
+      }
+
+      if (cdr.length) {
+        return (new SSet(...cdr)).has(el);
+      }
+    }
+    return false;
+  }
+
+  adjoin(el) {
+    if (this.has(el)) {
+      return this.getElement();
+    }
+    return this.cons(el);
+  }
+
+  intersection(set, result = new SSet()) {
+    if (!this.getLength() || !set || !set.getLength()) {
+      return result.getElement();
+    }
+
+    const car = this.car();
+    const otherCar = set.car();
+
+    if (car === otherCar) {
+      result.adjoin(car);
+      return new SSet(...this.cdr()).intersection(new SSet(...set.cdr()), result);
+    } else if (car < otherCar) {
+      return new SSet(...this.cdr()).intersection(set, result);
+    }
+    return this.intersection(new SSet(...set.cdr()), result);
+  } 
+}
+
+const set1 = new SSet(1, 2, 3, 4, 5);
+const set2 = new SSet(1, 4, 6);
+// console.log(expect(set1.has(4)).to.be.deep.equal(true));
+// console.log(expect(set1.adjoin(2)).to.be.deep.equal([1,2,3,4,5]));
+// console.log(expect(set1.adjoin(6)).to.be.deep.equal([1,2,3,4,5,6]));
+// console.log(expect(set1.intersection(set2)).to.be.deep.equal([1,4,6]));
 
 
 
