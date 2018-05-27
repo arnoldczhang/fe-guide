@@ -1307,20 +1307,15 @@ class List {
     return this._els = newList;
   }
 
-  car () {}
-
-  cdr () {}
-
-  cons(el) {}
-  
-  has(el) {}
-  
-  getLength () {
-    return this._els.length;
+  getLength (set = this._els) {
+    return set.length;
   }
-  
+
+  car () {}
+  cdr () {}
+  cons(el) {}
+  has(el) {}
   adjoin(el) {}
-  
   intersection(list) {}
 }
 
@@ -1332,6 +1327,7 @@ class SSet extends List {
 
   sort() {
     const set = this.getElement().sort((a, b) => a - b);
+    this._tree = this.createTree(set);
     return this.setElement(set);
   }
 
@@ -1387,7 +1383,98 @@ class SSet extends List {
       return new SSet(...this.cdr()).intersection(set, result);
     }
     return this.intersection(new SSet(...set.cdr()), result);
-  } 
+  }
+
+  createTree(set = this.getElement(), result = {}) {
+    const length = this.getLength(set);
+    let mid = Math.floor(length / 2);
+    if (!length) {
+      return null;
+    }
+
+    if (length === 1) {
+      return set[0];
+    }
+
+    result.left = this.createTree(set.slice(0, mid));
+    if (length === this.getLength()) {
+      result.center = set[mid++];
+    }
+    result.right = this.createTree(set.slice(mid));
+    return result;
+  }
+
+  getMiddleOfTree(tree = this.getTree()) {
+    return tree.center;
+  }
+
+  getLeftBranch(tree = this.getTree()) {
+    return tree.left;
+  }
+
+  getRightBranch(tree = this.getTree()) {
+    return tree.right;
+  }
+
+  getElementOfTree(el, tree = this.getTree()) {
+    if (tree === null) {
+      return false;
+    }
+
+    if (isNumber(tree)) {
+      return el === tree;
+    }
+
+    const mid = this.getMiddleOfTree(tree); 
+    if (el === mid) {
+      return true;
+    }
+    return this.getElementOfTree(
+      el,
+      el < mid
+        ? this.getLeftBranch(tree)
+        :  this.getRightBranch(tree),
+    );
+  }
+
+  adjoinTree(el, tree = this.getTree(), parentTree, key) {
+    if (tree === null) {
+      parentTree[key] = el;
+    }
+
+    if (isNumber(tree)) {
+      let [left, right] = [el, tree];
+      
+      if (el > tree) {
+        [left, right] = [right, left];
+      }
+
+      parentTree[key] = {
+        left,
+        right,
+      };
+    }
+
+    const mid = this.getMiddleOfTree(tree);
+    
+    if (!mid || el === mid) {
+      return tree;
+    }
+
+    this.adjoinTree(
+      el,
+      el < mid
+        ? this.getLeftBranch(tree)
+        :  this.getRightBranch(tree),
+      tree,
+      el < mid ? 'left' : 'right',
+    );
+    return tree;
+  }
+
+  getTree() {
+    return this._tree;
+  }
 }
 
 const set1 = new SSet(1, 2, 3, 4, 5);
@@ -1396,6 +1483,24 @@ const set2 = new SSet(1, 4, 6);
 // console.log(expect(set1.adjoin(2)).to.be.deep.equal([1,2,3,4,5]));
 // console.log(expect(set1.adjoin(6)).to.be.deep.equal([1,2,3,4,5,6]));
 // console.log(expect(set1.intersection(set2)).to.be.deep.equal([1,4,6]));
+// console.log(expect(JSON.stringify(set1.getTree())).to.be.equal('{"left":{"left":1,"right":2},"center":3,"right":{"left":4,"right":5}}'));
+// console.log(expect(JSON.stringify(set2.getTree())).to.be.equal('{"left":1,"center":4,"right":6}'));
+// console.log(expect(set1.getElementOfTree(3)).to.be.equal(true));
+// console.log(expect(set2.getElementOfTree(3)).to.be.equal(false));
+// console.log(expect(set2.adjoinTree(3)).to.be.equal(false));
+// console.log(expect(JSON.stringify(set2.getTree())).to.be.equal('{"left":1,"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(set2.adjoinTree(3))).to.be.equal('{"left":{"left":1,"right":3},"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(set2.adjoinTree(4))).to.be.equal('{"left":{"left":1,"right":3},"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(set2.getTree())).to.be.equal('{"left":{"left":1,"right":3},"center":4,"right":6}'));
+
+
+
+
+
+
+
+
+
 
 
 
