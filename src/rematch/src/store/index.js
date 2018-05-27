@@ -1,7 +1,6 @@
 import { init } from '@rematch/core';
+import { applyMiddleware } from 'redux';
 import * as models from '../models';
-
-console.log('models', models);
 
 const store = init({
   models,

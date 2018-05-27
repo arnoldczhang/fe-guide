@@ -33,7 +33,9 @@ class App extends PureComponent {
   }
 
   increase() {
-    dispatch.count.increment(100);
+    // dispatch.count.increment(100);
+    // dispatch.count.incrementSaga(100);
+    dispatch.count.incrementAsync(101);
     dispatch.calculate.incrementAsync(101);
     console.log(this);
   }
@@ -43,7 +45,6 @@ class App extends PureComponent {
       numm,
       num,
     } = this.props;
-    console.log(this.props);
 
     return [
       <div className={styles.App} key="App">
