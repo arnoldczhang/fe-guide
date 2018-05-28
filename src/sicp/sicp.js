@@ -1397,9 +1397,7 @@ class SSet extends List {
     }
 
     result.left = this.createTree(set.slice(0, mid));
-    if (length === this.getLength()) {
-      result.center = set[mid++];
-    }
+    result.center = set[mid++];
     result.right = this.createTree(set.slice(mid));
     return result;
   }
@@ -1438,26 +1436,32 @@ class SSet extends List {
   }
 
   adjoinTree(el, tree = this.getTree(), parentTree, key) {
+    if (!isNumber(el)) {
+      throw new Error('the el of tree must be a number');
+    }
+
     if (tree === null) {
-      parentTree[key] = el;
+      return parentTree[key] = el;
     }
 
     if (isNumber(tree)) {
-      let [left, right] = [el, tree];
+      let [left, center] = [el, tree];
       
       if (el > tree) {
-        [left, right] = [right, left];
+        [left, center] = [center, left];
       }
 
-      parentTree[key] = {
-        left,
-        right,
-      };
+      if (parentTree && key) {
+        return parentTree[key] = {
+          left,
+          center,
+        };
+      }
     }
 
     const mid = this.getMiddleOfTree(tree);
     
-    if (!mid || el === mid) {
+    if (el === mid) {
       return tree;
     }
 
@@ -1483,15 +1487,17 @@ const set2 = new SSet(1, 4, 6);
 // console.log(expect(set1.adjoin(2)).to.be.deep.equal([1,2,3,4,5]));
 // console.log(expect(set1.adjoin(6)).to.be.deep.equal([1,2,3,4,5,6]));
 // console.log(expect(set1.intersection(set2)).to.be.deep.equal([1,4,6]));
-// console.log(expect(JSON.stringify(set1.getTree())).to.be.equal('{"left":{"left":1,"right":2},"center":3,"right":{"left":4,"right":5}}'));
+// console.log(expect(JSON.stringify(set1.getTree())).to.be.equal('{"left":{"left":1,"center":2,"right":null},"center":3,"right":{"left":4,"center":5,"right":null}}'));
 // console.log(expect(JSON.stringify(set2.getTree())).to.be.equal('{"left":1,"center":4,"right":6}'));
 // console.log(expect(set1.getElementOfTree(3)).to.be.equal(true));
 // console.log(expect(set2.getElementOfTree(3)).to.be.equal(false));
-// console.log(expect(set2.adjoinTree(3)).to.be.equal(false));
-// console.log(expect(JSON.stringify(set2.getTree())).to.be.equal('{"left":1,"center":4,"right":6}'));
 // console.log(expect(JSON.stringify(set2.adjoinTree(3))).to.be.equal('{"left":{"left":1,"right":3},"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(set2.getTree())).to.be.equal('{"left":{"left":1,"right":3},"center":4,"right":6}'));
 // console.log(expect(JSON.stringify(set2.adjoinTree(4))).to.be.equal('{"left":{"left":1,"right":3},"center":4,"right":6}'));
 // console.log(expect(JSON.stringify(set2.getTree())).to.be.equal('{"left":{"left":1,"right":3},"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(set1.adjoinTree(7))).to.be.equal('{"left":{"left":1,"center":2,"right":null},"center":3,"right":{"left":4,"center":5,"right":7}}'));
+// console.log(expect(JSON.stringify(set1.adjoinTree(2.5))).to.be.equal('{"left":{"left":1,"center":2,"right":2.5},"center":3,"right":{"left":4,"center":5,"right":7}}'));
+// console.log(expect(JSON.stringify(set1.adjoinTree(6))).to.be.equal('{"left":{"left":1,"center":2,"right":2.5},"center":3,"right":{"left":4,"center":5,"right":{"left":6,"center":7}}}'));
 
 
 
