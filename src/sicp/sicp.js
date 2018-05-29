@@ -1636,7 +1636,7 @@ class HuffmanTree {
     });
     tree.weight = Object.keys(tree).reduce((weight, key) => {
       const value = tree[key].weight || 0;
-      weight += value;
+      return weight += value;
     }, 0);
     return tree;
   }
@@ -1662,6 +1662,11 @@ class HuffmanTree {
     return this.getWeight(tree);
   }
 
+  getTreeSymbol(tree = this.getTree()) {
+    this.invariant(tree, isObject);
+    return this.getSymbol(tree);
+  }
+
 }
 
 const huff = new HuffmanTree(
@@ -1674,8 +1679,9 @@ const huff = new HuffmanTree(
   ['G', 1110, 1],
   ['H', 1111, 1],
 );
-console.log(expect(JSON.stringify(huff.getTree())).to.be.equal('{"0":{"symbol":"A","code":0,"weight":8},"1":{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"C","code":1010,"weight":1},"1":{"symbol":"D","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"F","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"G","code":1110,"weight":1},"1":{"symbol":"H","code":1111,"weight":1},"weight":2},"weight":4},"weight":9},"weight":17}'));
-console.log(huff.getTree());
+// console.log(expect(JSON.stringify(huff.getTree())).to.be.equal('{"0":{"symbol":"A","code":0,"weight":8},"1":{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"C","code":1010,"weight":1},"1":{"symbol":"D","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"F","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"G","code":1110,"weight":1},"1":{"symbol":"H","code":1111,"weight":1},"weight":2},"weight":4},"weight":9},"weight":17}'));
+console.log(expect(JSON.stringify(huff.getLeftBranch())).to.be.equal('{"symbol":"A","code":0,"weight":8}'));
+console.log(expect(JSON.stringify(huff.getRightBranch())).to.be.equal('{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"C","code":1010,"weight":1},"1":{"symbol":"D","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"F","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"G","code":1110,"weight":1},"1":{"symbol":"H","code":1111,"weight":1},"weight":2},"weight":4},"weight":9}'));
 
 
 
