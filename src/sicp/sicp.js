@@ -1518,6 +1518,7 @@ class Tree extends SSet {
 
 const isBoolean = val => typeof val === 'boolean';
 const isString = val => typeof val === 'string';
+const isObject = val => typeof val === 'object';
 
 
 // 哈夫曼树
@@ -1551,7 +1552,6 @@ class HuffmanTree {
         throw new Error(options.message || `arg: ${input} is invalid`);
       }
     }
-    return;
   }
 
   initialize(input) {
@@ -1569,6 +1569,7 @@ class HuffmanTree {
   }
 
   setTree(tree) {
+    this.invariant(tree, isObject);
     this._tree = tree;
   }
 
@@ -1633,6 +1634,10 @@ class HuffmanTree {
         }
       }
     });
+    tree.weight = Object.keys(tree).reduce((weight, key) => {
+      const value = tree[key].weight || 0;
+      weight += value;
+    }, 0);
     return tree;
   }
 
@@ -1642,10 +1647,24 @@ class HuffmanTree {
     this.setTree(tree);
   }
 
+  getLeftBranch(tree = this.getTree()) {
+    this.invariant(tree, isObject);
+    return tree[0];
+  }
+
+  getRightBranch(tree = this.getTree()) {
+    this.invariant(tree, isObject);
+    return tree[1];
+  }
+
+  getTreeWeight(tree = this.getTree()) {
+    this.invariant(tree, isObject);
+    return this.getWeight(tree);
+  }
+
 }
 
-
-console.log(expect(JSON.stringify(new HuffmanTree(
+const huff = new HuffmanTree(
   ['A', 0, 8],
   ['B', 100, 3],
   ['C', 1010, 1],
@@ -1654,8 +1673,9 @@ console.log(expect(JSON.stringify(new HuffmanTree(
   ['F', 1101, 1],
   ['G', 1110, 1],
   ['H', 1111, 1],
-).getTree())).to.be.equal('{"0":{"symbol":"A","code":0,"weight":8},"1":{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"C","code":1010,"weight":1},"1":{"symbol":"D","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"F","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"G","code":1110,"weight":1},"1":{"symbol":"H","code":1111,"weight":1},"weight":2},"weight":4},"weight":9},"weight":0}'));
-
+);
+console.log(expect(JSON.stringify(huff.getTree())).to.be.equal('{"0":{"symbol":"A","code":0,"weight":8},"1":{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"C","code":1010,"weight":1},"1":{"symbol":"D","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"F","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"G","code":1110,"weight":1},"1":{"symbol":"H","code":1111,"weight":1},"weight":2},"weight":4},"weight":9},"weight":17}'));
+console.log(huff.getTree());
 
 
 
