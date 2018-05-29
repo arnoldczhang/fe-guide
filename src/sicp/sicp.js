@@ -3,7 +3,13 @@ const babel = require('babel-core');
 const signale = require('signale');
 const chai = require('chai');
 const expect = chai.expect;
-console.log = signale.success;
+const TRUE = true;
+console.log = (input) => {
+  if (typeof input === 'object') {
+    input = JSON.stringify(input);
+  }
+  return signale.success(input);
+};
 
 // 求最大公约数
 const gcd = (a, b) => {
@@ -1327,7 +1333,6 @@ class SSet extends List {
 
   sort() {
     const set = this.getElement().sort((a, b) => a - b);
-    this._tree = this.createTree(set);
     return this.setElement(set);
   }
 
@@ -1383,6 +1388,22 @@ class SSet extends List {
       return new SSet(...this.cdr()).intersection(set, result);
     }
     return this.intersection(new SSet(...set.cdr()), result);
+  }
+}
+
+// const set1 = new SSet(1, 2, 3, 4, 5);
+// const set2 = new SSet(1, 4, 6);
+// console.log(expect(set1.has(4)).to.be.deep.equal(true));
+// console.log(expect(set1.adjoin(2)).to.be.deep.equal([1,2,3,4,5]));
+// console.log(expect(set1.adjoin(6)).to.be.deep.equal([1,2,3,4,5,6]));
+// console.log(expect(set1.intersection(set2)).to.be.deep.equal([1,4,6]));
+
+
+
+class Tree extends SSet {
+  constructor(...args) {
+    super(...args);
+    this._tree = this.createTree(this.getElement());
   }
 
   createTree(set = this.getElement(), result = {}) {
@@ -1481,29 +1502,157 @@ class SSet extends List {
   }
 }
 
-const set1 = new SSet(1, 2, 3, 4, 5);
-const set2 = new SSet(1, 4, 6);
-// console.log(expect(set1.has(4)).to.be.deep.equal(true));
-// console.log(expect(set1.adjoin(2)).to.be.deep.equal([1,2,3,4,5]));
-// console.log(expect(set1.adjoin(6)).to.be.deep.equal([1,2,3,4,5,6]));
-// console.log(expect(set1.intersection(set2)).to.be.deep.equal([1,4,6]));
-// console.log(expect(JSON.stringify(set1.getTree())).to.be.equal('{"left":{"left":1,"center":2,"right":null},"center":3,"right":{"left":4,"center":5,"right":null}}'));
-// console.log(expect(JSON.stringify(set2.getTree())).to.be.equal('{"left":1,"center":4,"right":6}'));
-// console.log(expect(set1.getElementOfTree(3)).to.be.equal(true));
-// console.log(expect(set2.getElementOfTree(3)).to.be.equal(false));
-// console.log(expect(JSON.stringify(set2.adjoinTree(3))).to.be.equal('{"left":{"left":1,"right":3},"center":4,"right":6}'));
-// console.log(expect(JSON.stringify(set2.getTree())).to.be.equal('{"left":{"left":1,"right":3},"center":4,"right":6}'));
-// console.log(expect(JSON.stringify(set2.adjoinTree(4))).to.be.equal('{"left":{"left":1,"right":3},"center":4,"right":6}'));
-// console.log(expect(JSON.stringify(set2.getTree())).to.be.equal('{"left":{"left":1,"right":3},"center":4,"right":6}'));
-// console.log(expect(JSON.stringify(set1.adjoinTree(7))).to.be.equal('{"left":{"left":1,"center":2,"right":null},"center":3,"right":{"left":4,"center":5,"right":7}}'));
-// console.log(expect(JSON.stringify(set1.adjoinTree(2.5))).to.be.equal('{"left":{"left":1,"center":2,"right":2.5},"center":3,"right":{"left":4,"center":5,"right":7}}'));
-// console.log(expect(JSON.stringify(set1.adjoinTree(6))).to.be.equal('{"left":{"left":1,"center":2,"right":2.5},"center":3,"right":{"left":4,"center":5,"right":{"left":6,"center":7}}}'));
+// const tree1 = new Tree(1, 2, 3, 4, 5);
+// const tree2 = new Tree(1, 4, 6);
+// console.log(expect(JSON.stringify(tree1.getTree())).to.be.equal('{"left":{"left":1,"center":2,"right":null},"center":3,"right":{"left":4,"center":5,"right":null}}'));
+// console.log(expect(JSON.stringify(tree2.getTree())).to.be.equal('{"left":1,"center":4,"right":6}'));
+// console.log(expect(tree1.getElementOfTree(3)).to.be.equal(true));
+// console.log(expect(tree2.getElementOfTree(3)).to.be.equal(false));
+// console.log(expect(JSON.stringify(tree2.adjoinTree(3))).to.be.equal('{"left":{"left":1,"center":3},"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(tree2.getTree())).to.be.equal('{"left":{"left":1,"center":3},"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(tree2.adjoinTree(4))).to.be.equal('{"left":{"left":1,"center":3},"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(tree2.getTree())).to.be.equal('{"left":{"left":1,"center":3},"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(tree1.adjoinTree(7))).to.be.equal('{"left":{"left":1,"center":2,"right":null},"center":3,"right":{"left":4,"center":5,"right":7}}'));
+// console.log(expect(JSON.stringify(tree1.adjoinTree(2.5))).to.be.equal('{"left":{"left":1,"center":2,"right":2.5},"center":3,"right":{"left":4,"center":5,"right":7}}'));
+// console.log(expect(JSON.stringify(tree1.adjoinTree(6))).to.be.equal('{"left":{"left":1,"center":2,"right":2.5},"center":3,"right":{"left":4,"center":5,"right":{"left":6,"center":7}}}'));
+
+const isBoolean = val => typeof val === 'boolean';
+const isString = val => typeof val === 'string';
+
+class HuffmanTree {
+  constructor(...args) {
+    this.invariant(args, true);
+    this.initialize(args);
+  }
+
+  invariant(input, checkFunc, options = {}) {
+    // initialize input
+    if (isBoolean(checkFunc) && checkFunc) {
+      this.invariant(input, Array.isArray);
+      input.forEach(([symbol, code, weight]) => {
+        this.invariant(symbol, isString);
+        this.invariant(weight, isNumber);
+        this.invariant(code, val => (isString(val) || isNumber(val)));
+      });
+    } else {
+      if (options.deep) {
+        if (Array.isArray(input)) {
+          return input.forEach(({
+            value,
+            check,
+            message = '',
+          }) => (this.invariant(value, check, { message })));
+        }
+      }
+
+      if (!checkFunc(input)) {
+        throw new Error(options.message || `arg: ${input} is invalid`);
+      }
+    }
+  }
+
+  initialize(input) {
+    this.setLeafList(this.makeLeaf(input));
+    this.createTree();
+  }
+
+  setLeafList(input) {
+    this.invariant(input, Array.isArray);
+    this._leaflist = input;
+  }
+
+  getLeafList() {
+    return this._leaflist;
+  }
+
+  setTree(tree) {
+    this._tree = tree;
+  }
+
+  makeLeaf(input) {
+    return input.map(([symbol, code, weight]) => ({
+      symbol,
+      code,
+      weight,
+    })).sort((pre, next) => next.weight - pre.weight);
+  }
+
+  getSymbol(leaf) {
+    return leaf.symbol;
+  }
+
+  getWeight(leaf) {
+    return leaf.weight;
+  }
+
+  getLeaf(symbol) {
+    const list = this.getLeafList();
+    const result = list.filter(leaf => leaf.symbol === symbol);
+    if (result.length) {
+      return result[0];
+    }
+    return null;
+  }
+
+  getDefaultTree() {
+    return {
+      weight: 0,
+      0: null,
+      1: null,
+    };
+  }
+
+  genLRBranch(list, tree = this.getDefaultTree()) {
+    list.forEach((leaf) => {
+      let {
+        code,
+      } = leaf;
+      const {
+        weight,
+      } = leaf;
+      code = String(code);
+      let index = 0;
+      let value;
+      let tempTree = tree;
+      const {
+        length,
+      } = code;
+      while (TRUE) {
+        value = code[index];
+        index += 1;
+        this.invariant(value, val => val === '0' || val === '1');
+        if (index < length) {
+          tempTree[value] = tempTree[value] || this.getDefaultTree();
+          tempTree[value].weight += weight;
+          tempTree = tempTree[value];
+        } else {
+          tempTree[value] = leaf;
+          break;
+        }
+      }
+    });
+    return tree;
+  }
+
+  createTree() {
+    const list = this.getLeafList();
+    const tree = this.genLRBranch(list);
+    this.setTree(tree);
+  }
+
+}
 
 
-
-
-
-
+new HuffmanTree(
+  ['A', 0, 8],
+  ['B', 100, 3],
+  ['C', 1010, 1],
+  ['D', 1011, 1],
+  ['E', 1100, 1],
+  ['F', 1101, 1],
+  ['G', 1110, 1],
+  ['H', 1111, 1],
+);
 
 
 
