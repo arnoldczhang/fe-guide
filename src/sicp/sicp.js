@@ -1519,6 +1519,8 @@ class Tree extends SSet {
 const isBoolean = val => typeof val === 'boolean';
 const isString = val => typeof val === 'string';
 
+
+// 哈夫曼树
 class HuffmanTree {
   constructor(...args) {
     this.invariant(args, true);
@@ -1549,6 +1551,7 @@ class HuffmanTree {
         throw new Error(options.message || `arg: ${input} is invalid`);
       }
     }
+    return;
   }
 
   initialize(input) {
@@ -1567,6 +1570,10 @@ class HuffmanTree {
 
   setTree(tree) {
     this._tree = tree;
+  }
+
+  getTree(tree) {
+    return this._tree;
   }
 
   makeLeaf(input) {
@@ -1604,19 +1611,14 @@ class HuffmanTree {
 
   genLRBranch(list, tree = this.getDefaultTree()) {
     list.forEach((leaf) => {
-      let {
-        code,
-      } = leaf;
-      const {
-        weight,
-      } = leaf;
-      code = String(code);
+      let { code } = leaf;
       let index = 0;
       let value;
       let tempTree = tree;
-      const {
-        length,
-      } = code;
+
+      code = String(code);
+      const { weight } = leaf;
+      const { length } = code;
       while (TRUE) {
         value = code[index];
         index += 1;
@@ -1643,7 +1645,7 @@ class HuffmanTree {
 }
 
 
-new HuffmanTree(
+console.log(expect(JSON.stringify(new HuffmanTree(
   ['A', 0, 8],
   ['B', 100, 3],
   ['C', 1010, 1],
@@ -1652,7 +1654,7 @@ new HuffmanTree(
   ['F', 1101, 1],
   ['G', 1110, 1],
   ['H', 1111, 1],
-);
+).getTree())).to.be.equal('{"0":{"symbol":"A","code":0,"weight":8},"1":{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"C","code":1010,"weight":1},"1":{"symbol":"D","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"F","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"G","code":1110,"weight":1},"1":{"symbol":"H","code":1111,"weight":1},"weight":2},"weight":4},"weight":9},"weight":0}'));
 
 
 

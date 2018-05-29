@@ -8,86 +8,8 @@
       <summary>标题</summary> 
       <p>内容</p> 
     </details>
-    <script type="text/javascript" src="promise.js"></script>
     <script type="text/javascript">
 
-      class HuffmanTree {
-        constructor(...args) {
-          this.invariant(args, true);
-          this.initialize(args);
-        }
-
-        invariant(input, checkFunc, options = {}) {
-          // initialize input 
-          if (typeof checkFunc === 'boolean' && checkFunc) {
-            this.invariant(input, val => Array.isArray(val), { pure: true });
-            input.forEach(([symbol, code, weight]) => {
-              this.invariant(symbol, val => typeof val === 'string');
-              this.invariant(code, val => typeof val === 'number');
-              this.invariant(weight, val => typeof val === 'number');
-            });
-          } else {
-            if (!options.pure) {
-              if (Array.isArray(input)) {
-                return input.forEach(({
-                  input,
-                  check,
-                  message = '',
-                }) => (this.invariant(input, check, { message })));
-              }
-            }
-            if (!checkFunc(input)) {
-              throw new Error(options.message || `arg: ${input} is invalid`);
-            }
-          }
-        }
-
-        initialize(input) {
-          this.setLeafList(this.makeLeaf(input));
-        }
-
-        setLeafList(input) {
-          this._leaflist = input;
-        }
-
-        getLeafList() {
-          return this._leaflist;
-        }
-
-        makeLeaf(input) {
-          return input.map(([symbol, code, weight]) => ({
-            symbol,
-            code,
-            weight,
-          })).sort((pre, next) => pre.weight - next.weight);
-        }
-
-        getSymbol(leaf) {
-          return leaf.symbol;
-        }
-
-        getWeight(leaf) {
-          return leaf.weight;
-        }
-
-        getLeaf(symbol) {
-          const list = this.getLeafList();
-          const result = list.filter(leaf => leaf.symbol === symbol);
-          if (result.length) {
-            return result[0];
-          }
-          return null;
-        }
-
-        createTree() {
-          const list = this.getLeafList();
-
-        }
-
-      }
-
-
-      new HuffmanTree(['A', 0, 8], ['B', 100, 3]);
     </script>
   </body>
 </html>
