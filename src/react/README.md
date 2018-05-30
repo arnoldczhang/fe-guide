@@ -5,6 +5,7 @@
 2. ![react16.3](react16.3.png)
 3. 解析过程见 ./src/mobx/react16-*.png
 4. vdom见 https://zhuanlan.zhihu.com/p/35876032
+5. fiber：https://zhuanlan.zhihu.com/p/37098539
 
 
 ## lifecycle

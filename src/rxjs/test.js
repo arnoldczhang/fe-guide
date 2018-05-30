@@ -223,14 +223,17 @@ const btn = document.querySelector('#btn');
 // observable.subscribe(ct => console.log(ct));
 
 
-const observable = Observable.interval(1000);
-const observable2 = Observable.interval(2000);
-const merged = Observable.merge(observable, observable2);
-merged.subscribe(count => console.log(count));
+// const observable = Observable.interval(1000);
+// const observable2 = Observable.interval(2000);
+// const merged = Observable.merge(observable, observable2);
+// merged.subscribe(count => console.log(count));
 
 
-
-
+var numbers = Observable.of(10, 20, 30);
+var letters = Observable.of('a', 'b', 'c');
+var interval = Observable.interval(1000);
+var result = numbers.concat(letters).concat(interval);
+result.subscribe(x => console.log(x));
 
 
 
