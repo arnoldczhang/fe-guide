@@ -4,11 +4,13 @@ const signale = require('signale');
 const chai = require('chai');
 const expect = chai.expect;
 const TRUE = true;
-console.log = (input) => {
-  if (typeof input === 'object') {
-    input = JSON.stringify(input);
-  }
-  return signale.success(input);
+console.log = (...inputs) => {
+  return signale.success(...inputs.map((input) => {
+    if (typeof input === 'object') {
+      return JSON.stringify(input);
+    }
+    return input;
+  }));
 };
 
 // 求最大公约数
@@ -1519,7 +1521,8 @@ class Tree extends SSet {
 const isBoolean = val => typeof val === 'boolean';
 const isString = val => typeof val === 'string';
 const isObject = val => typeof val === 'object';
-
+const isExist = val => val != void 0;
+const func = val => val;
 
 // 哈夫曼树
 class HuffmanTree {
@@ -1552,16 +1555,26 @@ class HuffmanTree {
         throw new Error(options.message || `arg: ${input} is invalid`);
       }
     }
+    return true;
   }
 
   initialize(input) {
     this.setLeafList(this.makeLeaf(input));
+    this.createLeafCodeMap(input);
     this.createTree();
   }
 
   setLeafList(input) {
     this.invariant(input, Array.isArray);
     this._leaflist = input;
+  }
+
+  createLeafCodeMap(input) {
+    this.invariant(input, Array.isArray);
+    this._leafCodeMap = {};
+    input.forEach(([symbol, code]) => {
+      this._leafCodeMap[symbol] = String(code);
+    });
   }
 
   getLeafList() {
@@ -1571,18 +1584,37 @@ class HuffmanTree {
   setTree(tree) {
     this.invariant(tree, isObject);
     this._tree = tree;
+    return tree;
   }
 
   getTree(tree) {
     return this._tree;
   }
 
+  getLeafCodeMap() {
+    return this._leafCodeMap;
+  }
+
+  isZeroOrOne(val) {
+    val = String(val);
+    return val === '0' || val === '1';
+  }
+
+  sortByWeight(list, ascend) {
+    this.invariant(list, Array.isArray);
+    const iterator = ascend
+      ? (pre, next) => (pre.weight - next.weight)
+      : (pre, next) => (next.weight - pre.weight);
+    return list.sort(iterator);
+  }
+
   makeLeaf(input) {
-    return input.map(([symbol, code, weight]) => ({
+    this.invariant(input, Array.isArray);
+    return this.sortByWeight(input.map(([symbol, code, weight]) => ({
       symbol,
       code,
       weight,
-    })).sort((pre, next) => next.weight - pre.weight);
+    })));
   }
 
   getSymbol(leaf) {
@@ -1623,7 +1655,7 @@ class HuffmanTree {
       while (TRUE) {
         value = code[index];
         index += 1;
-        this.invariant(value, val => val === '0' || val === '1');
+        this.invariant(value, this.isZeroOrOne);
         if (index < length) {
           tempTree[value] = tempTree[value] || this.getDefaultTree();
           tempTree[value].weight += weight;
@@ -1667,25 +1699,109 @@ class HuffmanTree {
     return this.getSymbol(tree);
   }
 
+  createCodeWalker(code = '') {
+    const codelist = String(code).split('');
+    return ({
+      iterator = func,
+      finish = func,
+    }) => {
+      while (TRUE) {
+        const alph = codelist.shift();
+        const hasNext = !!codelist.length;
+        this.invariant(alph, this.isZeroOrOne);
+        iterator(alph, hasNext);
+        if (!hasNext) {
+          finish(alph);
+          break;
+        }
+      }
+    };
+  }
+
+  decode(code) {
+    this.invariant(code, isExist);
+    const codeWalker = this.createCodeWalker(code);
+    const tree = this.getTree();
+    const result = [];
+    let tempTree = tree;
+
+    codeWalker({
+      iterator: (alph) => {
+        if (isExist(tempTree[alph])) {
+          tempTree = tempTree[alph];
+        } else {
+          result.push(tempTree.symbol);
+          tempTree = tree[alph];
+        }
+      },
+      finish: () => {
+        if (tempTree.symbol) {
+          result.push(tempTree.symbol);
+        }
+      },
+    });
+    return result.join('');
+  }
+
+  encode(input) {
+    const re = new RegExp(`[${input}]`, 'g');
+    const map = this.getLeafCodeMap();
+    return input.replace(re, (result) => {
+      return String(map[result] || '');
+    });
+  }
+
+  adjoinTree(...leaves) {
+    this.invariant(leaves, true);
+    const tree = this.getTree();
+    let tempTree = tree;
+    this.sortByWeight(leaves).forEach((leaf) => {
+      const [symbol, code, weight] = leaf;
+      const codeWalker = this.createCodeWalker(code);
+      codeWalker({
+        iterator: (alph, hasNext) => {
+          if (hasNext) {
+            tempTree[alph] = tempTree[alph] || this.getDefaultTree();
+            tempTree.weight += weight;
+            tempTree = tempTree[alph];
+          } else {
+            tempTree[alph] = {
+              symbol,
+              code,
+              weight,
+            };
+          }
+        },
+        finish: () => {
+          tempTree = tree;
+        },
+      });
+    });
+    return this.setTree(tree);
+  }
+
 }
 
 const huff = new HuffmanTree(
   ['A', 0, 8],
   ['B', 100, 3],
-  ['C', 1010, 1],
-  ['D', 1011, 1],
+  ['D', 1010, 1],
+  ['R', 1011, 1],
   ['E', 1100, 1],
-  ['F', 1101, 1],
-  ['G', 1110, 1],
-  ['H', 1111, 1],
+  ['N', 1101, 1],
+  ['L', 1110, 1],
+  ['O', 1111, 1],
 );
 // console.log(expect(JSON.stringify(huff.getTree())).to.be.equal('{"0":{"symbol":"A","code":0,"weight":8},"1":{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"C","code":1010,"weight":1},"1":{"symbol":"D","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"F","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"G","code":1110,"weight":1},"1":{"symbol":"H","code":1111,"weight":1},"weight":2},"weight":4},"weight":9},"weight":17}'));
-console.log(expect(JSON.stringify(huff.getLeftBranch())).to.be.equal('{"symbol":"A","code":0,"weight":8}'));
-console.log(expect(JSON.stringify(huff.getRightBranch())).to.be.equal('{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"C","code":1010,"weight":1},"1":{"symbol":"D","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"F","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"G","code":1110,"weight":1},"1":{"symbol":"H","code":1111,"weight":1},"weight":2},"weight":4},"weight":9}'));
-
-
-
-
+// console.log(expect(JSON.stringify(huff.getLeftBranch())).to.be.equal('{"symbol":"A","code":0,"weight":8}'));
+// console.log(expect(JSON.stringify(huff.getRightBranch())).to.be.equal('{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"C","code":1010,"weight":1},"1":{"symbol":"D","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"F","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"G","code":1110,"weight":1},"1":{"symbol":"H","code":1111,"weight":1},"weight":2},"weight":4},"weight":9}'));
+// console.log(expect(huff.decode(1100)).to.be.equal('E'));
+// console.log(expect(huff.decode(0)).to.be.equal('A'));
+// console.log(expect(huff.decode(100)).to.be.equal('B'));
+// console.log(expect(huff.decode('010111101111111101010')).to.be.equal('ARNOLD'));
+// console.log(expect(JSON.stringify(huff.adjoinTree(['C', 11110, 2], ['F', 11111, 1]))).to.be.equal('{"0":{"symbol":"A","code":0,"weight":8},"1":{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"D","code":1010,"weight":1},"1":{"symbol":"R","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"N","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"L","code":1110,"weight":1},"1":{"0":{"symbol":"C","code":11110,"weight":2},"1":{"symbol":"F","code":11111,"weight":1},"symbol":"O","code":1111,"weight":1},"weight":5},"weight":7},"weight":12},"weight":20}'));
+// console.log(expect(huff.decode(11111)).to.be.equal('F'));
+// console.log(expect(huff.decode(huff.encode('ARNOLD'))).to.be.equal('ARNOLD'));
 
 
 
