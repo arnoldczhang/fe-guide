@@ -4,6 +4,9 @@
   - http://blog.csdn.net/freewebsys/article/details/46683645
   - ...
 
+- 启动
+```python
+python3 ./src/python/super_cat.py
 - 安装py2app
 ```python
 pip3 install py2app

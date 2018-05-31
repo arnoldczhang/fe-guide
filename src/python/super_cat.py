@@ -1,3 +1,4 @@
+#coding:utf-8
 import requests, sys, wx, xlrd, re, json, datetime, os, xlsxwriter, threading
 from pyquery import PyQuery as pq
 from tkinter import *
@@ -343,7 +344,7 @@ class Application(object):
       messagebox.showinfo('提示', '当前未登录，请登录完之后，回填JSESSIONID 和 ssoid')
 
   def write_result(self):
-    restrict_re = re.compile(r'[,\/\s\|:\'\"]')
+    restrict_re = re.compile(r'[,\/\s\|:\'\"#\\;\.\?\=\-]')
     query_content = restrict_re.sub('', self.query_content)
     file_path = '%s/%s.xlsx' % (self.file_dir, query_content)
     workbook = xlsxwriter.Workbook(file_path)

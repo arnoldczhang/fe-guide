@@ -1806,6 +1806,51 @@ const huff = new HuffmanTree(
 
 
 
+/**
+ * 复数（抽象屏障）
+ */
+class Plural {
+  constructor(num) {
+    /** TODO **/
+    this.num = num;
+  }
+  add() { /** TODO **/ }
+  sub() { /** TODO **/ }
+  multi() { /** TODO **/ }
+  divide() { /** TODO **/ }
+}
+
+// 实部+虚部求复数
+class RealImagPlural extends Plural {
+  // TODO
+}
+
+// 极坐标求复数
+class PolarPlural extends Plural {
+  // TODO
+}
+
+const commonPlural = {
+  typeMap: {},
+  push(klass) {
+    this.typeMap[`${klass.name}`] = klass;
+  },
+  get(name) {
+    return this.typeMap[`${name}Plural`];
+  },
+};
+
+commonPlural.push(RealImagPlural);
+commonPlural.push(PolarPlural);
+
+console.log(new (commonPlural.get('Polar'))(123.1));
+
+
+
+
+
+
+
 
 
 
