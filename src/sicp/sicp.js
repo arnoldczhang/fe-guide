@@ -318,9 +318,9 @@ const divide = (x, y) => {
   }
   throw new Error('the denor can`t be zero');
 };
-const multi = (x, y) => x * y;
-const minus = (...args) => args.reduce((x = 0, y = 0) => x - y);
-const add = (...args) => args.reduce((x = 0, y = 0) => x + Number(y), 0);
+const multi = (...args) => args.reduce((x = 1, y = 0) => (x * y), 1);
+const minus = (...args) => args.reduce((x = 0, y = 0) => (x - y));
+const add = (...args) => args.reduce((x = 0, y = 0) => (x + Number(y)), 0);
 const min = (...args) => Math.min.apply(null, args);
 const max = (...args) => Math.max.apply(null, args);
 
@@ -1518,6 +1518,7 @@ class Tree extends SSet {
 // console.log(expect(JSON.stringify(tree1.adjoinTree(2.5))).to.be.equal('{"left":{"left":1,"center":2,"right":2.5},"center":3,"right":{"left":4,"center":5,"right":7}}'));
 // console.log(expect(JSON.stringify(tree1.adjoinTree(6))).to.be.equal('{"left":{"left":1,"center":2,"right":2.5},"center":3,"right":{"left":4,"center":5,"right":{"left":6,"center":7}}}'));
 
+const isFunction = val => typeof val === 'function';
 const isBoolean = val => typeof val === 'boolean';
 const isString = val => typeof val === 'string';
 const isObject = val => typeof val === 'object';
@@ -1843,14 +1844,168 @@ const commonPlural = {
 commonPlural.push(RealImagPlural);
 commonPlural.push(PolarPlural);
 
-console.log(new (commonPlural.get('Polar'))(123.1));
+// console.log(new (commonPlural.get('Polar'))(123.1));
 
 
 
+class InstallClass {
+  constructor(klass) {
+    if (!Array.isArray(klass)) {
+      klass = [klass];
+    }
+    this.klass = klass;
+    this.klassProto = klass.map(k => k.prototype);
+
+    this.put = this.put.bind(this);
+    this.get = this.get.bind(this);
+    this.init();
+  }
+
+  invariant(match, errorCallback) {
+    if (!match) {
+      if (isString(errorCallback)) {
+        throw new Error(errorCallback);
+      }
+      errorCallback();
+    }
+  }
+
+  init() {
+    this.put('invariant', this.invariant);
+  }
+
+  put(key, lambda, map) {
+    const mapIterator = map ? (k, kl, lamb) => {
+      map[k] = [kl, lamb];
+    } : () => {};
+
+    this.klassProto.forEach((proto, index) => {
+      const klass = this.klass[index];
+      proto[key] = lambda;
+      mapIterator(key, klass, lambda);
+    });
+  }
+
+  get(key, klass = '') {
+    if (klass) {
+      const klassProto = this.klassProto.filter(proto => proto.constructor === klass);
+      if (klass) {
+        return klassProto[key];
+      }
+      return null;
+    }
+    return this.klassProto.map(proto => proto[key]);
+  }
+}
 
 
+class Polynomial {
+  constructor(...args) {
+    this.args = args;
+  }
 
+  checkNumOrArray(input = '', errorMessage = 'error') {
+    return this.invariant(Array.isArray(input) || isNumber(input) || !isNaN(Number(input)), errorMessage);
+  }
 
+  addPoly(...args) {
+    return add.apply(null, this.args.concat(args));
+  }
+
+  multiPoly(...args) {
+    return multi.apply(null, this.args.concat(args));
+  }
+
+  isZero() {
+    return this.args.map(arg => arg === 0);
+  }
+
+  baseTermPoly(tag, pre, next) {
+    const result = [];
+    const errorMsg = 'data type is wrong';
+    this.invariant(isFunction(tag), errorMsg);
+    this.checkNumOrArray(pre, errorMsg);
+
+    if (!pre) {
+      return next;
+    }
+
+    if (!next) {
+      return pre;
+    }
+
+    if (Array.isArray(pre)) {
+      return pre.reduce((res, num, index) => {
+        res[index] = this.baseTermPoly(tag, num, next);
+        return res;
+      }, result);
+    } else {
+      pre = Number(pre);
+      if (!Array.isArray(next)) {
+        this.checkNumOrArray(next, errorMsg);
+        next = [next];
+      }
+      return next.reduce((res, num) => {
+        this.checkNumOrArray(num, errorMsg);
+        res = tag(res, num);
+        return res;
+      }, pre);
+    }
+  }
+
+  addTermPoly(pre, next) {
+    return this.baseTermPoly(add, pre, next);
+  }
+
+  minusTermPoly(pre, next) {
+    return this.baseTermPoly(minus, pre, next);
+  }
+
+  multiTermPoly(pre, next) {
+    return this.baseTermPoly(multi, pre, next);
+  }
+}
+
+{
+  const installPolynomial = new InstallClass(Polynomial);
+  const { put } = installPolynomial;
+  const calMap = {};
+
+  put('isZero', function isZero() {
+    return this.isZero();
+  });
+
+  put('add', function add(...args) {
+    return this.addPoly(...args);
+  });
+
+  put('multi', function multi(...args) {
+    return this.multiPoly(...args);
+  }, calMap);
+
+  put('addTerm', function addTerm(pre, next) {
+    return this.addTermPoly(pre, next);
+  });
+
+  put('minusTerm', function minusTerm(pre, next) {
+    return this.minusTermPoly(pre, next);
+  });
+
+  put('multiTerm', function multiTerm(pre, next) {
+    return this.multiTermPoly(pre, next);
+  });
+
+  const poly = new Polynomial(1, 2, 3);
+
+  // console.log(expect(poly.add()).to.be.equal(6));
+  // console.log(expect(poly.add(4, 5, 6)).to.be.equal(21));
+  // console.log(expect(poly.multi()).to.be.equal(6));
+  // console.log(expect(poly.multi(4, 5, 6)).to.be.equal(720));
+  // console.log(expect(poly.addTerm([1, 2, 3], [4, 5, 6])).to.be.deep.equal([16,17,18]));
+  // console.log(expect(poly.multiTerm([1, 2, 3], [4, 5, 6])).to.be.deep.equal([120,240,360]));
+  // console.log(expect(poly.minusTerm([1, 2, 3], [4, 5, 6])).to.be.deep.equal([-14,-13,-12]));
+  // console.log(calMap);
+}
 
 
 
