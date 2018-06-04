@@ -1,0 +1,61 @@
+p, div, span, section, article {
+  margin: 0;
+  padding: 0;
+}
+#code-space {
+  background-color:#1d1f20;
+  width: 100%;
+  height: 300px;
+  overflow-y: scroll;
+}
+#code-space::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+#code-space::-webkit-scrollbar-track-piece {
+    background-color: #ccc;
+    -webkit-border-radius: 6px;
+}
+#code-space::-webkit-scrollbar-thumb:vertical {
+    height: 5px;
+    background-color: #666;
+    -webkit-border-radius: 6px;
+}
+#code-content {
+  position: relative;
+  height: 1000px;
+}
+.code-line {
+  height: 20px;
+  line-height: 20px;
+}
+.code-part {
+  font-size: 14px;
+  min-height: 20px;
+  color: #fff;
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+.code-cursor {
+  position: absolute;
+  width: 0px;
+  height: 20px;
+  border-right: 1px solid #fff;
+  -webkit-animation:cursor 1s infinite;
+  animation:cursor 1s infinite;
+  display: none;
+}
+
+@keyframes cursor {
+  0% {opacity: 1;}
+  50% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+@-webkit-keyframes cursor {
+  0% {opacity: 1;}
+  50% {opacity: 0;}
+  100% {opacity: 1;}
+}

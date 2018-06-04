@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": false
+    },
+    "lib": [
+        "es6",
+        "es2015"
+    ],
+    "files": [
+        "server.ts"
+    ],
+    "include": [
+        "src/koa/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
