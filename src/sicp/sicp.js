@@ -1876,7 +1876,8 @@ class InstallClass {
 
   put(key, lambda, map) {
     const mapIterator = map ? (k, kl, lamb) => {
-      map[k] = [kl, lamb];
+      map[k] = map[k] || {};
+      map[k][kl.name] = [kl, lamb];
     } : () => {};
 
     this.klassProto.forEach((proto, index) => {
@@ -1908,6 +1909,13 @@ class Polynomial {
     return this.invariant(Array.isArray(input) || isNumber(input) || !isNaN(Number(input)), errorMessage);
   }
 
+  checkZeroDiv(num, tag) {
+    const zeroMessage = 'num can`t be zero';
+    if (tag === divide) {
+      return this.invariant(!this.isZero(num), zeroMessage);
+    }
+  }
+
   addPoly(...args) {
     return add.apply(null, this.args.concat(args));
   }
@@ -1916,7 +1924,10 @@ class Polynomial {
     return multi.apply(null, this.args.concat(args));
   }
 
-  isZero() {
+  isZero0(num) {
+    if (isNumber(num)) {
+      return num === 0;
+    }
     return this.args.map(arg => arg === 0);
   }
 
@@ -1947,6 +1958,7 @@ class Polynomial {
       }
       return next.reduce((res, num) => {
         this.checkNumOrArray(num, errorMsg);
+        this.checkZeroDiv(num, tag);
         res = tag(res, num);
         return res;
       }, pre);
@@ -1964,6 +1976,10 @@ class Polynomial {
   multiTermPoly(pre, next) {
     return this.baseTermPoly(multi, pre, next);
   }
+
+  divideTermPoly(pre, next) {
+    return this.baseTermPoly(divide, pre, next);
+  }
 }
 
 {
@@ -1971,8 +1987,8 @@ class Polynomial {
   const { put } = installPolynomial;
   const calMap = {};
 
-  put('isZero', function isZero() {
-    return this.isZero();
+  put('isZero', function isZero(...args) {
+    return this.isZero0(...args);
   });
 
   put('add', function add(...args) {
@@ -1995,6 +2011,10 @@ class Polynomial {
     return this.multiTermPoly(pre, next);
   });
 
+  put('divideTerm', function divideTerm(pre, next) {
+    return this.divideTermPoly(pre, next);
+  });
+
   const poly = new Polynomial(1, 2, 3);
 
   // console.log(expect(poly.add()).to.be.equal(6));
@@ -2005,6 +2025,10 @@ class Polynomial {
   // console.log(expect(poly.multiTerm([1, 2, 3], [4, 5, 6])).to.be.deep.equal([120,240,360]));
   // console.log(expect(poly.minusTerm([1, 2, 3], [4, 5, 6])).to.be.deep.equal([-14,-13,-12]));
   // console.log(calMap);
+  // const exp1 = x => [expt(x, 2) + 1, x + 1, x];
+  // const exp2 = x => [x + 2, x, x - 1];
+  // console.log(poly.multiTerm(exp1(2), exp2(2)));// [5, 3, 2] * [4, 2, 1] = [40,24,16];
+  // console.log(poly.divideTerm([1, 2, 3], [4, 5, 6]));
 }
 
 
