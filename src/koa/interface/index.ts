@@ -34,7 +34,6 @@ interface AssetOptions {
   [key:string]: any;
 }
 
-
 export {
   UserStatus,
   AssetOptions,
