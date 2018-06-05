@@ -21,7 +21,7 @@ app.use(staticServer(path.join(__dirname, './public')))
   .use(router.routes())
   .use(router.allowedMethods());
 
-app.listen(port, () => {
+app.listen(port, (): void => {
   console.log(`koa app start at port ${port}`);
   // open(`http://${host}:${port}`);
 });

@@ -4,11 +4,22 @@ enum CODE {
   NOLOGIN,
 };
 
-const MSG = {
-  ACTFAIL: 'aaaaa aaaa',
+const DB = {
+  appId: 'Hi5TPuhSy43kOGEbKVDHsyF9-gzGzoHsz',
+  appKey: 'ii8n2CqtDQjyRnOd4ModaN63',
 };
 
-export default {
+const MSG = {
+  ACTFAIL: 'operation is fail',
+};
+
+function FUNC<T>(value: T): T{
+  return value;
+};
+
+export {
   CODE,
   MSG,
+  DB,
+  FUNC,
 };

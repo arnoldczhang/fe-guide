@@ -35,32 +35,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Router = require("koa-router");
-var utils_1 = require("./utils");
-var router = new Router();
-function index(ctx) {
+var utils_1 = require("../utils");
+function getInfo(user) {
     return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2, new Promise(function (resolve) {
-                    ctx.body = 'hello world';
-                    resolve();
-                })];
-        });
-    });
-}
-;
-function user(ctx) {
-    return __awaiter(this, void 0, void 0, function () {
+        var resp;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4, utils_1.abstractApi('getInfo', ctx)];
-                case 1: return [2, _a.sent()];
+                case 0: return [4, utils_1.abstractService('createUser', user)];
+                case 1:
+                    _a.sent();
+                    return [4, utils_1.abstractService('getUser', user)];
+                case 2:
+                    resp = _a.sent();
+                    resp.data = resp.data.attributes;
+                    return [2, resp];
             }
         });
     });
 }
 ;
-router
-    .get('/', index)
-    .get('/user', user);
-module.exports = router;
+exports.user = {
+    getInfo: getInfo,
+};

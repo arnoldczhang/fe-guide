@@ -7,12 +7,15 @@ import {
 
 const router: Router = new Router();
 
-async function index(ctx: Koa.Context) {
-  ctx.body = 'hello world';
+async function index(ctx: Koa.Context): Promise<Object | string | void> {
+  return new Promise((resolve) => {
+    ctx.body = 'hello world';
+    resolve();
+  });
 };
 
-async function test (ctx: Koa.Context) {
-  await abstractApi('getInfo', ctx);
+async function user (ctx: Koa.Context): Promise<Object | string | void> {
+  return await abstractApi('getInfo', ctx);
 };
 
 
@@ -21,7 +24,7 @@ async function test (ctx: Koa.Context) {
  */
 router
   .get('/', index)
-  .get('/test', test)
+  .get('/user', user)
   ;
 
 module.exports = router;

@@ -6,11 +6,19 @@ var CODE;
     CODE[CODE["FAIL"] = 1] = "FAIL";
     CODE[CODE["NOLOGIN"] = 2] = "NOLOGIN";
 })(CODE || (CODE = {}));
+exports.CODE = CODE;
 ;
-const MSG = {
-    ACTFAIL: 'aaaaa aaaa',
+var DB = {
+    appId: 'Hi5TPuhSy43kOGEbKVDHsyF9-gzGzoHsz',
+    appKey: 'ii8n2CqtDQjyRnOd4ModaN63',
 };
-exports.default = {
-    CODE,
-    MSG,
+exports.DB = DB;
+var MSG = {
+    ACTFAIL: 'operation is fail',
 };
+exports.MSG = MSG;
+function FUNC(value) {
+    return value;
+}
+exports.FUNC = FUNC;
+;

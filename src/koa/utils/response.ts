@@ -1,10 +1,6 @@
-export interface Response{
-  code: number,
-  subcode?: number,
-  data: Object | void,
-  message?: string,
-  errorMessage?: string,
-};
+import {
+  Response,
+} from '../interface';
 
 export const response: Response = {
   code: 0,
