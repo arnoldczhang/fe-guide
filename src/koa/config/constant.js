@@ -8,11 +8,11 @@ var CODE;
 })(CODE || (CODE = {}));
 exports.CODE = CODE;
 ;
-var DB = {
+var LEANCLOUD = {
     appId: 'Hi5TPuhSy43kOGEbKVDHsyF9-gzGzoHsz',
     appKey: 'ii8n2CqtDQjyRnOd4ModaN63',
 };
-exports.DB = DB;
+exports.LEANCLOUD = LEANCLOUD;
 var MSG = {
     ACTFAIL: 'operation is fail',
 };

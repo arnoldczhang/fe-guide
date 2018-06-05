@@ -4,7 +4,7 @@ enum CODE {
   NOLOGIN,
 };
 
-const DB = {
+const LEANCLOUD = {
   appId: 'Hi5TPuhSy43kOGEbKVDHsyF9-gzGzoHsz',
   appKey: 'ii8n2CqtDQjyRnOd4ModaN63',
 };
@@ -20,6 +20,6 @@ function FUNC<T>(value: T): T{
 export {
   CODE,
   MSG,
-  DB,
+  LEANCLOUD,
   FUNC,
 };

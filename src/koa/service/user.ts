@@ -11,13 +11,13 @@ import {
 } from '../utils';
 import {
   FUNC,
-  DB,
+  LEANCLOUD,
 } from '../config/constant';
 
 const {
   appId,
   appKey,
-} = DB;
+} = LEANCLOUD;
 
 const UserKlass: User = AV.Object.extend('user');
 const LogKlass: Log = AV.Object.extend('log');

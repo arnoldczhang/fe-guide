@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var AV = require("leancloud-storage");
 require("leancloud-realtime");
 var constant_1 = require("../config/constant");
-var appId = constant_1.DB.appId, appKey = constant_1.DB.appKey;
+var appId = constant_1.LEANCLOUD.appId, appKey = constant_1.LEANCLOUD.appKey;
 var UserKlass = AV.Object.extend('user');
 var LogKlass = AV.Object.extend('log');
 AV.init({
