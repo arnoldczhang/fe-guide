@@ -1980,6 +1980,27 @@ class Polynomial {
   divideTermPoly(pre, next) {
     return this.baseTermPoly(divide, pre, next);
   }
+
+  gcd(pre, next) {
+    if (pre > next) {
+      [next, pre] = [pre, next];
+    }
+
+    if (!pre) {
+      return next;
+    }
+    return this.gcd(pre, next % pre);
+  }
+
+  gcdTermPoly(...args) {
+    args = this.args.concat(args);
+    let result = args.shift();
+    while (args.length) {
+      result = this.gcd(result, args.shift());
+    }
+    return result;
+  }
+
 }
 
 {
@@ -2015,8 +2036,11 @@ class Polynomial {
     return this.divideTermPoly(pre, next);
   });
 
-  const poly = new Polynomial(1, 2, 3);
+  put('gcdTerm', function gcdTerm(...args) {
+    return this.gcdTermPoly(...args);
+  });
 
+  // const poly = new Polynomial(1, 2, 3);
   // console.log(expect(poly.add()).to.be.equal(6));
   // console.log(expect(poly.add(4, 5, 6)).to.be.equal(21));
   // console.log(expect(poly.multi()).to.be.equal(6));
@@ -2029,6 +2053,13 @@ class Polynomial {
   // const exp2 = x => [x + 2, x, x - 1];
   // console.log(poly.multiTerm(exp1(2), exp2(2)));// [5, 3, 2] * [4, 2, 1] = [40,24,16];
   // console.log(poly.divideTerm([1, 2, 3], [4, 5, 6]));
+
+  // const poly2 = new Polynomial(12);
+  // console.log(expect(poly2.gcdTerm(24, 14)).to.be.equal(2)); // 2
+
+
+
+
 }
 
 
