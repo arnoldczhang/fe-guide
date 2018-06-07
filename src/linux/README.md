@@ -35,6 +35,17 @@
   - cd /usr/local/server
   - pm2 start app.js
 
-
-
+## git
+  - yum -y install git
+  - git config --global user.name 'sample'
+  - git config --global user.email 'sample@sample.com'
+  - git config --global color.ui true
+  - ssh-keygen -t rsa -C "sample@sample.com"
+  - useradd -s /usr/bin/git-shell git
+  - mkdir /git; cd /git
+  - git init --bare sample.git
+  - chown -R git:git sample.git
+  - mkdir /home/git/.ssh; cd /home/git/.ssh
+  - vim authorized_keys（公钥id_rsa，单行一个写入）
+  - git clone git@123.57.177.232:/git/sample.git
 
