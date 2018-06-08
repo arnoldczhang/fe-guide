@@ -54,6 +54,7 @@
     "g16:server": "npm run g16:build:w & nodemon ./src/koa/server.js",
     "g17:server": "webpack-dev-server --open --progress --config ./src/test/build/webpack.dev.js",
     "g17:server:prod": "webpack-dev-server --open --progress --config ./src/test/build/webpack.prod.js",
+    "save": "node ./src/test/src/saveImage",
     "lynt": "lynt ./src/lynt/lynt.js",
     "test": "mocha"
   },
