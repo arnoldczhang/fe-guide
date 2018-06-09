@@ -2,6 +2,8 @@
 
 ## 参考
   - https ssl 证书生成：https://blog.csdn.net/tanyhuan/article/details/79992975
+  - h2：https://zhangge.net/5076.html
+  - nginx ssl：https://www.cnblogs.com/piscesLoveCc/p/6120875.html
 
 ## node
   - cd /root
@@ -47,7 +49,6 @@
   - make && make install
   - ./usr/local/nginx/sbin/nginx
   - ./usr/local/nginx/sbin/nginx -s reload
-  - test_types_hash_bucket_size: 64
 
 ## pm2
   - npm i -g pm2
