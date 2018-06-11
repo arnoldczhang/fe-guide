@@ -16,9 +16,9 @@
 
 ## resource
   - wget --no-check-certificate https://sourceforge.net/projects/pcre/files/pcre/8.42/pcre-8.42.tar.gz
-  - wget http://nginx.org/download/nginx-1.8.0.tar.gz
+  - wget http://nginx.org/download/nginx-1.9.7.tar.gz
   - wget http://www.openssl.org/source/openssl-fips-2.0.9.tar.gz
-  - wget http://zlib.net/zlib-1.2.8.tar.gz
+  - wget http://zlib.net/zlib-1.2.11.tar.gz
   - wget http://www.openssl.org/source/openssl-1.0.2o.tar.gz
 
 ## openssl-fips
