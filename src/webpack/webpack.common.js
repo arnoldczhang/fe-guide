@@ -2,7 +2,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -21,9 +20,6 @@ module.exports = {
       filename: "[chunkhash:5].bundle.css",
       allChunks: true,
       disable: false,
-    }),
-    new CleanWebpackPlugin(['./dist'], {
-      root: path.join(__dirname, '..'),
     }),
   ],
   resolve: {

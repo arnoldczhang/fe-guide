@@ -3,7 +3,15 @@ const babel = require('babel-core');
 const signale = require('signale');
 const chai = require('chai');
 const expect = chai.expect;
-console.log = signale.success;
+const TRUE = true;
+console.log = (...inputs) => {
+  return signale.success(...inputs.map((input) => {
+    if (typeof input === 'object') {
+      return JSON.stringify(input);
+    }
+    return input;
+  }));
+};
 
 // 求最大公约数
 const gcd = (a, b) => {
@@ -310,9 +318,9 @@ const divide = (x, y) => {
   }
   throw new Error('the denor can`t be zero');
 };
-const multi = (x, y) => x * y;
-const minus = (...args) => args.reduce((x = 0, y = 0) => x - y);
-const add = (...args) => args.reduce((x = 0, y = 0) => x + Number(y), 0);
+const multi = (...args) => args.reduce((x = 1, y = 0) => (x * y), 1);
+const minus = (...args) => args.reduce((x = 0, y = 0) => (x - y));
+const add = (...args) => args.reduce((x = 0, y = 0) => (x + Number(y)), 0);
 const min = (...args) => Math.min.apply(null, args);
 const max = (...args) => Math.max.apply(null, args);
 
@@ -1307,20 +1315,15 @@ class List {
     return this._els = newList;
   }
 
-  car () {}
-
-  cdr () {}
-
-  cons(el) {}
-  
-  has(el) {}
-  
-  getLength () {
-    return this._els.length;
+  getLength (set = this._els) {
+    return set.length;
   }
-  
+
+  car () {}
+  cdr () {}
+  cons(el) {}
+  has(el) {}
   adjoin(el) {}
-  
   intersection(list) {}
 }
 
@@ -1387,17 +1390,677 @@ class SSet extends List {
       return new SSet(...this.cdr()).intersection(set, result);
     }
     return this.intersection(new SSet(...set.cdr()), result);
-  } 
+  }
 }
 
-const set1 = new SSet(1, 2, 3, 4, 5);
-const set2 = new SSet(1, 4, 6);
+// const set1 = new SSet(1, 2, 3, 4, 5);
+// const set2 = new SSet(1, 4, 6);
 // console.log(expect(set1.has(4)).to.be.deep.equal(true));
 // console.log(expect(set1.adjoin(2)).to.be.deep.equal([1,2,3,4,5]));
 // console.log(expect(set1.adjoin(6)).to.be.deep.equal([1,2,3,4,5,6]));
 // console.log(expect(set1.intersection(set2)).to.be.deep.equal([1,4,6]));
 
 
+
+class Tree extends SSet {
+  constructor(...args) {
+    super(...args);
+    this._tree = this.createTree(this.getElement());
+  }
+
+  createTree(set = this.getElement(), result = {}) {
+    const length = this.getLength(set);
+    let mid = Math.floor(length / 2);
+    if (!length) {
+      return null;
+    }
+
+    if (length === 1) {
+      return set[0];
+    }
+
+    result.left = this.createTree(set.slice(0, mid));
+    result.center = set[mid++];
+    result.right = this.createTree(set.slice(mid));
+    return result;
+  }
+
+  getMiddleOfTree(tree = this.getTree()) {
+    return tree.center;
+  }
+
+  getLeftBranch(tree = this.getTree()) {
+    return tree.left;
+  }
+
+  getRightBranch(tree = this.getTree()) {
+    return tree.right;
+  }
+
+  getElementOfTree(el, tree = this.getTree()) {
+    if (tree === null) {
+      return false;
+    }
+
+    if (isNumber(tree)) {
+      return el === tree;
+    }
+
+    const mid = this.getMiddleOfTree(tree); 
+    if (el === mid) {
+      return true;
+    }
+    return this.getElementOfTree(
+      el,
+      el < mid
+        ? this.getLeftBranch(tree)
+        :  this.getRightBranch(tree),
+    );
+  }
+
+  adjoinTree(el, tree = this.getTree(), parentTree, key) {
+    if (!isNumber(el)) {
+      throw new Error('the el of tree must be a number');
+    }
+
+    if (tree === null) {
+      return parentTree[key] = el;
+    }
+
+    if (isNumber(tree)) {
+      let [left, center] = [el, tree];
+      
+      if (el > tree) {
+        [left, center] = [center, left];
+      }
+
+      if (parentTree && key) {
+        return parentTree[key] = {
+          left,
+          center,
+        };
+      }
+    }
+
+    const mid = this.getMiddleOfTree(tree);
+    
+    if (el === mid) {
+      return tree;
+    }
+
+    this.adjoinTree(
+      el,
+      el < mid
+        ? this.getLeftBranch(tree)
+        :  this.getRightBranch(tree),
+      tree,
+      el < mid ? 'left' : 'right',
+    );
+    return tree;
+  }
+
+  getTree() {
+    return this._tree;
+  }
+}
+
+// const tree1 = new Tree(1, 2, 3, 4, 5);
+// const tree2 = new Tree(1, 4, 6);
+// console.log(expect(JSON.stringify(tree1.getTree())).to.be.equal('{"left":{"left":1,"center":2,"right":null},"center":3,"right":{"left":4,"center":5,"right":null}}'));
+// console.log(expect(JSON.stringify(tree2.getTree())).to.be.equal('{"left":1,"center":4,"right":6}'));
+// console.log(expect(tree1.getElementOfTree(3)).to.be.equal(true));
+// console.log(expect(tree2.getElementOfTree(3)).to.be.equal(false));
+// console.log(expect(JSON.stringify(tree2.adjoinTree(3))).to.be.equal('{"left":{"left":1,"center":3},"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(tree2.getTree())).to.be.equal('{"left":{"left":1,"center":3},"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(tree2.adjoinTree(4))).to.be.equal('{"left":{"left":1,"center":3},"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(tree2.getTree())).to.be.equal('{"left":{"left":1,"center":3},"center":4,"right":6}'));
+// console.log(expect(JSON.stringify(tree1.adjoinTree(7))).to.be.equal('{"left":{"left":1,"center":2,"right":null},"center":3,"right":{"left":4,"center":5,"right":7}}'));
+// console.log(expect(JSON.stringify(tree1.adjoinTree(2.5))).to.be.equal('{"left":{"left":1,"center":2,"right":2.5},"center":3,"right":{"left":4,"center":5,"right":7}}'));
+// console.log(expect(JSON.stringify(tree1.adjoinTree(6))).to.be.equal('{"left":{"left":1,"center":2,"right":2.5},"center":3,"right":{"left":4,"center":5,"right":{"left":6,"center":7}}}'));
+
+const isFunction = val => typeof val === 'function';
+const isBoolean = val => typeof val === 'boolean';
+const isString = val => typeof val === 'string';
+const isObject = val => typeof val === 'object';
+const isExist = val => val != void 0;
+const func = val => val;
+
+// 哈夫曼树
+class HuffmanTree {
+  constructor(...args) {
+    this.invariant(args, true);
+    this.initialize(args);
+  }
+
+  invariant(input, checkFunc, options = {}) {
+    // initialize input
+    if (isBoolean(checkFunc) && checkFunc) {
+      this.invariant(input, Array.isArray);
+      input.forEach(([symbol, code, weight]) => {
+        this.invariant(symbol, isString);
+        this.invariant(weight, isNumber);
+        this.invariant(code, val => (isString(val) || isNumber(val)));
+      });
+    } else {
+      if (options.deep) {
+        if (Array.isArray(input)) {
+          return input.forEach(({
+            value,
+            check,
+            message = '',
+          }) => (this.invariant(value, check, { message })));
+        }
+      }
+
+      if (!checkFunc(input)) {
+        throw new Error(options.message || `arg: ${input} is invalid`);
+      }
+    }
+    return true;
+  }
+
+  initialize(input) {
+    this.setLeafList(this.makeLeaf(input));
+    this.createLeafCodeMap(input);
+    this.createTree();
+  }
+
+  setLeafList(input) {
+    this.invariant(input, Array.isArray);
+    this._leaflist = input;
+  }
+
+  createLeafCodeMap(input) {
+    this.invariant(input, Array.isArray);
+    this._leafCodeMap = {};
+    input.forEach(([symbol, code]) => {
+      this._leafCodeMap[symbol] = String(code);
+    });
+  }
+
+  getLeafList() {
+    return this._leaflist;
+  }
+
+  setTree(tree) {
+    this.invariant(tree, isObject);
+    this._tree = tree;
+    return tree;
+  }
+
+  getTree(tree) {
+    return this._tree;
+  }
+
+  getLeafCodeMap() {
+    return this._leafCodeMap;
+  }
+
+  isZeroOrOne(val) {
+    val = String(val);
+    return val === '0' || val === '1';
+  }
+
+  sortByWeight(list, ascend) {
+    this.invariant(list, Array.isArray);
+    const iterator = ascend
+      ? (pre, next) => (pre.weight - next.weight)
+      : (pre, next) => (next.weight - pre.weight);
+    return list.sort(iterator);
+  }
+
+  makeLeaf(input) {
+    this.invariant(input, Array.isArray);
+    return this.sortByWeight(input.map(([symbol, code, weight]) => ({
+      symbol,
+      code,
+      weight,
+    })));
+  }
+
+  getSymbol(leaf) {
+    return leaf.symbol;
+  }
+
+  getWeight(leaf) {
+    return leaf.weight;
+  }
+
+  getLeaf(symbol) {
+    const list = this.getLeafList();
+    const result = list.filter(leaf => leaf.symbol === symbol);
+    if (result.length) {
+      return result[0];
+    }
+    return null;
+  }
+
+  getDefaultTree() {
+    return {
+      weight: 0,
+      0: null,
+      1: null,
+    };
+  }
+
+  genLRBranch(list, tree = this.getDefaultTree()) {
+    list.forEach((leaf) => {
+      let { code } = leaf;
+      let index = 0;
+      let value;
+      let tempTree = tree;
+
+      code = String(code);
+      const { weight } = leaf;
+      const { length } = code;
+      while (TRUE) {
+        value = code[index];
+        index += 1;
+        this.invariant(value, this.isZeroOrOne);
+        if (index < length) {
+          tempTree[value] = tempTree[value] || this.getDefaultTree();
+          tempTree[value].weight += weight;
+          tempTree = tempTree[value];
+        } else {
+          tempTree[value] = leaf;
+          break;
+        }
+      }
+    });
+    tree.weight = Object.keys(tree).reduce((weight, key) => {
+      const value = tree[key].weight || 0;
+      return weight += value;
+    }, 0);
+    return tree;
+  }
+
+  createTree() {
+    const list = this.getLeafList();
+    const tree = this.genLRBranch(list);
+    this.setTree(tree);
+  }
+
+  getLeftBranch(tree = this.getTree()) {
+    this.invariant(tree, isObject);
+    return tree[0];
+  }
+
+  getRightBranch(tree = this.getTree()) {
+    this.invariant(tree, isObject);
+    return tree[1];
+  }
+
+  getTreeWeight(tree = this.getTree()) {
+    this.invariant(tree, isObject);
+    return this.getWeight(tree);
+  }
+
+  getTreeSymbol(tree = this.getTree()) {
+    this.invariant(tree, isObject);
+    return this.getSymbol(tree);
+  }
+
+  createCodeWalker(code = '') {
+    const codelist = String(code).split('');
+    return ({
+      iterator = func,
+      finish = func,
+    }) => {
+      while (TRUE) {
+        const alph = codelist.shift();
+        const hasNext = !!codelist.length;
+        this.invariant(alph, this.isZeroOrOne);
+        iterator(alph, hasNext);
+        if (!hasNext) {
+          finish(alph);
+          break;
+        }
+      }
+    };
+  }
+
+  decode(code) {
+    this.invariant(code, isExist);
+    const codeWalker = this.createCodeWalker(code);
+    const tree = this.getTree();
+    const result = [];
+    let tempTree = tree;
+
+    codeWalker({
+      iterator: (alph) => {
+        if (isExist(tempTree[alph])) {
+          tempTree = tempTree[alph];
+        } else {
+          result.push(tempTree.symbol);
+          tempTree = tree[alph];
+        }
+      },
+      finish: () => {
+        if (tempTree.symbol) {
+          result.push(tempTree.symbol);
+        }
+      },
+    });
+    return result.join('');
+  }
+
+  encode(input) {
+    const re = new RegExp(`[${input}]`, 'g');
+    const map = this.getLeafCodeMap();
+    return input.replace(re, (result) => {
+      return String(map[result] || '');
+    });
+  }
+
+  adjoinTree(...leaves) {
+    this.invariant(leaves, true);
+    const tree = this.getTree();
+    let tempTree = tree;
+    this.sortByWeight(leaves).forEach((leaf) => {
+      const [symbol, code, weight] = leaf;
+      const codeWalker = this.createCodeWalker(code);
+      codeWalker({
+        iterator: (alph, hasNext) => {
+          if (hasNext) {
+            tempTree[alph] = tempTree[alph] || this.getDefaultTree();
+            tempTree.weight += weight;
+            tempTree = tempTree[alph];
+          } else {
+            tempTree[alph] = {
+              symbol,
+              code,
+              weight,
+            };
+          }
+        },
+        finish: () => {
+          tempTree = tree;
+        },
+      });
+    });
+    return this.setTree(tree);
+  }
+
+}
+
+const huff = new HuffmanTree(
+  ['A', 0, 8],
+  ['B', 100, 3],
+  ['D', 1010, 1],
+  ['R', 1011, 1],
+  ['E', 1100, 1],
+  ['N', 1101, 1],
+  ['L', 1110, 1],
+  ['O', 1111, 1],
+);
+// console.log(expect(JSON.stringify(huff.getTree())).to.be.equal('{"0":{"symbol":"A","code":0,"weight":8},"1":{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"C","code":1010,"weight":1},"1":{"symbol":"D","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"F","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"G","code":1110,"weight":1},"1":{"symbol":"H","code":1111,"weight":1},"weight":2},"weight":4},"weight":9},"weight":17}'));
+// console.log(expect(JSON.stringify(huff.getLeftBranch())).to.be.equal('{"symbol":"A","code":0,"weight":8}'));
+// console.log(expect(JSON.stringify(huff.getRightBranch())).to.be.equal('{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"C","code":1010,"weight":1},"1":{"symbol":"D","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"F","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"G","code":1110,"weight":1},"1":{"symbol":"H","code":1111,"weight":1},"weight":2},"weight":4},"weight":9}'));
+// console.log(expect(huff.decode(1100)).to.be.equal('E'));
+// console.log(expect(huff.decode(0)).to.be.equal('A'));
+// console.log(expect(huff.decode(100)).to.be.equal('B'));
+// console.log(expect(huff.decode('010111101111111101010')).to.be.equal('ARNOLD'));
+// console.log(expect(JSON.stringify(huff.adjoinTree(['C', 11110, 2], ['F', 11111, 1]))).to.be.equal('{"0":{"symbol":"A","code":0,"weight":8},"1":{"0":{"0":{"symbol":"B","code":100,"weight":3},"1":{"0":{"symbol":"D","code":1010,"weight":1},"1":{"symbol":"R","code":1011,"weight":1},"weight":2},"weight":5},"1":{"0":{"0":{"symbol":"E","code":1100,"weight":1},"1":{"symbol":"N","code":1101,"weight":1},"weight":2},"1":{"0":{"symbol":"L","code":1110,"weight":1},"1":{"0":{"symbol":"C","code":11110,"weight":2},"1":{"symbol":"F","code":11111,"weight":1},"symbol":"O","code":1111,"weight":1},"weight":5},"weight":7},"weight":12},"weight":20}'));
+// console.log(expect(huff.decode(11111)).to.be.equal('F'));
+// console.log(expect(huff.decode(huff.encode('ARNOLD'))).to.be.equal('ARNOLD'));
+
+
+
+
+/**
+ * 复数（抽象屏障）
+ */
+class Plural {
+  constructor(num) {
+    /** TODO **/
+    this.num = num;
+  }
+  add() { /** TODO **/ }
+  sub() { /** TODO **/ }
+  multi() { /** TODO **/ }
+  divide() { /** TODO **/ }
+}
+
+// 实部+虚部求复数
+class RealImagPlural extends Plural {
+  // TODO
+}
+
+// 极坐标求复数
+class PolarPlural extends Plural {
+  // TODO
+}
+
+const commonPlural = {
+  typeMap: {},
+  push(klass) {
+    this.typeMap[`${klass.name}`] = klass;
+  },
+  get(name) {
+    return this.typeMap[`${name}Plural`];
+  },
+};
+
+commonPlural.push(RealImagPlural);
+commonPlural.push(PolarPlural);
+
+// console.log(new (commonPlural.get('Polar'))(123.1));
+
+
+
+class InstallClass {
+  constructor(klass) {
+    if (!Array.isArray(klass)) {
+      klass = [klass];
+    }
+    this.klass = klass;
+    this.klassProto = klass.map(k => k.prototype);
+
+    this.put = this.put.bind(this);
+    this.get = this.get.bind(this);
+    this.init();
+  }
+
+  invariant(match, errorCallback) {
+    if (!match) {
+      if (isString(errorCallback)) {
+        throw new Error(errorCallback);
+      }
+      errorCallback();
+    }
+  }
+
+  init() {
+    this.put('invariant', this.invariant);
+  }
+
+  put(key, lambda, map) {
+    const mapIterator = map ? (k, kl, lamb) => {
+      map[k] = map[k] || {};
+      map[k][kl.name] = [kl, lamb];
+    } : () => {};
+
+    this.klassProto.forEach((proto, index) => {
+      const klass = this.klass[index];
+      proto[key] = lambda;
+      mapIterator(key, klass, lambda);
+    });
+  }
+
+  get(key, klass = '') {
+    if (klass) {
+      const klassProto = this.klassProto.filter(proto => proto.constructor === klass);
+      if (klass) {
+        return klassProto[key];
+      }
+      return null;
+    }
+    return this.klassProto.map(proto => proto[key]);
+  }
+}
+
+
+class Polynomial {
+  constructor(...args) {
+    this.args = args;
+  }
+
+  checkNumOrArray(input = '', errorMessage = 'error') {
+    return this.invariant(Array.isArray(input) || isNumber(input) || !isNaN(Number(input)), errorMessage);
+  }
+
+  checkZeroDiv(num, tag) {
+    const zeroMessage = 'num can`t be zero';
+    if (tag === divide) {
+      return this.invariant(!this.isZero(num), zeroMessage);
+    }
+  }
+
+  addPoly(...args) {
+    return add.apply(null, this.args.concat(args));
+  }
+
+  multiPoly(...args) {
+    return multi.apply(null, this.args.concat(args));
+  }
+
+  isZero0(num) {
+    if (isNumber(num)) {
+      return num === 0;
+    }
+    return this.args.map(arg => arg === 0);
+  }
+
+  baseTermPoly(tag, pre, next) {
+    const result = [];
+    const errorMsg = 'data type is wrong';
+    this.invariant(isFunction(tag), errorMsg);
+    this.checkNumOrArray(pre, errorMsg);
+
+    if (!pre) {
+      return next;
+    }
+
+    if (!next) {
+      return pre;
+    }
+
+    if (Array.isArray(pre)) {
+      return pre.reduce((res, num, index) => {
+        res[index] = this.baseTermPoly(tag, num, next);
+        return res;
+      }, result);
+    } else {
+      pre = Number(pre);
+      if (!Array.isArray(next)) {
+        this.checkNumOrArray(next, errorMsg);
+        next = [next];
+      }
+      return next.reduce((res, num) => {
+        this.checkNumOrArray(num, errorMsg);
+        this.checkZeroDiv(num, tag);
+        res = tag(res, num);
+        return res;
+      }, pre);
+    }
+  }
+
+  addTermPoly(pre, next) {
+    return this.baseTermPoly(add, pre, next);
+  }
+
+  minusTermPoly(pre, next) {
+    return this.baseTermPoly(minus, pre, next);
+  }
+
+  multiTermPoly(pre, next) {
+    return this.baseTermPoly(multi, pre, next);
+  }
+
+  divideTermPoly(pre, next) {
+    return this.baseTermPoly(divide, pre, next);
+  }
+
+  gcd(pre, next) {
+    if (pre > next) {
+      [next, pre] = [pre, next];
+    }
+
+    if (!pre) {
+      return next;
+    }
+    return this.gcd(pre, next % pre);
+  }
+
+  gcdTermPoly(...args) {
+    args = this.args.concat(args);
+    let result = args.shift();
+    while (args.length) {
+      result = this.gcd(result, args.shift());
+    }
+    return result;
+  }
+
+}
+
+{
+  const installPolynomial = new InstallClass(Polynomial);
+  const { put } = installPolynomial;
+  const calMap = {};
+
+  put('isZero', function isZero(...args) {
+    return this.isZero0(...args);
+  });
+
+  put('add', function add(...args) {
+    return this.addPoly(...args);
+  });
+
+  put('multi', function multi(...args) {
+    return this.multiPoly(...args);
+  }, calMap);
+
+  put('addTerm', function addTerm(pre, next) {
+    return this.addTermPoly(pre, next);
+  });
+
+  put('minusTerm', function minusTerm(pre, next) {
+    return this.minusTermPoly(pre, next);
+  });
+
+  put('multiTerm', function multiTerm(pre, next) {
+    return this.multiTermPoly(pre, next);
+  });
+
+  put('divideTerm', function divideTerm(pre, next) {
+    return this.divideTermPoly(pre, next);
+  });
+
+  put('gcdTerm', function gcdTerm(...args) {
+    return this.gcdTermPoly(...args);
+  });
+
+  // const poly = new Polynomial(1, 2, 3);
+  // console.log(expect(poly.add()).to.be.equal(6));
+  // console.log(expect(poly.add(4, 5, 6)).to.be.equal(21));
+  // console.log(expect(poly.multi()).to.be.equal(6));
+  // console.log(expect(poly.multi(4, 5, 6)).to.be.equal(720));
+  // console.log(expect(poly.addTerm([1, 2, 3], [4, 5, 6])).to.be.deep.equal([16,17,18]));
+  // console.log(expect(poly.multiTerm([1, 2, 3], [4, 5, 6])).to.be.deep.equal([120,240,360]));
+  // console.log(expect(poly.minusTerm([1, 2, 3], [4, 5, 6])).to.be.deep.equal([-14,-13,-12]));
+  // console.log(calMap);
+  // const exp1 = x => [expt(x, 2) + 1, x + 1, x];
+  // const exp2 = x => [x + 2, x, x - 1];
+  // console.log(poly.multiTerm(exp1(2), exp2(2)));// [5, 3, 2] * [4, 2, 1] = [40,24,16];
+  // console.log(poly.divideTerm([1, 2, 3], [4, 5, 6]));
+
+  // const poly2 = new Polynomial(12);
+  // console.log(expect(poly2.gcdTerm(24, 14)).to.be.equal(2)); // 2
+
+
+
+
+}
 
 
 

@@ -7,7 +7,6 @@ export default createSelector(
   countSelector,
   calculateSelector,
   (count, calculate) => {
-    console.log('count, calculate', count, calculate);
     return {
       ...count,
       ...calculate,
