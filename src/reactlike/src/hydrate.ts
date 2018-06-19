@@ -1,3 +1,3 @@
-export default (msg: string = 'hydrate'): void => {
+export default (msg: string = 'hydrate', el: Element): void => {
   console.log(msg);
 };

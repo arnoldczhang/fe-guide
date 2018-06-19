@@ -17,7 +17,7 @@
         ]
     },
     "files": [
-        "test/index.ts"
+        "test/index.tsx"
     ],
     "include": [
         "src/reactlike/**/*"
