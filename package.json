@@ -62,7 +62,7 @@
     "g18:dev": "webpack --config ./src/reactlike/build/webpack.dev.js",
     "g18:dev:w": "webpack -w --config ./src/reactlike/build/webpack.dev.js",
     "g18:node": "npm run g18:build:w & nodemon ./src/reactlike/test/index.js",
-    "g18:server": "npm run g18:build:w & webpack-dev-server --progress --config ./src/reactlike/build/webpack.dev.js",
+    "g18:server": "webpack-dev-server --progress --config ./src/reactlike/build/webpack.dev.js",
     "save": "node ./src/test/src/saveImage",
     "lynt": "lynt ./src/lynt/lynt.js",
     "test": "mocha"

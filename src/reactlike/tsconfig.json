@@ -2,14 +2,17 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es6",
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "sourceMap": false,
+        "sourceMap": true,
         "diagnostics": false,
         "pretty": true,
         "listFiles": false,
         "declaration": true,
+        "jsx": "react",
         "target": "es2017",
         "lib": [
             "dom",
