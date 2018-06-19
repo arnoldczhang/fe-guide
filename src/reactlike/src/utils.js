@@ -1,4 +1,3 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = (msg = 'hydrate', el) => {
-};
+exports.isFunction = (func) => typeof func === 'function';

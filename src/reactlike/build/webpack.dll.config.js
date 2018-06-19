@@ -24,11 +24,11 @@ module.exports = {
   resolve: {
     extensions: ['.*', '.js', '.jsx', '.es6'],
     alias: {
-      'react': 'anujs',
-      'react-dom': 'anujs',
-      'prop-types': 'anujs/lib/ReactPropTypes',
-      'create-react-class': 'anujs/lib/createClass',
-      'react-tap-event-plugin': 'anujs/lib/injectTapEventPlugin'
+      'react': './src/reactlike/src/index',
+      'react-dom': './src/reactlike/src/index',
+      // 'prop-types': 'anujs/lib/ReactPropTypes',
+      // 'create-react-class': 'anujs/lib/createClass',
+      // 'react-tap-event-plugin': 'anujs/lib/injectTapEventPlugin'
     },
   },
 }
