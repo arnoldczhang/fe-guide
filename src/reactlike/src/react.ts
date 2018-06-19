@@ -18,4 +18,5 @@ export default React;
 
 export {
   Component,
+  hydrate,
 };

@@ -1,3 +1,4 @@
+import hydrate from './hydrate';
 import Component from './Component';
 declare const React: {
     hydrate: (msg: string, el: Element) => void;
@@ -5,4 +6,4 @@ declare const React: {
     Component: typeof Component;
 };
 export default React;
-export { Component };
+export { Component, hydrate };
