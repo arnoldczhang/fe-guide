@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("./utils");
-exports.default = (tag, attr, children) => {
+exports.default = (tag, attr, ...children) => {
     let result;
     if (utils_1.isFunction(tag)) {
-        result = new tag(attr, {});
+        result = new tag(attr, {}, children);
     }
     else {
         tag = tag.toUpperCase();
@@ -14,6 +14,6 @@ exports.default = (tag, attr, children) => {
             children,
         };
     }
-    console.log(result);
     return result;
 };
+//# sourceMappingURL=createElement.js.map

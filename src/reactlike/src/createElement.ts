@@ -1,21 +1,21 @@
 import { isFunction } from './utils';
 
 export default (
-  tag: any,
+  type: any,
   attr: Object,
-  children?: Array<any>|string|null,
+  ...children
 ): Object => {
   let result;
-  if (isFunction(tag)) {
-    result = new tag(attr, {});
+  if (isFunction(type)) {
+    result = new type(attr, {}, children);
   } else {
-    tag = tag.toUpperCase();
+    type = type.toUpperCase();
     result = {
-      tag,
+      type,
       attr,
       children,
     };
   }
-  console.log(result);
+  // console.log(result);
   return result;
 };

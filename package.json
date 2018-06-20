@@ -47,7 +47,7 @@
     "g12:server": "node ./src/webassembly/app.js",
     "g13": "node ./src/sicp/sicp.js",
     "g14:dll": "webpack --config ./src/rematch/build/webpack.dll.config.js",
-    "g14:server": "webpack-dev-server --open --progress --config ./src/rematch/build/webpack.dev.js",
+    "g14:server": "webpack-dev-server --progress --config ./src/rematch/build/webpack.dev.js",
     "g14:server:prod": "webpack-dev-server --open --progress --config ./src/rematch/build/webpack.prod.js",
     "g15:node": "node ./src/miniprogram/webpack.base.js",
     "g15:build": "webpack --config ./src/miniprogram/webpack.base.js",
@@ -62,7 +62,8 @@
     "g18:dev": "webpack --config ./src/reactlike/build/webpack.dev.js",
     "g18:dev:w": "webpack -w --config ./src/reactlike/build/webpack.dev.js",
     "g18:node": "npm run g18:build:w & nodemon ./src/reactlike/test/index.js",
-    "g18:server": "webpack-dev-server --progress --config ./src/reactlike/build/webpack.dev.js",
+    "g18:server": "npm run g18:build:w & webpack-dev-server --progress --config ./src/reactlike/build/webpack.dev.js",
+    "g18:server:home": "webpack-dev-server --progress --config ./src/reactlike/build/webpack.dev.js",
     "save": "node ./src/test/src/saveImage",
     "lynt": "lynt ./src/lynt/lynt.js",
     "test": "mocha"

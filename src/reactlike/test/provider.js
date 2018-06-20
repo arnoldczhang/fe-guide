@@ -1,12 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const anujs_1 = require("anujs");
-class Provider extends anujs_1.Component {
-    constructor(props, context) {
-        super(props, context);
+const react_1 = require("../src/react");
+class Provider extends react_1.Component {
+    constructor(props, context, children) {
+        super(props, context, children);
     }
     render() {
-        return (bbbb < /div>);
+        console.log(112);
+        const { props, } = this;
+        return (react_1.default.createElement("div", Object.assign({}, props), this.children.map((child) => child.children.toString())));
     }
 }
 exports.Provider = Provider;
+//# sourceMappingURL=provider.js.map

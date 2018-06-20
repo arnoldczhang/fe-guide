@@ -49,6 +49,9 @@ class App extends PureComponent {
     return [
       <div className={styles.App} key="App">
         <button onClick={this.increase}>click</button>
+        {React.cloneElement(<Header />, {
+          name: 'arnold',
+        })}
         <Header />
         {numm},,{num}
       </div>,

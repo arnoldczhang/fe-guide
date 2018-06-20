@@ -16,3 +16,4 @@ Object.defineProperty(window, 'React', {
     },
 });
 exports.default = React;
+//# sourceMappingURL=react.js.map
