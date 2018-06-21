@@ -14,3 +14,10 @@
       - type, tag, props, key, ref, owner
     - #### 解析
       - 根据ref类型处理、赋值；绑定_owner
+  - ###  render/hydrate
+  - ### updateComponent
+  - ### Renderer.scheduleWork
+  - ### performWork
+  - ### workLoop
+  - ### commitDFS
+  - ### commitDFSImpl
