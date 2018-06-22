@@ -10,4 +10,4 @@ React.hydrate(
     <App />
   </Provider>,
   document.getElementById('root'),
-);
+)

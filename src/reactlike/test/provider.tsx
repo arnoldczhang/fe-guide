@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
+// import { init as createStore } from '@rematch/core';
 import createStore from './createStore';
 
 // import React, { Component } from '../src/react';
@@ -30,7 +31,9 @@ class Provider extends Component {
     context: Object|null
   ) {
     super(props, context);
+    console.log('aa');
     this[storeKey] = props.store;
+    context[storeKey] = props.store;
   }
 
   render() {

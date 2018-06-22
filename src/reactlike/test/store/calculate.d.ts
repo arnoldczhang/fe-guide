@@ -1,6 +1,6 @@
 declare const _default: {
     state: {
-        num: number;
+        nummmm: number;
     };
     reducers: {
         increment(state: any, payload: any): any;

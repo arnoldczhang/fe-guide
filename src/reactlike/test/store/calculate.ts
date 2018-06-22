@@ -1,10 +1,10 @@
 export default {
   state: {
-    num: 0,
+    nummmm: 0,
   },
   reducers: {
     increment(state: any, payload: any) {
-      state.num += payload;
+      state.nummmm += payload;
       return (<any>Object).assign({}, state);
     },
   },

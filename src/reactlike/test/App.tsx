@@ -1,10 +1,14 @@
 import * as React from 'react';
+// import { connect } from 'react-redux';
+import { connect } from './connect';
+import selector from './app-selector';
 
-
+@connect(selector)
 export default class App extends React.PureComponent {
 
-  constructor() {
-    super();
+  constructor(props, context) {
+    super(props, context);
+    console.log('app init');
   }
 
   render() {
