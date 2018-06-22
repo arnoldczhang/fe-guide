@@ -210,6 +210,7 @@
     "wired-elements": "^0.6.4"
   },
   "devDependencies": {
+    "@types/es6-promise": "^3.3.0",
     "brotli-webpack-plugin": "^0.5.0",
     "data-forge": "^1.0.8",
     "eslint-loader": "^2.0.0",

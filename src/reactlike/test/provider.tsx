@@ -1,25 +1,55 @@
-// import React, { Component } from 'anujs';
-import React, { Component } from '../src/react';
-import Props from './provider-props';
+import * as React from 'react';
+import * as PropTypes from 'prop-types';
+import createStore from './createStore';
+
+// import React, { Component } from '../src/react';
+import { ProviderProps, storeKey } from './provider-props';
 import { VNode } from '../src/interface';
 
-export class Provider extends Component {
+const {
+  Component,
+  Children,
+} = React;
 
-  constructor(props: Props, context: Object|null, ...children: Array<VNode>|null) {
-    super(props, context, children);
+const {
+  object,
+  element,
+} = PropTypes;
+
+class Provider extends Component {
+  props: ProviderProps;
+  context: Object|null = {};
+
+  static propTypes = {
+    store: object.isRequired,
+    children: element,
+  };
+
+  constructor(
+    props: ProviderProps,
+    context: Object|null
+  ) {
+    super(props, context);
+    this[storeKey] = props.store;
   }
 
   render() {
-    console.log(112);
     const {
-      props,
+      props: {
+        children,
+      },
     } = this;
     return (
-      <div {...props} >
+      <div>
         {
-          this.children.map((child) => child.children.toString())
+          Children.only(children)
         }
       </div>
     );
   }
 }
+
+export {
+  Provider,
+  createStore,
+};

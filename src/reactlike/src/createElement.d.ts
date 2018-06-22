@@ -1,2 +1,2 @@
-declare const _default: (tag: any, attr: Object, ...children: any[]) => Object;
+declare const _default: (type: any, attr: Object, ...children: any[]) => Object;
 export default _default;

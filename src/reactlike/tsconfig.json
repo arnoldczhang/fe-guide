@@ -1,7 +1,6 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es6",
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "noImplicitAny": true,
@@ -13,9 +12,11 @@
         "listFiles": false,
         "declaration": true,
         "jsx": "react",
-        "target": "es2017",
+        "target": "es5",
         "lib": [
             "dom",
+            "es2015.promise",
+            "es6",
             "es2017"
         ]
     },

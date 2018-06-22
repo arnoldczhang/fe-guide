@@ -1,7 +1,8 @@
-import { Component } from '../src/react';
-import Props from './provider-props';
-import { VNode } from '../src/interface';
-export declare class Provider extends Component {
-    constructor(props: Props, context: Object | null, children: Array<VNode> | null);
+import * as React from 'react';
+import { ProviderProps } from './provider-props';
+export declare class Provider extends React.Component {
+    props: ProviderProps;
+    context: Object | null;
+    constructor(props: ProviderProps, context: Object | null);
     render(): any;
 }

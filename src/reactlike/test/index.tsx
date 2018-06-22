@@ -1,12 +1,13 @@
-// import * as React from 'react';
-import React, { hydrate } from '../src/react';
+import * as React from 'react';
 // import { Provider } from 'react-redux';
+// import React, { hydrate } from '../src/react';
 import { Provider } from './provider';
-console.log(1);
-hydrate(
-  <Provider store={{a: 1, b: 2}} data-aa="abc">
-    <div id="a">aaaa</div>
-    <div class="b">bbbb</div>
+import App from './App';
+import store from './store';
+
+React.hydrate(
+  <Provider store={store}>
+    <App />
   </Provider>,
   document.getElementById('root'),
 );

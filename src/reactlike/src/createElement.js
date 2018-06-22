@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("./utils");
-exports.default = (tag, attr, ...children) => {
+exports.default = (type, attr, ...children) => {
     let result;
-    if (utils_1.isFunction(tag)) {
-        result = new tag(attr, {}, children);
+    if (utils_1.isFunction(type)) {
+        result = new type(attr, {}, children);
     }
     else {
-        tag = tag.toUpperCase();
+        type = type.toUpperCase();
         result = {
-            tag,
+            type,
             attr,
             children,
         };
