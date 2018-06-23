@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const initialState = {};
 const initialReducer = {};
+const listeners = [];
 const mapState = (target, ...sources) => {
     sources.forEach((source) => {
         Object.keys(source).forEach((key) => {
@@ -9,13 +10,25 @@ const mapState = (target, ...sources) => {
         });
     });
 };
-const mapReducers = (target, ...sources) => {
+const mapReducers = (target, state, ...sources) => {
     sources.forEach((source) => {
         Object.keys(source).forEach((key) => {
             const reducers = source[key].reducers;
-            target[key] = target[key] || {};
+            const childTarget = target[key] = target[key] || {};
             Object.keys(reducers).forEach((reducerKey) => {
-                target[key][reducerKey] = reducers[reducerKey];
+                childTarget[reducerKey] = function reducerFunc(payload) {
+                    let hasChanged = false;
+                    const prevState = state[key];
+                    const reducer = reducers[reducerKey].bind(childTarget, prevState);
+                    const nextState = reducer(payload);
+                    hasChanged = prevState !== nextState;
+                    if (hasChanged) {
+                        state[key] = nextState;
+                        listeners.forEach((listener) => {
+                            listener();
+                        });
+                    }
+                };
             });
         });
     });
@@ -24,26 +37,31 @@ const mapEffects = (target, ...sources) => {
     sources.forEach((source) => {
         Object.keys(source).forEach((key) => {
             const effects = source[key].effects;
-            target[key] = target[key] || {};
+            const childTarget = target[key] = target[key] || {};
             Object.keys(effects).forEach((effectKey) => {
-                target[key][effectKey] = effects[effectKey].bind(target);
+                childTarget[effectKey] = effects[effectKey].bind(childTarget);
             });
         });
     });
 };
-const createStore = (state = initialState, reducers = initialReducer, effects = initialReducer) => ((data) => {
+const mapDispatcher = (dispatcher, ...args) => Object.assign(dispatcher, ...args);
+const createStoreDefault = (state = initialState, reducers = initialReducer, effects = initialReducer) => ((data) => {
+    const dispatcher = {};
     mapState(state, data);
-    mapReducers(reducers, data);
+    mapReducers(reducers, state, data);
     mapEffects(effects, data);
+    mapDispatcher(dispatcher, effects, reducers);
     return {
+        dispatch: dispatcher,
         subscribe() {
-        },
-        dispatch() {
         },
         getState() {
             return state;
         },
     };
 });
-exports.default = createStore();
+exports.createStore = createStoreDefault();
+exports.subscribe = (listener) => {
+    listeners.push(listener);
+};
 //# sourceMappingURL=createStore.js.map

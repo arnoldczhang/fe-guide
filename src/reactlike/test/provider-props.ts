@@ -7,8 +7,8 @@ export interface ProviderProps {
   children?: Array<VNode>|VNode|null;
 }
 
-export interface StoreProps {
+export interface StoreProps extends Object {
   subscribe?: Function|null;
-  dispatch?: Function|null;
+  dispatch?: Object|null;
   getState?: Function|null;
 }

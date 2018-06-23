@@ -1,2 +1,2 @@
-declare const _default: Function;
-export default _default;
+export declare const createStore: Function;
+export declare const subscribe: (listener: any) => void;

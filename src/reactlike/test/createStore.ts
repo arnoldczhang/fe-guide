@@ -2,6 +2,7 @@ import { StoreProps } from './provider-props';
 
 const initialState = {};
 const initialReducer = {};
+const listeners = [];
 
 const mapState = (target: Object, ...sources: Array<Object|null>): void => {
   sources.forEach((source): void => {
@@ -11,13 +12,26 @@ const mapState = (target: Object, ...sources: Array<Object|null>): void => {
   });
 };
 
-const mapReducers = (target: Object, ...sources: Array<Object|null>): void => {
+const mapReducers = (target: Object, state: Object, ...sources: Array<Object|null>): void => {
   sources.forEach((source): void => {
     Object.keys(source).forEach((key): void => {
       const reducers = source[key].reducers;
-      target[key] = target[key] || {};
+      const childTarget = target[key] = target[key] || {};
       Object.keys(reducers).forEach((reducerKey): void => {
-        target[key][reducerKey] = reducers[reducerKey];
+        childTarget[reducerKey] = function reducerFunc(payload: any): void {
+          let hasChanged = false;
+          const prevState = state[key];
+          const reducer = reducers[reducerKey].bind(childTarget, prevState);
+          const nextState = reducer(payload);
+          hasChanged = prevState !== nextState;
+          // TODO
+          if (hasChanged) {
+            state[key] = nextState;
+            listeners.forEach((listener) => {
+              listener();
+            });
+          }
+        };
       });
     });
   });
@@ -27,35 +41,40 @@ const mapEffects = (target: Object, ...sources: Array<Object|null>): void => {
   sources.forEach((source): void => {
     Object.keys(source).forEach((key): void => {
       const effects = source[key].effects;
-      target[key] = target[key] || {};
+      const childTarget = target[key] = target[key] || {};
       Object.keys(effects).forEach((effectKey): void => {
-        target[key][effectKey] = effects[effectKey].bind(target);
+        childTarget[effectKey] = effects[effectKey].bind(childTarget);
       });
     });
   });
 };
 
-const createStore = (
+const mapDispatcher = (dispatcher, ...args) => (<any>Object).assign(dispatcher, ...args);
+
+const createStoreDefault = (
   state: Object = initialState,
   reducers: Object = initialReducer,
   effects: Object = initialReducer,
 ): Function => ((data: Object): StoreProps => {
-  mapState(state, data);
-  mapReducers(reducers, data);
-  mapEffects(effects, data);
-  return {
-    subscribe() {
+    const dispatcher = {};
+    mapState(state, data);
+    mapReducers(reducers, state, data);
+    mapEffects(effects, data);
+    mapDispatcher(dispatcher, effects, reducers);
+    return {
+      dispatch: dispatcher,
+      subscribe() {
 
-    },
-
-    dispatch() {
-
-    },
-
-    getState() {
-      return state;
-    },
-  };
+      },
+      getState() {
+        return state;
+      },
+    };
 });
 
-export default createStore();
+export const createStore = createStoreDefault();
+
+export const subscribe = (listener) => {
+  listeners.push(listener);
+};
+

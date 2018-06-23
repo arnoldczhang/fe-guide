@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const PropTypes = require("prop-types");
 const createStore_1 = require("./createStore");
-exports.createStore = createStore_1.default;
+exports.createStore = createStore_1.createStore;
 const provider_props_1 = require("./provider-props");
 const { Component, Children, } = React;
 const { object, element, } = PropTypes;
@@ -11,9 +11,13 @@ class Provider extends Component {
     constructor(props, context) {
         super(props, context);
         this.context = {};
-        console.log('aa');
         this[provider_props_1.storeKey] = props.store;
-        context[provider_props_1.storeKey] = props.store;
+        console.log('provider init');
+    }
+    getChildContext() {
+        return {
+            [provider_props_1.storeKey]: this[provider_props_1.storeKey],
+        };
     }
     render() {
         const { props: { children, }, } = this;
@@ -21,8 +25,11 @@ class Provider extends Component {
     }
 }
 Provider.propTypes = {
-    store: object.isRequired,
+    [provider_props_1.storeKey]: object.isRequired,
     children: element,
+};
+Provider.childContextTypes = {
+    [provider_props_1.storeKey]: object.isRequired,
 };
 exports.Provider = Provider;
 //# sourceMappingURL=provider.js.map
