@@ -5,6 +5,7 @@ import { Provider } from './provider';
 import App from './App';
 import store from './store';
 
+console.log(12);
 React.hydrate(
   <Provider store={store}>
     <App />

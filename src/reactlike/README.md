@@ -21,3 +21,6 @@
   - ### workLoop
   - ### commitDFS
   - ### commitDFSImpl
+  - ### applybeforeUpdateHooks
+    - #### 解析
+      - props、context、state变更触发componentWillReceiveProps、shouldComponentUpdate、componentWillUpdate
