@@ -12,13 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const connect_1 = require("./connect");
 const app_selector_1 = require("./app-selector");
-const PropTypes = require("prop-types");
-const { number, object, } = PropTypes;
 let App = class App extends React.PureComponent {
     constructor(props, context) {
         super(props, context);
         this.props = {};
         this.count = 1;
+        this.state = {
+            name: 'arnold',
+        };
         console.log('app init');
     }
     componentDidMount() {
@@ -33,16 +34,14 @@ let App = class App extends React.PureComponent {
         return [
             React.createElement("div", null, num),
             React.createElement("div", null, nummmm),
-            React.createElement("div", null, "abc"),
+            React.createElement("div", null, this.state.name),
             React.createElement("div", null, "abc"),
             React.createElement("div", null, "abc")
         ];
     }
 };
-App.propTypes = {
-    num: number.isRequired,
-    nummmm: number.isRequired,
-    dispatch: object.isRequired,
+App.defaultProps = {
+    dispatch: {},
 };
 App = __decorate([
     connect_1.connect(app_selector_1.default),

@@ -3,22 +3,38 @@ import * as React from 'react';
 import { connect } from './connect';
 import selector from './app-selector';
 import { StoreProps } from './provider-props';
-import * as PropTypes from 'prop-types';
 
-const {
-  number,
-  object,
-} = PropTypes;
+interface AppProps {
+  dispatch: Object;
+  children: React.ReactNode; // best
+  style?: React.CSSProperties; // for style
+  onChange?: (e: React.FormEvent<HTMLInputElement>) => void; // form events!
+  props?: React.HTMLProps<HTMLButtonElement> // to impersonate all the props of a HTML element
+}
+
+type AppState = {
+  name: string,
+}
 
 @connect(selector)
-export default class App extends React.PureComponent {
+export default class App extends React.PureComponent<{
+    // define props
+    num: number,
+    nummmm: number,
+    dispatch: Object,
+},
+  // define state
+  AppState
+> {
   props: any = {};
   count: number = 1;
 
-  static propTypes = {
-    num: number.isRequired,
-    nummmm: number.isRequired,
-    dispatch: object.isRequired,
+  state = {
+    name: 'arnold',
+  }
+
+  static defaultProps: Partial<AppProps> = {
+    dispatch: {},
   };
 
   constructor(props, context) {
@@ -44,7 +60,7 @@ export default class App extends React.PureComponent {
     return [
       <div>{num}</div>,
       <div>{nummmm}</div>,
-      <div>abc</div>,
+      <div>{this.state.name}</div>,
       <div>abc</div>,
       <div>abc</div>
     ];

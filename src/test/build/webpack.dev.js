@@ -17,6 +17,7 @@ const config = merge(base, {
     wired: './src/test/src/wired-elements.js',
     filepond: './src/test/src/filepond.js',
     chance: './src/test/src/chance.js',
+    lumin: './src/test/src/lumin.js',
   },
   optimization: {
     splitChunks: {
