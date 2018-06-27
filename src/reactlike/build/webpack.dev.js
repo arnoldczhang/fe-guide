@@ -4,8 +4,8 @@ const open = require('open');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
 const base = require('./webpack.base.js');
+
 const host = internalIP.v4() || '0.0.0.0';
 const port = 2222;
 
@@ -22,8 +22,10 @@ const config = merge(base, {
   ],
   devServer: {
     port,
+    compress: true,
     contentBase: './dist',
-   },
+    allowedHosts: [],
+  },
 });
 
 module.exports = config;

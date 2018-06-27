@@ -14,13 +14,19 @@
       - type, tag, props, key, ref, owner
     - #### 解析
       - 根据ref类型处理、赋值；绑定_owner
-  - ###  render/hydrate
+  - ### render/hydrate
   - ### updateComponent
   - ### Renderer.scheduleWork
   - ### performWork
   - ### workLoop
   - ### commitDFS
   - ### commitDFSImpl
+  - ### reconcileDFS
+  - ### updateClassComponent
+    - #### 解析
+      - 更新componentWillReceiveProps/shouldComponentUpdate/componentWillUpdate
+      或挂载componentWillMount当前fiber
+      - getChildContext准备子fiber的context
   - ### applybeforeUpdateHooks
     - #### 解析
-      - props、context、state变更触发componentWillReceiveProps、shouldComponentUpdate、componentWillUpdate
+      - 检测props、context、state变更触发componentWillReceiveProps、shouldComponentUpdate、componentWillUpdate

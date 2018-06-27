@@ -6,6 +6,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -14,7 +15,7 @@ module.exports = {
       'react-dom',
     ],
     index: [
-      "./src/reactlike/test/index.tsx",
+      './src/reactlike/test/index.tsx',
     ],
   },
   output: {
@@ -27,7 +28,7 @@ module.exports = {
   },
   plugins: [
     new ExtractTextPlugin({
-      filename: "[chunkhash:5].bundle.css",
+      filename: '[chunkhash:5].bundle.css',
       allChunks: true,
       disable: false,
     }),
@@ -38,6 +39,14 @@ module.exports = {
       title: 'Development',
       template: './src/reactlike/test/index.html',
     }),
+    // new ForkTsCheckerWebpackPlugin({
+    //   tsconfig: './src/reactlike/tsconfig.json',
+    //   tslint: './src/reactlike/tslint.json',
+    // }),
+    // new webpack.WatchIgnorePlugin([
+    //   /\.js$/,
+    //   /\.d\.ts$/,
+    // ]),
   ],
   resolve: {
     extensions: ['.*', '.js', '.jsx', '.es6', '.ts', '.tsx'],
@@ -57,7 +66,10 @@ module.exports = {
       // https://webpack.js.org/configuration/configuration-languages/
       {
         test: /\.tsx?$/,
-        include: path.resolve(__dirname, "../test"),
+        // include: [
+        //   path.resolve(__dirname, "src"),
+        //   path.resolve(__dirname, "test"),
+        // ],
         exclude: /node_modules/,
         use: [{
           loader: 'babel-loader',
