@@ -16,6 +16,8 @@ type AppState = {
   name: string,
 }
 
+const instanceArray = [];
+
 @connect(selector)
 export default class App extends React.PureComponent<{
     // define props
@@ -33,12 +35,13 @@ export default class App extends React.PureComponent<{
     name: 'arnold',
   }
 
-  static defaultProps: Partial<AppProps> = {
-    dispatch: {},
+  static getDerivedStateFromProps(props, state) {
+    console.log('props', instanceArray, props);
   };
 
   constructor(props, context) {
     super(props, context);
+    instanceArray.push(this);
     console.log('app init');
   }
 

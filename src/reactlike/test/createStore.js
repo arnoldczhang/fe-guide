@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const initialState = {};
 const initialReducer = {};
 const listeners = [];
@@ -60,8 +58,8 @@ const createStoreDefault = (state = initialState, reducers = initialReducer, eff
         },
     };
 });
-exports.createStore = createStoreDefault();
-exports.subscribe = (listener) => {
+export const createStore = createStoreDefault();
+export const subscribe = (listener) => {
     listeners.push(listener);
 };
 //# sourceMappingURL=createStore.js.map

@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class default_1 {
+export default class {
     constructor(props, context, ...children) {
         this.props = props;
         this.context = context;
@@ -14,5 +12,4 @@ class default_1 {
     setState(state, callback) {
     }
 }
-exports.default = default_1;
 //# sourceMappingURL=Component.js.map

@@ -2,11 +2,11 @@ import React, { hydrate } from '../src/react';
 import { VNode } from '../src/interface';
 
 export default class {
-  props: Object;
+  props: any;
   context: Object|null;
   children: Array<VNode>|null;
 
-  constructor(props: Object, context: Object|null, ...children:Array<VNode>|null) {
+  constructor(props: any, context: Object | null, ...children: Array<VNode> | null) {
     this.props = props;
     this.context = context;
     this.children = children;

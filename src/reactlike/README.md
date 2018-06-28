@@ -15,7 +15,19 @@
     - #### 解析
       - 根据ref类型处理、赋值；绑定_owner
   - ### render/hydrate
+    - #### 解析
+      - createContainer
+      - createInstance
+      - 清空container
+  - ### createContainer
+    - #### 解析
+      - container转fiber
+  - ### createInstance
+    - #### 解析
+      - 实例化fiber，触发render
   - ### updateComponent
+    - #### 解析
+      - 
   - ### Renderer.scheduleWork
   - ### performWork
   - ### workLoop

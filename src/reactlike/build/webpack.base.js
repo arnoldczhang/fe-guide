@@ -16,6 +16,7 @@ module.exports = {
     ],
     index: [
       './src/reactlike/test/index.tsx',
+      // './src/reactlike/test/reactlike.tsx',
     ],
   },
   output: {

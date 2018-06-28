@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "ES6",
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "noImplicitAny": true,

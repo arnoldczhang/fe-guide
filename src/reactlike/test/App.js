@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,10 +7,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = require("react");
-const connect_1 = require("./connect");
-const app_selector_1 = require("./app-selector");
+import * as React from 'react';
+import { connect } from './connect';
+import selector from './app-selector';
+const instanceArray = [];
 let App = class App extends React.PureComponent {
     constructor(props, context) {
         super(props, context);
@@ -20,8 +19,13 @@ let App = class App extends React.PureComponent {
         this.state = {
             name: 'arnold',
         };
+        instanceArray.push(this);
         console.log('app init');
     }
+    static getDerivedStateFromProps(props, state) {
+        console.log('props', instanceArray, props);
+    }
+    ;
     componentDidMount() {
         const { dispatch, } = this.props;
         setTimeout(() => {
@@ -40,12 +44,9 @@ let App = class App extends React.PureComponent {
         ];
     }
 };
-App.defaultProps = {
-    dispatch: {},
-};
 App = __decorate([
-    connect_1.connect(app_selector_1.default),
+    connect(selector),
     __metadata("design:paramtypes", [Object, Object])
 ], App);
-exports.default = App;
+export default App;
 //# sourceMappingURL=App.js.map
