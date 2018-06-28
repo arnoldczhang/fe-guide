@@ -1,4 +1,4 @@
-# reactlike
+# reactlike-anujs
 
 ## 功能函数
   - ### createElement
@@ -18,7 +18,8 @@
     - #### 解析
       - createContainer
       - createInstance
-      - 清空container
+      - emptyContainer
+      - updateComponent
   - ### createContainer
     - #### 解析
       - container转fiber
@@ -27,13 +28,32 @@
       - 实例化fiber，触发render
   - ### updateComponent
     - #### 解析
-      - 
+      - pushChildQueue
+      - mergeUpdates
+      - Renderer.scheduleWork
+  - ### pushChildQueue
+    - #### 解析
+      - fiber去重，录入
+  - ### mergeUpdates
+    - #### 解析
+      - push需要更新的state，push触发首次render之后的回调
   - ### Renderer.scheduleWork
+    - #### 解析
+      - performWork
   - ### performWork
+    - #### 解析
+      - workLoop
+      - 清空microtasks，非卸载节点的操作都转换成macrotasks
+      - 若存在macrotasks，则在requestIdleCallback（帧空闲）继续执行performWork
   - ### workLoop
+    - #### 解析
+      - 
+      - reconcileDFS
+      - updateCommitQueue
+      - resetStack
+  - ### reconcileDFS
   - ### commitDFS
   - ### commitDFSImpl
-  - ### reconcileDFS
   - ### updateClassComponent
     - #### 解析
       - 更新componentWillReceiveProps/shouldComponentUpdate/componentWillUpdate
