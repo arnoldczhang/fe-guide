@@ -231,6 +231,7 @@
     "signale": "^1.1.0",
     "sinon-chai": "^2.14.0",
     "ts-loader": "^4.4.1",
+    "tslib": "^1.9.3",
     "vuepress": "^0.7.1",
     "webpack-bundle-analyzer": "^2.9.2",
     "webpack-cli": "^2.1.4",

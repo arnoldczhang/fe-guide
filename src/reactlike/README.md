@@ -62,3 +62,20 @@
   - ### applybeforeUpdateHooks
     - #### 解析
       - 检测props、context、state变更触发componentWillReceiveProps、shouldComponentUpdate、componentWillUpdate
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
