@@ -17,12 +17,7 @@
         "rootDir": "dist",
         "jsx": "react",
         "target": "es6",
-        "lib": [
-            "dom",
-            "es2015.promise",
-            "es6",
-            "es2017"
-        ],
+        "lib": ["es5", "es6", "dom"],
         "moduleResolution": "node",
         "strictNullChecks": true
     },

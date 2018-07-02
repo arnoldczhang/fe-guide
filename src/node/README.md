@@ -5,6 +5,9 @@
 
 ## require原理
   - ![图解require过程](process1.png)
+  - 关键
+    - 核心 JavaScript 模块源代码是通过 process.binding('natives') 从内存中获取
+    - 第三方 JavaScript 模块源代码是通过 fs.readFileSync 方法从文件中读取，根据不同扩展名，做不同读取校验
   - 源代码
     1. 引用
       - ```js
@@ -74,9 +77,37 @@
         - 新建 nativeModule 对象，然后缓存，并加载编译
       7. require用户自定义模块
         - tryModuleLoad
-        - Module.prototype.load
       8. Module.prototype.load
         - ```js
+          NativeModule.wrap = function(script) {
+            return NativeModule.wrapper[0] + script + NativeModule.wrapper[1];
+          };
+
+          NativeModule.wrapper = [
+            '(function (exports, require, module, __filename, __dirname) { ',
+            '\n});'
+          ];
+
+          NativeModule.prototype.compile = function() {
+            var source = NativeModule.getSource(this.id);
+            source = NativeModule.wrap(source);
+
+            this.loading = true;
+
+            try {
+              const fn = runInThisContext(source, {
+                filename: this.filename,
+                lineOffset: 0,
+                displayErrors: true
+              });
+              fn(this.exports, NativeModule.require, this, this.filename);
+
+              this.loaded = true;
+            } finally {
+              this.loading = false;
+            }
+          };
+
           Module.prototype.load = function(filename) {
             debug('load %j for module %j', filename, this.id);
 
@@ -85,10 +116,58 @@
             this.paths = Module._nodeModulePaths(path.dirname(filename));
 
             var extension = path.extname(filename) || '.js';
+
+            // 通过不同扩展名，选择不同的处理
             if (!Module._extensions[extension]) extension = '.js';
             Module._extensions[extension](this, filename);
             this.loaded = true;
           };
+
+          // Native extension for .js
+          Module._extensions['.js'] = function(module, filename) {
+            var content = fs.readFileSync(filename, 'utf8');
+            // _compile
+            module._compile(internalModule.stripBOM(content), filename);
+          };
+
+
+          // Native extension for .json
+          Module._extensions['.json'] = function(module, filename) {
+            var content = fs.readFileSync(filename, 'utf8');
+            try {
+              module.exports = JSON.parse(internalModule.stripBOM(content));
+            } catch (err) {
+              err.message = filename + ': ' + err.message;
+              throw err;
+            }
+          };
+
+
+          //Native extension for .node
+          Module._extensions['.node'] = function(module, filename) {
+            return process.dlopen(module, path._makeLong(filename));
+          };
+
+          // ...
+          Module.wrap = NativeModule.wrap;
+          // ...
+          Module.prototype._compile = function(content, filename) {
+          // ...
+
+          // create wrapper function
+          var wrapper = Module.wrap(content);
+
+          var compiledWrapper = vm.runInThisContext(wrapper, {
+            filename: filename,
+            lineOffset: 0,
+            displayErrors: true
+          });
+
+          // ...
+          var result = compiledWrapper.apply(this.exports, args);
+          if (depth === 0) stat.cache = null;
+          return result;
+        };
           ```
 
 
