@@ -1,0 +1,37 @@
+{
+    "compilerOptions": {
+        "module": "ES6",
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
+        "diagnostics": false,
+        "pretty": true,
+        "listFiles": false,
+        "declaration": true,
+        "rootDir": "dist",
+        "jsx": "react",
+        "target": "es6",
+        "lib": ["es5", "es6", "dom"],
+        "moduleResolution": "node",
+        "strictNullChecks": true
+    },
+    "exclude": [
+        "node_modules",
+        "dist",
+        "public",
+        "build",
+        "scripts",
+        "acceptance-tests",
+        "webpack",
+        "jest"
+    ],
+    "types": [
+        "typePatches"
+    ]
+}

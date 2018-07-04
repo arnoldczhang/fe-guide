@@ -29,12 +29,22 @@ class App extends PureComponent {
     this.increase = this.increase.bind(this);
   }
 
-  componentDidMount() {
-  }
+  // static getDerivedStateFromProps(props, state) {
+
+  // }
+
+  // getSnapshotBeforeUpdate() {
+  //   // TODO
+  // }
+
+  // componentDidCatch(error, info) {
+  //   // TODO
+  // }
+
+  // componentDidMount() {
+  // }
 
   increase() {
-    // dispatch.count.increment(100);
-    // dispatch.count.incrementSaga(100);
     dispatch.count.incrementAsync(101);
     dispatch.calculate.incrementAsync(101);
     console.log(this);
@@ -46,9 +56,22 @@ class App extends PureComponent {
       num,
     } = this.props;
 
+    const FancyButton = React.forwardRef((props, ref) => (
+      <button ref={ref} className="FancyButton">
+        {props.children}
+      </button>
+    ));
+
+    const ref = React.createRef();
+    console.log(this);
+
     return [
       <div className={styles.App} key="App">
+        <FancyButton ref={ref}>Click me!</FancyButton>
         <button onClick={this.increase}>click</button>
+        {React.cloneElement(<Header />, {
+          name: 'arnold',
+        })}
         <Header />
         {numm},,{num}
       </div>,

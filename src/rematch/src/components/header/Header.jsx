@@ -9,16 +9,19 @@ import logo from '../../logo.svg';
 
 const {
   number,
+  string,
 } = PropTypes;
 
 @connect(selector)
 class Header extends PureComponent {
   static propTypes = {
     numm: number,
+    name: string,
   };
 
   static defaultProps = {
     numm: 0,
+    name: '',
   };
 
   constructor() {
@@ -34,11 +37,15 @@ class Header extends PureComponent {
   render() {
     const {
       numm,
+      name = '',
     } = this.props;
 
     return (
       <header className={styles['App-header']}>
         {numm}
+        {
+          name ? (<span>name: {name}</span>) : null
+        }
         <img src={logo} className={styles['App-logo']} alt="logo" />
         <h1 onClick={this.aa} className={styles['App-title']}>Welcome to React</h1>
       </header>

@@ -1,12 +1,14 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { hydrate } from 'react-dom';
 import { Provider } from 'react-redux';
 
 import './index.css';
-import App from './app/App';
+import App from './app/App.js';
 import store from './store';
 
-render(
+console.log('start');
+
+hydrate(
   <Provider store={store}>
     <App />
   </Provider>,
