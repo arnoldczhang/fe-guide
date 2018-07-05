@@ -1,5 +1,4 @@
 ## 区别：
-
   1. redux单一store，mobx多个store
   2. redux的store是普通对象，mobx的store是observable
   3. redux的state只读，每次update是基于原state产生新的state，
@@ -9,7 +8,6 @@
 
 
 ## 优劣：
-
   1. 可调试性：
     - redux是state -> view -> action -> reducer闭环结构，便于调试
     - mobx随处可触发，难以追踪
@@ -25,4 +23,7 @@
   5. typescript：
     - redux不支持
     - mobx支持
+  6. 性能
+    - mobx可以精确定位到propsChange涉及到的Component
+    - redux需要从Provider逐层判断
 

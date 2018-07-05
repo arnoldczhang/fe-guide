@@ -4,8 +4,8 @@ export default ({
     listPage: {
       list,
     },
-  }
+  },
 }) => ({
   indexStore,
   list,
-})
+});

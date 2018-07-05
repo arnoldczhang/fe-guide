@@ -53,7 +53,7 @@ module.exports = {
       'react-dom': 'anujs',
       'prop-types': 'anujs/lib/ReactPropTypes',
       'create-react-class': 'anujs/lib/createClass',
-      'react-tap-event-plugin': 'anujs/lib/injectTapEventPlugin'
+      'react-tap-event-plugin': 'anujs/lib/injectTapEventPlugin',
     },
   },
   module: {

@@ -64,7 +64,7 @@ class App extends Component {
       inited,
     } = this.props;
     console.log(inited);
-    // const result = await fetch('https://takeaway.dianping.com/waimai/ajax/wxwallet/getweixinjsconfig');
+    // const result = await fetch('https://xx.xx.xx');
     // console.log(inited, result);
   }
 
