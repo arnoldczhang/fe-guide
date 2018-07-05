@@ -22,7 +22,7 @@ console.log("c and d have same map:", %HaveSameMap(c, d)); // true
 
 
 
-
+console.log(process.cwd());
 
 
 

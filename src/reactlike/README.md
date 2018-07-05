@@ -71,6 +71,8 @@
       - applybeforeMountHooks
   - ### updateHostComponent
     - #### 解析
+      - getInsertPoint
+      - diffChildren
   - ### applybeforeMountHooks
     - #### 解析
       - 触发componentWillMount或setStateByProps
