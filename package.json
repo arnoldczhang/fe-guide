@@ -4,7 +4,8 @@
   "description": "",
   "main": "./src/webpack/dist/index.bundle.js",
   "bin": {
-    "pojo": "./src/webpack/pojo-loader/bin/pojo-loader.js"
+    "pojo": "./src/webpack/pojo-loader/bin/pojo-loader.js",
+    "rematch": "/Users/dianping/website/fe-guide/node_modules/rematch-cli/bin/rematch.js"
   },
   "scripts": {
     "reactopt": "node node_modules/reactopt/main.js",
@@ -65,6 +66,7 @@
     "g18:server": "npm run g18:build:w & webpack-dev-server --progress --config ./src/reactlike/build/webpack.dev.js",
     "g18:server:home": "webpack-dev-server --progress --config ./src/reactlike/build/webpack.dev.js",
     "g19:native": "node --allow-natives-syntax ./src/test/src/test.js",
+    "gen": "./src/react-cli init",
     "save": "node ./src/test/src/saveImage",
     "lynt": "lynt ./src/lynt/lynt.js",
     "test": "mocha"
@@ -84,6 +86,7 @@
     "@types/koa-logger": "^3.1.0",
     "@types/koa-router": "^7.0.28",
     "@types/koa-static": "^4.0.0",
+    "@vue/cli": "^3.0.0-rc.3",
     "antd": "^3.6.4",
     "anujs": "^1.4.3",
     "autoprefixer": "^7.1.6",
@@ -202,6 +205,7 @@
     "uglifyjs-webpack-plugin": "^1.2.5",
     "underscore": "^1.8.3",
     "vue": "^2.5.9",
+    "vue-cli": "^2.9.6",
     "vue-loader": "^13.5.0",
     "vue-template-compiler": "^2.5.9",
     "webpack": "^4.10.2",
@@ -219,6 +223,7 @@
     "data-forge": "^1.0.8",
     "eslint-loader": "^2.0.0",
     "fork-ts-checker-webpack-plugin": "^0.4.2",
+    "fs-extra": "^6.0.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha-reporter": "^2.2.5",
     "lynt": "^0.1.1",
@@ -229,6 +234,7 @@
     "postcss-modules": "^1.1.0",
     "react-lifecycle-visualizer": "^1.0.2",
     "reactopt": "^1.5.5",
+    "rematch-cli": "0.0.2",
     "signale": "^1.1.0",
     "sinon-chai": "^2.14.0",
     "ts-loader": "^4.4.1",
