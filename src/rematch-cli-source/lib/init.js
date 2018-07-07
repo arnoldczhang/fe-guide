@@ -7,11 +7,19 @@ const fs = require('fs-extra');
 const { clearConsole } = require('./utils');
 const steps = require('./steps');
 
-const insertCode = async (path, args) => {
+const insertCode = async (dir, args) => {
+  const codeDir = path.resolve(__dirname, './code');
   const { author } = args.author ? args : await inquirer.prompt([steps.author]);
   const { version } = args.version ? args : await inquirer.prompt([steps.version]);
   const { description } = args.description ? args : await inquirer.prompt([steps.description]);
-  // await fs.copy('./code', path);
+  let { keywords } = args.keywords ? args : await inquirer.prompt([steps.keywords]);
+  keywords = keywords.split(',');
+  await fs.copy(codeDir, dir, (err) => {
+    if (err) {
+      console.log(color.red(JSON.stringify(err)));
+      process.exit(1);
+    }
+  });
 };
 
 module.exports = async (projectName, args) => {
@@ -25,14 +33,14 @@ module.exports = async (projectName, args) => {
         await fs.remove(targetDir);
         insertCode(targetDir, args);
       } else {
-        console.log(color.red('退出...'));
+        console.log(color.green('退出...'));
         process.exit(1);
       }
     } else {
       insertCode(targetDir, args);
     }
   } else {
-    console.log(color.red('退出...'));
+    console.log(color.green('退出...'));
     process.exit(1);
   }
 

@@ -23,10 +23,16 @@ module.exports = {
     type: 'input',
     message: '版本：',
   },
-  keyword: {
-    name: 'keyword',
+  keywords: {
+    name: 'keywords',
     default: 'react-rematch',
     type: 'input',
-    message: '关键字：',
+    message: '关键字（用","分割）：',
+  },
+  description: {
+    name: 'description',
+    default: 'react-rematch',
+    type: 'input',
+    message: '描述：',
   },
 };

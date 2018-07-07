@@ -3,6 +3,7 @@
   "version": "$version",
   "author": "$author",
   "description": "$description",
+  "keywords": "$keywords",
   "main": "./src/app.js",
   "bin": {
   },
