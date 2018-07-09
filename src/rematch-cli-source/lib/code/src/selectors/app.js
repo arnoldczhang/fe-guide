@@ -1,14 +1,11 @@
 import { createSelector } from 'reselect';
 
-const countSelector = state => state.count;
-const calculateSelector = state => state.calculate;
+const headerSelector = state => state.header;
 
 export default createSelector(
-  countSelector,
-  calculateSelector,
-  (count, calculate) => {
+  headerSelector,
+  (header) => {
     return {
-      ...count,
-      ...calculate,
+      ...header,
     };
 });
