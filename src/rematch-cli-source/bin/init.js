@@ -6,7 +6,7 @@ const { clearArgs } = require('../lib/utils');
 
 module.exports = (program, packageInfo) => {
   program
-    .command('init <project-name>')
+    .command('create <project-name>')
     .allowUnknownOption()
     .description('create a new project powered by cli')
     .option('-p, --port <port>', 'server port')
