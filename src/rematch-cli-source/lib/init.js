@@ -11,22 +11,30 @@ const exec = require('child_process').exec;
 const execa = require('execa');
 
 let context = '';
+let stdio = ['inherit', 'inherit', 'inherit'];
 
-const run = (command, cb, args = {}) => {
-  cb = cb || (v => v);
-  return exec(command, {
-    cwd: args.context || context,
-  }, cb);
+const run = (command, args = []) => {
+  if (!args) {
+    [command, ...args] = command.split(/\s+/);
+  }
+
+  console.log(context);
+  return execa(command, args, {
+    cwd: context,
+    stdio,
+  });
 };
 
 const insertCode = async (dir, args) => {
   const codeDir = path.resolve(__dirname, './code');
+  const rematchDir = path.resolve(codeDir, './rematch');
+  context = rematchDir;
   await copyConfigFiles(dir, codeDir, args);
   await clearConsole();
   console.log('⚙', color.green('configuring the package.json SUCCESS...'));
   await initGitRepo();
   console.log('🗃', color.green('configuring the git SUCCESS...'));
-  await copyReactFiles(dir, codeDir, args);
+  await copyReactFiles(dir, rematchDir, args);
   console.log('⚙', color.green(`creating project in ${dir} SUCCESS...`));
   await installPackage(dir);
 };
@@ -53,9 +61,7 @@ const copyConfigFiles = async (targetDir, codeDir, args) => {
   }
 };
 
-const copyReactFiles = async (targetDir, codeDir) => {
-  const rematchDir = path.resolve(codeDir, './rematch');
-  context = rematchDir;
+const copyReactFiles = async (targetDir, rematchDir) => {
   await fs.copy(rematchDir, targetDir, (err) => {
     if (err) {
       console.log(color.red(err));
@@ -66,13 +72,8 @@ const copyReactFiles = async (targetDir, codeDir) => {
 
 const initGitRepo = async () => {
   try {
-    await run('git status');    
-    await run('git init', (err, stdout, stderr) => {
-      if (err) {
-        console.log(color.red(err));
-        process.exit(1);
-      }
-    });
+    await run('git', ['status']);
+    await run('git', ['init']);
     console.log('🗃', color.green('initializing git repository SUCCESS...'));
   } catch (err) {
     console.log(color.red(err.message));
@@ -82,23 +83,23 @@ const initGitRepo = async () => {
 
 const installPackage = async (targetDir) => {
   console.log('⚙', color.green('installing the packages...'));
-  // console.log(context);
   return new Promise((resolve, reject) => {
-    const child = run('npm install --loglevel error', (err) => {
-      if (err) {
-        console.log(color.red(err));
-        process.exit(1);
-      }
-      console.log(color.green('installing package SUCCESS...'));
-    });
+    const child = run('npm', ['install']);
 
-    child.stdout.on('data', buffer => {
+    child.stdout.on('data', (buffer) => {
       process.stdout.write(buffer)
     });
 
-    child.on('close', code => {
+    child.stderr.on('data', (buffer) => {
+      const str = buf.toString();
+      if (/warn/i.test(str)) {
+        return;
+      }
+    });
+
+    child.on('close', (code) => {
       if (code !== 0) {
-        reject(`command failed: ${command} ${args.join(' ')}`);
+        reject('error');
         return;
       }
       resolve();
@@ -127,30 +128,4 @@ module.exports = async (projectName, args) => {
     console.log(color.green('退出...'));
     process.exit(1);
   }
-
-//   const { action } = await inquirer.prompt([
-//     {
-//       name: 'action',
-//       type: 'list',
-//       message: `Target directory ${color.cyan('a')} already exists. Pick an action:`,
-//       choices: [
-//         { name: 'Overwrite', value: 'overwrite' },
-//         { name: 'Merge', value: 'merge' },
-//         { name: 'Cancel', value: false }
-//       ]
-//     }
-//   ]);
-
-// const { features } = await inquirer.prompt([
-//     {
-//       name: 'features',
-//       type: 'checkbox',
-//       message: `Target directory ${color.cyan('a')} already exists. Pick an action:`,
-//       choices: [
-//         { name: 'Overwrite', value: 'overwrite' },
-//         { name: 'Merge', value: 'merge' },
-//         { name: 'Cancel', value: false }
-//       ]
-//     }
-//   ]);  
 };
