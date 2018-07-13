@@ -14,7 +14,7 @@ module.exports = {
       'react-dom',
     ],
     index: [
-      "./src/rematch/src/index.jsx",
+      "./src/index.jsx",
     ],
   },
   output: {
@@ -35,13 +35,9 @@ module.exports = {
       root: path.join(__dirname, '..'),
     }),
     new HtmlWebpackPlugin({
-      title: 'Development',
-      template: './src/mobx/index.html',
+      title: 'Rematch React',
+      template: './public/index.html',
     }),
-    // new webpack.DllPlugin({
-    //   name: '[name]_[hash]',
-    //   path: path.join(__dirname, '[name]-manifest.json'),
-    // }),
   ],
   resolve: {
     extensions: ['.*', '.js', '.jsx', '.es6'],
@@ -55,16 +51,6 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.jsx$/,
-        enforce: 'pre',
-        loader: 'eslint-loader',
-        include: path.resolve(__dirname, "../src"),
-        exclude: /node_modules/,
-        options: {
-          failOnError: false,
-        },
-      },
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
@@ -87,14 +73,6 @@ module.exports = {
           ],
         },
       },
-      // ts-node
-      // https://webpack.js.org/configuration/configuration-languages/
-      {
-        test: /\.(tsx|ts)?$/,
-        include: path.resolve(__dirname, "../src"),
-        exclude: /node_modules/,
-        use: ["ts-loader"],
-      },
       {
         test: /\.(le|c|sa)ss$/,
         use: ExtractTextPlugin.extract({
@@ -108,7 +86,6 @@ module.exports = {
               },
             },
             'less-loader',
-            // css module + autoprefixer
             {
               loader: 'postcss-loader',
               options: {
