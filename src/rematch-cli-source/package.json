@@ -1,31 +1,7 @@
 {
-  "_from": "rematch-cli@0.0.2",
-  "_id": "rematch-cli@0.0.2",
-  "_inBundle": false,
-  "_integrity": "sha512-SVmBnq3Tl3poAhi7hGEFAJCUWmJgeAuZAj0DSIPPJq47WmD/7VI3ok5O5UFa7cLYwAb/7Gl1cNfPuFDRr+wZuQ==",
-  "_location": "/rematch-cli",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "version",
-    "registry": true,
-    "raw": "rematch-cli@0.0.2",
-    "name": "rematch-cli",
-    "escapedName": "rematch-cli",
-    "rawSpec": "0.0.2",
-    "saveSpec": null,
-    "fetchSpec": "0.0.2"
-  },
-  "_requiredBy": [
-    "#DEV:/",
-    "#USER"
-  ],
-  "_resolved": "https://registry.npmjs.org/rematch-cli/-/rematch-cli-0.0.2.tgz",
-  "_shasum": "a08230ace9753eac4c6a79332979af4b0d942bc3",
-  "_spec": "rematch-cli@0.0.2",
-  "_where": "/Users/dianping/website/fe-guide",
-  "author": {
-    "name": "arnold1205"
-  },
+  "name": "rematch-cli",
+  "author": "arnold1205",
+  "version": "0.0.3",
   "bin": {
     "rematch": "./bin/rematch.js"
   },
@@ -52,13 +28,11 @@
   ],
   "homepage": "https://github.com/arnoldczhang/fe-guide#readme",
   "license": "MIT",
-  "name": "rematch-cli",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/arnoldczhang/fe-guide.git"
   },
   "scripts": {
     "release": "standard-version"
-  },
-  "version": "0.0.2"
+  }
 }

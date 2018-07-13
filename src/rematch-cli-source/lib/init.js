@@ -18,7 +18,6 @@ const run = (command, args = []) => {
     [command, ...args] = command.split(/\s+/);
   }
 
-  console.log(context);
   return execa(command, args, {
     cwd: context,
     stdio,
@@ -28,14 +27,18 @@ const run = (command, args = []) => {
 const insertCode = async (dir, args) => {
   const codeDir = path.resolve(__dirname, './code');
   const rematchDir = path.resolve(codeDir, './rematch');
-  context = rematchDir;
+  context = dir;
+  console.log(color.green(dir));
+  const { sure } = await inquirer.prompt([steps.sureDir]);
+  if (!sure) {
+    console.log(color.green('退出...'));
+    process.exit(1);
+    return;
+  }
   await copyConfigFiles(dir, codeDir, args);
   await clearConsole();
-  console.log('⚙', color.green('configuring the package.json SUCCESS...'));
-  await initGitRepo();
-  console.log('🗃', color.green('configuring the git SUCCESS...'));
   await copyReactFiles(dir, rematchDir, args);
-  console.log('⚙', color.green(`creating project in ${dir} SUCCESS...`));
+  await initGitRepo();
   await installPackage(dir);
 };
 
@@ -58,6 +61,7 @@ const copyConfigFiles = async (targetDir, codeDir, args) => {
 
   if (packageContent) {
     fs.writeFileSync(path.resolve(codeDir, './rematch/package.json'), packageContent);
+    console.log('✅', color.green('configuring the package.json SUCCESS...'));
   }
 };
 
@@ -65,7 +69,10 @@ const copyReactFiles = async (targetDir, rematchDir) => {
   await fs.copy(rematchDir, targetDir, (err) => {
     if (err) {
       console.log(color.red(err));
+      console.log('❌', color.green(`creating project in ${targetDir} FAIL...`));
       process.exit(1);
+    } else {
+      console.log('✅', color.green(`creating project in ${targetDir} SUCCESS...`));
     }
   });
 };
@@ -74,36 +81,45 @@ const initGitRepo = async () => {
   try {
     await run('git', ['status']);
     await run('git', ['init']);
-    console.log('🗃', color.green('initializing git repository SUCCESS...'));
+    console.log('✅', color.green('configuring the git SUCCESS...'));
   } catch (err) {
+    console.log('❌', color.green('configuring the git FAIL...'));
     console.log(color.red(err.message));
-    process.exit(1);
   }
 };
 
 const installPackage = async (targetDir) => {
-  console.log('⚙', color.green('installing the packages...'));
-  return new Promise((resolve, reject) => {
-    const child = run('npm', ['install']);
+  console.log('✅', color.green('installing the packages...'));
+  return new Promise(async (resolve, reject) => {
+    try {
+      const child = await run('npm', ['install']);
 
-    child.stdout.on('data', (buffer) => {
-      process.stdout.write(buffer)
-    });
-
-    child.stderr.on('data', (buffer) => {
-      const str = buf.toString();
-      if (/warn/i.test(str)) {
-        return;
+      if (child.stdout) {
+        child.stdout.on('data', (buffer) => {
+          process.stdout.write(buffer)
+        });
       }
-    });
 
-    child.on('close', (code) => {
-      if (code !== 0) {
-        reject('error');
-        return;
+      if (child.stderr) {
+        child.stderr.on('data', (buffer) => {
+          const str = buf.toString();
+          if (/warn/i.test(str)) {
+            return;
+          }
+        });
       }
-      resolve();
-    });
+
+      child.on('close', (code) => {
+        if (code !== 0) {
+          reject('error');
+          return;
+        }
+        resolve();
+      });
+    } catch (err) {
+      console.log(color.red(JSON.stringify(err)));
+      reject(err);
+    }
   });
 };
 

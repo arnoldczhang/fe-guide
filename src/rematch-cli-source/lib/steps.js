@@ -1,15 +1,21 @@
 
 module.exports = {
+  sureDir: {
+    name: 'sure',
+    default: true,
+    type: 'confirm',
+    message: `是否是这个目录：`,
+  },
   checkDir: {
     name: 'ok',
     default: true,
     type: 'confirm',
-    message: `是否在当前目录创建react-rematch项目：`
+    message: `是否在当前目录创建react-rematch项目：`,
   },
   existDir: {
     name: 'exist',
     type: 'confirm',
-    message: `当前目录已存在，是否替换：`
+    message: `当前目录已存在，是否替换：`,
   },
   author: {
     name: 'author',

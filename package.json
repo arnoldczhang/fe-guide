@@ -234,7 +234,6 @@
     "postcss-modules": "^1.1.0",
     "react-lifecycle-visualizer": "^1.0.2",
     "reactopt": "^1.5.5",
-    "rematch-cli": "0.0.2",
     "signale": "^1.1.0",
     "sinon-chai": "^2.14.0",
     "ts-loader": "^4.4.1",
