@@ -1,7 +1,8 @@
 {
   "name": "rematch-cli",
   "author": "arnold1205",
-  "version": "0.0.3",
+  "version": "0.0.31",
+  "main": "./index.js",
   "bin": {
     "rematch": "./bin/rematch.js"
   },
