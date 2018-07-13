@@ -1,10 +1,10 @@
 {
-  "name": "rematch-test",
-  "version": "1.0.0",
-  "author": "reactLover",
-  "description": "react-rematch",
-  "keywords": ["react-rematch"],
-  "main": "./src/app.js",
+  "name": "$projectName",
+  "version": "$version",
+  "author": "$author",
+  "description": "$description",
+  "keywords": "$keywords",
+  "main": "./src/index.jsx",
   "bin": {
   },
   "scripts": {

@@ -7,11 +7,10 @@ const path = require('path');
 const fs = require('fs-extra');
 const { clearConsole } = require('./utils');
 const steps = require('./steps');
-const exec = require('child_process').exec;
 const execa = require('execa');
 
+const stdio = ['inherit', 'inherit', 'inherit'];
 let context = '';
-let stdio = ['inherit', 'inherit', 'inherit'];
 
 const run = (command, args = []) => {
   if (!args) {
@@ -39,7 +38,7 @@ const insertCode = async (dir, args) => {
   await clearConsole();
   await copyReactFiles(dir, rematchDir, args);
   await initGitRepo();
-  await installPackage(dir);
+  await installPackage();
 };
 
 const copyConfigFiles = async (targetDir, codeDir, args) => {
@@ -56,8 +55,7 @@ const copyConfigFiles = async (targetDir, codeDir, args) => {
     .replace(/\$projectName/, projectName)
     .replace(/\$version/, version)
     .replace(/\$description/, description)
-    .replace(/"\$keywords"/, JSON.stringify(keywords))
-    ;
+    .replace(/"\$keywords"/, JSON.stringify(keywords));
 
   if (packageContent) {
     fs.writeFileSync(path.resolve(codeDir, './rematch/package.json'), packageContent);
@@ -84,41 +82,44 @@ const initGitRepo = async () => {
     console.log('✅', color.green('configuring the git SUCCESS...'));
   } catch (err) {
     console.log('❌', color.green('configuring the git FAIL...'));
+    console.log('❌', color.green('please init the git yourself...'));
     console.log(color.red(err.message));
   }
 };
 
-const installPackage = async (targetDir) => {
-  console.log('✅', color.green('installing the packages...'));
+const installPackage = async () => {
+  console.log('✅', color.green('installing the node_modules...'));
   return new Promise(async (resolve, reject) => {
     try {
       const child = await run('npm', ['install']);
 
       if (child.stdout) {
         child.stdout.on('data', (buffer) => {
-          process.stdout.write(buffer)
+          process.stdout.write(buffer);
         });
       }
 
       if (child.stderr) {
         child.stderr.on('data', (buffer) => {
-          const str = buf.toString();
+          const str = buffer.toString();
           if (/warn/i.test(str)) {
-            return;
+            return false;
           }
         });
       }
 
       child.on('close', (code) => {
         if (code !== 0) {
-          reject('error');
-          return;
+          return reject();
         }
+        console.log('✅', color.green('installing the node_modules SUCCESS...'));
         resolve();
       });
     } catch (err) {
       console.log(color.red(JSON.stringify(err)));
-      reject(err);
+      console.log('❌', color.green('installing the node_modules FAIL...'));
+      console.log('❌', color.green('please install node_modules yourself...'));
+      resolve();
     }
   });
 };
