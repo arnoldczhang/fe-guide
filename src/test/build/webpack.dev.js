@@ -14,6 +14,7 @@ const config = merge(base, {
   devtool: 'source-map',
   mode: 'development',
   entry: {
+    webdriver: './src/test/src/webdriver.js',
     wired: './src/test/src/wired-elements.js',
     filepond: './src/test/src/filepond.js',
     chance: './src/test/src/chance.js',
