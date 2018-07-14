@@ -4,6 +4,7 @@
  *
  */
 const webdriver = require('selenium-webdriver');
+const color = require('chalk');
 
 class Webdriver {
   constructor(browser) {
@@ -39,22 +40,22 @@ class Webdriver {
         const button = await this.driver.findElement(webdriver.By.css('.geetest_slider_button'));
         // 获取按钮位置等信息
         const buttonRect = await button.getRect();
-        console.log(buttonRect);
+        console.log(color.green(JSON.stringify(buttonRect)));
         // // 初始化 action
-        // let actions = this.driver.actions({ async: true });
+        let actions = this.driver.actions({ async: true });
         // // 把鼠标移动到滑块上, 然后点击
-        // actions = actions.move({
-        //   x: buttonRect.x + 10,
-        //   y: buttonRect.y + 10,
-        //   duration: 100,
-        // }).press();
+        actions = actions.move({
+          x: parseInt(buttonRect.x, 10) + 10,
+          y: parseInt(buttonRect.y, 10) + 10,
+          duration: 100,
+        }).press();
 
         // // 花一秒钟把滑块拖动至拼图缺失区, 松开鼠标
-        // await actions.move({
-        //   x: buttonRect.x + 100,
-        //   y: buttonRect.y + 100,
-        //   duration: 1000,
-        // }).release().perform();
+        await actions.move({
+          x: parseInt(buttonRect.x, 10) + 500,
+          y: parseInt(buttonRect.y, 10) + 10,
+          duration: 1000,
+        }).release().perform();
       }, 3000);
     }, 3000);
   }
