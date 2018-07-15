@@ -1,6 +1,6 @@
 /**
  * 1. 把相应浏览器的driver下到执行目录
- *
+ * 2. https://mp.weixin.qq.com/s/NDIEaAhMHdrC3l9DV8z00g
  *
  */
 const webdriver = require('selenium-webdriver');
