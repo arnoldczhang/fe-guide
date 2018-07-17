@@ -4,6 +4,7 @@
   - https://www.fastly.com/blog/headers-we-dont-want
   - https://www.nihaoshijie.com.cn/index.php/archives/630/
   - 前端必须明白的 http 知识点：https://mp.weixin.qq.com/s/4tluvji9YVtxloqmssY-Nw
+  - https连接的前几毫秒发生了什么：https://fed.renren.com/2017/02/03/https/
 
 ## 请求无用头部（新版）
   - server
@@ -58,4 +59,17 @@
 ## spdy与http 2.0区别
   - HTTP2.0 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS
   - HTTP2.0 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DEFLATE
+
+## quic
+  - 通过减少往返次数，以缩短连接建立时间
+  - 使用一种新的ACK确认机制（包含了NACK），达到更好的拥塞控制
+  - 多路复用，并解决HTTP/2队头阻塞问题，即一个流的TCP包丢失导致所有流都暂停组装。在QUIC里面，一个流的包丢失只会影响当前流，不会影响其它流。
+  - 使用FEC（前向纠错）恢复丢失的包，以减少超时重传
+  - 使用一个随机数标志一个连接，取代传统IP + 端口号的方式，使得切换网络环境如从4G到wifi仍然能使用之前的连接。
+  - ![quic](6.png)
+
+## https
+  - http + tls
+  - ![tls](p10.png)
+
 
