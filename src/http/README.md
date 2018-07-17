@@ -4,6 +4,7 @@
   - https://www.fastly.com/blog/headers-we-dont-want
   - https://www.nihaoshijie.com.cn/index.php/archives/630/
   - 前端必须明白的 http 知识点：https://mp.weixin.qq.com/s/4tluvji9YVtxloqmssY-Nw
+  - 把网站升级到QUIC：https://www.yinchengli.com/2018/06/10/quic/
   - https连接的前几毫秒发生了什么：https://fed.renren.com/2017/02/03/https/
 
 ## 请求无用头部（新版）
@@ -68,8 +69,21 @@
   - 使用一个随机数标志一个连接，取代传统IP + 端口号的方式，使得切换网络环境如从4G到wifi仍然能使用之前的连接。
   - ![quic](6.png)
 
+### 对比http/https/quic
+  - ![tls](p10.png)
+
 ## https
   - http + tls
-  - ![tls](p10.png)
+  - ![加密](24.png)
+    - 服务器选中的密钥交换加密方式为RSA
+    - 数据传输加密方式为AES
+    - 检验数据是否合法的算法为SHA256
+  - ![https](10.png)
+  - 公钥加密，私钥解密
+  - 过程 -> 3RTT
+    - ![https](201208201734403507.png)
+
+
+
 
 
