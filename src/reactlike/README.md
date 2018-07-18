@@ -64,9 +64,11 @@
       - commitDFS
   - ### reconcileDFS
     - #### 解析
-      - 遍历fiber.siblings
+      - outerLoop遍历fiber.siblings
+      - innerLoop遍历fiber.return
       - updateClassComponent（tag < 3）
       - updateHostComponent（tag >= 3）
+      - getSnapshotBeforeUpdate（hasMounted）
   - ### commitDFS
     - #### 解析
       - commitDFSImpl
@@ -102,6 +104,9 @@
   - ### getInsertPoint
     - #### 解析
       - 返回子fiber中的普通节点（tag > 3）
+  - ### diffChildren
+    - #### 解析
+      - 
 
 
 

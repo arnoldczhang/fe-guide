@@ -1,7 +1,7 @@
 {
   "name": "rematch-cli",
   "author": "arnold1205",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "main": "./index.js",
   "bin": {
     "rematch": "./bin/rematch.js"
@@ -12,11 +12,13 @@
   "bundleDependencies": false,
   "deprecated": false,
   "description": "rematch-cli module for react",
-  "devDependencies": {
+  "dependencies": {
     "standard-version": "^4.2.0",
     "chalk": "^2.0.0",
     "inquirer": "^6.0.0",
     "fs-extra": "^6.0.0"
+  },
+  "devDependencies": {
   },
   "engines": {
     "node": ">= 4.0.0",
