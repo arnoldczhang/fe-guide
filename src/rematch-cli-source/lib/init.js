@@ -1,6 +1,3 @@
-'use strict';
-
-const EventEmitter = require('events');
 const inquirer = require('inquirer');
 const color = require('chalk');
 const path = require('path');
@@ -9,6 +6,9 @@ const { clearConsole } = require('./utils');
 const steps = require('./steps');
 const execa = require('execa');
 
+const {
+  CODE,
+} = steps;
 const stdio = ['inherit', 'inherit', 'inherit'];
 let context = '';
 
@@ -23,27 +23,13 @@ const run = (command, args = []) => {
   });
 };
 
-const insertCode = async (dir, args) => {
-  const codeDir = path.resolve(__dirname, './code');
-  const rematchDir = path.resolve(codeDir, './rematch');
-  context = dir;
-  console.log(color.green(dir));
-  const { sure } = await inquirer.prompt([steps.sureDir]);
-  if (!sure) {
-    console.log(color.green('退出...'));
-    process.exit(1);
-    return;
-  }
-  await copyConfigFiles(dir, codeDir, args);
-  await clearConsole();
-  await copyReactFiles(dir, rematchDir, args);
-  await initGitRepo();
-  await installPackage();
-};
-
-const copyConfigFiles = async (targetDir, codeDir, args) => {
+const copyConfigFiles = async (targetDir, codeDir, plugins, args) => {
   const projectName = /\/([^\/]+)$/.exec(targetDir)[1];
-  const packageJsonDir = path.resolve(codeDir, './config/package.json');
+  let pkgDirName = 'rematch';
+  if (plugins.indexOf(CODE.TYPESCRIPT) > -1) {
+    pkgDirName = CODE.TYPESCRIPT;
+  }
+  const packageJsonDir = path.resolve(codeDir, `./config/${pkgDirName}/package.json`);
   const { author } = args.author ? args : await inquirer.prompt([steps.author]);
   const { version } = args.version ? args : await inquirer.prompt([steps.version]);
   const { description } = args.description ? args : await inquirer.prompt([steps.description]);
@@ -58,9 +44,10 @@ const copyConfigFiles = async (targetDir, codeDir, args) => {
     .replace(/"\$keywords"/, JSON.stringify(keywords));
 
   if (packageContent) {
-    fs.writeFileSync(path.resolve(codeDir, './rematch/package.json'), packageContent);
+    fs.writeFileSync(path.resolve(codeDir, `./${pkgDirName}/package.json`), packageContent);
     console.log('✅', color.green('configuring the package.json SUCCESS...'));
   }
+  return path.resolve(codeDir, `./${pkgDirName}`);
 };
 
 const copyReactFiles = async (targetDir, rematchDir) => {
@@ -81,9 +68,9 @@ const initGitRepo = async () => {
     await run('git', ['init']);
     console.log('✅', color.green('configuring the git SUCCESS...'));
   } catch (err) {
-    console.log('❌', color.green('configuring the git FAIL...'));
-    console.log('❌', color.green('please init the git yourself...'));
-    console.log(color.red(err.message));
+    // console.log(color.red(err.message));
+    // console.log('❌', color.green('configuring the git FAIL...'));
+    console.log('✅', color.green('please init the git yourself...'));
   }
 };
 
@@ -105,6 +92,7 @@ const installPackage = async () => {
           if (/warn/i.test(str)) {
             return false;
           }
+          return;
         });
       }
 
@@ -114,17 +102,36 @@ const installPackage = async () => {
         }
         console.log('✅', color.green('installing the node_modules SUCCESS...'));
         resolve();
+        return;
       });
     } catch (err) {
-      console.log(color.red(JSON.stringify(err)));
-      console.log('❌', color.green('installing the node_modules FAIL...'));
-      console.log('❌', color.green('please install node_modules yourself...'));
+      // console.log(color.red(JSON.stringify(err)));
+      // console.log('❌', color.green('installing the node_modules FAIL...'));
+      console.log('✅', color.green('please install node_modules yourself...'));
       resolve();
     }
   });
 };
 
-module.exports = async (projectName, args) => {
+const insertCode = async (dir, projectName, args) => {
+  const codeDir = path.resolve(__dirname, './code');
+  context = dir;
+  console.log(color.green(dir));
+  const { sure } = await inquirer.prompt([steps.sureDir]);
+  if (!sure) {
+    console.log(color.green('退出...'));
+    process.exit(1);
+    return;
+  }
+  const { plugins } = await inquirer.prompt([steps.plugins]);
+  const rematchDir = await copyConfigFiles(dir, codeDir, plugins, args);
+  await clearConsole();
+  await copyReactFiles(dir, rematchDir, args);
+  await initGitRepo();
+  await installPackage();
+};
+
+const init = async (projectName, args) => {
   await clearConsole();
   const targetDir = path.resolve(process.cwd(), projectName || '.');
   const { ok } = await inquirer.prompt([steps.checkDir]);
@@ -133,16 +140,20 @@ module.exports = async (projectName, args) => {
       const { exist } = await inquirer.prompt([steps.existDir]);
       if (exist) {
         await fs.remove(targetDir);
-        insertCode(targetDir, args);
+        insertCode(targetDir, projectName, args);
       } else {
         console.log(color.green('退出...'));
         process.exit(1);
       }
     } else {
-      insertCode(targetDir, args);
+      insertCode(targetDir, projectName, args);
     }
   } else {
     console.log(color.green('退出...'));
     process.exit(1);
   }
 };
+
+// test
+// init('aa');
+module.exports = init;
