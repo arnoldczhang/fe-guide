@@ -86,7 +86,6 @@ const runServer = async (path) => {
         if (isFirstCompile) {
           isFirstCompile = false;
           console.log(color.green('Starting the development server...'));
-          console.log('   ', color.yellow(`http://${host}:${port}`));
         }
 
         console.log(
@@ -135,7 +134,7 @@ const runServer = async (path) => {
         console.log('Compiling...');
       });
 
-      server.use(function(req, res, next) {
+      server.use((req, res, next) => {
         console.log('Time:', Date.now());
         next();
       });
