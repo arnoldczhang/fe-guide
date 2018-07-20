@@ -32,14 +32,14 @@ module.exports = {
       disable: false,
     }),
     new CleanWebpackPlugin(['./src/react/dist']),
-    new ManifestPlugin({
-      fileName: './manifest.json',
-    }),
+    // new ManifestPlugin({
+    //   fileName: './manifest.json',
+    // }),
     new HtmlWebpackPlugin({
       title: 'test',
       template: './src/react/public/index.html',
     }),
-    new BundleAnalyzerPlugin(),
+    // new BundleAnalyzerPlugin(),
   ],
   resolve: {
     extensions: ['.*', '.js', '.jsx', '.es6'],
@@ -69,12 +69,12 @@ module.exports = {
       {
         test: /\.(le|c|sa)ss$/,
         use: ExtractTextPlugin.extract({
-          use:[
+          use: [
             {
               loader: 'css-loader',
-              options:{
-                modules:true,
-                importLoaders:1,
+              options: {
+                modules: true,
+                importLoaders: 1,
                 localIdentName: '[name]__[local]___[hash:base64:5]',
               },
             },
@@ -84,12 +84,12 @@ module.exports = {
             {
               loader: 'postcss-loader',
               options: {
-                plugins: (loader) => [
+                plugins: () => [
                   require('autoprefixer')({
                     browsers: [
                       'Android >= 4.0',
                       'last 3 versions',
-                      'iOS > 6'
+                      'iOS > 6',
                     ],
                   }),
                 ],
@@ -98,7 +98,7 @@ module.exports = {
           ],
           fallback: 'style-loader',
           publicPath: '/dist',
-        })
+        }),
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
@@ -112,6 +112,6 @@ module.exports = {
           'file-loader',
         ],
       },
-    ]
-  }
-}
+    ],
+  },
+};

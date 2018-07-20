@@ -3,7 +3,7 @@ import Hotkeys from 'react-hot-keys';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import logo from '../logo.svg';
+// import logo from '../logo.svg';
 import styles from './App.css';
 import appSelector from '../selectors/app';
 import {

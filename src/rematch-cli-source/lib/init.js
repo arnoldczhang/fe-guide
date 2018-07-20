@@ -92,7 +92,6 @@ const installPackage = async () => {
           if (/warn/i.test(str)) {
             return false;
           }
-          return;
         });
       }
 
@@ -101,8 +100,7 @@ const installPackage = async () => {
           return reject();
         }
         console.log('✅', color.green('installing the node_modules SUCCESS...'));
-        resolve();
-        return;
+        return resolve();
       });
     } catch (err) {
       // console.log(color.red(JSON.stringify(err)));
