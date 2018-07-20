@@ -1,6 +1,8 @@
 const CODE = {
   TYPESCRIPT: 'typescript',
   ESLINT: 'eslint',
+  DEV: 'development',
+  TS: 'TYPESCRIPT',
 };
 
 module.exports = {

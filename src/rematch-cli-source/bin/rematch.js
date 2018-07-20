@@ -30,6 +30,6 @@ if (proc) {
 
 const subCmd = program.rawArgs[2];
 
-if (!subCmd || (subCmd !== 'init' && subCmd !== 'create')) {
+if (!subCmd || (subCmd !== 'build' && subCmd !== 'create')) {
   program.help();
 }

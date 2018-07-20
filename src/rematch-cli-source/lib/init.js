@@ -5,6 +5,7 @@ const fs = require('fs-extra');
 const { clearConsole } = require('./utils');
 const steps = require('./steps');
 const execa = require('execa');
+const { exec } = require('child_process');
 
 const {
   CODE,
@@ -100,7 +101,7 @@ const installPackage = async () => {
           return reject();
         }
         console.log('✅', color.green('installing the node_modules SUCCESS...'));
-        return resolve();
+        resolve();
       });
     } catch (err) {
       // console.log(color.red(JSON.stringify(err)));
