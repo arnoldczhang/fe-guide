@@ -16,7 +16,7 @@ type AppState = {
   name: string,
 }
 
-const instanceArray = [];
+const instanceArray: Array<App> = [];
 
 @connect(selector)
 export default class App extends React.PureComponent<{
@@ -60,6 +60,7 @@ export default class App extends React.PureComponent<{
       num,
       nummmm,
     } = this.props;
+    // throw new Error('aa');
     return [
       <div>{num}</div>,
       <div>{nummmm}</div>,
