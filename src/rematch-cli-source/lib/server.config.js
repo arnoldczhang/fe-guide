@@ -1,16 +1,6 @@
-const internalIP = require('internal-ip');
-const DEV_DIST_DIR = '/build/';
-const host = internalIP.v4.sync() || '0.0.0.0';
-const port = 2222;
-
-module.exports = (paths, options = {}) => {
-  return {
-    host,
-    port,
-    hot: true,
-    compress: true,
-    progress: true,
-    open: true,
-    contentBase: paths.path,
-  };
+module.exports = (config) => {
+  config.resolve = config.resolve || {};
+  config.resolve.alias = config.resolve.alias || {};
+  config.resolve.alias['webpack-hot-client/client'] = require.resolve('webpack-hot-client/client');
+  return config;
 };

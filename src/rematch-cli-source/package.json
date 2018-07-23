@@ -14,6 +14,7 @@
   "description": "rematch-cli module for react",
   "dependencies": {
     "standard-version": "^4.2.0",
+    "cross-spawn": "^6.0.5",
     "chalk": "^2.0.0",
     "inquirer": "^6.0.0",
     "fs-extra": "^6.0.0",
@@ -21,7 +22,9 @@
     "internal-ip": "^3.0.1",
     "react-dev-utils": "^4.2.1",
     "webpack": "^4.16.1",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.1.4",
+    "webpack-hot-client": "^2.2.0",
+    "webpack-serve": "^0.3.1"
   },
   "devDependencies": {
   },
@@ -29,11 +32,6 @@
     "node": ">= 4.0.0",
     "npm": ">= 3.0.0"
   },
-  "files": [
-    "index.js",
-    "lib",
-    "bin"
-  ],
   "homepage": "https://github.com/arnoldczhang/fe-guide#readme",
   "license": "MIT",
   "repository": {
