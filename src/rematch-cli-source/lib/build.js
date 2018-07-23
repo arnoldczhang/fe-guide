@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 const webpack = require('webpack');
 const serve = require('webpack-serve');
 const spawn = require('cross-spawn');
+const open = require('opn');
 
 const { CODE } = require('./steps');
 const { clearConsole } = require('./utils');
@@ -29,7 +30,6 @@ const buildDllFile = async (path) => {
     });
   } catch (err) {
     console.log('✅', color.green('can`t find the dll config file, skip this step...'));
-    resolve();
   }
 };
 
@@ -42,9 +42,16 @@ const runServer = async (path) => {
   try {
     let devConfig = require(`${path}/build/webpack.dev`);
     const config = require('./server.config')(devConfig);
+    const devServer = config.devServer || {};
+    const {
+      port = 8080,
+      host = 'localhost'
+    } = devServer;
     return Promise.resolve().then(() => {
       return serve({
         config,
+        host,
+        port,
         dev: {
           stats: {
             colors: true,
@@ -62,7 +69,9 @@ const runServer = async (path) => {
         },
       });
     }).then((server) => {
-      server.on('listening', () => {});
+      server.on('listening', () => {
+        open(`http://${host}:${port}`);
+      });
     });
   } catch (err) {
     console.log('❌', color.green(JSON.stringify(err)));
@@ -77,8 +86,8 @@ const build = async ({
   path = process.cwd(),
 }) => {
   await buildDllFile(path);
-  buildTsFiles(path);
   if (type === CODE.TS) {
+    buildTsFiles(path);
   }
 
   if (mode === CODE.DEV) {

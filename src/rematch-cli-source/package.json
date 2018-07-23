@@ -1,7 +1,7 @@
 {
   "name": "rematch-cli",
   "author": "arnold1205",
-  "version": "0.0.4",
+  "version": "0.0.41",
   "main": "./index.js",
   "bin": {
     "rematch": "./bin/rematch.js"
@@ -20,6 +20,7 @@
     "fs-extra": "^6.0.0",
     "deepmerge": "^2.1.1",
     "internal-ip": "^3.0.1",
+    "opn": "^5.3.0",
     "react-dev-utils": "^4.2.1",
     "webpack": "^4.16.1",
     "webpack-dev-server": "^3.1.4",
