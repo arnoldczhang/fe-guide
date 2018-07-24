@@ -8,7 +8,7 @@
   "bin": {
   },
   "scripts": {
-    "start": "rematch dev --typescript",
+    "start": "rematch build --type typescript -m development",
     "server": "webpack --config ./build/webpack.dll.config.js & tsc -w -p . & webpack-dev-server --progress --config ./build/webpack.dev.js"
   },
   "author": "arnold",

@@ -1,3 +1,9 @@
+const exec = require('child_process').execSync;
+let name = exec('git config --get user.name');
+let email = exec('git config --get user.email');
+name = name && JSON.stringify(name.toString().trim()).slice(1, -1);
+email = email && ' <' + email.toString().trim() + '>';
+
 const CODE = {
   TYPESCRIPT: 'typescript',
   ESLINT: 'eslint',
@@ -26,7 +32,7 @@ module.exports = {
   },
   author: {
     name: 'author',
-    default: 'reactLover',
+    default: (`${name}${email}`) || 'reactLover',
     type: 'input',
     message: '作者：',
   },
@@ -47,6 +53,18 @@ module.exports = {
     default: 'react-rematch',
     type: 'input',
     message: '描述：',
+  },
+  git: {
+    name: 'git',
+    default: true,
+    type: 'confirm',
+    message: '是否在项目目录`git init`',
+  },
+  npmI: {
+    name: 'npmI',
+    default: true,
+    type: 'confirm',
+    message: '是否在项目目录`npm install`',
   },
   plugins: {
     name: 'plugins',

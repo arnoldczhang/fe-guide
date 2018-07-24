@@ -6,6 +6,7 @@ const { clearConsole } = require('./utils');
 const steps = require('./steps');
 const execa = require('execa');
 const { exec } = require('child_process');
+const spawn = require('cross-spawn');
 
 const {
   CODE,
@@ -46,37 +47,42 @@ const copyConfigFiles = async (targetDir, codeDir, plugins, args) => {
 
   if (packageContent) {
     fs.writeFileSync(path.resolve(codeDir, `./${pkgDirName}/package.json`), packageContent);
-    console.log('✅', color.green('configuring the package.json SUCCESS...'));
+    console.log('✅', color.green('Configuring the package.json SUCCESS...'));
   }
   return path.resolve(codeDir, `./${pkgDirName}`);
 };
 
-const copyReactFiles = async (targetDir, rematchDir) => {
-  await fs.copy(rematchDir, targetDir, (err) => {
+const copyReactFiles = (targetDir, rematchDir, cb) => {
+  fs.copy(rematchDir, targetDir, (err) => {
     if (err) {
       console.log(color.red(err));
-      console.log('❌', color.green(`creating project in ${targetDir} FAIL...`));
+      console.log('❌', color.green(`Creating project in ${targetDir} FAIL...`));
       process.exit(1);
     } else {
-      console.log('✅', color.green(`creating project in ${targetDir} SUCCESS...`));
+      console.log('✅', color.green(`Creating project in ${targetDir} SUCCESS...`));
+      cb(targetDir);
     }
   });
 };
 
 const initGitRepo = async () => {
+  const { git } = await inquirer.prompt([steps.git]);
+  if (!git) return;
   try {
     await run('git', ['status']);
     await run('git', ['init']);
-    console.log('✅', color.green('configuring the git SUCCESS...'));
+    console.log('✅', color.green('Configuring the git SUCCESS...'));
   } catch (err) {
     // console.log(color.red(err.message));
-    // console.log('❌', color.green('configuring the git FAIL...'));
-    console.log('✅', color.green('please init the git yourself...'));
+    console.log('❌', color.green('Configuring the git FAIL...'));
+    console.log('✅', color.green('Please init the git yourself...'));
   }
 };
 
 const installPackage = async () => {
-  console.log('✅', color.green('installing the node_modules...'));
+  const { npmI } = await inquirer.prompt([steps.npmI]);
+  if (!npmI) return console.log(color.red('REMEMBER:'), 'You have to run `npm install` manually before running `npm start`');
+  console.log('✅', color.green('Installing the node_modules...'));
   return new Promise(async (resolve, reject) => {
     try {
       const child = await run('npm', ['install']);
@@ -100,13 +106,13 @@ const installPackage = async () => {
         if (code !== 0) {
           return reject();
         }
-        console.log('✅', color.green('installing the node_modules SUCCESS...'));
+        console.log('✅', color.green('Installing the node_modules SUCCESS...'));
         resolve();
       });
     } catch (err) {
       // console.log(color.red(JSON.stringify(err)));
-      // console.log('❌', color.green('installing the node_modules FAIL...'));
-      console.log('✅', color.green('please install node_modules yourself...'));
+      // console.log('❌', color.green('Installing the node_modules FAIL...'));
+      console.log('✅', color.green('Something happened,  you may need to install node_modules manually...'));
       resolve();
     }
   });
@@ -118,16 +124,17 @@ const insertCode = async (dir, projectName, args) => {
   console.log(color.green(dir));
   const { sure } = await inquirer.prompt([steps.sureDir]);
   if (!sure) {
-    console.log(color.green('退出...'));
+    console.log(color.green('quit...'));
     process.exit(1);
     return;
   }
   const { plugins } = await inquirer.prompt([steps.plugins]);
   const rematchDir = await copyConfigFiles(dir, codeDir, plugins, args);
   await clearConsole();
-  await copyReactFiles(dir, rematchDir, args);
-  await initGitRepo();
-  await installPackage();
+  copyReactFiles(dir, rematchDir, async () => {
+    await initGitRepo();
+    await installPackage();
+  });
 };
 
 const init = async (projectName, args) => {
@@ -141,18 +148,19 @@ const init = async (projectName, args) => {
         await fs.remove(targetDir);
         insertCode(targetDir, projectName, args);
       } else {
-        console.log(color.green('退出...'));
+        console.log(color.green('quit...'));
         process.exit(1);
       }
     } else {
       insertCode(targetDir, projectName, args);
     }
   } else {
-    console.log(color.green('退出...'));
+    console.log(color.green('quit...'));
     process.exit(1);
   }
 };
 
+module.exports = init;
+
 // test
 // init('aa');
-module.exports = init;
