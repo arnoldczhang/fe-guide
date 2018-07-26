@@ -14,8 +14,8 @@ module.exports = merge(base, {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production'),
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-    }),
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: 'common',
+    // }),
   ],
 });
