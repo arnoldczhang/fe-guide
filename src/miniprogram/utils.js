@@ -158,7 +158,7 @@ const babelTransform = (input, options = {}) => {
   if (typeof input === 'string') {
     return babel.transform(input, {
       sourceMap: true,
-      presets: ['es2015', 'stage-2'],        
+      presets: ['es2015', 'stage-2'],
       plugins: [
         'transform-class-properties',
         'transform-decorators-legacy',

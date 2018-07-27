@@ -12,7 +12,6 @@ const {
 } = require('util');
 const resolve = promisify(require('resolve'));
 
-const srcPath = path.join(__dirname, '../src');
 const {
   CODE,
   searchFiles,
@@ -29,8 +28,128 @@ const {
   copy,
   keys,
 } = require('./utils');
+
 const DEST = '/destination';
 const nodeModuleCach = {};
+const srcPath = path.join(__dirname, '../src');
+const absoluteDestNpmPath = path.join(__dirname, '../', `${DEST}/npm`);
+
+const wxTraverse = (
+  ast,
+  src,
+  prefixPath = srcPath,
+  options = {},
+) => {
+  const {
+    module = false,
+    debug = false,
+  } = options;
+  let {
+    nodeModulePath,
+  } = options;
+
+  babelTraverse(ast, {
+    CallExpression({ node }) {
+      if (node) {
+        const { callee = {} } = node;
+        const args = node.arguments || [];
+        const { loc = {} } = callee;
+        const { identifierName = '' } = loc;
+
+        if (identifierName === 'require' && args.length) {
+          const moduleName = args[0].value;
+          const isModuleCall = /^[@a-zA-Z]/.test(moduleName);
+          if (module || isModuleCall) {
+            const relativeSrcPath = src.replace(`${prefixPath}/`, '');
+            const prefix = [];
+            relativeSrcPath.replace(/\//g, () => (
+              prefix.push('../')
+            ));
+
+            // console.log(nodeModulePath, moduleName);
+            if (isModuleCall) {
+              nodeModulePath = resolve.sync(moduleName, path.join(__dirname, '../'));
+            } else {
+              nodeModulePath = path.resolve(nodeModulePath, '../', moduleName);
+            }
+            const destNpmPath = `${DEST}/npm`;
+            const npmPath = nodeModulePath.replace(/(\/node_modules)/, destNpmPath);
+
+            if (!nodeModuleCach[nodeModulePath]) {
+              copy(nodeModulePath, npmPath, catchError(() => {
+                nodeModuleCach[nodeModulePath] = 1;
+                wxTraverse(babelTransform(readS(npmPath)).ast, npmPath, absoluteDestNpmPath, {
+                  nodeModulePath,
+                  module: true,
+                  debug: true,
+                });
+              }));
+            }
+
+            if (isModuleCall) {
+              const sliceIndex = nodeModulePath.indexOf(moduleName) + moduleName.length;
+              const relativeFilePath = nodeModulePath.slice(sliceIndex);
+              args[0].value = `${prefix.join('') || './'}npm/${moduleName}${relativeFilePath}`;
+            }
+          } else {
+            try {
+              const npmStat = statS(path.resolve(src, '../', moduleName));
+              if (npmStat.isDirectory()) {
+                args[0].value = `${moduleName}/index.js`;
+              }
+            } catch (err) {
+              args[0].value = `${moduleName}.js`;
+            }
+          }
+        }
+      }
+    },
+
+    VariableDeclarator({ node }) {
+      // if (node) {
+      //   let { init = {} } = node;
+      //   init = init || {};
+      //   const { callee = {} } = init;
+      //   const args = init.arguments || [];
+      //   if (callee.name === 'require' && args.length) {
+      //     const moduleName = args[0].value;
+      //     // console.log(moduleName);
+      //     if (/^[@a-zA-Z]/.test(moduleName)) {
+      //       const relativeSrcPath = src.replace(`${prefixPath}/`, '');
+      //       const prefix = [];
+      //       relativeSrcPath.replace(/\//g, () => (
+      //         prefix.push('../')
+      //       ));
+      //       const nodeModulePath = resolve.sync(moduleName, path.join(__dirname, '../'));
+      //       const destNpmPath = `${DEST}/npm`;
+      //       const npmPath = nodeModulePath.replace(/(\/node_modules)/, destNpmPath);
+      //       if (!nodeModuleCach[nodeModulePath]) {
+      //         copy(nodeModulePath, npmPath, catchError(() => {
+      //           nodeModuleCach[nodeModulePath] = 1;
+      //           // wxTraverse(babelTransform(readS(npmPath)).ast, npmPath, destNpmPath, {
+      //           //   debug: true,
+      //           // });
+      //         }));
+      //       }
+      //       const sliceIndex = nodeModulePath.indexOf(moduleName) + moduleName.length;
+      //       const relativeFilePath = nodeModulePath.slice(sliceIndex);
+      //       args[0].value = `${prefix.join('') || './'}npm/${moduleName}${relativeFilePath}`;
+      //     } else {
+      //       try {
+      //         const npmStat = statS(path.resolve(src, '../', moduleName));
+      //         if (npmStat.isDirectory()) {
+      //           args[0].value = `${moduleName}/index.js`;
+      //         }
+      //       } catch (err) {
+      //         args[0].value = `${moduleName}.js`;
+      //       }
+      //     }
+      //   }
+      // }
+    },
+  });
+  return babelGenerator(ast).code;
+};
 
 const copyCompressFile = (
   filePath,
@@ -114,6 +233,7 @@ const copyJsFiles = (options = {}) => {
     mode = CODE.DEV,
   } = options;
   const entry = searchFiles(/\.(?:js)$/, srcPath);
+  console.log(color.green(`copy js files...`));
   keys(entry, (dest) => {
     const src = entry[dest];
     let { code, ast, error } = babelTransform(readS(src));
@@ -125,48 +245,8 @@ const copyJsFiles = (options = {}) => {
         return console.log(color.red(uglifyRes.error));
       }
     }
-
-    babelTraverse(ast, {
-      VariableDeclarator({ node }) {
-        if (node) {
-          let { init = {} } = node;
-          init = init || {};
-          const { callee = {} } = init;
-          const args = init.arguments;
-          if (callee.name === 'require' && args && args.length) {
-            const moduleName = args[0].value;
-            if (/^[@a-zA-Z]/.test(moduleName)) {
-              const relativeSrcDir = src.replace(`${srcPath}/`, '');
-              const prefix = [];
-              relativeSrcDir.replace(/\//g, () => (
-                prefix.push('../')
-              ));
-              const nodeModuleDir = resolve.sync(moduleName, path.join(__dirname, '../'));
-              const npmDir = nodeModuleDir.replace(/(\/node_modules)/, `${DEST}/npm`);
-              if (!nodeModuleCach[nodeModuleDir]) {
-                copy(nodeModuleDir, npmDir, catchError(() => {
-                  nodeModuleCach[nodeModuleDir] = 1;
-                }));
-              }
-              const sliceIndex = nodeModuleDir.indexOf(moduleName) + moduleName.length;
-              const relativeFileDir = nodeModuleDir.slice(sliceIndex);
-              args[0].value = `${prefix.join('') || './'}npm/${moduleName}${relativeFileDir}`;
-            } else {
-              try {
-                const npmStat = statS(path.resolve(src, '../', moduleName));
-                if (npmStat.isDirectory()) {
-                  args[0].value = `${moduleName}/index.js`;
-                }
-              } catch (err) {
-                args[0].value = `${moduleName}.js`;
-              }
-            }
-          }
-        }
-      },
-    });
-
-    code = babelGenerator(ast).code;
+    code = wxTraverse(ast, src);
+    console.log(color.green(`* copy ${dest} SUCCESS...`));
     // write('aa.json', JSON.stringify(ast));
     copyCompressFile(src, dest, {
       compress: false,
