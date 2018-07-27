@@ -1,7 +1,42 @@
 const fs = require('fs-extra');
 const path = require('path');
+const color = require('chalk');
+const babel = require("babel-core");
+const generator = require('babel-generator');
+const babelTraverse = require("babel-traverse");
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const ensureDir = (dir, callback, queue = []) => {
+const {
+  readFileSync: readS,
+  copy,
+  writeFile: write,
+  statSync,
+} = fs;
+const FUNC = v => v;
+const CODE = {
+  DEV: 'development',
+  PROD: 'production',
+};
+
+const toBufferString = (input) => {
+  if (input instanceof Buffer) {
+    input = input.toString();
+  }
+
+  if (input instanceof String) {
+    input = input.valueOf();
+  }
+  return input;
+};
+
+const ensureDir = (
+  dir,
+  callback = FUNC,
+  queue = [],
+) => {
   try {
     if (dir) {
       const stat = fs.statSync(dir);
@@ -24,18 +59,25 @@ const ensureDir = (dir, callback, queue = []) => {
   callback();
 };
 
-const searchFiles = (matchRe, src, result = {}, parent = '') => {
+const searchFiles = (
+  matchRe,
+  src,
+  result = {},
+  parent = '',
+) => {
   const dirRe = /[^\.]/;
-  fs.readdirSync(src).forEach((file) => {
-    if (dirRe.test(file) || matchRe.test(file)) {
-      const fullpath = path.join(src, file);
-      if (fs.statSync(fullpath).isDirectory()) {
-        searchFiles(matchRe, fullpath, result, `${parent}/${file}`);
-      } else if (matchRe.test(fullpath)) {
-        result[`${parent}/${file}`] = fullpath;
+  if (src && matchRe instanceof RegExp) {
+    fs.readdirSync(src).forEach((file) => {
+      if (dirRe.test(file) || matchRe.test(file)) {
+        const fullpath = path.join(src, file);
+        if (fs.statSync(fullpath).isDirectory()) {
+          searchFiles(matchRe, fullpath, result, `${parent}/${file}`);
+        } else if (matchRe.test(fullpath)) {
+          result[`${parent}/${file}`] = fullpath;
+        }
       }
-    }
-  });
+    });
+  }
   return result;
 };
 
@@ -45,24 +87,42 @@ const removeComment = file => (
     .replace(/(\/\*)((?!\*\/)[\s\S])*\*\//g, '')
     .replace(/(<!--)((?!\1)[\s\S])*-->/g, '')
     .replace(/(<!--)((?!-->)[\s\S])*-->/g, '')
-    .replace(/(\s)\/\/.*/g, '$1')
+    .replace(/(\s|^)\/\/.*/g, '$1')
 );
+
 const removeEmptyLine = file => (
   file
     .replace(/[\f\n\r\t\v]+/g, '')
     .replace(/ {1,}/, ' ')
 );
+
+const keys = (
+  input,
+  callback = FUNC,
+  options = {},
+) => {
+  const {
+    start = -1,
+    end = -1,
+  } = options;
+  if (typeof input === 'object') {
+    let keyArray = Object.keys(input);
+    if (start >= 0 && end >= 0) {
+      keyArray = keyArray.slice(+start, +end);
+    }
+    return keyArray.map(callback);
+  }
+  return input;
+}
+
 const lambda = (...args) => {
   let file = args.pop();
+  file = toBufferString(file);
 
-  if (file instanceof Buffer) {
-    file = file.toString();
-  }
-
-  if (typeof file === 'string') {
+  if (file) {
     while (args.length) {
       const func = args.pop();
-      file = checkFuncAndRun(func, file);
+      file = ensureRunFunc(func, file);
     }
     return file;
   }
@@ -72,10 +132,10 @@ const defaultSteps = [removeComment, removeEmptyLine];
 
 const compressFile = (
   files,
-  needCompress = true,
+  compress = true,
   steps = defaultSteps,
 ) => {
-  if (needCompress) {
+  if (compress) {
     files = Array.isArray(files) ? files : [files];
     const fileLength = files.length;
     if (!fileLength) return files;
@@ -85,18 +145,108 @@ const compressFile = (
   return files;
 };
 
-const checkFuncAndRun = (input, ...args) => {
+const ensureRunFunc = (input, ...args) => {
   if (input instanceof Function) {
     return input(...args);
   }
+  return false;
 };
 
+const babelTransform = (input, options = {}) => {
+  input = toBufferString(input);
+
+  if (typeof input === 'string') {
+    return babel.transform(input, {
+      sourceMap: true,
+      presets: ['es2015', 'stage-2'],        
+      plugins: [
+        'transform-class-properties',
+        'transform-decorators-legacy',
+        'transform-object-rest-spread',
+        'transform-class-properties',
+        'transform-object-rest-spread',
+        'transform-async-functions',
+        'transform-decorators',
+      ],
+    });
+  }
+  return input;
+};
+
+const catchError = (callback, fallback) => (error, ...args) => {
+  if (error) {
+    if (typeof error === 'object') {
+      error = JSON.stringify(error);
+    }
+    return ensureRunFunc(fallback, error)
+      || console.log(color.red(error));
+  }
+  return ensureRunFunc(callback, ...args);
+};
+
+const getWebpackCssConfig = (
+  mode = CODE.DEV,
+  entry = {},
+) => ({
+  mode,
+  entry,
+  optimization: {
+    minimizer: [
+      new OptimizeCSSAssetsPlugin({
+        cssProcessor: require('cssnano'),
+        cssProcessorOptions: {
+          safe: true,
+          discardComments: {
+            removeAll: true,
+          }
+        },
+      }),
+    ],
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '../destination[name]',
+    }),
+    new CleanWebpackPlugin(['./destination'], {
+      root: path.join(__dirname, '..'),
+    }),
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.wxss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              import: false,
+            },
+          },
+          './webpack/combine-loader.js',
+        ],
+      },
+    ],
+  },
+});
+
 module.exports = {
+  CODE,
   lambda,
+  catchError,
+  babelTraverse: babelTraverse.default,
+  babelTransform,
+  babelGenerator: generator.default,
+  getWebpackCssConfig,
   ensureDir,
   searchFiles,
   compressFile,
   removeComment,
   removeEmptyLine,
-  checkFuncAndRun,
+  ensureRunFunc,
+  readS,
+  copy,
+  statS: statSync,
+  write,
+  keys,
 };

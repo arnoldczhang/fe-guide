@@ -1,9 +1,5 @@
 /* eslint-disable */
-const fs = require('fs-extra');
 const path = require('path');
-const imagemin = require('imagemin');
-const imageminJpegtran = require('imagemin-jpegtran');
-const imageminPngquant = require('imagemin-pngquant');
 const base64Img = require('base64-img');
 const loaderUtils = require('loader-utils');
 const {
@@ -11,6 +7,7 @@ const {
   removeComment,
   removeEmptyLine,
 } = require('./utils');
+
 module.exports = function (content) {
   const options = Object.assign({}, loaderUtils.getOptions(this));
   if (this.cacheable) this.cacheable();
@@ -28,13 +25,6 @@ module.exports = function (content) {
     return `${imageData}${separate}`;
   });
   result = compressFile(result);
-  // console.log('\n');
-  // console.log('\n');
-  // console.log(result);
-  // console.log(compressFile(result));
-  // console.log(result);
-  // fs.writeFile('aa.wxss', result, 'utf8');
-  // return (compressFile(result, true, []));
   return result;
     // .replace(/\/\*[^\r\n\t\f]+\*\//g, '')
     // .replace(/[\r\n\t\f]+/g, '')

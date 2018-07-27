@@ -1,26 +1,36 @@
 /* eslint-disable */
-// webpack基础配置
-const fs = require('fs-extra');
+// const fs = require('fs-extra');
 const path = require('path');
 const webpack = require('webpack');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const autoprefixer = require('autoprefixer');
 const color = require('chalk');
 const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
+const uglifyJS = require('uglify-js');
+const {
+  promisify,
+} = require('util');
+const resolve = promisify(require('resolve'));
 
 const srcPath = path.join(__dirname, '../src');
 const {
+  CODE,
   searchFiles,
   compressFile,
-  checkFuncAndRun,
+  ensureRunFunc,
+  babelTransform,
+  babelTraverse,
+  babelGenerator,
+  catchError,
+  getWebpackCssConfig,
+  readS,
+  statS,
+  write,
+  copy,
+  keys,
 } = require('./utils');
+const DEST = '/destination';
+const nodeModuleCach = {};
 
 const copyCompressFile = (
   filePath,
@@ -29,18 +39,16 @@ const copyCompressFile = (
 ) => {
   const {
     compress = true,
-    dest = '/destination',
-    encode = 'utf8',
+    dest = DEST,
+    encoding = 'utf8',
+    input = '',
   } = options;
   const destFile = path.join(__dirname, `../${dest}${destPath}`);
   try {
-    const file = compressFile(fs.readFileSync(filePath), compress);
-    fs.copy(filePath, destFile, (err) => {
-      if (err) {
-        return err;
-      }
-      fs.writeFile(destFile, file, encode);
-    });
+    const file = compressFile(input || readS(filePath), compress);
+    copy(filePath, destFile, catchError(() => {
+      write(destFile, file, { encoding });
+    }));
   } catch (err) {
     console.log(color.red(err));
   }
@@ -48,19 +56,17 @@ const copyCompressFile = (
 
 const copyCompressFiles = (re, hooks = {}) => (compress = true) => {
   const entry = searchFiles(re, srcPath);
-  checkFuncAndRun(hooks.start, srcPath);
-  Object.keys(entry).forEach(key => (
+  ensureRunFunc(hooks.start, srcPath);
+  keys(entry, key => (
     copyCompressFile(entry[key], key, { compress })
   ));
-  checkFuncAndRun(hooks.end, srcPath);
+  ensureRunFunc(hooks.end, srcPath);
 };
 
 const copyJsonFiles = copyCompressFiles(/\.(?:json)$/, {
-  start(src) {
-    console.log(color.green(`start copy json files from Src: ${src} START...`));
-  },
+  // start: ,
   end(src) {
-    console.log(color.green(`start copy json files from Src: ${src} END...`));
+    console.log(color.green(`copy json files SUCCESS...`));
   },
   // willCompress: ,
   // didCompress: ,
@@ -68,298 +74,127 @@ const copyJsonFiles = copyCompressFiles(/\.(?:json)$/, {
   // didCopy: ,
   // end: ,
 });
-const copyWxmlFiles = copyCompressFiles(/\.(?:wxml)$/);
 
-const copyCssFiles = (webpackFlag, cb) => {
+const copyWxmlFiles = () => {
+  copyCompressFiles(/\.(?:wxml)$/, {
+    end(src) {
+      console.log(color.green(`copy wxml files SUCCESS...`));
+    },
+  })();
+
+  // FIXME 过滤需要的图片
+  copyImages();
+};
+
+const copyCssFiles = (options = {}) => {
+  const {
+    mode = CODE.DEV,
+    callback = null,
+    webpackFlag = true,
+  } = options;
   const entry = searchFiles(/\.(?:wxss)$/, srcPath);
-  // console.log(entry);
-  const cssConfig = {
-    mode: 'production',
-    entry,
-    // output: {
-    //   path: path.join(__dirname, '../destination'),
-    //   filename: '[name]',
-    //   crossOriginLoading: 'anonymous',
-    //   publicPath: '',
-    // },
-    optimization: {
-      minimizer: [
-        new OptimizeCSSAssetsPlugin({
-          cssProcessor: require('cssnano'),
-          cssProcessorOptions: {
-            safe: true,
-            discardComments: {
-              removeAll: true,
-            }
-          },
-        }),
-      ],
-    },
-    plugins: [
-      new MiniCssExtractPlugin({
-        filename: '../destination[name]',
-      }),
-      new CleanWebpackPlugin(['./destination'], {
-        root: path.join(__dirname, '..'),
-      }),
-    ],
-    module: {
-      rules: [
-        // {
-        //   test: /\.js$/,
-        //   enforce: 'pre',
-        //   loader: 'eslint-loader',
-        //   include: path.resolve(__dirname, './src'),
-        //   exclude: /node_modules/,
-        //   options: {
-        //     failOnError: false,
-        //   },
-        // },
-        {
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
-          loader: 'babel-loader',
-          options: {
-            babelrc: false,
-            presets: [
-              'es2015',
-              'stage-2',
-            ],
-            plugins: [
-              'transform-runtime',
-              'transform-decorators-legacy',
-              'transform-class-properties',
-              'syntax-async-generators',
-            ],
-          },
-        },
-        {
-          test: /\.wxss$/,
-          use: [
-            MiniCssExtractPlugin.loader,
-            {
-              loader: 'css-loader',
-              options: {
-                import: false,
-              },
-            },
-            // {
-            //   loader: 'less-loader',
-            //   options: {
-            //   },
-            // },
-            // {
-            //   loader: 'postcss-loader',
-            //   options: {
-            //     plugins: () => [
-            //       autoprefixer({
-            //         browsers: [
-            //           'Android >= 4.0',
-            //           'last 3 versions',
-            //           'iOS > 6',
-            //         ],
-            //       }),
-            //     ],
-            //   },
-            // },
-            './webpack/combine-loader.js',
-          ],
-        },
-      ],
-    },
-  };
+  const cssConfig = getWebpackCssConfig(mode, entry);
 
   if (webpackFlag) {
-    webpack(cssConfig, (err) => {
-      if (err) {
-        return console.log('err', err);
-      }
-      console.log('done');
-      cb && cb();
-    });
+    webpack(cssConfig, catchError(() => {
+      console.log(color.green('copy wxss SUCCESS...'));
+      ensureRunFunc(callback);
+    }));
   }
   return cssConfig;
 };
 
-const copyJsFiles = () => {
-
+const copyImages = () => {
+  copy(srcPath + '/img', path.join(__dirname, '../destination/img'));
+  console.log(color.green('copy img SUCCESS...'));
 };
 
-module.exports = copyCssFiles();
+const copyJsFiles = (options = {}) => {
+  const {
+    mode = CODE.DEV,
+  } = options;
+  const entry = searchFiles(/\.(?:js)$/, srcPath);
+  keys(entry, (dest) => {
+    const src = entry[dest];
+    let { code, ast, error } = babelTransform(readS(src));
 
- 
+    if (mode === CODE.PROD) {
+      const uglifyRes = uglifyJS.minify(code);
+      code = uglifyRes.code;
+      if (uglifyRes.error) {
+        return console.log(color.red(uglifyRes.error));
+      }
+    }
+
+    babelTraverse(ast, {
+      VariableDeclarator({ node }) {
+        if (node) {
+          let { init = {} } = node;
+          init = init || {};
+          const { callee = {} } = init;
+          const args = init.arguments;
+          if (callee.name === 'require' && args && args.length) {
+            const moduleName = args[0].value;
+            if (/^[@a-zA-Z]/.test(moduleName)) {
+              const relativeSrcDir = src.replace(`${srcPath}/`, '');
+              const prefix = [];
+              relativeSrcDir.replace(/\//g, () => (
+                prefix.push('../')
+              ));
+              const nodeModuleDir = resolve.sync(moduleName, path.join(__dirname, '../'));
+              const npmDir = nodeModuleDir.replace(/(\/node_modules)/, `${DEST}/npm`);
+              if (!nodeModuleCach[nodeModuleDir]) {
+                copy(nodeModuleDir, npmDir, catchError(() => {
+                  nodeModuleCach[nodeModuleDir] = 1;
+                }));
+              }
+              const sliceIndex = nodeModuleDir.indexOf(moduleName) + moduleName.length;
+              const relativeFileDir = nodeModuleDir.slice(sliceIndex);
+              args[0].value = `${prefix.join('') || './'}npm/${moduleName}${relativeFileDir}`;
+            } else {
+              try {
+                const npmStat = statS(path.resolve(src, '../', moduleName));
+                if (npmStat.isDirectory()) {
+                  args[0].value = `${moduleName}/index.js`;
+                }
+              } catch (err) {
+                args[0].value = `${moduleName}.js`;
+              }
+            }
+          }
+        }
+      },
+    });
+
+    code = babelGenerator(ast).code;
+    // write('aa.json', JSON.stringify(ast));
+    copyCompressFile(src, dest, {
+      compress: false,
+      input: code,
+    });
+  }, {
+    // start: 0,
+    // end: 1,
+  });
+};
 
 (async () => {
-  copyJsFiles(true);
-  copyCssFiles(true);
+  // webpack([copyCssFiles()], (err) => {
+  //   if (err) {
+  //     return console.log(color.red(err));
+  //   }
+  //   console.log(color.green('wxss compiled SUCESS...'))
+  // });
+
+
+
+
+  copyCssFiles();
+  copyJsFiles();
   copyJsonFiles();
   copyWxmlFiles();
 })();
 
 
-
-
-
-
-
-
-
-
-  
-
-
-
-// const srcPath = path.join(__dirname, '../src');
-// const entry = listFiles(srcPath);
-// const extractCSS = new ExtractTextPlugin('[name].css');
-// console.log(entry);
-
-// const config = {
-//   mode: 'development',
-//   entry,
-//   output: {
-//     path: path.join(__dirname, '../destination'),
-//     filename: '[name]',
-//     // chunkFilename: '[name]',
-//     // sourceMapFilename: '[file].map',
-//     crossOriginLoading: 'anonymous',
-//     publicPath: '',
-//   },
-//   plugins: [
-//     new MiniCssExtractPlugin({
-//       // Options similar to the same options in webpackOptions.output
-//       // both options are optional
-//       filename: '[name].wxss',
-//       // chunkFilename: "[id]",
-//     }),
-//     // extractCSS,
-//     // new ExtractTextPlugin('style.css'),
-//     // new UglifyJSPlugin({
-//     //   sourceMap: true,
-//     // }),
-//     new webpack.DefinePlugin({
-//       'process.env.NODE_ENV': JSON.stringify('production'),
-//     }),
-//     new CleanWebpackPlugin(['./destination'], {
-//       root: path.join(__dirname, '..'),
-//     }),
-//     // new ConsoleLogOnBuildWebpackPlugin({
-//     //   path: path.join(__dirname, './src'),
-//     // }),
-//     // new CopyWebpackPlugin([{
-//     //   from: path.join(__dirname, '../src/**/*.wxss'),
-//     //   to: '../destination/[path]/[name].[ext]',
-//     // }]),
-//   ],
-//   // optimization: {
-//   //   splitChunks: {
-//   //     chunks: 'all',
-//   //   },
-//   // },
-//   resolve: {
-//     extensions: ['.*', '.js', '.jsx', '.es6'],
-//   },
-//   module: {
-//     rules: [
-//       // {
-//       //   test: /\.js$/,
-//       //   enforce: 'pre',
-//       //   loader: 'eslint-loader',
-//       //   include: path.resolve(__dirname, './src'),
-//       //   exclude: /node_modules/,
-//       //   options: {
-//       //     failOnError: false,
-//       //   },
-//       // },
-//       {
-//         test: /\.jsx?$/,
-//         exclude: /node_modules/,
-//         loader: 'babel-loader',
-//         options: {
-//           babelrc: false,
-//           presets: [
-//             'es2015',
-//             'stage-2',
-//           ],
-//           plugins: [
-//             'transform-runtime',
-//             'transform-decorators-legacy',
-//             'transform-class-properties',
-//             'syntax-async-generators',
-//           ],
-//         },
-//       },
-//       {
-//         test: /\.(wx|ht)ml?$/,
-//         include: path.resolve(__dirname, './src'),
-//         exclude: /node_modules/,
-//         use: ExtractTextPlugin.extract(['html-loader', path.join(__dirname, 'combine-loader')]),
-//       },
-//       {
-//         test: /\.(le|c|sa|wx)ss$/,
-//         use: [
-//           MiniCssExtractPlugin.loader,
-//           'css-loader',
-//           // {
-//           //   loader: 'postcss-loader',
-//           //   options: {
-//           //     plugins: () => [
-//           //       autoprefixer({
-//           //         browsers: [
-//           //           'Android >= 4.0',
-//           //           'last 3 versions',
-//           //           'iOS > 6',
-//           //         ],
-//           //       }),
-//           //     ],
-//           //   },
-//           // },
-//           // 'less-loader',
-//           // {
-//           //   loader: 'less-loader',
-//           //   options: {
-//           //     minimize: true,
-//           //   },
-//           // },
-//           './webpack/combine-loader.js',
-//         ],
-//       },
-//       {
-//         test: /\.(gif|png|jpe?g|svg)$/i,
-//         exclude: /(node_modules|bower_components)/,
-//         use: [
-//           {
-//             loader: 'url-loader',
-//             options: {
-//               limit: 10000,
-//               name: '[name]',
-//             },
-//           },
-//           {
-//             loader: 'file-loader',
-//             // loader: 'image-webpack-loader',
-//             options: {
-//               name: 'utils/images/[name].[ext]',
-//               // mozjpeg: {
-//               //   progressive: true,
-//               //   quality: 65,
-//               // },
-//               // optipng: {
-//               //   progressive: true,
-//               //   quality: 65,
-//               // },
-//             },
-//           },
-//         ],
-//       },
-//       {
-//         test: /\.(woff|woff2|eot|ttf|otf)$/,
-//         use: [
-//           'file-loader',
-//         ],
-//       },
-//     ],
-//   },
-// };
-
-// module.exports = config;
+// const copyJsAndCssFiles = () => [copyCssFiles(), copyJsFiles()];
+// module.exports = copyJsAndCssFiles();
