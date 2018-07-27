@@ -10,103 +10,89 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const color = require('chalk');
 const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
 
 const srcPath = path.join(__dirname, '../src');
+const {
+  searchFiles,
+  compressFile,
+  checkFuncAndRun,
+} = require('./utils');
 
-const searchFiles = (matchRe, src, result = {}, parent = '') => {
-  const dirRe = /[^\.]/;
-  fs.readdirSync(src).forEach((file) => {
-    if (dirRe.test(file) || matchRe.test(file)) {
-      const fullpath = path.join(src, file);
-      if (fs.statSync(fullpath).isDirectory()) {
-        searchFiles(matchRe, fullpath, result, `${parent}/${file}`);
-      } else if (matchRe.test(fullpath)) {
-        result[`${parent}/${file}`] = fullpath;
-      }
-    }
-  });
-  return result;
-};
-
-let count = 0;
-const ensureDir = (path, callback, queue = []) => {
-  console.log('path', path);
-  if (count < 10) {
-    count++;
-  } else {
-    return;
-  }
+const copyCompressFile = (
+  filePath,
+  destPath,
+  options = {},
+) => {
+  const {
+    compress = true,
+    dest = '/destination',
+    encode = 'utf8',
+  } = options;
+  const destFile = path.join(__dirname, `../${dest}${destPath}`);
   try {
-    if (path) {
-      const stat = fs.statSync(path);
-      if (!stat.isDirectory()) {
-        return;
-      }
-    }
-    while (queue.length) {
-      let dir = queue.pop();
-      path = `${path}/${dir}`;
-      fs.mkdirsSync(path);
-    }
-  } catch (err) {
-    console.log('err', err, path);
-    ensureDir(path.replace(/\/([^\/]+)\/?$/, (match, $1) => {
-      queue.push($1);
-      return '';
-    }), callback, queue);
-  }
-  callback();
-};
-
-const copyJsonFiles = () => {
-  fs.remove('destination');
-  const entry = searchFiles(/\.(?:json)$/, srcPath);
-  const dest = '/destination';
-  Object.keys(entry).slice(0, 1).forEach((key) => {
-    const filePath = entry[key];
-    const file = fs.readFileSync(filePath);
-    const destFile = `${dest}${key}`;
-    const destPath = destFile.replace(/[^\/]+\.\w+$/, '');
-    fs.copy(destFile, filePath, (err) => {
+    const file = compressFile(fs.readFileSync(filePath), compress);
+    fs.copy(filePath, destFile, (err) => {
       if (err) {
         return err;
       }
-      fs.writeFile(destFile, file, 'utf8');
+      fs.writeFile(destFile, file, encode);
     });
-    // ensureDir(destPath, () => {
-    //   fs.writeFile(destFile, file, 'utf8');
-    // });
-  });
+  } catch (err) {
+    console.log(color.red(err));
+  }
 };
 
-const copyCssFiles = () => {
+const copyCompressFiles = (re, hooks = {}) => (compress = true) => {
+  const entry = searchFiles(re, srcPath);
+  checkFuncAndRun(hooks.start, srcPath);
+  Object.keys(entry).forEach(key => (
+    copyCompressFile(entry[key], key, { compress })
+  ));
+  checkFuncAndRun(hooks.end, srcPath);
+};
+
+const copyJsonFiles = copyCompressFiles(/\.(?:json)$/, {
+  start(src) {
+    console.log(color.green(`start copy json files from Src: ${src} START...`));
+  },
+  end(src) {
+    console.log(color.green(`start copy json files from Src: ${src} END...`));
+  },
+  // willCompress: ,
+  // didCompress: ,
+  // willCopy: ,
+  // didCopy: ,
+  // end: ,
+});
+const copyWxmlFiles = copyCompressFiles(/\.(?:wxml)$/);
+
+const copyCssFiles = (webpackFlag, cb) => {
   const entry = searchFiles(/\.(?:wxss)$/, srcPath);
   // console.log(entry);
   const cssConfig = {
     mode: 'production',
-    // entry,
-    entry: {
-    },
-    output: {
-      path: path.join(__dirname, '../destination'),
-      filename: '[name]',
-      crossOriginLoading: 'anonymous',
-      publicPath: '',
-    },
+    entry,
+    // output: {
+    //   path: path.join(__dirname, '../destination'),
+    //   filename: '[name]',
+    //   crossOriginLoading: 'anonymous',
+    //   publicPath: '',
+    // },
     optimization: {
       minimizer: [
-        // new OptimizeCSSAssetsPlugin({
-        //   cssProcessor: require('cssnano'),
-        //   cssProcessorOptions: {
-        //     safe: true,
-        //     discardComments: {
-        //       removeAll: true,
-        //     }
-        //   },
-        // }),
+        new OptimizeCSSAssetsPlugin({
+          cssProcessor: require('cssnano'),
+          cssProcessorOptions: {
+            safe: true,
+            discardComments: {
+              removeAll: true,
+            }
+          },
+        }),
       ],
     },
     plugins: [
@@ -179,32 +165,48 @@ const copyCssFiles = () => {
             './webpack/combine-loader.js',
           ],
         },
-        // {
-        //   test: /\.json$/,
-        //   use: [
-        //     './webpack/combine-loader.js',
-        //     // 'json-loader',
-        //   ],
-        // },
       ],
     },
   };
-  // webpack(cssConfig, (err) => {
-  //   if (err) {
-  //     return console.log('err', err);
-  //   }
-  //   console.log('done');
-  // });
-  // console.log(entry);
+
+  if (webpackFlag) {
+    webpack(cssConfig, (err) => {
+      if (err) {
+        return console.log('err', err);
+      }
+      console.log('done');
+      cb && cb();
+    });
+  }
   return cssConfig;
 };
 
-copyJsonFiles();
+const copyJsFiles = () => {
+
+};
+
 module.exports = copyCssFiles();
 
-// (async () => {
-//   await fs.removeSync('destination');
-// })();
+ 
+
+(async () => {
+  copyJsFiles(true);
+  copyCssFiles(true);
+  copyJsonFiles();
+  copyWxmlFiles();
+})();
+
+
+
+
+
+
+
+
+
+
+  
+
 
 
 // const srcPath = path.join(__dirname, '../src');
