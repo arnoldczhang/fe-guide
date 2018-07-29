@@ -230,6 +230,8 @@ const getWebpackCssConfig = (
   },
 });
 
+const replaceSlash = (str = '') => str.replace(/(\\)\1*/g, '/');
+
 module.exports = {
   CODE,
   lambda,
@@ -244,6 +246,7 @@ module.exports = {
   removeComment,
   removeEmptyLine,
   ensureRunFunc,
+  replaceSlash,
   readS,
   copy,
   statS: statSync,
