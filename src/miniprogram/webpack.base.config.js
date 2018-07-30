@@ -127,10 +127,11 @@ const wxTraverse = (
         const { loc = {} } = callee;
         const { identifierName = '' } = loc;
         if (identifierName === 'require') {
-          const callResult = resolveNpmPath({ args: nodeArgs, reqSrc, prefixPath }, options);
-          if (callResult) {
-            nodeArgs[0].value = callResult;
-          }
+          nodeArgs[0].value = resolveNpmPath({
+            args: nodeArgs,
+            reqSrc,
+            prefixPath,
+          }, options) || nodeArgs[0].value;
         }
       }
     },
@@ -142,10 +143,11 @@ const wxTraverse = (
         const { callee = {} } = init;
         const initArgs = init.arguments || [];
         if (callee.name === 'require') {
-          const varResult = resolveNpmPath({ args: initArgs, reqSrc, prefixPath }, options);
-          if (varResult) {
-            initArgs[0].value = varResult;
-          }
+          initArgs[0].value = resolveNpmPath({
+            args: initArgs,
+            reqSrc,
+            prefixPath,
+          }, options) || initArgs[0].value;
         }
       }
     },
@@ -172,11 +174,14 @@ const copyCompressFile = (
   const destFile = path.join(__dirname, `../${dest}${destPath}`);
   try {
     const file = compressFile(input || readS(filePath), compress);
-    ensureRunFunc(hooks.didCompress, filePath, destFile);
-    ensureRunFunc(hooks.willCopy, filePath, destFile);
+    const hookArgs = [file, filePath, destFile];
+    ensureRunFunc(hooks.didCompress, ...hookArgs);
+    ensureRunFunc(hooks.willCopy, ...hookArgs);
     copy(filePath, destFile, catchError(() => {
-      ensureRunFunc(hooks.didCopy, filePath, destFile);
+      ensureRunFunc(hooks.didCopy, ...hookArgs);
+      ensureRunFunc(hooks.willRewrite, ...hookArgs);
       write(destFile, file, { encoding });
+      ensureRunFunc(hooks.didRewrite, ...hookArgs);
     }));
   } catch (err) {
     console.log(color.red(err));
@@ -214,6 +219,9 @@ const copyJsonFiles = copyCompressFiles(/\.(?:json)$/, {
 
 const copyWxmlFiles = () => {
   copyCompressFiles(/\.(?:wxml)$/, {
+    didRewrite(file) {
+      //file.replace(/<image[\s\S]+src=(['"])([^\1]+)\1[\s\S]*\/>/)
+    },
     end(src) {
       console.log(color.green(`copy wxml files SUCCESS...`));
     },
