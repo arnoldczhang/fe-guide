@@ -14,6 +14,7 @@ const resolve = promisify(require('resolve'));
 
 const {
   CODE,
+  DEST,
   searchFiles,
   compressFile,
   ensureRunFunc,
@@ -30,10 +31,11 @@ const {
   keys,
 } = require('./utils');
 
-const DEST = '/destination';
 const nodeModuleCach = {};
 const srcPath = path.join(__dirname, '../src');
 const absoluteDestNpmPath = path.join(__dirname, '../', `${DEST}/npm`);
+
+const testWrite = ast => write('aa.json', JSON.stringify(ast));
 
 const resolveNpmPath = (
   props = {},
@@ -41,7 +43,7 @@ const resolveNpmPath = (
 ) => {
   let {
     args = [],
-    src = '',
+    reqSrc = '',
     prefixPath = '',
   } = props;
   const {
@@ -52,12 +54,14 @@ const resolveNpmPath = (
     nodeModulePath,
   } = options;
   if (!args.length) return;
-  src = replaceSlash(src);
+  reqSrc = replaceSlash(reqSrc);
   prefixPath = replaceSlash(prefixPath);
-  const moduleName = replaceSlash(args[0].value);
+  const firstArgsValue = args[0].value;
+  const moduleName = replaceSlash(firstArgsValue);
   const isModuleCall = /^[@a-zA-Z]/.test(moduleName);
 
   const copyCachModule = (name = moduleName) => {
+    // console.log(reqSrc, prefixPath);
     nodeModulePath = isModuleCall
       ? resolve.sync(name, path.join(__dirname, '../'))
       : path.resolve(nodeModulePath, '../', name);
@@ -68,7 +72,7 @@ const resolveNpmPath = (
     if ((isModuleCall || module) && !nodeModuleCach[nodeModulePath]) {
       copy(nodeModulePath, npmPath, catchError(() => {
         nodeModuleCach[nodeModulePath] = 1;
-        wxTraverse(babelTransform(readS(npmPath)).ast, npmPath, absoluteDestNpmPath, {
+        return wxTraverse(babelTransform(readS(npmPath)).ast, npmPath, absoluteDestNpmPath, {
           nodeModulePath,
           module: true,
           debug: true,
@@ -78,7 +82,7 @@ const resolveNpmPath = (
   };
 
   if (isModuleCall) {
-    const relativeSrcPath = replaceSlash(src.replace(`${prefixPath}/`, ''));
+    const relativeSrcPath = replaceSlash(reqSrc.replace(`${prefixPath}/`, ''));
     const prefix = [];
     relativeSrcPath.replace(/[\/]/g, () => (
       prefix.push('../')
@@ -86,38 +90,43 @@ const resolveNpmPath = (
     copyCachModule();
     const sliceIndex = nodeModulePath.indexOf(moduleName) + moduleName.length;
     const relativeFilePath = nodeModulePath.slice(sliceIndex);
-    args[0].value = `${prefix.join('') || './'}npm/${moduleName}${relativeFilePath}`;
+    return `${prefix.join('') || './'}npm/${moduleName}${relativeFilePath}`;
   } else if (!/\.js$/.test(moduleName)) {
     try {
       const npmStat = statS(path.resolve(src, '../', moduleName));
       if (npmStat.isDirectory()) {
-        args[0].value = `${moduleName}/index.js`;
+        return `${moduleName}/index.js`;
       }
     } catch (err) {
-      args[0].value = `${moduleName}.js`;
+      return `${moduleName}.js`;
     } finally {
       if (nodeModulePath) {
-        copyCachModule(args[0].value);
+        copyCachModule(firstArgsValue);
       }
     }
   }
+  return firstArgsValue;
 };
 
 const wxTraverse = (
   ast,
-  src,
+  reqSrc,
   prefixPath = srcPath,
   options = {},
 ) => {
+  const { nodeModulePath, module } = options;
   babelTraverse(ast, {
     CallExpression({ node }) {
       if (node) {
         const { callee = {} } = node;
-        const args = node.arguments || [];
+        const nodeArgs = node.arguments || [];
         const { loc = {} } = callee;
         const { identifierName = '' } = loc;
         if (identifierName === 'require') {
-          resolveNpmPath({ args, src, prefixPath }, options);
+          const callResult = resolveNpmPath({ args: nodeArgs, reqSrc, prefixPath }, options);
+          if (callResult) {
+            nodeArgs[0].value = callResult;
+          }
         }
       }
     },
@@ -127,14 +136,28 @@ const wxTraverse = (
         let { init = {} } = node;
         init = init || {};
         const { callee = {} } = init;
-        const args = init.arguments || [];
+        const initArgs = init.arguments || [];
         if (callee.name === 'require') {
-          resolveNpmPath({ args, src, prefixPath }, options);
+          const varResult = resolveNpmPath({ args: initArgs, reqSrc, prefixPath }, options);
+          if (varResult) {
+            initArgs[0].value = varResult;
+          }
         }
       }
     },
   });
-  return babelGenerator(ast).code;
+  const code = babelGenerator(ast).code;
+  if (module) {
+    write(reqSrc, code);
+    // console.log(reqSrc);
+    // return wxTraverse(ast, reqSrc, absoluteDestNpmPath, {
+    //   nodeModulePath,
+    //   module: true,
+    //   debug: true,
+    // });
+    // console.log(reqSrc, absoluteDestNpmPath, reqSrc.replace(`${absoluteDestNpmPath}/`, ''));
+  }
+  return code;
 };
 
 const copyCompressFile = (
@@ -143,6 +166,7 @@ const copyCompressFile = (
   options = {},
 ) => {
   const {
+    hooks = {},
     compress = true,
     dest = DEST,
     encoding = 'utf8',
@@ -151,7 +175,10 @@ const copyCompressFile = (
   const destFile = path.join(__dirname, `../${dest}${destPath}`);
   try {
     const file = compressFile(input || readS(filePath), compress);
+    ensureRunFunc(hooks.didCompress, filePath, destFile);
+    ensureRunFunc(hooks.willCopy, filePath, destFile);
     copy(filePath, destFile, catchError(() => {
+      ensureRunFunc(hooks.didCopy, filePath, destFile);
       write(destFile, file, { encoding });
     }));
   } catch (err) {
@@ -162,9 +189,11 @@ const copyCompressFile = (
 const copyCompressFiles = (re, hooks = {}) => (compress = true) => {
   const entry = searchFiles(re, srcPath);
   ensureRunFunc(hooks.start, srcPath);
-  keys(entry, key => (
-    copyCompressFile(entry[key], key, { compress })
-  ));
+  keys(entry, (key) => {
+    const dest = entry[key];
+    ensureRunFunc(hooks.willCompress, key, dest);
+    copyCompressFile(dest, key, { compress, hooks });
+  });
   ensureRunFunc(hooks.end, srcPath);
 };
 
@@ -210,7 +239,7 @@ const copyCssFiles = (options = {}) => {
 };
 
 const copyImages = () => {
-  copy(srcPath + '/img', path.join(__dirname, '../destination/img'));
+  copy(srcPath + '/img', path.join(__dirname, `..${DEST}/img`));
   console.log(color.green('copy img SUCCESS...'));
 };
 
@@ -233,14 +262,13 @@ const copyJsFiles = (options = {}) => {
     }
     code = wxTraverse(ast, src);
     console.log(color.green(`* copy ${dest} SUCCESS...`));
-    // write('aa.json', JSON.stringify(ast));
     copyCompressFile(src, dest, {
       compress: false,
       input: code,
     });
   }, {
-    // start: 0,
-    // end: 1,
+    start: 0,
+    end: 1,
   });
 };
 

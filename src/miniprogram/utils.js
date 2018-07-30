@@ -9,6 +9,8 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+const DEST = '/destination';
+
 const {
   readFileSync: readS,
   copy,
@@ -205,9 +207,9 @@ const getWebpackCssConfig = (
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: '../destination[name]',
+      filename: `..${DEST}[name]`,
     }),
-    new CleanWebpackPlugin(['./destination'], {
+    new CleanWebpackPlugin([`.${DEST}`], {
       root: path.join(__dirname, '..'),
     }),
   ],
@@ -234,6 +236,7 @@ const replaceSlash = (str = '') => str.replace(/(\\)\1*/g, '/');
 
 module.exports = {
   CODE,
+  DEST,
   lambda,
   catchError,
   babelTraverse: babelTraverse.default,
