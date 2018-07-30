@@ -1,3 +1,4 @@
+
 const fs = require('fs-extra');
 const path = require('path');
 const color = require('chalk');
@@ -8,6 +9,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const uglifyJS = require('uglify-js');
 
 const DEST = '/destination';
 
@@ -162,6 +164,11 @@ const babelTransform = (input, options = {}) => {
       sourceMap: true,
       presets: ['es2015', 'stage-2'],
       plugins: [
+        ['transform-inline-environment-variables', {
+          include: [
+            'NODE_ENV',
+          ],
+        }],
         'transform-class-properties',
         'transform-decorators-legacy',
         'transform-object-rest-spread',
@@ -169,28 +176,41 @@ const babelTransform = (input, options = {}) => {
         'transform-object-rest-spread',
         'transform-async-functions',
         'transform-decorators',
+        [
+          "transform-runtime",
+          {
+            "helpers": false,
+            "polyfill": false,
+            "regenerator": true,
+          }
+        ],
       ],
     });
   }
   return input;
 };
 
-const catchError = (callback, fallback) => (error, ...args) => {
+const catchError = (callback, fallback, options = {}) => (error, ...args) => {
+  const {
+    force = false,
+  } = options;
   if (error) {
     if (typeof error === 'object') {
       error = JSON.stringify(error);
     }
-    return ensureRunFunc(fallback, error)
-      || console.log(color.red(error));
+    ensureRunFunc(fallback, error) || console.log(color.red(error));
+    if (force) {
+      process.exit(1);
+    }
+    return;
   }
   return ensureRunFunc(callback, ...args);
 };
 
 const getWebpackCssConfig = (
-  mode = CODE.DEV,
   entry = {},
 ) => ({
-  mode,
+  mode: process.env.NODE_ENV,
   entry,
   optimization: {
     minimizer: [
@@ -232,12 +252,21 @@ const getWebpackCssConfig = (
   },
 });
 
+const uglify = (input = '', callback) => {
+  const { error, code } = uglifyJS.minify(input, { output: {} });
+  if (error) {
+    return console.log(color.red(uglifyRes.error));
+  }
+  return ensureRunFunc(callback, code) || code;
+};
+
 const replaceSlash = (str = '') => str.replace(/(\\)\1*/g, '/');
 
 module.exports = {
   CODE,
   DEST,
   lambda,
+  uglify,
   catchError,
   babelTraverse: babelTraverse.default,
   babelTransform,

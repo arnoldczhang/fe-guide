@@ -1,12 +1,12 @@
 /* eslint-disable */
 // const fs = require('fs-extra');
+// const through = require('through2');
 const path = require('path');
 const webpack = require('webpack');
 const color = require('chalk');
 const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
-const uglifyJS = require('uglify-js');
 const {
   promisify,
 } = require('util');
@@ -15,6 +15,7 @@ const resolve = promisify(require('resolve'));
 const {
   CODE,
   DEST,
+  uglify,
   searchFiles,
   compressFile,
   ensureRunFunc,
@@ -61,7 +62,6 @@ const resolveNpmPath = (
   const isModuleCall = /^[@a-zA-Z]/.test(moduleName);
 
   const copyCachModule = (name = moduleName) => {
-    // console.log(reqSrc, prefixPath);
     nodeModulePath = isModuleCall
       ? resolve.sync(name, path.join(__dirname, '../'))
       : path.resolve(nodeModulePath, '../', name);
@@ -69,9 +69,9 @@ const resolveNpmPath = (
     nodeModulePath = replaceSlash(nodeModulePath);
     const npmPath = nodeModulePath.replace(/([\/]node_modules)/, destNpmPath);
 
-    if ((isModuleCall || module) && !nodeModuleCach[nodeModulePath]) {
+    if ((isModuleCall || module) && /\.js$/.test(nodeModulePath) && !nodeModuleCach[nodeModulePath]) {
+      nodeModuleCach[nodeModulePath] = 1;
       copy(nodeModulePath, npmPath, catchError(() => {
-        nodeModuleCach[nodeModulePath] = 1;
         return wxTraverse(babelTransform(readS(npmPath)).ast, npmPath, absoluteDestNpmPath, {
           nodeModulePath,
           module: true,
@@ -80,7 +80,7 @@ const resolveNpmPath = (
       }));
     }
   };
-
+  
   if (isModuleCall) {
     const relativeSrcPath = replaceSlash(reqSrc.replace(`${prefixPath}/`, ''));
     const prefix = [];
@@ -90,20 +90,24 @@ const resolveNpmPath = (
     copyCachModule();
     const sliceIndex = nodeModulePath.indexOf(moduleName) + moduleName.length;
     const relativeFilePath = nodeModulePath.slice(sliceIndex);
-    return `${prefix.join('') || './'}npm/${moduleName}${relativeFilePath}`;
+    return `${prefix.join('') || './'}${module ? '' : 'npm/'}${moduleName}${relativeFilePath}`;
   } else if (!/\.js$/.test(moduleName)) {
+    let indexPath;
     try {
-      const npmStat = statS(path.resolve(src, '../', moduleName));
+      const npmStat = statS(path.resolve(reqSrc, '../', moduleName));
       if (npmStat.isDirectory()) {
-        return `${moduleName}/index.js`;
+        indexPath = `${moduleName}/index.js`;
       }
     } catch (err) {
-      return `${moduleName}.js`;
+      indexPath = `${moduleName}.js`;
     } finally {
       if (nodeModulePath) {
-        copyCachModule(firstArgsValue);
+        copyCachModule(indexPath || firstArgsValue);
       }
+      return indexPath;
     }
+  } else if (module) {
+    copyCachModule(firstArgsValue);
   }
   return firstArgsValue;
 };
@@ -114,7 +118,7 @@ const wxTraverse = (
   prefixPath = srcPath,
   options = {},
 ) => {
-  const { nodeModulePath, module } = options;
+  const { nodeModulePath, module, aa } = options;
   babelTraverse(ast, {
     CallExpression({ node }) {
       if (node) {
@@ -148,14 +152,7 @@ const wxTraverse = (
   });
   const code = babelGenerator(ast).code;
   if (module) {
-    write(reqSrc, code);
-    // console.log(reqSrc);
-    // return wxTraverse(ast, reqSrc, absoluteDestNpmPath, {
-    //   nodeModulePath,
-    //   module: true,
-    //   debug: true,
-    // });
-    // console.log(reqSrc, absoluteDestNpmPath, reqSrc.replace(`${absoluteDestNpmPath}/`, ''));
+    write(reqSrc, uglify(code));
   }
   return code;
 };
@@ -186,6 +183,18 @@ const copyCompressFile = (
   }
 };
 
+/**
+ * copyCompressFiles
+ * @param  {[Object]} hooks
+ * {
+ * start,
+ * willCompress,
+ * didCompress,
+ * willCopy,
+ * didCopy,
+ * end
+ * }
+ */
 const copyCompressFiles = (re, hooks = {}) => (compress = true) => {
   const entry = searchFiles(re, srcPath);
   ensureRunFunc(hooks.start, srcPath);
@@ -198,15 +207,9 @@ const copyCompressFiles = (re, hooks = {}) => (compress = true) => {
 };
 
 const copyJsonFiles = copyCompressFiles(/\.(?:json)$/, {
-  // start: ,
   end(src) {
     console.log(color.green(`copy json files SUCCESS...`));
   },
-  // willCompress: ,
-  // didCompress: ,
-  // willCopy: ,
-  // didCopy: ,
-  // end: ,
 });
 
 const copyWxmlFiles = () => {
@@ -222,12 +225,11 @@ const copyWxmlFiles = () => {
 
 const copyCssFiles = (options = {}) => {
   const {
-    mode = CODE.DEV,
     callback = null,
     webpackFlag = true,
   } = options;
   const entry = searchFiles(/\.(?:wxss)$/, srcPath);
-  const cssConfig = getWebpackCssConfig(mode, entry);
+  const cssConfig = getWebpackCssConfig(entry);
 
   if (webpackFlag) {
     webpack(cssConfig, catchError(() => {
@@ -244,41 +246,27 @@ const copyImages = () => {
 };
 
 const copyJsFiles = (options = {}) => {
-  const {
-    mode = CODE.DEV,
-  } = options;
   const entry = searchFiles(/\.(?:js)$/, srcPath);
   console.log(color.green(`copy js files...`));
   keys(entry, (dest) => {
     const src = entry[dest];
     let { code, ast, error } = babelTransform(readS(src));
-
-    if (mode === CODE.PROD) {
-      const uglifyRes = uglifyJS.minify(code);
-      code = uglifyRes.code;
-      if (uglifyRes.error) {
-        return console.log(color.red(uglifyRes.error));
-      }
-    }
     code = wxTraverse(ast, src);
     console.log(color.green(`* copy ${dest} SUCCESS...`));
+    if (process.env.NODE_ENV === CODE.PROD) {
+      code = uglify(code);
+    }
     copyCompressFile(src, dest, {
       compress: false,
       input: code,
     });
   }, {
-    start: 0,
-    end: 1,
+    // start: 0,
+    // end: 1,
   });
 };
 
 (async () => {
-  // webpack([copyCssFiles()], (err) => {
-  //   if (err) {
-  //     return console.log(color.red(err));
-  //   }
-  //   console.log(color.green('wxss compiled SUCESS...'))
-  // });
   copyCssFiles();
   copyJsFiles();
   copyJsonFiles();
