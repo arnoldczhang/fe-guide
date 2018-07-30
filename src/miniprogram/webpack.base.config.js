@@ -220,7 +220,10 @@ const copyJsonFiles = copyCompressFiles(/\.(?:json)$/, {
 const copyWxmlFiles = () => {
   copyCompressFiles(/\.(?:wxml)$/, {
     didRewrite(file) {
-      //file.replace(/<image[\s\S]+src=(['"])([^\1]+)\1[\s\S]*\/>/)
+      //.replace(/<(image)[^<>]+src=(['"])([^\2<>]+)\2[^<>]*(?:\/>|>\s*<\/\1>)/g, (match, $1, $2, $3) =>{
+      //   console.log(2222,$3);
+      //   return match;
+      // });
     },
     end(src) {
       console.log(color.green(`copy wxml files SUCCESS...`));
