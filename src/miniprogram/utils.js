@@ -1,4 +1,4 @@
-
+/* eslint-disable */
 const fs = require('fs-extra');
 const path = require('path');
 const color = require('chalk');
@@ -10,15 +10,22 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const uglifyJS = require('uglify-js');
-
-const DEST = '/destination';
+const imagemin = require('imagemin');
+const imageminJpegtran = require('imagemin-jpegtran');
+const imageminPngquant = require('imagemin-pngquant');
 
 const {
   readFileSync: readS,
   copy,
   writeFile: write,
   statSync,
+  removeSync,
+  watch,
 } = fs;
+
+const DEST = '/destination';
+const SRC = '/src';
+const DIR = '__dir';
 const FUNC = v => v;
 const CODE = {
   DEV: 'development',
@@ -48,6 +55,7 @@ const ensureDir = (
         return;
       }
     }
+
     while (queue.length) {
       let dir = queue.pop();
       dir = `${dir}/${dir}`;
@@ -66,7 +74,9 @@ const ensureDir = (
 const searchFiles = (
   matchRe,
   src,
-  result = {},
+  result = {
+    [DIR]: {},
+  },
   parent = '',
 ) => {
   const dirRe = /[^\.]/;
@@ -78,6 +88,7 @@ const searchFiles = (
           searchFiles(matchRe, fullpath, result, `${parent}/${file}`);
         } else if (matchRe.test(fullpath)) {
           result[`${parent}/${file}`] = fullpath;
+          (result[DIR][parent] || (result[DIR][parent] = [])).push(fullpath);
         }
       }
     });
@@ -132,6 +143,7 @@ const lambda = (...args) => {
   }
   return '';
 };
+
 const defaultSteps = [removeComment, removeEmptyLine];
 
 const compressFile = (
@@ -209,6 +221,7 @@ const catchError = (callback, fallback, options = {}) => (error, ...args) => {
 
 const getWebpackCssConfig = (
   entry = {},
+  options = {},
 ) => ({
   mode: process.env.NODE_ENV,
   entry,
@@ -229,9 +242,9 @@ const getWebpackCssConfig = (
     new MiniCssExtractPlugin({
       filename: `..${DEST}[name]`,
     }),
-    new CleanWebpackPlugin([`.${DEST}`], {
-      root: path.join(__dirname, '..'),
-    }),
+    // new CleanWebpackPlugin([`.${DEST}`], {
+    //   root: path.join(__dirname, '..'),
+    // }),
   ],
   module: {
     rules: [
@@ -245,7 +258,10 @@ const getWebpackCssConfig = (
               import: false,
             },
           },
-          './webpack/combine-loader.js',
+          {
+            loader: './webpack/combine-loader.js',
+            options,
+          },
         ],
       },
     ],
@@ -262,12 +278,27 @@ const uglify = (input = '', callback) => {
 
 const replaceSlash = (str = '') => str.replace(/(\\)\1*/g, '/');
 
+const minImage = async (src, dest, options = {}) => {
+  const {
+    quality = '65-80',
+  } = options;
+  await imagemin([`${src}/*.{jpg,jpeg,png,gif}`], `${dest}`, {
+    plugins: [
+      imageminJpegtran(),
+      imageminPngquant({ quality }),
+    ],
+  });
+};
+
 module.exports = {
   CODE,
+  SRC,
   DEST,
+  DIR,
   lambda,
   uglify,
   catchError,
+  minImage,
   babelTraverse: babelTraverse.default,
   babelTransform,
   babelGenerator: generator.default,
@@ -281,7 +312,9 @@ module.exports = {
   replaceSlash,
   readS,
   copy,
+  removeS: removeSync,
   statS: statSync,
   write,
+  watch,
   keys,
 };
