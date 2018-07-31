@@ -1,18 +1,25 @@
 /* eslint-disable */
 const path = require('path');
-const fsevents = require('fsevents');
 const webpack = require('webpack');
 const color = require('chalk');
 const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
 const resolve = require('resolve');
+const chokidar = require('chokidar');
+const fs = require('fs-extra');
 
 const {
-  CODE,
-  SRC,
-  DIR,
-  DEST,
+  readFileSync: readS,
+  copy,
+  writeFile: write,
+  statSync: statS,
+  removeSync: removeS,
+} = fs;
+
+const {
+  CONST,
+  Cach,
   uglify,
   minImage,
   searchFiles,
@@ -24,19 +31,18 @@ const {
   catchError,
   getWebpackCssConfig,
   replaceSlash,
-  readS,
-  removeS,
-  statS,
-  write,
-  watch,
-  copy,
   keys,
-} = require('./utils');
+} = require('./utils')();
 
-let imageCach = {};
-const nodeModuleCach = {};
-const wxmlCach = {};
-const jsonCach = {};
+const {
+  CODE,
+  SRC,
+  DIR,
+  DEST,
+} = CONST;
+
+let initial = false;
+Cach.init('node_modules');
 const absoluteSrcPath = path.join(__dirname, '../', `${SRC}`);
 const absoluteDestPath = path.join(__dirname, '../', `${DEST}`);
 const absoluteDestNpmPath = path.join(__dirname, '../', `${DEST}/npm`);
@@ -60,6 +66,7 @@ const resolveNpmPath = (
     nodeModulePath,
   } = options;
   if (!args.length) return;
+
   reqSrc = replaceSlash(reqSrc);
   prefixPath = replaceSlash(prefixPath);
   const firstArgsValue = args[0].value;
@@ -74,8 +81,8 @@ const resolveNpmPath = (
     nodeModulePath = replaceSlash(nodeModulePath);
     const npmPath = nodeModulePath.replace(/([\/]node_modules)/, destNpmPath);
 
-    if ((isModuleCall || module) && /\.js$/.test(nodeModulePath) && !nodeModuleCach[nodeModulePath]) {
-      nodeModuleCach[nodeModulePath] = 1;
+    if ((isModuleCall || module) && /\.js$/.test(nodeModulePath) && !Cach.get('node_modules', nodeModulePath)) {
+      Cach.set('node_modules', nodeModulePath, 1);
       copy(nodeModulePath, npmPath, catchError(() => {
         return wxTraverse(babelTransform(readS(npmPath)).ast, npmPath, absoluteDestNpmPath, {
           nodeModulePath,
@@ -179,6 +186,7 @@ const copyCompressFile = (
   const destFile = path.join(__dirname, `../${dest}${destPath}`);
   if (typeof filePath === 'string') {
     try {
+      ensureRunFunc(hooks.willCompress, filePath, destPath);
       const file = compressFile(input || readS(filePath), compress);
       const hookArgs = [file, filePath, destFile];
       ensureRunFunc(hooks.didCompress, ...hookArgs);
@@ -210,19 +218,18 @@ const copyCompressFile = (
  */
 const copyCompressFiles = (re, hooks = {}) => (compress = true) => {
   const entry = searchFiles(re, absoluteSrcPath);
-  ensureRunFunc(hooks.start, absoluteSrcPath);
-  keys(entry, (key) => {
-    const dest = entry[key];
-    ensureRunFunc(hooks.willCompress, key, dest);
-    copyCompressFile(dest, key, { compress, hooks });
-  });
+  ensureRunFunc(hooks.start, entry, absoluteSrcPath);
+  keys(entry, key => copyCompressFile(entry[key], key, { compress, hooks }));
   ensureRunFunc(hooks.end, absoluteSrcPath);
 };
 
 const copyJsonFiles = copyCompressFiles(/\.(?:json)$/, {
+  start(json) {
+    Cach.init('json', json);
+  },
   didCopy(file, filePath) {
     if (/app\.json$/.test(filePath)) {
-      wxmlCach[filePath] = file;
+      Cach.set('wxml', filePath, file);
     }
   },
   end() {
@@ -231,21 +238,25 @@ const copyJsonFiles = copyCompressFiles(/\.(?:json)$/, {
 });
 
 const copyWxmlFiles = copyCompressFiles(/\.(?:wxml)$/, {
+  start() {
+    Cach.init('wxml', {});
+  },
   didRewrite(file, filePath) {
-    wxmlCach[filePath] = file;
+    Cach.set('wxml', filePath, file);
   },
   end() {
     console.log(color.green(`copy wxml files SUCCESS...`));
   },
 });
 
-const copyCssFiles = async (options = {}) => {
+const copyCssFile = (
+  entry = {},
+  options = {},
+) => {
   const {
     callback = null,
     webpackFlag = true,
   } = options;
-  const entry = searchFiles(/\.(?:wxss)$/, absoluteSrcPath);
-  delete entry[DIR];
   const cssConfig = getWebpackCssConfig(entry, options);
   if (webpackFlag) {
     webpack(cssConfig, catchError(() => {
@@ -256,14 +267,22 @@ const copyCssFiles = async (options = {}) => {
   return cssConfig;
 };
 
+const copyCssFiles = async (options = {}) => {
+  const entry = searchFiles(/\.(?:wxss)$/, absoluteSrcPath);
+  delete entry[DIR];
+  Cach.init('wxss', entry);
+  return copyCssFile(entry, options);
+};
+
 const removeUnusedImages = (
   dest = absoluteDestPath,
+  imgRe = /.*\/(img\/.+)/g,
 ) => {
-  const imagePathArray = keys(imageCach);
+  const imagePathArray = keys(Cach.get('image'));
   for (let index = 0; index < imagePathArray.length; index += 1) {
     const imageKey = imagePathArray[index];
-    const imagePath = imageKey.replace(/.*\/(img\/.+)/g, '$1');
-    const wxmlKeyArray = keys(wxmlCach);
+    const imagePath = imageKey.replace(imgRe, '$1');
+    const wxmlKeyArray = keys(Cach.get('wxml'));
     let isUsed = false;
 
     if (imagePath === DIR) {
@@ -272,7 +291,7 @@ const removeUnusedImages = (
 
     for (let innerIndex = 0; innerIndex < wxmlKeyArray.length; innerIndex += 1) {
       const wxmlKey = wxmlKeyArray[innerIndex];
-      const wxmlContent = wxmlCach[wxmlKey];
+      const wxmlContent = Cach.get('wxml', wxmlKey);
       if (wxmlContent.indexOf(imagePath) > -1) {
         isUsed = true;
         break;
@@ -286,23 +305,31 @@ const removeUnusedImages = (
   }
 };
 
+const copyJsFile = (
+  src,
+  dest,
+  options = {},
+) => {
+  if (typeof src === 'string') {
+    let { code, ast, error } = babelTransform(readS(src));
+    code = wxTraverse(ast, src);
+    console.log(color.green(`* copy ${dest} SUCCESS...`));
+    if (process.env.NODE_ENV === CODE.PROD) {
+      code = uglify(code);
+    }
+    copyCompressFile(src, dest, {
+      compress: false,
+      input: code,
+    });
+  }
+};
+
 const copyJsFiles = (options = {}) => {
   const entry = searchFiles(/\.(?:js)$/, absoluteSrcPath);
+  Cach.init('js', entry);
   console.log(color.green(`copy js files...`));
   keys(entry, (dest) => {
-    const src = entry[dest];
-    if (typeof src === 'string') {
-      let { code, ast, error } = babelTransform(readS(src));
-      code = wxTraverse(ast, src);
-      console.log(color.green(`* copy ${dest} SUCCESS...`));
-      if (process.env.NODE_ENV === CODE.PROD) {
-        code = uglify(code);
-      }
-      copyCompressFile(src, dest, {
-        compress: false,
-        input: code,
-      });
-    }
+    copyJsFile(entry[dest], dest);
   }, {
     // start: 0,
     // end: 1,
@@ -324,8 +351,8 @@ const minImageFiles = async (
     removeS(dest);
   }
 
-  imageCach = searchFiles(/\.(?:jpe?g|png|gif)$/, src);
-  const dirArray = keys(imageCach[DIR]);
+  Cach.init('image', searchFiles(/\.(?:jpe?g|png|gif)$/, src));
+  const dirArray = keys(Cach.get('image', DIR));
   for (let index = 0; index < dirArray.length; index += 1) {
     const dir = dirArray[index];
     await minImage(`${src}${dir}`, `${dest}${dir}`, options);
@@ -334,28 +361,46 @@ const minImageFiles = async (
   ensureRunFunc(callback);
 };
 
-const runWatch = () => {
-  console.log('watching files...');
-  const watcher = fsevents(__dirname);
-  watcher.on('fsevent', (path, flags, id) => {
-    console.log(path, flags, id);
+const runWatcher = (
+  src = absoluteSrcPath,
+) => {
+  // FIXME
+  const watcher = chokidar.watch(src, { ignored: /(^|[\/\\])\../ });
+  watcher.on('add', (path, stats) => {
+    if (initial) {
+      
+    }
+  }).on('change', (path, stats) => {
+    const pathKey = path.replace(src, '');
+    const suffix = (/\.([^\.]+)$/.exec(pathKey) || [])[1];
+    if (initial && suffix) {
+      switch(suffix) {
+        case 'js':
+          console.log(Cach.get('js'), pathKey, Cach.get('js', pathKey));
+          // copyJsFile();
+          break;
+        case 'wxml':
+          break;
+        case 'wxss':
+          break;
+        case 'json':
+          break;
+      }
+    }
   });
-  watcher.on('change', (path, info) => {
-    console.log(info);
-  });
-  watcher.start();
 };
 
 module.exports = async () => {
-  runWatch();
-  // copyWxmlFiles();
-  // copyJsonFiles();
-  // await minImageFiles();
-  // copyCssFiles({
-  //   callback() {
-  //     copyJsFiles();
-  //     removeUnusedImages();
-  //     runWatch();
-  //   },
-  // });
+  runWatcher();
+  copyWxmlFiles();
+  copyJsonFiles();
+  await minImageFiles();
+  copyJsFiles();
+  copyCssFiles({
+    callback() {
+      removeUnusedImages();
+      console.log('watching...');
+      initial = true;
+    },
+  });
 };

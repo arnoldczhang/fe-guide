@@ -14,16 +14,7 @@ const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
 
-const {
-  readFileSync: readS,
-  copy,
-  writeFile: write,
-  statSync,
-  removeSync,
-  watch,
-} = fs;
-
-const DEST = '/destination';
+let DEST;
 const SRC = '/src';
 const DIR = '__dir';
 const FUNC = v => v;
@@ -282,39 +273,64 @@ const minImage = async (src, dest, options = {}) => {
   const {
     quality = '65-80',
   } = options;
-  await imagemin([`${src}/*.{jpg,jpeg,png,gif}`], `${dest}`, {
-    plugins: [
-      imageminJpegtran(),
-      imageminPngquant({ quality }),
-    ],
-  });
+  try {
+    await imagemin([`${src}/*.{jpg,jpeg,png,gif}`], `${dest}`, {
+      plugins: [
+        imageminJpegtran(),
+        imageminPngquant({ quality }),
+      ],
+    });
+  } catch (err) {
+    console.log(color.yellow(err));
+  }
 };
 
-module.exports = {
-  CODE,
-  SRC,
-  DEST,
-  DIR,
-  lambda,
-  uglify,
-  catchError,
-  minImage,
-  babelTraverse: babelTraverse.default,
-  babelTransform,
-  babelGenerator: generator.default,
-  getWebpackCssConfig,
-  ensureDir,
-  searchFiles,
-  compressFile,
-  removeComment,
-  removeEmptyLine,
-  ensureRunFunc,
-  replaceSlash,
-  readS,
-  copy,
-  removeS: removeSync,
-  statS: statSync,
-  write,
-  watch,
-  keys,
+const Cach = {
+  _cach: {},
+  getCach() {
+    return this._cach;
+  },
+  init(id, value) {
+    this.getCach()[id] = value || {};
+  },
+  set(id, key, value) {
+    this.getCach()[id]  = this.getCach()[id] || {};
+    this.getCach()[id][key] = value;
+  },
+  get(id, key) {
+    if (key) {
+      return this.getCach()[id][key];
+    }
+    return this.getCach()[id];
+  },
+};
+
+module.exports = () => {
+  const isProd = ['-p', '--production'].indexOf(process.argv[2]) > -1;
+  DEST = isProd ? '/release' : '/destination';
+  return {
+    CONST: {
+      CODE,
+      SRC,
+      DEST,
+      DIR,
+    },
+    Cach,
+    lambda,
+    uglify,
+    catchError,
+    minImage,
+    babelTraverse: babelTraverse.default,
+    babelTransform,
+    babelGenerator: generator.default,
+    getWebpackCssConfig,
+    ensureDir,
+    searchFiles,
+    compressFile,
+    removeComment,
+    removeEmptyLine,
+    ensureRunFunc,
+    replaceSlash,
+    keys,
+  };
 };
