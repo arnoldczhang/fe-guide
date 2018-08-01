@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "g1:release": "cross-env NODE_ENV=production node ./webpack/webpack.base.config.js",
-    "g1:mock": "cross-env NODE_ENV=development node ./webpack/webpack.base.config.js"
+    "g1": "webpack --config ./webpack/webpack.base.config.js --progress",
+    "g1:w": "webpack --config ./webpack/webpack.base.config.js -w --progress",
+    "g1:release": "cross-env NODE_ENV=production node ./webpack/bin.js",
+    "g1:mock": "cross-env NODE_ENV=development node ./webpack/bin.js"
   },
   "author": "arnold1205 <arnold.c.zhang@gmail.com>",
   "license": "MIT",
@@ -36,6 +38,7 @@
     "babel-traverse": "^6.26.0",
     "babylon": "^6.18.0",
     "chalk": "^2.4.1",
+    "chokidar": "^2.0.4",
     "clean-webpack-plugin": "^0.1.19",
     "commander": "^2.9.0",
     "copy-webpack-plugin": "^4.5.2",
@@ -53,6 +56,7 @@
     "estraverse": "^4.2.0",
     "file-loader": "^1.1.11",
     "file-type": "^6.1.0",
+    "fsevents": "^1.2.4",
     "got": "^7.0.0",
     "husky": "^0.14.3",
     "image-webpack-loader": "^4.3.1",
@@ -71,6 +75,7 @@
     "pify": "^3.0.0",
     "postcss": "^6.0.1",
     "postcss-loader": "^2.1.6",
+    "readline": "^1.3.0",
     "redux": "^3.7.2",
     "regenerator-runtime": "^0.11.0",
     "request": "^2.79.0",

@@ -67,6 +67,8 @@
     "g18:server:home": "npm run g18:build:w | webpack-dev-server --progress --config ./src/reactlike/build/webpack.dev.js",
     "g19:native": "node --allow-natives-syntax ./src/test/src/test.js",
     "g20:server": "webpack --config ./src/rematch-typescript/build/webpack.dll.config.js & tsc -w -p ./src/rematch-typescript & webpack-dev-server --progress --config ./src/rematch-typescript/build/webpack.dev.js",
+    "g21:mock": "cross-env NODE_ENV=development node ./src/miniprogram/bin.js",
+    "g21:release": "cross-env NODE_ENV=production node ./src/miniprogram/bin.js",
     "gen": "./src/react-cli init",
     "save": "node ./src/test/src/saveImage",
     "lynt": "lynt ./src/lynt/lynt.js",
@@ -225,6 +227,7 @@
   "devDependencies": {
     "@types/es6-promise": "^3.3.0",
     "brotli-webpack-plugin": "^0.5.0",
+    "cross-env": "^5.2.0",
     "data-forge": "^1.0.8",
     "eslint-loader": "^2.0.0",
     "fork-ts-checker-webpack-plugin": "^0.4.2",
