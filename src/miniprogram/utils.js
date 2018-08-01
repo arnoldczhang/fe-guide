@@ -10,18 +10,19 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const uglifyJS = require('uglify-js');
+const readline = require('readline');
 const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
 
-let DEST;
-const SRC = '/src';
 const DIR = '__dir';
 const FUNC = v => v;
 const CODE = {
   DEV: 'development',
   PROD: 'production',
 };
+const SRC = '/src';
+const DEST = process.env.NODE_ENV === CODE.PROD ? '/release' : '/destination';
 
 const toBufferString = (input) => {
   if (input instanceof Buffer) {
@@ -272,14 +273,17 @@ const replaceSlash = (str = '') => str.replace(/(\\)\1*/g, '/');
 const minImage = async (src, dest, options = {}) => {
   const {
     quality = '65-80',
+    callback = FUNC,
   } = options;
+  src = /(\.[\w]+)$/.test(src) ? src : `${src}/*.{jpg,jpeg,png,gif}`;
   try {
-    await imagemin([`${src}/*.{jpg,jpeg,png,gif}`], `${dest}`, {
+    await imagemin([src], `${dest}`, {
       plugins: [
         imageminJpegtran(),
         imageminPngquant({ quality }),
       ],
     });
+    ensureRunFunc(callback, src);
   } catch (err) {
     console.log(color.yellow(err));
   }
@@ -294,8 +298,10 @@ const Cach = {
     this.getCach()[id] = value || {};
   },
   set(id, key, value) {
-    this.getCach()[id]  = this.getCach()[id] || {};
-    this.getCach()[id][key] = value;
+    if (key) {
+      this.getCach()[id]  = this.getCach()[id] || {};
+      this.getCach()[id][key] = value;
+    }
   },
   get(id, key) {
     if (key) {
@@ -305,32 +311,60 @@ const Cach = {
   },
 };
 
-module.exports = () => {
-  const isProd = ['-p', '--production'].indexOf(process.argv[2]) > -1;
-  DEST = isProd ? '/release' : '/destination';
-  return {
-    CONST: {
-      CODE,
-      SRC,
-      DEST,
-      DIR,
-    },
-    Cach,
-    lambda,
-    uglify,
-    catchError,
-    minImage,
-    babelTraverse: babelTraverse.default,
-    babelTransform,
-    babelGenerator: generator.default,
-    getWebpackCssConfig,
-    ensureDir,
-    searchFiles,
-    compressFile,
-    removeComment,
-    removeEmptyLine,
-    ensureRunFunc,
-    replaceSlash,
-    keys,
-  };
+const isProd = () => {
+  return process.env.NODE_ENV === CODE.PROD;
+};
+
+const isDev = () => {
+  return process.env.NODE_ENV === CODE.DEV;
+};
+
+const clearConsole = async (title) => {
+  if (process.stdout.isTTY) {
+    const blank = '\n'.repeat(process.stdout.rows);
+    console.log(blank);
+    readline.cursorTo(process.stdout, 0, 0);
+    readline.clearScreenDown(process.stdout);
+    if (title) {
+      console.log(title);
+    }
+  }
+};
+
+const logStart = (title) => {
+  console.log('Starting \'' + color.cyanBright(title) + '\'...');
+};
+
+const logEnd = (title) => {
+  console.log('Finished \'' + color.cyanBright(title) + '\'...');
+};
+
+module.exports = {
+  CONST: {
+    SRC,
+    DEST,
+    DIR,
+  },
+  isProd,
+  isDev,
+  logStart,
+  logEnd,
+  Cach,
+  lambda,
+  uglify,
+  catchError,
+  clearConsole,
+  minImage,
+  babelTraverse: babelTraverse.default,
+  babelTransform,
+  babelGenerator: generator.default,
+  getWebpackCssConfig,
+  ensureDir,
+  searchFiles,
+  compressFile,
+  removeComment,
+  removeEmptyLine,
+  ensureRunFunc,
+  replaceSlash,
+  keys,
 };

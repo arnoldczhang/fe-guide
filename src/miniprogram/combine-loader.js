@@ -8,9 +8,13 @@ const {
   compressFile,
   removeComment,
   removeEmptyLine,
-  DEST,
-  SRC,
+  CONST,
 } = require('./utils');
+
+const {
+  SRC,
+  DEST,
+} = CONST;
 
 module.exports = function (content) {
   const { resource, cacheable } = this;
@@ -27,7 +31,7 @@ module.exports = function (content) {
     const imagePath = $1.replace(/-{3}$/, '');
     const absolutePath = isRelativePath
       ? path.join(resource, '../', imagePath)
-      : path.join(__dirname, `..${SRC}`, imagePath);
+      : path.join(__dirname, `..${src}`, imagePath);
     try {
       imageData = base64Img.base64Sync(absolutePath.replace(src || '', dest || ''));
     } catch (err) {
