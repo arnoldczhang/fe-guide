@@ -335,8 +335,21 @@ const logStart = (title) => {
   console.log('Starting \'' + color.cyanBright(title) + '\'...');
 };
 
-const logEnd = (title) => {
-  console.log('Finished \'' + color.cyanBright(title) + '\'...');
+const logEnd = (title, time = '??') => {
+  console.log('Finished \'' + color.cyanBright(title) + '\' after ' + color.magenta(time === '??' ? time : (Date.now() - time)) + ' ms...');
+};
+
+const fixWavy = (input = '') => {
+  if (/^~/.test(input)) {
+    return input.slice(1);
+  }
+  return input;
+};
+
+const getPathBack = (replacePath = '') => {
+  const result = [];
+  replacePath.replace(/[\/]/g, () => (result.push('../')));
+  return result.join('');
 };
 
 module.exports = {
@@ -367,4 +380,6 @@ module.exports = {
   ensureRunFunc,
   replaceSlash,
   keys,
+  fixWavy,
+  getPathBack,
 };
