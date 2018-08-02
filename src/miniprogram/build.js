@@ -39,6 +39,7 @@ const {
   getWebpackCssConfig,
   replaceSlash,
   keys,
+  getSuffix,
   fixWavy,
   getPathBack,
 } = require('./utils');
@@ -53,11 +54,23 @@ let initial = false;
 
 const jsRe = /\.js$/;
 const npmPrefixRe = /^[~_@a-zA-Z]/;
+const fileNameRe = /\/([^\/]+)$/;
+
 Cach.init('node_modules');
 const absoluteSrcPath = path.join(__dirname, '../', `${SRC}`);
 const absoluteDestPath = path.join(__dirname, '../', `${DEST}`);
 const absoluteDestNpmPath = path.join(__dirname, '../', `${DEST}/npm`);
 const getRelativeFilePath = (src, prefix) => replaceSlash(src.replace(`${prefix}/`, ''));
+
+const traversePathCode = (
+  nodeModulePath = '',
+  npmPath = '',
+  dest = absoluteDestNpmPath,
+) => (wxTraverse(babelTransform(readS(npmPath)).ast, npmPath, dest, {
+  nodeModulePath,
+  module: true,
+  debug: true,
+}));
 
 const copyCachModule = (
   name,
@@ -68,7 +81,7 @@ const copyCachModule = (
     isModuleCall = false,
     fixSuffix = false,
   } = props;
-  let dirPath;
+  let nodeModuleFoldPath;
   let { nodeModulePath = '' } = props;
   nodeModulePath = isModuleCall
     ? resolve.sync(name, path.join(__dirname, '../'))
@@ -78,34 +91,22 @@ const copyCachModule = (
   nodeModulePath = replaceSlash(nodeModulePath);
   let npmPath = nodeModulePath.replace(/([\/]node_modules)/, destNpmPath);
 
-  const traversePathCode = (
-    mPath = nodeModulePath,
-    nPath = npmPath,
-  ) => {
-    wxTraverse(babelTransform(readS(nPath)).ast, nPath, absoluteDestNpmPath, {
-      nodeModulePath: mPath,
-      module: true,
-      debug: true,
-    });
-  };
-
   if (fixSuffix) {
     nodeModulePath = nodeModulePath.replace(jsRe, '');
-    dirPath = nodeModulePath.replace(/\/[^\/]+$/, '');
-    npmPath = npmPath.replace(/\/[^\/]+$/, '');
+    nodeModuleFoldPath = nodeModulePath.replace(fileNameRe, '');
+    npmPath = npmPath.replace(fileNameRe, '');
   }
 
   if ((isModuleCall || module) && !Cach.get('node_modules', nodeModulePath)) {
     if (!jsRe.test(nodeModulePath)) {
       try {
         Cach.set('node_modules', nodeModulePath, 1);
-        const stat = statS(dirPath);
+        const stat = statS(nodeModuleFoldPath);
         if (stat.isDirectory()) {
-          const files = searchFiles(/\.(?:js|wxml|json|wxss)$/, npmPath);
+          const files = searchFiles(/\.(?:js|wxml|json|wxss)$/, nodeModuleFoldPath);
           keys(files, (key) => {
-            if (key === DIR) return;
-            const dest = files[key];
-            const src = path.join(dirPath, key);
+            const src = files[key];
+            const dest = path.join(npmPath, key);
             copy(src, dest, catchError(() => {
               if (jsRe.test(src)) {
                 traversePathCode(src, dest);
@@ -119,15 +120,11 @@ const copyCachModule = (
     } else {
       Cach.set('node_modules', nodeModulePath, 1);
       copy(nodeModulePath, npmPath, catchError(() => {
-        traversePathCode();
+        traversePathCode(nodeModulePath, npmPath);
       }));
     }
   }
-
-  if (fixSuffix) {
-    return nodeModulePath.replace(/^[\s\S]+node_modules\//, '');
-  }
-  return nodeModulePath;
+  return nodeModulePath.replace(fixSuffix ? /^[\s\S]+node_modules\// : '', '');
 };
 
 const resolveNpmPath = (
@@ -136,6 +133,8 @@ const resolveNpmPath = (
   prefixPath = '',
   options = {},
 ) => {
+  if (!args.length) return;
+
   const {
     module = false,
     debug = false,
@@ -143,8 +142,6 @@ const resolveNpmPath = (
   let {
     nodeModulePath,
   } = options;
-  if (!args.length) return;
-
   reqSrc = replaceSlash(reqSrc);
   prefixPath = replaceSlash(prefixPath);
   const firstArgsValue = args[0].value;
@@ -186,7 +183,7 @@ const resolveNpmPath = (
 
 const wxTraverse = (
   ast,
-  reqSrc,
+  src,
   prefixPath = absoluteSrcPath,
   options = {},
 ) => {
@@ -199,7 +196,7 @@ const wxTraverse = (
         const { loc = {} } = callee;
         const { identifierName = '' } = loc;
         if (identifierName === 'require') {
-          nodeArgs[0].value = resolveNpmPath(nodeArgs, reqSrc, prefixPath, options)
+          nodeArgs[0].value = resolveNpmPath(nodeArgs, src, prefixPath, options)
             || nodeArgs[0].value;
         }
       }
@@ -212,20 +209,20 @@ const wxTraverse = (
         const { callee = {} } = init;
         const initArgs = init.arguments || [];
         if (callee.name === 'require') {
-          initArgs[0].value = resolveNpmPath(initArgs, reqSrc, prefixPath, options)
+          initArgs[0].value = resolveNpmPath(initArgs, src, prefixPath, options)
             || initArgs[0].value;
         }
       }
     },
   });
-  const code = babelGenerator(ast).code;
+  const { code } = babelGenerator(ast);
   if (module) {
-    write(reqSrc, uglify(code));
+    write(src, isProd() ? uglify(code) : code);
   }
   return code;
 };
 
-const copyCompressFile = (
+const compileCompressFile = (
   filePath,
   destPath,
   options = {},
@@ -241,6 +238,7 @@ const copyCompressFile = (
   const destFile = path.join(__dirname, `../${dest}${destPath}`);
   if (typeof filePath === 'string') {
     try {
+      ensureRunFunc(hooks.start);
       ensureRunFunc(hooks.willCompress, filePath, destPath);
       const file = compressFile(input || readS(filePath), compress);
       const hookArgs = [file, filePath, destFile, src];
@@ -251,6 +249,7 @@ const copyCompressFile = (
         const lastResult = ensureRunFunc(hooks.willRewrite, ...hookArgs);
         write(destFile, lastResult || file, { encoding });
         ensureRunFunc(hooks.didRewrite, ...hookArgs);
+        ensureRunFunc(hooks.end);
       }));
     } catch (err) {
       console.log(color.red(err));
@@ -258,33 +257,27 @@ const copyCompressFile = (
   }
 };
 
-/**
- * copyCompressFiles
- * @param hooks = {
- *   start,
- *   willCompress,
- *   didCompress,
- *   willCopy,
- *   didCopy,
- *   willRewrite,
- *   didRewrite,
- *   end,
- * };
- */
-const copyCompressFiles = (re, hooks = {}) => (
+const compileCompressFiles = (
+  re,
+  hooks = {},
+) => (
   compress = true,
   src = absoluteSrcPath,
+  dest =absoluteDestPath,
 ) => {
   const entry = searchFiles(re, src);
+  const end = hooks.end;
   ensureRunFunc(hooks.start, entry, src);
-  keys(entry, key => copyCompressFile(entry[key], key, { compress, hooks, src }));
-  ensureRunFunc(hooks.end, src);
+  delete hooks.start;
+  delete hooks.end;
+  keys(entry, key => compileCompressFile(entry[key], key, { compress, hooks, src }));
+  ensureRunFunc(end, src);
 };
 
-const copyJsonFiles = copyCompressFiles(/\.(?:json)$/, {
+const compileJsonFiles = compileCompressFiles(/\.(?:json)$/, {
   start(json) {
     this.time = Date.now();
-    logStart('copy json');
+    logStart('compile-json');
     Cach.init('json', json);
   },
   didCopy(file, filePath) {
@@ -296,7 +289,7 @@ const copyJsonFiles = copyCompressFiles(/\.(?:json)$/, {
     try {
       const json = JSON.parse(file);
       const { usingComponents } = json;
-      const [filePath, destFile, src] = args;
+      const [ filePath, destFile, src ] = args;
       if (usingComponents) {
         keys(usingComponents, (compKey) => {
           let compPath = usingComponents[compKey];
@@ -318,25 +311,25 @@ const copyJsonFiles = copyCompressFiles(/\.(?:json)$/, {
     }
   },
   end() {
-    logEnd('copy json', this.time);
+    logEnd('compile-json', this.time);
   },
 });
 
-const copyWxmlFiles = copyCompressFiles(/\.(?:wxml)$/, {
+const compileWxmlFiles = compileCompressFiles(/\.(?:wxml)$/, {
   start() {
     this.time = Date.now();
-    logStart('copy wxml');
+    logStart('compile-wxml');
     Cach.init('wxml', {});
   },
   didRewrite(file, filePath) {
     Cach.set('wxml', filePath, file);
   },
   end() {
-    logEnd('copy wxml', this.time);
+    logEnd('compile-wxml', this.time);
   },
 });
 
-const compileWxssFiles = (
+const webpackWxssFiles = (
   entry = {},
   options = {},
 ) => {
@@ -349,13 +342,13 @@ const compileWxssFiles = (
   const time = Date.now();
 
   if (ensureRunFunc(hooks.start) === false) {
-    logStart('compile wxss');
+    logStart('compile-wxss');
   }
 
   if (webpackFlag) {
     webpack(cssConfig, catchError(() => {
       if (ensureRunFunc(hooks.end) === false) {
-        logEnd('compile wxss', time);
+        logEnd('compile-wxss', time);
       }
       ensureRunFunc(callback);
     }));
@@ -363,28 +356,33 @@ const compileWxssFiles = (
   return cssConfig;
 };
 
-const copyWxssFiles = async (options = {}) => {
-  const entry = searchFiles(/\.(?:wxss)$/, absoluteSrcPath);
-  delete entry[DIR];
+const compileWxssFiles = async (options = {}) => {
+  const {
+    src = absoluteSrcPath,
+    dest = absoluteDestPath,
+  } = options;
+  const entry = searchFiles(/\.(?:wxss)$/, src);
   Cach.init('wxss', entry);
-  return compileWxssFiles(entry, options);
+  return webpackWxssFiles(entry, options);
 };
 
 const removeUnusedImages = (
   dest = absoluteDestPath,
-  imgRe = /.*\/(img\/.+)/g,
+  options = {},
 ) => {
+  const {
+    imgRe = /.*\/(img\/.+)/g,
+    showDetail = true,
+  } = options;
   if (isProd()) {
+    const time = Date.now();
+    logStart('remove-unused-image');
     const imagePathArray = keys(Cach.get('image'));
     for (let index = 0; index < imagePathArray.length; index += 1) {
       const imageKey = imagePathArray[index];
       const imagePath = imageKey.replace(imgRe, '$1');
       const wxmlKeyArray = keys(Cach.get('wxml'));
       let isUsed = false;
-
-      if (imagePath === DIR) {
-        continue;
-      }
 
       for (let innerIndex = 0; innerIndex < wxmlKeyArray.length; innerIndex += 1) {
         const wxmlKey = wxmlKeyArray[innerIndex];
@@ -397,19 +395,23 @@ const removeUnusedImages = (
 
       if (!isUsed) {
         removeS(path.join(dest, imageKey));
-        console.log(color.green(`remove unused ${imageKey} SUCCESS`));
+        if (showDetail) {
+          console.log(color.green(`remove unused ${imageKey} SUCCESS`));
+        }
       }
     }
+    logEnd('remove-unused-image', time);
   }
 };
 
-const copyJsFile = (
+const compileJsFile = (
   src,
   dest,
   options = {},
 ) => {
   const {
     hooks = {},
+    showDetail = true,
   } = options;
   if (typeof src === 'string') {
     ensureRunFunc(hooks.start, src);
@@ -418,11 +420,11 @@ const copyJsFile = (
 
     if (isProd()) {
       code = uglify(code);
-    } else {
-      console.log(color.green(`* copy ${dest} SUCCESS...`));
+    } else if (showDetail) {
+      console.log(color.green(` copy ${dest} SUCCESS...`));
     }
 
-    copyCompressFile(src, dest, {
+    compileCompressFile(src, dest, {
       compress: false,
       input: code,
     });
@@ -430,22 +432,26 @@ const copyJsFile = (
   }
 };
 
-const copyJsFiles = (src = absoluteSrcPath, options = {}) => {
+const compileJsFiles = (options = {}) => {
+  const {
+    src = absoluteSrcPath,
+    dest = absoluteDestPath,
+  } = options;
   const entry = searchFiles(/\.(?:js)$/, src);
   const time = Date.now();
   Cach.init('js', entry);
-  logStart('copy js');
-  keys(entry, (dest) => {
-    copyJsFile(entry[dest], dest);
+  logStart('compile-js');
+  keys(entry, (key) => {
+    compileJsFile(entry[key], key);
   }, {
+    // => test length
     // start: 0,
     // end: 1,
   });
-  logEnd('copy js', time);
+  logEnd('compile-js', time);
 };
 
 const minImageFiles = async (
-  callback,
   options = {},
 ) => {
   const {
@@ -453,6 +459,7 @@ const minImageFiles = async (
     src = absoluteSrcPath,
     dest = absoluteDestPath,
     clearDest = true,
+    hooks = {},
   } = options;
   const time = Date.now();
 
@@ -460,7 +467,8 @@ const minImageFiles = async (
     removeS(dest);
   }
 
-  logStart('copy images');
+  ensureRunFunc(hooks.start);
+  logStart('compile-image');
   Cach.init('image', searchFiles(/\.(?:jpe?g|png|gif)$/, src));
   const dirArray = keys(Cach.get('image', DIR));
   for (let index = 0; index < dirArray.length; index += 1) {
@@ -470,8 +478,8 @@ const minImageFiles = async (
       console.log(color.green(`copy images in ${dir} SUCCESS...`));
     }
   }
-  logEnd('copy images', time);
-  ensureRunFunc(callback);
+  logEnd('compile-image', time);
+  ensureRunFunc(hooks.end);
 };
 
 const runWatcher = async (
@@ -480,87 +488,65 @@ const runWatcher = async (
   srcfix = SRC,
   destfix = DEST,
 ) => {
-  const replacefix = (path = '') => path.replace(srcfix, destfix);
+  if (isProd()) {
+    return;
+  }
+  await clearConsole();
 
   const unlinkFunc = (path) => {
     if (initial) {
-      path = replacefix(path);
+      const time = Date.now();
+      const suffix = getSuffix(path);
+      const shortPath = path.replace(src, '');
+      logStart(`[-] ${suffix} ${shortPath}`);
+      path = path.replace(srcfix, destfix);
       removeS(path);
-      console.log(color.green(`${path} has been removed...`))
+      logEnd(`[-] ${suffix} ${shortPath}`, time);
     }
   };
 
-  const modifyFunc = async (path, stat) => {
+  const modifyFunc = (action = '[*]') => async (path, stat) => {
     const pathKey = path.replace(src, '');
-    const suffix = (/\.([^\.]+)$/.exec(pathKey) || [])[1];
+    const suffix = getSuffix(pathKey);
+    const time = Date.now();
+    const destPath = `${dest}${pathKey}`.replace(fileNameRe, '');
+    const hooks = {
+      start() {
+        logStart(`${action} ${suffix} ${pathKey}`);
+      },
+      end() {
+        logEnd(`${action} ${suffix} ${pathKey}`, time);
+      },
+    };
     if (initial && suffix) {
-      switch(suffix) {
+      switch (suffix) {
         case 'js':
-          copyJsFile(path, pathKey, {
-            hooks: {
-              start() {
-                logStart(`copy js: ${pathKey}`);
-              },
-              end() {
-                logEnd(`copy js: ${pathKey}`);
-              },
-            },
-          });
+          compileJsFile(path, pathKey, { hooks, showDetail: false });
           break;
         case 'wxml':
         case 'json':
-          copyCompressFile(path, pathKey, {
-            hooks: {
-              willCompress() {
-                logStart(`copy ${suffix}: ${pathKey}`);
-              },
-              didRewrite() {
-                logEnd(`copy ${suffix}: ${pathKey}`);
-              },
-            },
-          });
+          compileCompressFile(path, pathKey, { hooks });
           break;
         case 'wxss':
-          compileWxssFiles({
-            [pathKey]: path,
-          }, {
-            hooks: {
-              start() {
-                logStart(`copy wxss: ${pathKey}`);
-              },
-              end() {
-                logEnd(`copy wxss: ${pathKey}`);
-              },
-            },
-          });
+          webpackWxssFiles({ [pathKey]: path }, { hooks });
           break;
         case 'jpeg':
         case 'jpg':
         case 'png':
         case 'gif':
-          const destPath = `${dest}${pathKey}`.replace(/\/[^\/]+$/, '');
-          logStart(`copy image: ${pathKey}`);
-          await minImage(path, destPath);
-          logEnd(`copy image: ${pathKey}`);
+          await minImage(path, destPath, { hooks });
           break;
       }
     }
   };
 
-  if (isProd()) {
-    return;
-  }
-
-  await clearConsole();
   const watcher = chokidar.watch(src, { ignored: /(^|[\/\\])\../ });
   watcher
     .on('unlinkDir', unlinkFunc)
     .on('unlink', unlinkFunc)
-    .on('add', modifyFunc)
-    .on('change', modifyFunc)
-    .on('addDir', (path) => {
-      ;
-    });
+    .on('add', modifyFunc('[+]'))
+    .on('change', modifyFunc())
+    .on('addDir', (path) => {});
 };
 
 const compileFinish = async () => {
@@ -571,17 +557,51 @@ const compileFinish = async () => {
   initial = true;
 };
 
-module.exports = async () => {
-  // runWatcher();
-  // removeS(absoluteDestPath);
-  // copyWxmlFiles();
-  copyJsonFiles(isProd());
-  // await minImageFiles();
-  // copyJsFiles();
-  // copyWxssFiles({
-  //   callback: async () => {
-  //     removeUnusedImages();
-  //     await compileFinish();
-  //   },
-  // });
+module.exports = async (options = {}) => {
+  const {
+    src = absoluteSrcPath,
+    dest = absoluteDestPath,
+    hooks = {},
+  } = options;
+  ensureRunFunc(hooks.start);
+  runWatcher(src, dest);
+
+  // remove dest fold
+  ensureRunFunc(hooks.willClearDest);
+  removeS(dest);
+  ensureRunFunc(hooks.didClearDest);
+
+  // wxml
+  ensureRunFunc(hooks.willCompileWxml);
+  compileWxmlFiles(true, src, dest);
+  ensureRunFunc(hooks.didCompileWxml);
+
+  // json
+  ensureRunFunc(hooks.willCompileJson);
+  compileJsonFiles(isProd(), src, dest);
+  ensureRunFunc(hooks.didCompileJson);
+
+  // image
+  ensureRunFunc(hooks.willCompileImage);
+  await minImageFiles({ src, dest });
+  ensureRunFunc(hooks.didCompileImage);
+
+  // js
+  ensureRunFunc(hooks.willCompileJs);
+  compileJsFiles({ src, dest });
+  ensureRunFunc(hooks.didCompileJs);
+
+  // wxss
+  ensureRunFunc(hooks.willCompileWxss);
+  compileWxssFiles({
+    src,
+    dest,
+    callback: async () => {
+      ensureRunFunc(hooks.didCompileWxss);
+      ensureRunFunc(hooks.willDeleteImage);
+      removeUnusedImages(dest, { showDetail: false });
+      ensureRunFunc(hooks.didDeleteImage);
+      await compileFinish();
+    },
+  });
 };

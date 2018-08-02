@@ -24,6 +24,18 @@ const CODE = {
 const SRC = '/src';
 const DEST = process.env.NODE_ENV === CODE.PROD ? '/release' : '/destination';
 
+const isProd = () => (process.env.NODE_ENV === CODE.PROD);
+const isDev = () => (process.env.NODE_ENV === CODE.DEV);
+const replaceSlash = (str = '') => str.replace(/(\\)\1*/g, '/');
+const logStart = (title = '') => (console.log(`Starting '${color.cyan(title)}'...`));
+const fixWavy = (input = '') => (input.slice(Number(/^~/.test(input))));
+const getSuffix = (input = '') => ((/\.([^\.]+)$/.exec(input) || [])[1] || '');
+
+const logEnd = (title = '', time = '??') => {
+  time = time === '??' ? time : (Date.now() - time);
+  console.log(`Finished '${color.cyan(title)}' after ${color.magenta(time > 1000 ? (time / 1000).toFixed(2) : time)} ${time > 1000 ? 's' : 'ms'}...`);
+};
+
 const toBufferString = (input) => {
   if (input instanceof Buffer) {
     input = input.toString();
@@ -66,12 +78,17 @@ const ensureDir = (
 const searchFiles = (
   matchRe,
   src,
-  result = {
-    [DIR]: {},
-  },
+  result = {},
   parent = '',
 ) => {
   const dirRe = /[^\.]/;
+  if (!(DIR in result)) {
+    Object.defineProperty(result, DIR, {
+      value: {},
+      enumerable: false,
+    });
+  }
+
   if (src && matchRe instanceof RegExp) {
     fs.readdirSync(src).forEach((file) => {
       if (dirRe.test(file) || matchRe.test(file)) {
@@ -102,6 +119,8 @@ const removeEmptyLine = file => (
     .replace(/[\f\n\r\t\v]+/g, '')
     .replace(/ {1,}/, ' ')
 );
+
+const defaultSteps = [removeComment, removeEmptyLine];
 
 const keys = (
   input,
@@ -136,8 +155,6 @@ const lambda = (...args) => {
   return '';
 };
 
-const defaultSteps = [removeComment, removeEmptyLine];
-
 const compressFile = (
   files,
   compress = true,
@@ -162,7 +179,6 @@ const ensureRunFunc = (input, ...args) => {
 
 const babelTransform = (input, options = {}) => {
   input = toBufferString(input);
-
   if (typeof input === 'string') {
     return babel.transform(input, {
       sourceMap: true,
@@ -194,7 +210,11 @@ const babelTransform = (input, options = {}) => {
   return input;
 };
 
-const catchError = (callback, fallback, options = {}) => (error, ...args) => {
+const catchError = (
+  callback,
+  fallback,
+  options = {},
+) => (error, ...args) => {
   const {
     force = false,
   } = options;
@@ -268,56 +288,53 @@ const uglify = (input = '', callback) => {
   return ensureRunFunc(callback, code) || code;
 };
 
-const replaceSlash = (str = '') => str.replace(/(\\)\1*/g, '/');
-
-const minImage = async (src, dest, options = {}) => {
+const minImage = async (
+  src,
+  dest,
+  options = {},
+) => {
   const {
     quality = '65-80',
-    callback = FUNC,
+    hooks = {},
   } = options;
   src = /(\.[\w]+)$/.test(src) ? src : `${src}/*.{jpg,jpeg,png,gif}`;
   try {
+    ensureRunFunc(hooks.start);
     await imagemin([src], `${dest}`, {
       plugins: [
         imageminJpegtran(),
         imageminPngquant({ quality }),
       ],
     });
-    ensureRunFunc(callback, src);
+    ensureRunFunc(hooks.end);
   } catch (err) {
     console.log(color.yellow(err));
   }
 };
 
-const Cach = {
-  _cach: {},
-  getCach() {
-    return this._cach;
-  },
-  init(id, value) {
-    this.getCach()[id] = value || {};
-  },
-  set(id, key, value) {
-    if (key) {
-      this.getCach()[id]  = this.getCach()[id] || {};
-      this.getCach()[id][key] = value;
-    }
-  },
-  get(id, key) {
-    if (key) {
-      return this.getCach()[id][key];
-    }
-    return this.getCach()[id];
-  },
-};
-
-const isProd = () => {
-  return process.env.NODE_ENV === CODE.PROD;
-};
-
-const isDev = () => {
-  return process.env.NODE_ENV === CODE.DEV;
-};
+const Cach = (() => {
+  const _cach = {};
+  return {
+    getCach() {
+      return _cach;
+    },
+    init(id, value) {
+      this.getCach()[id] = value || {};
+    },
+    set(id, key, value) {
+      if (key) {
+        this.getCach()[id]  = this.getCach()[id] || {};
+        this.getCach()[id][key] = value;
+      }
+    },
+    get(id, key) {
+      if (key) {
+        return this.getCach()[id][key];
+      }
+      return this.getCach()[id];
+    },
+  };
+})();
 
 const clearConsole = async (title) => {
   if (process.stdout.isTTY) {
@@ -329,21 +346,6 @@ const clearConsole = async (title) => {
       console.log(title);
     }
   }
-};
-
-const logStart = (title) => {
-  console.log('Starting \'' + color.cyanBright(title) + '\'...');
-};
-
-const logEnd = (title, time = '??') => {
-  console.log('Finished \'' + color.cyanBright(title) + '\' after ' + color.magenta(time === '??' ? time : (Date.now() - time)) + ' ms...');
-};
-
-const fixWavy = (input = '') => {
-  if (/^~/.test(input)) {
-    return input.slice(1);
-  }
-  return input;
 };
 
 const getPathBack = (replacePath = '') => {
@@ -380,6 +382,7 @@ module.exports = {
   ensureRunFunc,
   replaceSlash,
   keys,
+  getSuffix,
   fixWavy,
   getPathBack,
 };
