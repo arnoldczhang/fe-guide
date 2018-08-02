@@ -356,9 +356,8 @@ const webpackWxssFiles = (
   return cssConfig;
 };
 
-const compileWxssFiles = async (options = {}) => {
+const compileWxssFiles = async (src = absoluteSrcPath, options = {}) => {
   const {
-    src = absoluteSrcPath,
     dest = absoluteDestPath,
   } = options;
   const entry = searchFiles(/\.(?:wxss)$/, src);
@@ -475,7 +474,7 @@ const minImageFiles = async (
     const dir = dirArray[index];
     await minImage(`${src}${dir}`, `${dest}${dir}`, options);
     if (isDev()) {
-      console.log(color.green(`copy images in ${dir} SUCCESS...`));
+      console.log(color.green(` copy images in ${dir} SUCCESS...`));
     }
   }
   logEnd('compile-image', time);
@@ -593,11 +592,11 @@ module.exports = async (options = {}) => {
 
   // wxss
   ensureRunFunc(hooks.willCompileWxss);
-  compileWxssFiles({
-    src,
-    dest,
+  compileWxssFiles(src, {
     callback: async () => {
       ensureRunFunc(hooks.didCompileWxss);
+
+      // remove unused image
       ensureRunFunc(hooks.willDeleteImage);
       removeUnusedImages(dest, { showDetail: false });
       ensureRunFunc(hooks.didDeleteImage);
