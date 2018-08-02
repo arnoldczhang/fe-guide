@@ -74,15 +74,14 @@ const traversePathCode = (
 
 const copyCachModule = (
   name,
-  props = {},
-) => {
-  const {
+  {
     module = false,
     isModuleCall = false,
     fixSuffix = false,
-  } = props;
+    nodeModulePath = '',
+  } = {},
+) => {
   let nodeModuleFoldPath;
-  let { nodeModulePath = '' } = props;
   nodeModulePath = isModuleCall
     ? resolve.sync(name, path.join(__dirname, '../'))
     : path.resolve(nodeModulePath, '../', name);
@@ -131,17 +130,13 @@ const resolveNpmPath = (
   args = [],
   reqSrc = '',
   prefixPath = '',
-  options = {},
-) => {
-  if (!args.length) return;
-
-  const {
+  {
     module = false,
     debug = false,
-  } = options;
-  let {
-    nodeModulePath,
-  } = options;
+    nodeModulePath = '',
+  } = {},
+) => {
+  if (!args.length) return;
   reqSrc = replaceSlash(reqSrc);
   prefixPath = replaceSlash(prefixPath);
   const firstArgsValue = args[0].value;
@@ -225,16 +220,15 @@ const wxTraverse = (
 const compileCompressFile = (
   filePath,
   destPath,
-  options = {},
-) => {
-  const {
+  {
     hooks = {},
     compress = true,
     dest = DEST,
     encoding = 'utf8',
     input = '',
-    src,
-  } = options;
+    src = '',
+  } = {},
+) => {
   const destFile = path.join(__dirname, `../${dest}${destPath}`);
   if (typeof filePath === 'string') {
     try {
@@ -367,12 +361,11 @@ const compileWxssFiles = async (src = absoluteSrcPath, options = {}) => {
 
 const removeUnusedImages = (
   dest = absoluteDestPath,
-  options = {},
-) => {
-  const {
+  {
     imgRe = /.*\/(img\/.+)/g,
     showDetail = true,
-  } = options;
+  } = {},
+) => {
   if (isProd()) {
     const time = Date.now();
     logStart('remove-unused-image');
@@ -406,12 +399,11 @@ const removeUnusedImages = (
 const compileJsFile = (
   src,
   dest,
-  options = {},
-) => {
-  const {
+  {
     hooks = {},
     showDetail = true,
-  } = options;
+  } = {},
+) => {
   if (typeof src === 'string') {
     ensureRunFunc(hooks.start, src);
     let { code, ast, error } = babelTransform(readS(src));
@@ -431,11 +423,10 @@ const compileJsFile = (
   }
 };
 
-const compileJsFiles = (options = {}) => {
-  const {
-    src = absoluteSrcPath,
-    dest = absoluteDestPath,
-  } = options;
+const compileJsFiles = ({
+  src = absoluteSrcPath,
+  dest = absoluteDestPath,
+} = {}) => {
   const entry = searchFiles(/\.(?:js)$/, src);
   const time = Date.now();
   Cach.init('js', entry);
@@ -556,12 +547,11 @@ const compileFinish = async () => {
   initial = true;
 };
 
-module.exports = async (options = {}) => {
-  const {
-    src = absoluteSrcPath,
-    dest = absoluteDestPath,
-    hooks = {},
-  } = options;
+module.exports = async ({
+  src = absoluteSrcPath,
+  dest = absoluteDestPath,
+  hooks = {},
+} = {}) => {
   ensureRunFunc(hooks.start);
   runWatcher(src, dest);
 

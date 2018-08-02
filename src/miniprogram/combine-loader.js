@@ -29,6 +29,7 @@ module.exports = function (content) {
     const separate = $2 !== '---' ? $2 : '';
     const isRelativePath = /^\.{1,2}\//.test($1);
     const imagePath = $1.replace(/-{3}$/, '');
+
     const absolutePath = isRelativePath
       ? path.join(resource, '../', imagePath)
       : path.join(__dirname, `..${src}`, imagePath);
