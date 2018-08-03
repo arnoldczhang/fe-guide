@@ -9,6 +9,7 @@ const resolve = require('resolve');
 const chokidar = require('chokidar');
 const fs = require('fs-extra');
 const readline = require('readline');
+const ora = require('ora');
 
 const {
   readFileSync: readS,
@@ -412,7 +413,7 @@ const compileJsFile = (
     if (isProd()) {
       code = uglify(code);
     } else if (showDetail) {
-      console.log(color.green(` copy ${dest} SUCCESS...`));
+      console.log(` ${dest}`);
     }
 
     compileCompressFile(src, dest, {
@@ -427,10 +428,10 @@ const compileJsFiles = ({
   src = absoluteSrcPath,
   dest = absoluteDestPath,
 } = {}) => {
+  logStart('compile-js');
   const entry = searchFiles(/\.(?:js)$/, src);
   const time = Date.now();
   Cach.init('js', entry);
-  logStart('compile-js');
   keys(entry, (key) => {
     compileJsFile(entry[key], key);
   }, {
@@ -465,7 +466,7 @@ const minImageFiles = async (
     const dir = dirArray[index];
     await minImage(`${src}${dir}`, `${dest}${dir}`, options);
     if (isDev()) {
-      console.log(color.green(` copy images in ${dir} SUCCESS...`));
+      console.log(` ${dir}`);
     }
   }
   logEnd('compile-image', time);
