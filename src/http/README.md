@@ -6,6 +6,7 @@
   - 前端必须明白的 http 知识点：https://mp.weixin.qq.com/s/4tluvji9YVtxloqmssY-Nw
   - 把网站升级到QUIC：https://www.yinchengli.com/2018/06/10/quic/
   - https连接的前几毫秒发生了什么：https://fed.renren.com/2017/02/03/https/
+  - 流量劫持：https://zhuanlan.zhihu.com/p/40682772
 
 ## 请求无用头部（新版）
   - server
@@ -79,11 +80,19 @@
     - 数据传输加密方式为AES
     - 检验数据是否合法的算法为SHA256
   - ![https](10.png)
+  - ![https-2](https-2.jpg)
   - 公钥加密，私钥解密
   - 过程 -> 3RTT
     - ![https](201208201734403507.png)
 
+## HTTP、HTTPS、TCP、SSL/TLS
+  - HTTP基于TCP
+  - SSL/TLS基于TCP
+  - HTTPS基于SSL/TLS
 
-
+## ssl和tls
+  - tls由ssl演变而来，目前ssl已极不安全
+  - 推荐tls1.2
+  - ![ssl-tls](ssl-tls.jpg)
 
 
