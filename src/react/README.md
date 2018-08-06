@@ -7,6 +7,7 @@
 3. 解析过程见 ./src/mobx/react16-*.png
 4. vdom见 https://zhuanlan.zhihu.com/p/35876032
 5. fiber：https://zhuanlan.zhihu.com/p/37098539
+6.  HOC复用和拆分：https://zhuanlan.zhihu.com/p/40245156
 
 
 ## lifecycle

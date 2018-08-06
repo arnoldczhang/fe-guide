@@ -30,11 +30,18 @@
     - DNS查询（域名发散）
     - tcp
   - 缓存处理
-    - If-Modified-Since,Expires
+    - If-Modified-Since：再次请求服务器时，通过此字段通知服务器上次请求时，服务器返回的资源最后修改时间
+    - Expires（与Cache-Control共存时，以Cache-Control为准）
 
 ## http1.1
   - 缓存处理扩展
     - Entity tag，If-Unmodified-Since, If-Match, If-None-Match
+    - Cach-Control
+      - private：客户端可以缓存
+      - public：客户端和代理服务器都可缓存
+      - max-age=xxx：缓存的内容将在 xxx 秒后失效
+      - no-cache：需要使用对比缓存来验证缓存数据
+      - no-store：所有内容都不会缓存，强制缓存，对比缓存都不会触发
   - 带宽优化
     - range，请求资源一部分（206），支持断点续传
   - 错误通知
