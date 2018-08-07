@@ -10,6 +10,9 @@ const chokidar = require('chokidar');
 const fs = require('fs-extra');
 const readline = require('readline');
 const async = require('async');
+const signale = require('signale');
+
+console.log = signale.success;
 
 const {
   readFileSync: readS,
@@ -24,6 +27,7 @@ const {
   CONST,
   Cach,
   Spinner,
+  Logger,
   isProd,
   isDev,
   logStart,
@@ -53,6 +57,7 @@ const {
 } = CONST;
 
 let initial = false;
+let logger;
 
 const jsRe = /\.js$/;
 const npmPrefixRe = /^[~_@a-zA-Z]/;
@@ -302,8 +307,7 @@ const jsonWillRewriteHook = (file, ...args) => {
 
 const compileJsonFiles = compileCompressFiles(/\.(?:json)$/, {
   start(json) {
-    this.time = Date.now();
-    logStart('compile-json');
+    logger.await('compile json');
     Cach.init('json', json);
   },
   didCopy(file, filePath) {
@@ -313,21 +317,20 @@ const compileJsonFiles = compileCompressFiles(/\.(?:json)$/, {
   },
   willRewrite: jsonWillRewriteHook,
   end() {
-    logEnd('compile-json', this.time);
+    logger.success('compile json');
   },
 });
 
 const compileWxmlFiles = compileCompressFiles(/\.(?:wxml)$/, {
   start() {
-    this.time = Date.now();
-    logStart('compile-wxml');
+    logger.await('compile wxml');
     Cach.init('wxml', {});
   },
   didRewrite(file, filePath) {
     Cach.set('wxml', filePath, file);
   },
   end() {
-    logEnd('compile-wxml', this.time);
+    logger.success('compile wxml');
   },
 });
 
@@ -346,16 +349,15 @@ const webpackWxssFiles = (
     hooks = {},
   } = options;
   const cssConfig = getWebpackCssConfig(entry, options);
-  const time = Date.now();
 
   if (ensureRunFunc(hooks.start) === false) {
-    logStart('compile-wxss');
+    logger.await('compile wxss');
   }
 
   if (webpackFlag) {
     webpack(cssConfig, catchError(() => {
       if (ensureRunFunc(hooks.end) === false) {
-        logEnd('compile-wxss', time);
+        logger.success('compile wxss');
         ensureRunFunc(callback);
       }
     }));
@@ -386,9 +388,8 @@ const removeUnusedImages = (
     showDetail = true,
   } = {},
 ) => {
+  logger.await('remove unused image');
   if (isProd()) {
-    const time = Date.now();
-    logStart('remove-unused-image');
     const imagePathArray = keys(Cach.get('image'));
     for (let index = 0; index < imagePathArray.length; index += 1) {
       const imageKey = imagePathArray[index];
@@ -408,12 +409,12 @@ const removeUnusedImages = (
       if (!isUsed) {
         removeS(path.join(dest, imageKey));
         if (showDetail) {
-          console.log(color.green(`remove unused ${imageKey} SUCCESS`));
+          console.log(color.green(`remove unused ${imageKey}`));
         }
       }
     }
-    logEnd('remove-unused-image', time);
   }
+  logger.success('remove unused image');
   ensureRunFunc(callback);
 };
 
@@ -429,7 +430,6 @@ const compileJsFile = (
     let { code, ast, error } = babelTransform(readS(src));
     code = wxTraverse(ast, src);
     code = isProd() ? uglify(code) : code;
-
     compileCompressFile(src, dest, {
       compress: false,
       input: code,
@@ -443,9 +443,8 @@ const compileJsFiles = (
   dest = absoluteDestPath,
   callback,
 ) => {
-  logStart('compile-js');
+  logger.await('compile js');
   const entry = searchFiles(/\.(?:js)$/, src);
-  const time = Date.now();
   const spinner = new Spinner('compiling...');
   Cach.init('js', entry);
   keys(entry, (key) => {
@@ -462,7 +461,7 @@ const compileJsFiles = (
     // end: 1,
   });
   spinner.end();
-  logEnd('compile-js', time);
+  logger.success('compile js');
   ensureRunFunc(callback);
 };
 
@@ -477,14 +476,13 @@ const minImageFiles = async (
     clearDest = true,
     hooks = {},
   } = options;
-  const time = Date.now();
 
   if (clearDest) {
     removeS(dest);
   }
 
   ensureRunFunc(hooks.start);
-  logStart('compile-image');
+  logger.await('compile image');
   Cach.init('image', searchFiles(/\.(?:jpe?g|png|gif)$/, src));
   const dirArray = keys(Cach.get('image', DIR));
   const spinner = new Spinner('compiling...');
@@ -493,8 +491,8 @@ const minImageFiles = async (
     await minImage(`${src}${dir}`, `${dest}${dir}`, options);
     spinner.say(dir);
   }
+  logger.success('compile image');
   spinner.end();
-  logEnd('compile-image', time);
   ensureRunFunc(callback);
   ensureRunFunc(hooks.end);
 };
@@ -600,16 +598,28 @@ const clearDestDir = (
   ensureRunFunc(callback);
 };
 
-const STEP_SERIES = [
+const STEP_START = [
   runWatcher,
   clearDestDir,
+];
+
+const STEP_PROCESS = [
   compileWxmlFiles,
   compileJsonFiles,
   minImageFiles,
   compileJsFiles,
   compileWxssFiles,
   removeUnusedImages,
+];
+
+const STEP_END = [
   compileFinish,
+];
+
+const STEP_SERIES = [
+  ...STEP_START,
+  ...STEP_PROCESS,
+  ...STEP_END,
 ];
 
 module.exports = async ({
@@ -619,6 +629,7 @@ module.exports = async ({
   hooks = {},
 } = {}) => {
   options = Object.assign({}, options, { hooks });
+  logger = Logger(STEP_PROCESS.length);
 
   const wrapper = (fn) => {
     return (callback) => {

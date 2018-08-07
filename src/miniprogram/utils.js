@@ -15,6 +15,11 @@ const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
 const ora = require('ora');
+const signale = require('signale');
+const { Signale } = signale;
+
+console.error = signale.fatal;
+console.warn = signale.warn;
 
 const DIR = '__dir';
 const FUNC = v => v;
@@ -67,7 +72,7 @@ const ensureDir = (
       fs.mkdirsSync(dir);
     }
   } catch (err) {
-    console.log('err', err, dir);
+    console.error('err', err, dir);
     ensureDir(dir.replace(/\/([^\/]+)\/?$/, (match, $1) => {
       queue.push($1);
       return '';
@@ -223,7 +228,7 @@ const catchError = (
     if (typeof error === 'object') {
       error = JSON.stringify(error);
     }
-    ensureRunFunc(fallback, error) || console.log(color.red(error));
+    ensureRunFunc(fallback, error) || console.error(color.red(error));
     if (force) {
       process.exit(1);
     }
@@ -284,7 +289,7 @@ const getWebpackCssConfig = (
 const uglify = (input = '', callback) => {
   const { error, code } = uglifyJS.minify(input, { output: {} });
   if (error) {
-    return console.log(color.red(uglifyRes.error));
+    return console.error(color.red(uglifyRes.error));
   }
   return ensureRunFunc(callback, code) || code;
 };
@@ -308,7 +313,7 @@ const minImage = async (
     });
     ensureRunFunc(hooks.end);
   } catch (err) {
-    console.log(color.yellow(err));
+    console.warn(color.yellow(err));
   }
 };
 
@@ -370,6 +375,28 @@ const getPathBack = (replacePath = '') => {
   return result.join('');
 };
 
+const Logger = (
+  length = 1,
+  {
+    scope = 'build',
+    index = 1,
+  } = {},
+) => {
+  const instance = new Signale({ interactive: true, scope, });
+  signale.config({
+    displayTimestamp: true,
+  }); 
+  return {
+    await(word = '') {
+      instance.await(`[%d/${length}] - ${word}`, index);
+    },
+
+    success(word = '') {
+      instance.success(`[%d/${length}] - ${word}`, index++);
+    },
+  };
+};
+
 module.exports = {
   CONST: {
     SRC,
@@ -382,6 +409,7 @@ module.exports = {
   logEnd,
   Spinner,
   Cach,
+  Logger,
   lambda,
   uglify,
   catchError,

@@ -3,6 +3,9 @@ const path = require('path');
 const base64Img = require('base64-img');
 const loaderUtils = require('loader-utils');
 const color = require('chalk');
+const signale = require('signale');
+
+console.warn = signale.warn;
 
 const {
   compressFile,
@@ -36,7 +39,7 @@ module.exports = function (content) {
     try {
       imageData = base64Img.base64Sync(absolutePath.replace(src || '', dest || ''));
     } catch (err) {
-      console.log(color.yellow(`${absolutePath} is not found or has exception`));
+      console.warn(color.yellow(`${absolutePath} is not found or has exception`));
       return `${separate}`;
     }
     return `${imageData}${separate}`;
