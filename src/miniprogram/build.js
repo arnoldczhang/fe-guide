@@ -12,7 +12,6 @@ const readline = require('readline');
 const async = require('async');
 const signale = require('signale');
 
-console.log = signale.success;
 
 const {
   readFileSync: readS,
