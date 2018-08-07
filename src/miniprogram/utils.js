@@ -14,6 +14,7 @@ const readline = require('readline');
 const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
+const ora = require('ora');
 
 const DIR = '__dir';
 const FUNC = v => v;
@@ -291,12 +292,11 @@ const uglify = (input = '', callback) => {
 const minImage = async (
   src,
   dest,
-  options = {},
-) => {
-  const {
+  {
     quality = '65-80',
     hooks = {},
-  } = options;
+  } = {},
+) => {
   src = /(\.[\w]+)$/.test(src) ? src : `${src}/*.{jpg,jpeg,png,gif}`;
   try {
     ensureRunFunc(hooks.start);
@@ -336,6 +336,22 @@ const Cach = (() => {
   };
 })();
 
+class Spinner {
+  constructor(id) {
+    this.id = id;
+    this.instance = ora(id).start();
+  }
+
+  say(input = '') {
+    this.instance.text = input;
+    this.instance.render();
+  }
+
+  end() {
+    this.instance.stop();
+  }
+}
+
 const clearConsole = async (title) => {
   if (process.stdout.isTTY) {
     const blank = '\n'.repeat(process.stdout.rows);
@@ -364,6 +380,7 @@ module.exports = {
   isDev,
   logStart,
   logEnd,
+  Spinner,
   Cach,
   lambda,
   uglify,
