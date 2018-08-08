@@ -22,6 +22,9 @@ module.exports = {
       disable: false,
     }),
   ],
+  node: {
+    fs: 'empty',
+  },
   resolve: {
     extensions: ['.*', '.js', '.jsx', '.es6'],
     alias: {
