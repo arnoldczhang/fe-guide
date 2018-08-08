@@ -12,6 +12,10 @@ const readline = require('readline');
 const async = require('async');
 const signale = require('signale');
 
+signale.config({
+  displayTimestamp: true,
+});
+console.note = signale.note;
 
 const {
   readFileSync: readS,
@@ -361,6 +365,7 @@ const webpackWxssFiles = (
       }
     }));
   } else {
+    logger.success('compile wxss');
     ensureRunFunc(callback);
   }
 
@@ -408,7 +413,7 @@ const removeUnusedImages = (
       if (!isUsed) {
         removeS(path.join(dest, imageKey));
         if (showDetail) {
-          console.log(color.green(`remove unused ${imageKey}`));
+          console.note(`remove ${imageKey}`);
         }
       }
     }
@@ -490,8 +495,8 @@ const minImageFiles = async (
     await minImage(`${src}${dir}`, `${dest}${dir}`, options);
     spinner.say(dir);
   }
-  logger.success('compile image');
   spinner.end();
+  logger.success('compile image');
   ensureRunFunc(callback);
   ensureRunFunc(hooks.end);
 };
@@ -581,7 +586,7 @@ const compileFinish = async (
   callback,
 ) => {
   if (isDev()) {
-    await clearConsole();
+    // await clearConsole();
     console.log(color.magenta('watching file changes...'));
     ensureRunFunc(callback);
   }
@@ -630,15 +635,13 @@ module.exports = async ({
   options = Object.assign({}, options, { hooks });
   logger = Logger(STEP_PROCESS.length);
 
-  const wrapper = (fn) => {
-    return (callback) => {
-      return fn(src, dest, callback, options);
-    };
-  };
+  const wrapper = (fn, index) => (callback) => (
+    fn(src, dest, callback, options)
+  );
 
-  async.series(STEP_SERIES.map((fn) => {
-    return wrapper(fn);
-  }), (err) => {
+  async.series(STEP_SERIES.map((fn, index) => (
+    wrapper(fn, index))
+  ), (err) => {
     if (err) {
       console.log(err);
     }

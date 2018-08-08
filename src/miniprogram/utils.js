@@ -378,17 +378,14 @@ const getPathBack = (replacePath = '') => {
 const Logger = (
   length = 1,
   {
-    scope = 'build',
+    scope = '^_^',
     index = 1,
   } = {},
 ) => {
   const instance = new Signale({ interactive: true, scope, });
-  signale.config({
-    displayTimestamp: true,
-  }); 
   return {
     await(word = '') {
-      instance.await(`[%d/${length}] - ${word}`, index);
+      instance.pending(`[%d/${length}] - ${word}`, index);
     },
 
     success(word = '') {

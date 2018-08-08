@@ -2,6 +2,8 @@
  * signale
  *
  * 美化console
+ *
+ * 参考：https://github.com/klauscfhq/signale
  * 
  */
 const signale = require('signale');
