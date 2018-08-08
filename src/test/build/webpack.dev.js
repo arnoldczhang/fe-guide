@@ -22,7 +22,7 @@ const config = merge(base, {
     // can: './src/test/src/can.js',
     // tui: './src/test/src/tui.js',
     // asciichart: './src/test/src/asciichart.js',
-    // test: './src/test/src/test.js',
+    test: './src/test/src/test.js',
   },
   optimization: {
     splitChunks: {
