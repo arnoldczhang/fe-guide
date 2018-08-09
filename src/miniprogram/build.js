@@ -2,13 +2,9 @@
 const path = require('path');
 const webpack = require('webpack');
 const color = require('chalk');
-const imagemin = require('imagemin');
-const imageminJpegtran = require('imagemin-jpegtran');
-const imageminPngquant = require('imagemin-pngquant');
 const resolve = require('resolve');
 const chokidar = require('chokidar');
 const fs = require('fs-extra');
-const readline = require('readline');
 const async = require('async');
 const signale = require('signale');
 
