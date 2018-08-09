@@ -1950,19 +1950,19 @@ class Polynomial {
         res[index] = this.baseTermPoly(tag, num, next);
         return res;
       }, result);
-    } else {
-      pre = Number(pre);
-      if (!Array.isArray(next)) {
-        this.checkNumOrArray(next, errorMsg);
-        next = [next];
-      }
-      return next.reduce((res, num) => {
-        this.checkNumOrArray(num, errorMsg);
-        this.checkZeroDiv(num, tag);
-        res = tag(res, num);
-        return res;
-      }, pre);
     }
+  
+    pre = Number(pre);
+    if (!Array.isArray(next)) {
+      this.checkNumOrArray(next, errorMsg);
+      next = [next];
+    }
+    return next.reduce((res, num) => {
+      this.checkNumOrArray(num, errorMsg);
+      this.checkZeroDiv(num, tag);
+      res = tag(res, num);
+      return res;
+    }, pre);
   }
 
   addTermPoly(pre, next) {
@@ -2058,7 +2058,7 @@ class Polynomial {
   // console.log(expect(poly2.gcdTerm(24, 14)).to.be.equal(2)); // 2
 
 
-
+// P.162
 
 }
 

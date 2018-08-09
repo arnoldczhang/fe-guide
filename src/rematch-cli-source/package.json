@@ -1,0 +1,45 @@
+{
+  "name": "rematch-cli",
+  "author": "arnold1205",
+  "version": "0.0.42",
+  "main": "./index.js",
+  "bin": {
+    "rematch": "./bin/rematch.js"
+  },
+  "bugs": {
+    "url": "https://github.com/arnoldczhang/fe-guide/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "rematch-cli module for react",
+  "dependencies": {
+    "standard-version": "^4.2.0",
+    "cross-spawn": "^6.0.5",
+    "chalk": "^2.0.0",
+    "inquirer": "^6.0.0",
+    "fs-extra": "^6.0.0",
+    "deepmerge": "^2.1.1",
+    "internal-ip": "^3.0.1",
+    "opn": "^5.3.0",
+    "react-dev-utils": "^4.2.1",
+    "webpack": "^4.16.1",
+    "webpack-dev-server": "^3.1.4",
+    "webpack-hot-client": "^2.2.0",
+    "webpack-serve": "^0.3.1"
+  },
+  "devDependencies": {
+  },
+  "engines": {
+    "node": ">= 4.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "homepage": "https://github.com/arnoldczhang/fe-guide#readme",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arnoldczhang/fe-guide.git"
+  },
+  "scripts": {
+    "release": "standard-version"
+  }
+}

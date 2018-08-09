@@ -13,6 +13,7 @@ const host = internalIP.v4() || '0.0.0.0';
 const port = 2222;
 
 const config = merge(base, {
+  mode: 'development',
   devtool: 'inline-source-map',
   plugins: [
     new webpack.DefinePlugin({

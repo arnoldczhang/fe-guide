@@ -18,12 +18,13 @@
     - #### 入参
       - type, tag, props, key, ref, owner
     - #### 解析
+      - tag：1-function，2-class，5-node，6-text
       - 根据ref类型处理、赋值；绑定_owner
   - ### render/hydrate
     - #### 解析
       - createContainer
       - createInstance
-      - emptyContainer
+      - emptyElement
       - updateComponent
   - ### createContainer
     - #### 解析
@@ -32,6 +33,9 @@
     - #### 解析
       - 实例化fiber，触发render
       - 更新updateQueue，包含pendingStates和pendingCbs
+  - ### emptyElement
+    - #### 解析
+      - 清空childNodes
   - ### updateComponent
     - #### 解析
       - pushChildQueue
@@ -56,12 +60,18 @@
       - reconcileDFS
       - updateCommitQueue
       - resetStack
+      - 遍历macrotasks，执行workLoop，直至macrotasks被清空，commitDFS
+      - commitDFS
   - ### reconcileDFS
     - #### 解析
-      - updateClassComponent
-      - updateHostComponent
+      - outerLoop遍历fiber.siblings
+      - innerLoop遍历fiber.return
+      - updateClassComponent（tag < 3）
+      - updateHostComponent（tag >= 3）
+      - getSnapshotBeforeUpdate（hasMounted）
   - ### commitDFS
-  - ### commitDFSImpl
+    - #### 解析
+      - commitDFSImpl
   - ### updateClassComponent
     - #### 解析
       - 更新componentWillReceiveProps/shouldComponentUpdate/componentWillUpdate
@@ -71,6 +81,8 @@
       - applybeforeMountHooks
   - ### updateHostComponent
     - #### 解析
+      - getInsertPoint（!parent.insertPoint）
+      - diffChildren（tag === 5）
   - ### applybeforeMountHooks
     - #### 解析
       - 触发componentWillMount或setStateByProps
@@ -81,8 +93,7 @@
       - 检测props、context、state变更触发componentWillReceiveProps
       - mergeStates
       - setStateByProps
-      - 根据props、state和shouldComponentUpdate检测属性变更，如果有，
-      触发componentWillUpdate
+      - 根据props、state和shouldComponentUpdate检测属性变更，如果有，触发componentWillUpdate
   - ### setStateByProps
     - #### 解析
       - 根据nextProps更新memoizedState
@@ -90,7 +101,12 @@
     - #### 解析
       - 根据updateQueue.length，判断是直接返回memoizedState或state，还是遍历updateQueue，
       更新nextState，赋值memoizedState并返回
-
+  - ### getInsertPoint
+    - #### 解析
+      - 返回子fiber中的普通节点（tag > 3）
+  - ### diffChildren
+    - #### 解析
+      - 
 
 
 

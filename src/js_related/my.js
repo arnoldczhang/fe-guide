@@ -219,7 +219,9 @@ const [aa, bb] = getFullPost();
 
 
 
-
+// 扩展运算符可以快速扁平化数组
+const arr = [11, [22, 33], [44, 55], 66];
+const flatArr = [].concat(...arr);
 
 
 
