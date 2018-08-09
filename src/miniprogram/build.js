@@ -12,9 +12,6 @@ const readline = require('readline');
 const async = require('async');
 const signale = require('signale');
 
-signale.config({
-  displayTimestamp: true,
-});
 console.note = signale.note;
 
 const {
@@ -510,11 +507,11 @@ const runWatcher = async (
     destfix = DEST,
   } = {},
 ) => {
+  await clearConsole();
+
   if (isProd()) {
     return ensureRunFunc(callback());
   }
-
-  await clearConsole();
 
   const unlinkFunc = (path) => {
     if (initial) {
@@ -586,7 +583,7 @@ const compileFinish = async (
   callback,
 ) => {
   if (isDev()) {
-    // await clearConsole();
+    await clearConsole();
     console.log(color.magenta('watching file changes...'));
     ensureRunFunc(callback);
   }
