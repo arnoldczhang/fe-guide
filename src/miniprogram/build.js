@@ -440,6 +440,9 @@ const compileJsFiles = (
   src = absoluteSrcPath,
   dest = absoluteDestPath,
   callback,
+  {
+    hooks = {},
+  } = {},
 ) => {
   logger.await('compile js');
   const entry = searchFiles(/\.(?:js)$/, src);
@@ -479,7 +482,6 @@ const minImageFiles = async (
     removeS(dest);
   }
 
-  ensureRunFunc(hooks.start);
   logger.await('compile image');
   Cach.init('image', searchFiles(/\.(?:jpe?g|png|gif|svg)$/, src));
   const dirArray = keys(Cach.get('image', DIR));
@@ -492,7 +494,6 @@ const minImageFiles = async (
   spinner.end();
   logger.success('compile image');
   ensureRunFunc(callback);
-  ensureRunFunc(hooks.end);
 };
 
 const runWatcher = async (
@@ -645,9 +646,8 @@ module.exports = async ({
     fn(src, dest, callback, options)
   );
 
-  async.series(STEP_SERIES.map((fn, index) => (
-    wrapper(fn, index))
-  ), (err) => {
+  async.series(STEP_SERIES.map((fn, index) => wrapper(fn, index)),
+    (err) => {
     if (err) {
       console.log(err);
     }
