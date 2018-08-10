@@ -11,11 +11,13 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const uglifyJS = require('uglify-js');
 const readline = require('readline');
+const ora = require('ora');
+const signale = require('signale');
 const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
-const ora = require('ora');
-const signale = require('signale');
+const imageminSvgo = require('imagemin-svgo');
+const imageminGifsicle = require('imagemin-gifsicle');
 const { Signale } = signale;
 
 console.error = signale.fatal;
@@ -287,7 +289,14 @@ const getWebpackCssConfig = (
 });
 
 const uglify = (input = '', callback) => {
-  const { error, code } = uglifyJS.minify(input, { output: {} });
+  const { error, code } = uglifyJS.minify(input, {
+    output: {},
+    compress: true,
+    mangle: {
+      toplevel: true,
+    },
+    toplevel: true,
+  });
   if (error) {
     return console.error(color.red(uglifyRes.error));
   }
@@ -302,13 +311,15 @@ const minImage = async (
     hooks = {},
   } = {},
 ) => {
-  src = /(\.[\w]+)$/.test(src) ? src : `${src}/*.{jpg,jpeg,png,gif}`;
+  src = /(\.[\w]+)$/.test(src) ? src : `${src}/*.{jpg,jpeg,png,gif,svg}`;
   try {
     ensureRunFunc(hooks.start);
     await imagemin([src], `${dest}`, {
       plugins: [
         imageminJpegtran(),
         imageminPngquant({ quality }),
+        imageminSvgo({ plugins: [{removeViewBox: false}] }),
+        imageminGifsicle(),
       ],
     });
     ensureRunFunc(hooks.end);

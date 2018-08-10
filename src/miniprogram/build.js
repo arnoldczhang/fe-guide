@@ -53,6 +53,7 @@ const {
 } = CONST;
 
 let initial = false;
+let time;
 let logger;
 
 const jsRe = /\.js$/;
@@ -480,7 +481,7 @@ const minImageFiles = async (
 
   ensureRunFunc(hooks.start);
   logger.await('compile image');
-  Cach.init('image', searchFiles(/\.(?:jpe?g|png|gif)$/, src));
+  Cach.init('image', searchFiles(/\.(?:jpe?g|png|gif|svg)$/, src));
   const dirArray = keys(Cach.get('image', DIR));
   const spinner = new Spinner('compiling...');
   for (let index = 0; index < dirArray.length; index += 1) {
@@ -555,6 +556,7 @@ const runWatcher = async (
         case 'jpeg':
         case 'jpg':
         case 'png':
+        case 'svg':
         case 'gif':
           await minImage(path, destPath, { hooks });
           break;
@@ -573,6 +575,15 @@ const runWatcher = async (
   ensureRunFunc(callback());
 };
 
+const compileStart = (
+  src = absoluteSrcPath,
+  dest = absoluteDestPath,
+  callback,
+) => {
+  time = Date.now();
+  ensureRunFunc(callback);
+};
+
 const compileFinish = async (
   src = absoluteSrcPath,
   dest = absoluteDestPath,
@@ -583,6 +594,7 @@ const compileFinish = async (
     console.log(color.magenta('watching file changes...'));
     ensureRunFunc(callback);
   }
+  logEnd('compile', time);
   initial = true;
 };
 
@@ -596,6 +608,7 @@ const clearDestDir = (
 };
 
 const STEP_START = [
+  compileStart,
   runWatcher,
   clearDestDir,
 ];
