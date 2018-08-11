@@ -12,8 +12,7 @@ console.note = signale.note;
 
 const {
   readFileSync: readS,
-  readdirSync,
-  copy,
+  copySync:copyS,
   writeFile: write,
   statSync: statS,
   removeSync: removeS,
@@ -46,7 +45,7 @@ const {
   getPathBack,
 } = require('./utils');
 
-const {
+let {
   SRC,
   DIR,
   DEST,
@@ -61,9 +60,9 @@ const npmPrefixRe = /^[~_@a-zA-Z]/;
 const fileNameRe = /\/([^\/]+)$/;
 
 Cach.init('node_modules');
-const absoluteSrcPath = path.join(__dirname, '../', `${SRC}`);
-const absoluteDestPath = path.join(__dirname, '../', `${DEST}`);
-const absoluteDestNpmPath = path.join(__dirname, '../', `${DEST}/npm`);
+let absoluteSrcPath = path.join(__dirname, '../', `${SRC}`);
+let absoluteDestPath = path.join(__dirname, '../', `${DEST}`);
+let absoluteDestNpmPath = path.join(__dirname, '../', `${DEST}/npm`);
 const getRelativeFilePath = (src, prefix) => replaceSlash(src.replace(`${prefix}/`, ''));
 
 const traversePathCode = (
@@ -110,11 +109,10 @@ const copyCachModule = (
           keys(files, (key) => {
             const src = files[key];
             const dest = path.join(npmPath, key);
-            copy(src, dest, catchError(() => {
-              if (jsRe.test(src)) {
-                traversePathCode(src, dest);
-              }
-            }));
+            copyS(src, dest);
+            if (jsRe.test(src)) {
+              traversePathCode(src, dest);
+            }
           });
         }
       } catch (err) {
@@ -122,9 +120,8 @@ const copyCachModule = (
       }
     } else {
       Cach.set('node_modules', nodeModulePath, 1);
-      copy(nodeModulePath, npmPath, catchError(() => {
-        traversePathCode(nodeModulePath, npmPath);
-      }));
+      copyS(nodeModulePath, npmPath);
+      traversePathCode(nodeModulePath, npmPath);
     }
   }
   return nodeModulePath.replace(fixSuffix ? /^[\s\S]+node_modules\// : '', '');
@@ -242,13 +239,12 @@ const compileCompressFile = (
       const hookArgs = [file, filePath, destFile, src];
       ensureRunFunc(hooks.didCompress, ...hookArgs);
       ensureRunFunc(hooks.willCopy, ...hookArgs);
-      copy(filePath, destFile, catchError(() => {
-        ensureRunFunc(hooks.didCopy, ...hookArgs);
-        const lastResult = ensureRunFunc(hooks.willRewrite, ...hookArgs);
-        write(destFile, lastResult || file, { encoding });
-        ensureRunFunc(hooks.didRewrite, ...hookArgs);
-        ensureRunFunc(hooks.end);
-      }));
+      copyS(filePath, destFile);
+      ensureRunFunc(hooks.didCopy, ...hookArgs);
+      const lastResult = ensureRunFunc(hooks.willRewrite, ...hookArgs);
+      write(destFile, lastResult || file, { encoding });
+      ensureRunFunc(hooks.didRewrite, ...hookArgs);
+      ensureRunFunc(hooks.end);
     } catch (err) {
       console.log(color.red(err));
     }
@@ -493,13 +489,8 @@ const minImageFiles = async (
 ) => {
   const {
     quality = '65-80',
-    clearDest = true,
     hooks = {},
   } = options;
-
-  if (clearDest) {
-    removeS(dest);
-  }
 
   ensureRunFunc(hooks.beforeMinImage);
   logger.await('compile image');
@@ -587,8 +578,7 @@ const runWatcher = async (
     }
   };
 
-  const watcher = chokidar.watch(src, { ignored: /(^|[\/\\])\../ });
-  watcher
+  chokidar.watch(src, { ignored: /(^|[\/\\])\../ })
     .on('unlinkDir', unlinkFunc)
     .on('unlink', unlinkFunc)
     .on('add', modifyFunc('[+]'))
@@ -604,6 +594,7 @@ const compileStart = (
   callback,
 ) => {
   time = Date.now();
+  removeS(dest);
   ensureRunFunc(callback);
 };
 
@@ -624,26 +615,38 @@ const compileFinish = async (
   initial = true;
 };
 
-const clearDestDir = (
-  src = absoluteSrcPath,
-  dest = absoluteDestPath,
-  callback,
-) => {
-  removeS(dest);
-  ensureRunFunc(callback);
+const resolveOptions = (options = {}) => {
+  const {
+    srcName = '',
+    destName = '',
+  } = options;
+
+  if (srcName) {
+    SRC = srcName;
+    absoluteSrcPath = path.join(__dirname, '../', `${SRC}`);
+    delete options.srcName;
+  }
+
+  if (destName) {
+    destName = /^\//.test(destName) ? destName : `/${destName}`;
+    DEST = destName;
+    absoluteDestPath = path.join(__dirname, '../', `${DEST}`);
+    absoluteDestNpmPath = path.join(__dirname, '../', `${DEST}/npm`);
+    delete options.destName;
+  }
+  return options;
 };
 
 const STEP_START = [
   compileStart,
   runWatcher,
-  clearDestDir,
 ];
 
 const STEP_PROCESS = [
   compileWxmlFiles,
   compileJsonFiles,
-  minImageFiles,
   compileJsFiles,
+  minImageFiles,
   compileWxssFiles,
   removeUnusedImages,
 ];
@@ -664,6 +667,7 @@ module.exports = async ({
   options = {},
   hooks = {},
 } = {}) => {
+  resolveOptions(options);
   options = Object.assign({}, options, { hooks });
   logger = Logger(STEP_PROCESS.length);
 

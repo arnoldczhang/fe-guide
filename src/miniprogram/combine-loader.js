@@ -23,8 +23,8 @@ module.exports = function (content) {
   const { resource, cacheable } = this;
   const options = Object.assign({}, loaderUtils.getOptions(this));
   const {
-    src = SRC,
-    dest = DEST,
+    srcName = SRC,
+    destName = DEST,
   } = options;
   if (cacheable) cacheable();
   let result = content.replace(/(?:\.\/|)b64-{3}(.+)(-{3}|'|"\))/g, (match, $1, $2) => {
@@ -35,9 +35,9 @@ module.exports = function (content) {
 
     const absolutePath = isRelativePath
       ? path.join(resource, '../', imagePath)
-      : path.join(__dirname, `..${src}`, imagePath);
+      : path.join(__dirname, `..${srcName}`, imagePath);
     try {
-      imageData = base64Img.base64Sync(absolutePath.replace(src || '', dest || ''));
+      imageData = base64Img.base64Sync(absolutePath.replace(srcName || '', destName || ''));
     } catch (err) {
       console.warn(color.yellow(`${absolutePath} is not found or has exception`));
       return `${separate}`;

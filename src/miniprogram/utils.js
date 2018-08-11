@@ -6,7 +6,6 @@ const babel = require("babel-core");
 const generator = require('babel-generator');
 const babelTraverse = require("babel-traverse");
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const uglifyJS = require('uglify-js');
@@ -260,11 +259,8 @@ const getWebpackCssConfig = (
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: `..${DEST}[name]`,
+      filename: `..${options.destName || DEST}[name]`,
     }),
-    // new CleanWebpackPlugin([`.${DEST}`], {
-    //   root: path.join(__dirname, '..'),
-    // }),
   ],
   module: {
     rules: [

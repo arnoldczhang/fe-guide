@@ -1,9 +1,21 @@
 const path = require('path');
 const fs = require('fs-extra');
 
+const updateVersion = () => {
+	const file = path.join(__dirname, '../', 'release/constants.js');
+	const version = process.argv[2];
+	if (version) {
+		fs.readFile(file, 'utf8', (err, data) =>{
+			fs.writeFile(file, data.replace(/(VERSION\s*:\s*)(['"])[\d\.]+\2/, `$1$2${version}$2`));
+		});
+	}
+};
+
+
 require('./build')({
   // ...
   options: {
+  	// destName: '/dist',
     // quality: '45-60',
     //...
   },
@@ -32,8 +44,7 @@ require('./build')({
     },
 	afterJsCompile() {
 		//...
-		const file = fs.readFileSync(path.join(__dirname, '../', 'release/app.js'), 'utf8');
-		console.log(file);
+		updateVersion();
 	},
 	beforeWxssCompile() {
     		//...
