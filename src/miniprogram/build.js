@@ -258,22 +258,27 @@ const compileCompressFile = (
 const compileCompressFiles = (
   re,
   hooks = {},
+  extraHookName = {},
 ) => (
   src = absoluteSrcPath,
-  dest =absoluteDestPath,
+  dest = absoluteDestPath,
   callback,
   {
     compress = true,
+    hooks: extraHooks = {},
   } = {},
 ) => {
   const entry = searchFiles(re, src);
   const end = hooks.end;
-  ensureRunFunc(hooks.start, entry, src);
+  const hookArgs = [entry, src];
+  ensureRunFunc(extraHooks[extraHookName.start], ...hookArgs);
+  ensureRunFunc(hooks.start, ...hookArgs);
   delete hooks.start;
   delete hooks.end;
   keys(entry, key => compileCompressFile(entry[key], key, { compress, hooks, src }));
+  ensureRunFunc(end, ...hookArgs);
+  ensureRunFunc(extraHooks[extraHookName.end], ...hookArgs);
   ensureRunFunc(callback);
-  ensureRunFunc(end, src);
 };
 
 const jsonWillRewriteHook = (file, ...args) => {
@@ -316,6 +321,9 @@ const compileJsonFiles = compileCompressFiles(/\.(?:json)$/, {
   end() {
     logger.success('compile json');
   },
+}, {
+  start: 'beforeJsonCompile',
+  end: 'afterJsonCompile',
 });
 
 const compileWxmlFiles = compileCompressFiles(/\.(?:wxml)$/, {
@@ -329,6 +337,9 @@ const compileWxmlFiles = compileCompressFiles(/\.(?:wxml)$/, {
   end() {
     logger.success('compile wxml');
   },
+}, {
+  start: 'beforeWxmlCompile',
+  end: 'afterWxmlCompile',
 });
 
 const webpackWxssFiles = (
@@ -347,6 +358,7 @@ const webpackWxssFiles = (
   } = options;
   const cssConfig = getWebpackCssConfig(entry, options);
 
+  ensureRunFunc(hooks.beforeWxssCompile);
   if (ensureRunFunc(hooks.start) === false) {
     logger.await('compile wxss');
   }
@@ -355,11 +367,13 @@ const webpackWxssFiles = (
     webpack(cssConfig, catchError(() => {
       if (ensureRunFunc(hooks.end) === false) {
         logger.success('compile wxss');
+        ensureRunFunc(hooks.afterWxssCompile);
         ensureRunFunc(callback);
       }
     }));
   } else {
     logger.success('compile wxss');
+    ensureRunFunc(hooks.afterWxssCompile);
     ensureRunFunc(callback);
   }
 
@@ -383,9 +397,11 @@ const removeUnusedImages = (
   callback,
   {
     imgRe = /.*\/(img\/.+)/g,
-    showDetail = true,
+    showRemovedImg = true,
+    hooks = {},
   } = {},
 ) => {
+  ensureRunFunc(hooks.beforeRemoveUnusedImage);
   logger.await('remove unused image');
   if (isProd()) {
     const imagePathArray = keys(Cach.get('image'));
@@ -406,13 +422,14 @@ const removeUnusedImages = (
 
       if (!isUsed) {
         removeS(path.join(dest, imageKey));
-        if (showDetail) {
+        if (showRemovedImg) {
           console.note(`remove ${imageKey}`);
         }
       }
     }
   }
   logger.success('remove unused image');
+  ensureRunFunc(hooks.afterRemoveUnusedImage);
   ensureRunFunc(callback);
 };
 
@@ -444,6 +461,7 @@ const compileJsFiles = (
     hooks = {},
   } = {},
 ) => {
+  ensureRunFunc(hooks.beforeJsCompile);
   logger.await('compile js');
   const entry = searchFiles(/\.(?:js)$/, src);
   const spinner = new Spinner('compiling...');
@@ -457,12 +475,13 @@ const compileJsFiles = (
       },
     });
   }, {
-    // => test length
+    // => test file length
     // start: 0,
     // end: 1,
   });
   spinner.end();
   logger.success('compile js');
+  ensureRunFunc(hooks.afterJsCompile);
   ensureRunFunc(callback);
 };
 
@@ -482,6 +501,7 @@ const minImageFiles = async (
     removeS(dest);
   }
 
+  ensureRunFunc(hooks.beforeMinImage);
   logger.await('compile image');
   Cach.init('image', searchFiles(/\.(?:jpe?g|png|gif|svg)$/, src));
   const dirArray = keys(Cach.get('image', DIR));
@@ -493,6 +513,7 @@ const minImageFiles = async (
   }
   spinner.end();
   logger.success('compile image');
+  ensureRunFunc(hooks.afterMinImage);
   ensureRunFunc(callback);
 };
 
@@ -538,6 +559,7 @@ const runWatcher = async (
     };
 
     if (initial && suffix) {
+      console.log(stat);
       switch (suffix) {
         case 'js':
           compileJsFile(path, pathKey, { hooks, showDetail: false });
@@ -592,10 +614,13 @@ const compileFinish = async (
 ) => {
   if (isDev()) {
     await clearConsole();
+    logEnd('compile', time);
+    console.log();
     console.log(color.magenta('watching file changes...'));
     ensureRunFunc(callback);
+  } else {
+    logEnd('compile', time);
   }
-  logEnd('compile', time);
   initial = true;
 };
 
@@ -646,10 +671,9 @@ module.exports = async ({
     fn(src, dest, callback, options)
   );
 
-  async.series(STEP_SERIES.map((fn, index) => wrapper(fn, index)),
-    (err) => {
-    if (err) {
-      console.log(err);
-    }
-  });
+  async.series(STEP_SERIES.map((fn, index) => (
+    wrapper(fn, index)
+  )), catchError(() => {
+    //...
+  }));
 };
