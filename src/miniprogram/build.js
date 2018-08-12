@@ -45,6 +45,8 @@ const {
   getPathBack,
 } = require('./utils');
 
+const buildRelativeDir = '../';
+
 let {
   SRC,
   DIR,
@@ -60,9 +62,9 @@ const npmPrefixRe = /^[~_@a-zA-Z]/;
 const fileNameRe = /\/([^\/]+)$/;
 
 Cach.init('node_modules');
-let absoluteSrcPath = path.join(__dirname, '../', `${SRC}`);
-let absoluteDestPath = path.join(__dirname, '../', `${DEST}`);
-let absoluteDestNpmPath = path.join(__dirname, '../', `${DEST}/npm`);
+let absoluteSrcPath = path.join(__dirname, buildRelativeDir, `${SRC}`);
+let absoluteDestPath = path.join(__dirname, buildRelativeDir, `${DEST}`);
+let absoluteDestNpmPath = path.join(__dirname, buildRelativeDir, `${DEST}/npm`);
 const getRelativeFilePath = (src, prefix) => replaceSlash(src.replace(`${prefix}/`, ''));
 
 const traversePathCode = (
@@ -86,7 +88,7 @@ const copyCachModule = (
 ) => {
   let nodeModuleFoldPath;
   nodeModulePath = isModuleCall
-    ? resolve.sync(name, path.join(__dirname, '../'))
+    ? resolve.sync(name, path.join(__dirname, buildRelativeDir))
     : path.resolve(nodeModulePath, '../', name);
 
   const destNpmPath = `${DEST}/npm`;
@@ -159,7 +161,7 @@ const resolveNpmPath = (
   } else if (!jsRe.test(moduleName)) {
     let indexPath;
     try {
-      const npmStat = statS(path.resolve(reqSrc, '../', moduleName));
+      const npmStat = statS(path.resolve(reqSrc, buildRelativeDir, moduleName));
       if (npmStat.isDirectory()) {
         indexPath = `${moduleName}/index.js`;
       }
@@ -230,7 +232,7 @@ const compileCompressFile = (
     src = '',
   } = {},
 ) => {
-  const destFile = path.join(__dirname, `../${dest}${destPath}`);
+  const destFile = path.join(__dirname, buildRelativeDir, `./${dest}${destPath}`);
   if (typeof filePath === 'string') {
     try {
       ensureRunFunc(hooks.start);
@@ -623,15 +625,15 @@ const resolveOptions = (options = {}) => {
 
   if (srcName) {
     SRC = srcName;
-    absoluteSrcPath = path.join(__dirname, '../', `${SRC}`);
+    absoluteSrcPath = path.join(__dirname, buildRelativeDir, `${SRC}`);
     delete options.srcName;
   }
 
   if (destName) {
     destName = /^\//.test(destName) ? destName : `/${destName}`;
     DEST = destName;
-    absoluteDestPath = path.join(__dirname, '../', `${DEST}`);
-    absoluteDestNpmPath = path.join(__dirname, '../', `${DEST}/npm`);
+    absoluteDestPath = path.join(__dirname, buildRelativeDir, `${DEST}`);
+    absoluteDestNpmPath = path.join(__dirname, buildRelativeDir, `${DEST}/npm`);
     delete options.destName;
   }
   return options;
