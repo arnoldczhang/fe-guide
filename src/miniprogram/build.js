@@ -12,7 +12,8 @@ console.note = signale.note;
 
 const {
   readFileSync: readS,
-  copySync:copyS,
+  copySync: copyS,
+  copy,
   writeFile: write,
   statSync: statS,
   removeSync: removeS,
@@ -111,10 +112,11 @@ const copyCachModule = (
           keys(files, (key) => {
             const src = files[key];
             const dest = path.join(npmPath, key);
-            copyS(src, dest);
-            if (jsRe.test(src)) {
-              traversePathCode(src, dest);
-            }
+            copy(src, dest, catchError(() => {
+              if (jsRe.test(src)) {
+                traversePathCode(src, dest);
+              }
+            }));
           });
         }
       } catch (err) {
@@ -122,8 +124,9 @@ const copyCachModule = (
       }
     } else {
       Cach.set('node_modules', nodeModulePath, 1);
-      copyS(nodeModulePath, npmPath);
-      traversePathCode(nodeModulePath, npmPath);
+      copy(nodeModulePath, npmPath, catchError(() => {
+        traversePathCode(nodeModulePath, npmPath);
+      }));
     }
   }
   return nodeModulePath.replace(fixSuffix ? /^[\s\S]+node_modules\// : '', '');
@@ -552,7 +555,6 @@ const runWatcher = async (
     };
 
     if (initial && suffix) {
-      console.log(stat);
       switch (suffix) {
         case 'js':
           compileJsFile(path, pathKey, { hooks, showDetail: false });

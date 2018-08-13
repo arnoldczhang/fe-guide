@@ -29,7 +29,7 @@ const CODE = {
   PROD: 'production',
 };
 const SRC = '/src';
-const DEST = process.env.NODE_ENV === CODE.PROD ? '/release' : '/destination';
+const DEST = process.env.NODE_ENV === CODE.PROD ? '/release' : '/dist';
 
 const isProd = () => (process.env.NODE_ENV === CODE.PROD);
 const isDev = () => (process.env.NODE_ENV === CODE.DEV);
