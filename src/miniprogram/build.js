@@ -54,7 +54,6 @@ let {
   DEST,
 } = CONST;
 
-let initial = false;
 let time;
 let logger;
 
@@ -520,6 +519,7 @@ const runWatcher = async (
   {
     srcfix = SRC,
     destfix = DEST,
+    initial = false,
   } = {},
 ) => {
   await clearConsole();
@@ -583,6 +583,7 @@ const runWatcher = async (
   };
 
   chokidar.watch(src, { ignored: /(^|[\/\\])\../ })
+    .on('ready', () => (initial = true))
     .on('unlinkDir', unlinkFunc)
     .on('unlink', unlinkFunc)
     .on('add', modifyFunc('[+]'))
@@ -616,7 +617,6 @@ const compileFinish = async (
   } else {
     logEnd('compile', time);
   }
-  initial = true;
 };
 
 const resolveOptions = (options = {}) => {
