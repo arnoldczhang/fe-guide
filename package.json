@@ -240,6 +240,7 @@
     "fork-ts-checker-webpack-plugin": "^0.4.2",
     "fpack": "^0.5.3",
     "fs-extra": "^6.0.1",
+    "jsqr": "^1.1.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha-reporter": "^2.2.5",
     "lynt": "^0.1.1",

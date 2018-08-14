@@ -31,7 +31,7 @@
     - tcp
   - 缓存处理
     - If-Modified-Since：再次请求服务器时，通过此字段通知服务器上次请求时，服务器返回的资源最后修改时间
-    - Expires（与Cache-Control共存时，以Cache-Control为准）
+    - 缓存头部优先级：Pragma > Cache-Control > Expires > ETag > Last-Modified
 
 ## http1.1
   - 缓存处理扩展
