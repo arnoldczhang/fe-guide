@@ -525,7 +525,7 @@ const runWatcher = async (
   await clearConsole();
 
   if (isProd()) {
-    return ensureRunFunc(callback());
+    return ensureRunFunc(callback);
   }
 
   const unlinkFunc = (path) => {
