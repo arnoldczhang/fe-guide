@@ -32,3 +32,39 @@
 //   (x = Number) => console.log(`number ${x} is not that good`),
 // );
 
+
+// const babel = require("babel-core");
+// const code = `
+//   var obj = {
+//     breadthTraversal() {
+//       if (!this.root) return null
+//       let q = new Queue()
+//       // 将根节点入队
+//       q.enQueue(this.root)
+//       // 循环判断队列是否为空，为空
+//       // 代表树遍历完毕
+//       while (!q.isEmpty()) {
+//         // 将队首出队，判断是否有左右子树
+//         // 有的话，就先左后右入队
+//         let n = q.deQueue()
+//         console.log(n.value)
+//         if (n.left) q.enQueue(n.left)
+//         if (n.right) q.enQueue(n.right)
+//       }
+//     }
+//   }
+// `;
+// console.log(babel.transform(code).code);
+
+
+
+
+
+
+
+
+
+
+
+
+

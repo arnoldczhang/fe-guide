@@ -590,7 +590,7 @@ const runWatcher = async (
     .on('change', modifyFunc())
     .on('addDir', (path) => {});
 
-  ensureRunFunc(callback());
+  ensureRunFunc(callback);
 };
 
 const compileStart = (
