@@ -236,6 +236,7 @@
     "brotli-webpack-plugin": "^0.5.0",
     "cross-env": "^5.2.0",
     "data-forge": "^1.0.8",
+    "egg": "^2.10.0",
     "eslint-loader": "^2.0.0",
     "fork-ts-checker-webpack-plugin": "^0.4.2",
     "fpack": "^0.5.3",
