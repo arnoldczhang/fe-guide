@@ -275,7 +275,16 @@ const getWebpackCssConfig = (
             },
           },
           {
-            loader: './webpack/combine-loader.js',
+            loader: './webpack/wxss-loader.js',
+            options: Object.assign({}, options, {
+              type: 'post',
+            }),
+          },
+          {
+            loader: 'less-loader',
+          },
+          {
+            loader: './webpack/wxss-loader.js',
             options,
           },
         ],

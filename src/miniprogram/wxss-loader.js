@@ -9,8 +9,6 @@ console.warn = signale.warn;
 
 const {
   compressFile,
-  removeComment,
-  removeEmptyLine,
   CONST,
 } = require('./utils');
 
@@ -19,15 +17,18 @@ const {
   DEST,
 } = CONST;
 
-module.exports = function (content) {
-  const { resource, cacheable } = this;
-  const options = Object.assign({}, loaderUtils.getOptions(this));
-  const {
+const commentImport = (input = '') => input.replace(/(@import[^;\r\n\t]+;)/g, '/*$1*/');
+const unCommentImport = (input = '') => input.replace(/\/\*(@import[^;\r\n\t]+;)\*\//g, '$1');
+
+const img2Base64 = (
+  input = '',
+  {
     srcName = SRC,
     destName = DEST,
-  } = options;
-  if (cacheable) cacheable();
-  let result = content.replace(/(?:\.\/|)b64-{3}(.+)(-{3}|'|"\))/g, (match, $1, $2) => {
+  },
+  resource,
+) => (
+  input.replace(/(?:\.\/|)b64-{3}(.+)(-{3}|'|"\))/g, (match, $1, $2) => {
     let imageData;
     const separate = $2 !== '---' ? $2 : '';
     const isRelativePath = /^\.{1,2}\//.test($1);
@@ -43,6 +44,22 @@ module.exports = function (content) {
       return `${separate}`;
     }
     return `${imageData}${separate}`;
-  });
-  return compressFile(result);
+  })
+);
+
+module.exports = function (content) {
+  const { resource, cacheable } = this;
+  const options = Object.assign({}, loaderUtils.getOptions(this));
+  const {
+    type = 'pre',
+  } = options;
+  if (cacheable) cacheable();
+
+  if (type === 'post') {
+    return unCommentImport(content);
+  }
+
+  return [img2Base64, compressFile, commentImport].reduce((input, resolver) => (
+    resolver(input, options, resource)
+  ), content);
 };
