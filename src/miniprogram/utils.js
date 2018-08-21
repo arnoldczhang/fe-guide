@@ -252,7 +252,7 @@ const getWebpackCssConfig = (
           safe: true,
           discardComments: {
             removeAll: true,
-          }
+          },
         },
       }),
     ],
@@ -275,7 +275,7 @@ const getWebpackCssConfig = (
             },
           },
           {
-            loader: './webpack/wxss-loader.js',
+            loader: path.join(__dirname, './wxss-loader.js'),
             options: Object.assign({}, options, {
               type: 'post',
             }),
@@ -284,7 +284,7 @@ const getWebpackCssConfig = (
             loader: 'less-loader',
           },
           {
-            loader: './webpack/wxss-loader.js',
+            loader: path.join(__dirname, './wxss-loader.js'),
             options,
           },
         ],

@@ -396,7 +396,7 @@ const removeUnusedImages = (
   dest = absoluteDestPath,
   callback,
   {
-    imgRe = /.*\/(img\/.+)/g,
+    imgRe = /.*\/((?:img|images?)\/.+)/g,
     showRemovedImg = true,
     hooks = {},
   } = {},

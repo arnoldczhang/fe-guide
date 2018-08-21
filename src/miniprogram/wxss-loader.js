@@ -59,7 +59,9 @@ module.exports = function (content) {
     return unCommentImport(content);
   }
 
-  return [img2Base64, compressFile, commentImport].reduce((input, resolver) => (
-    resolver(input, options, resource)
-  ), content);
+  return commentImport(
+    compressFile(
+      img2Base64(content, options, resource)
+    )
+  );
 };
