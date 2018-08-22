@@ -15,6 +15,7 @@ module.exports = {
     ],
     index: [
       "./src/react/src/index.jsx",
+      // "./src/react/src/bbx.jsx",
     ],
   },
   output: {
@@ -46,16 +47,16 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.jsx?$/,
-        enforce: 'pre',
-        loader: 'eslint-loader',
-        include: path.resolve(__dirname, "../src"),
-        exclude: /node_modules/,
-        options: {
-          failOnError: false,
-        },
-      },
+      // {
+      //   test: /\.jsx?$/,
+      //   enforce: 'pre',
+      //   loader: 'eslint-loader',
+      //   include: path.resolve(__dirname, "../src"),
+      //   exclude: /node_modules/,
+      //   options: {
+      //     failOnError: false,
+      //   },
+      // },
       {
         test: /\.jsx?$/,
         include: path.resolve(__dirname, "../src"),
