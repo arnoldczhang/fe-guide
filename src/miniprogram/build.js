@@ -168,6 +168,7 @@ const resolveNpmPath = (
         indexPath = `${moduleName}/index.js`;
       }
     } catch (err) {
+      // FIXME if dir not found, 
       indexPath = `${moduleName}.js`;
     } finally {
       if (nodeModulePath) {

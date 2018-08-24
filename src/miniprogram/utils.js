@@ -229,7 +229,7 @@ const catchError = (
     if (typeof error === 'object') {
       error = JSON.stringify(error);
     }
-    ensureRunFunc(fallback, error) || console.error(color.red(error));
+    ensureRunFunc(fallback, error) || console.trace(color.red(error));
     if (force) {
       process.exit(1);
     }
