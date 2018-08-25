@@ -34,6 +34,7 @@ const DEST = process.env.NODE_ENV === CODE.PROD ? '/release' : '/dist';
 const isProd = () => (process.env.NODE_ENV === CODE.PROD);
 const isDev = () => (process.env.NODE_ENV === CODE.DEV);
 const replaceSlash = (str = '') => str.replace(/(\\)\1*/g, '/');
+const replaceIndex = (str = '') => str.replace(/(\.[^\.]+)$/, '\/index$1');
 const logStart = (title = '') => (console.log(`Starting '${color.cyan(title)}'...`));
 const fixWavy = (input = '') => (input.slice(Number(/^~/.test(input))));
 const getSuffix = (input = '') => ((/\.([^\.]+)$/.exec(input) || [])[1] || '');
@@ -439,6 +440,7 @@ module.exports = {
   removeEmptyLine,
   ensureRunFunc,
   replaceSlash,
+  replaceIndex,
   keys,
   getSuffix,
   fixWavy,

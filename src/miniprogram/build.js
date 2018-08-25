@@ -40,6 +40,7 @@ const {
   catchError,
   getWebpackCssConfig,
   replaceSlash,
+  replaceIndex,
   keys,
   getSuffix,
   fixWavy,
@@ -122,10 +123,19 @@ const copyCachModule = (
         console.log(err);
       }
     } else {
-      Cach.set('node_modules', nodeModulePath, 1);
-      copy(nodeModulePath, npmPath, catchError(() => {
-        traversePathCode(nodeModulePath, npmPath);
-      }));
+      try {
+        statS(nodeModulePath);
+      } catch(err) {
+        nodeModulePath = replaceIndex(nodeModulePath);
+        npmPath = replaceIndex(npmPath);
+        name = replaceIndex(name);
+      } finally {
+        Cach.set('node_modules', nodeModulePath, 1);
+        copy(nodeModulePath, npmPath, catchError(() => {
+          traversePathCode(nodeModulePath, npmPath);
+        }));
+        return name;
+      }
     }
   }
   return nodeModulePath.replace(fixSuffix ? /^[\s\S]+node_modules\// : '', '');
@@ -168,11 +178,10 @@ const resolveNpmPath = (
         indexPath = `${moduleName}/index.js`;
       }
     } catch (err) {
-      // FIXME if dir not found, 
       indexPath = `${moduleName}.js`;
     } finally {
       if (nodeModulePath) {
-        nodeModulePath = copyCachModule(indexPath || firstArgsValue, cachProps);
+        return copyCachModule(indexPath || firstArgsValue, cachProps);
       }
       return indexPath;
     }
