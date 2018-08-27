@@ -232,6 +232,20 @@ const flatArr = [].concat(...arr);
 
 
 
+// async/await和generator
+// async 函数是什么？一句话，它就是 Generator 函数的语法糖。
+// async函数就是将 Generator 函数的星号（*）替换成async，将yield替换成await
+
+
+// localstorage
+// pc端：5-10M，移动端：2.5M
+
+
+
+
+
+
+
 
 
 

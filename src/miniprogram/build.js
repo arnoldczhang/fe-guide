@@ -126,7 +126,7 @@ const copyCachModule = (
       let needFixIndex = false;
       try {
         statS(nodeModulePath);
-      } catch(err) {
+      } catch (err) {
         nodeModulePath = replaceIndex(nodeModulePath);
         npmPath = replaceIndex(npmPath);
         name = replaceIndex(name);
