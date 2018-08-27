@@ -123,18 +123,23 @@ const copyCachModule = (
         console.log(err);
       }
     } else {
+      let needFixIndex = false;
       try {
         statS(nodeModulePath);
       } catch(err) {
         nodeModulePath = replaceIndex(nodeModulePath);
         npmPath = replaceIndex(npmPath);
         name = replaceIndex(name);
+        needFixIndex = true;
       } finally {
         Cach.set('node_modules', nodeModulePath, 1);
         copy(nodeModulePath, npmPath, catchError(() => {
           traversePathCode(nodeModulePath, npmPath);
         }));
-        return name;
+
+        if (needFixIndex) {
+          return [name];
+        }
       }
     }
   }
@@ -180,8 +185,9 @@ const resolveNpmPath = (
     } catch (err) {
       indexPath = `${moduleName}.js`;
     } finally {
-      if (nodeModulePath) {
-        return copyCachModule(indexPath || firstArgsValue, cachProps);
+      nodeModulePath = copyCachModule(indexPath || firstArgsValue, cachProps);
+      if (Array.isArray(nodeModulePath)) {
+        return nodeModulePath[0];
       }
       return indexPath;
     }
