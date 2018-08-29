@@ -2,6 +2,7 @@
 
 ## 参考
   - https://github.com/dt-fe/weekly/blob/master/62.%E7%B2%BE%E8%AF%BB%E3%80%8AJS%20%E5%BC%95%E6%93%8E%E5%9F%BA%E7%A1%80%E4%B9%8B%20Shapes%20and%20Inline%20Caches%E3%80%8B.md
+  - https://juejin.im/entry/5b7e108851882542c20f2018?utm_source=gold_browser_extension
   - ![对象模型-对象](41808298-e8cce80c-770d-11e8-994b-1d6f30e2bfe3.png)
   - ![对象模型-数组](41808308-0446ba5e-770e-11e8-895a-e2ed7231869d.png)
 
