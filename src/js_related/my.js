@@ -242,7 +242,8 @@ const flatArr = [].concat(...arr);
 
 
 
-
+// 创建对象
+// var atom = Object.setPrototypeOf(new Object, null);
 
 
 
