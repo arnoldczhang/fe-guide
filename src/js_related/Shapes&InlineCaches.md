@@ -34,6 +34,15 @@
       let d = Object.assign({}, c);
       console.log("c and d have same map:", %HaveSameMap(c, d)); // true
       ```
+  - inline cache
+    - ValidityCell：与实例 shape 链接的直接原型中 ValidityCell 的链接
+    - Prototype：属性的原型
+    - Shape：实例的 shape
+    - Offset：目标属性在原型中的偏移量
+
+
+
+
 
 ## 总结
   - 尽量以相同方式初始化对象，这样会生成较少的 Shapes
