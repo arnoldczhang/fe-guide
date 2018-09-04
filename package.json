@@ -237,6 +237,7 @@
   "devDependencies": {
     "@types/es6-promise": "^3.3.0",
     "brotli-webpack-plugin": "^0.5.0",
+    "cache-loader": "^1.2.2",
     "cross-env": "^5.2.0",
     "data-forge": "^1.0.8",
     "egg": "^2.10.0",
