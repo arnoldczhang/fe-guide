@@ -15,6 +15,7 @@ const updateVersion = () => {
 require('./build')({
   // ...
   options: {
+    ugly: true,
     // destName: '/dist',
     // quality: '45-60',
     // ...

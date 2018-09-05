@@ -59,6 +59,7 @@ let time;
 let logger;
 
 const jsRe = /\.js$/;
+const jsonRe = /\.json$/;
 const npmPrefixRe = /^[~_@a-zA-Z]/;
 const fileNameRe = /\/([^\/]+)$/;
 
@@ -84,6 +85,7 @@ const copyCachModule = (
     module = false,
     isModuleCall = false,
     fixSuffix = false,
+    isComponent = false,
     nodeModulePath = '',
   } = {},
 ) => {
@@ -108,16 +110,24 @@ const copyCachModule = (
         Cach.set('node_modules', nodeModulePath, 1);
         const stat = statS(nodeModuleFoldPath);
         if (stat.isDirectory()) {
-          const files = searchFiles(/\.(?:js|wxml|json|wxss)$/, nodeModuleFoldPath);
+          const files = searchFiles(/\.(?:js|wxs|wxml|json|wxss)$/, nodeModuleFoldPath);
           keys(files, (key) => {
             const src = files[key];
             const dest = path.join(npmPath, key);
             copy(src, dest, catchError(() => {
               if (jsRe.test(src)) {
                 traversePathCode(src, dest);
+              } else if (jsonRe.test(src)) {
+                // TODO
+                // console.log(compressFile(readS(src), true), src, src, absoluteSrcPath);
+                // write(destFile, jsonWillRewriteHook(src, dest), { encoding: 'utf8' });
               }
             }));
           });
+
+          if (isComponent) {
+            minImageFiles(nodeModuleFoldPath, npmPath, { useLog: false });
+          }
         }
       } catch (err) {
         console.log(err);
@@ -282,16 +292,21 @@ const compileCompressFiles = (
   {
     compress = true,
     hooks: extraHooks = {},
+    entry,
   } = {},
 ) => {
-  const entry = searchFiles(re, src);
+  entry = entry || searchFiles(re, src);
   const end = hooks.end;
   const hookArgs = [entry, src];
   ensureRunFunc(extraHooks[extraHookName.start], ...hookArgs);
   ensureRunFunc(hooks.start, ...hookArgs);
   delete hooks.start;
   delete hooks.end;
-  keys(entry, key => compileCompressFile(entry[key], key, { compress, hooks, src }));
+  keys(entry, key => compileCompressFile(entry[key], key, { compress, hooks, src }), {
+    // => test file length
+    // start: 0,
+    // end: 1,
+  });
   ensureRunFunc(end, ...hookArgs);
   ensureRunFunc(extraHooks[extraHookName.end], ...hookArgs);
   ensureRunFunc(callback);
@@ -312,6 +327,7 @@ const jsonWillRewriteHook = (file, ...args) => {
           compPath = copyCachModule(compPath, {
             isModuleCall: true,
             fixSuffix: true,
+            isComponent: true,
           });
           usingComponents[compKey] = `${prefix || './'}npm/${compPath}`;
         }
@@ -454,13 +470,14 @@ const compileJsFile = (
   dest,
   {
     hooks = {},
+    ugly = false,
   } = {},
 ) => {
   if (typeof src === 'string') {
     ensureRunFunc(hooks.start, src);
     let { code, ast, error } = babelTransform(readS(src));
     code = wxTraverse(ast, src);
-    code = isProd() ? uglify(code) : code;
+    code = (isProd() || ugly) ? uglify(code) : code;
     compileCompressFile(src, dest, {
       compress: false,
       input: code,
@@ -475,11 +492,12 @@ const compileJsFiles = (
   callback,
   {
     hooks = {},
+    ugly = false,
   } = {},
 ) => {
   ensureRunFunc(hooks.beforeJsCompile);
   logger.await('compile js');
-  const entry = searchFiles(/\.(?:js)$/, src);
+  const entry = searchFiles(/\.(?:js|wxs)$/, src);
   const spinner = new Spinner('compiling...');
   Cach.init('js', entry);
   keys(entry, (key) => {
@@ -489,6 +507,7 @@ const compileJsFiles = (
           spinner.say(key);
         },
       },
+      ugly,
     });
   }, {
     // => test file length
@@ -507,13 +526,22 @@ const minImageFiles = async (
   callback,
   options = {},
 ) => {
+
+  if (typeof callback === 'object') {
+    options = callback;
+    callback = null;
+  }
+
   const {
     quality = '65-80',
     hooks = {},
+    useLog = true,
   } = options;
 
   ensureRunFunc(hooks.beforeMinImage);
-  logger.await('compile image');
+  if (useLog) {
+    logger.await('compile image');
+  }
   Cach.init('image', searchFiles(/\.(?:jpe?g|png|gif|svg)$/, src));
   const dirArray = keys(Cach.get('image', DIR));
   const spinner = new Spinner('compiling...');
@@ -523,7 +551,9 @@ const minImageFiles = async (
     spinner.say(dir);
   }
   spinner.end();
-  logger.success('compile image');
+  if (useLog) {
+    logger.success('compile image');
+  }
   ensureRunFunc(hooks.afterMinImage);
   ensureRunFunc(callback);
 };
@@ -536,6 +566,7 @@ const runWatcher = async (
     srcfix = SRC,
     destfix = DEST,
     initial = false,
+    ugly = false,
   } = {},
 ) => {
   await clearConsole();
@@ -573,7 +604,7 @@ const runWatcher = async (
     if (initial && suffix) {
       switch (suffix) {
         case 'js':
-          compileJsFile(path, pathKey, { hooks, showDetail: false });
+          compileJsFile(path, pathKey, { hooks, showDetail: false, ugly });
           break;
         case 'wxml':
           compileCompressFile(path, pathKey, { hooks });
