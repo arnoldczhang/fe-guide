@@ -71,7 +71,7 @@ const config = merge(base, {
     port,
     host,
     contentBase: './dist',
-   },
+  },
 });
 
 module.exports = config;

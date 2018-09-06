@@ -247,7 +247,13 @@ const flatArr = [].concat(...arr);
 
 
 
-
+// 正则递归
+var str = 'abc';
+var reg = /\w/g;
+var result;
+while (result = reg.exec(str)) {
+  console.log(result);
+}
 
 
 
