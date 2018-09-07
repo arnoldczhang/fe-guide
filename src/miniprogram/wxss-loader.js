@@ -56,7 +56,11 @@ module.exports = function (content) {
   if (cacheable) cacheable();
 
   if (type === 'post') {
-    return unCommentImport(content);
+    return unCommentImport(
+      compressFile(
+        content
+      )
+    );
   }
 
   return commentImport(

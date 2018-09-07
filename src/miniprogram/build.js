@@ -94,6 +94,7 @@ const resolveComponentFiles = (
   copy(src, dest, catchError(() => {
     switch (suffix) {
       case 'js':
+      case 'wxs':
         traversePathCode(src, dest);
         break;
       case 'json':
@@ -106,9 +107,6 @@ const resolveComponentFiles = (
             slash: false,
           }
         ) || file, { encoding });
-        break;
-      case 'wxml':
-        Cach.set('wxml', src, toBufferString(originFile));
         break;
       default:
         break;
@@ -154,6 +152,8 @@ const copyCachModule = (
             const suffix = getSuffix(src);
             const originFile = readS(src);
             const dest = path.join(npmPath, key);
+            const destPath = dest.replace(fileNameRe, '');
+            const pathKey = dest.replace(absoluteDestPath, '');
 
             switch (suffix) {
               case 'jpeg':
@@ -164,14 +164,14 @@ const copyCachModule = (
                 minImage(src, dest.replace(fileNameRe, ''));
                 break;
               case 'wxss':
-                const pathKey = dest.replace(absoluteDestPath, '');
-                webpack(getWebpackCssConfig({ [pathKey]: src }), catchError(() => {
-                  ;
-                }));
+                webpack(getWebpackCssConfig({ [pathKey]: src }), catchError(() => {}));
+                break;
+              case 'wxml':
+                compileCompressFile(src, pathKey);
                 break;
               default:
                 resolveComponentFiles(src, dest, suffix, originFile, { encoding });
-                break;      
+                break;
             }
           });
         }
