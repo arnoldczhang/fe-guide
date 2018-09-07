@@ -2,12 +2,12 @@
 const fs = require('fs-extra');
 const path = require('path');
 const color = require('chalk');
-const babel = require("babel-core");
+const babel = require('babel-core');
 const generator = require('babel-generator');
 const babelTraverse = require("babel-traverse");
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const uglifyJS = require('uglify-js');
 const readline = require('readline');
 const ora = require('ora');
@@ -188,32 +188,40 @@ const ensureRunFunc = (input, ...args) => {
 const babelTransform = (input, options = {}) => {
   input = toBufferString(input);
   if (typeof input === 'string') {
-    return babel.transform(input, {
-      sourceMap: true,
-      presets: ['es2015', 'stage-2'],
-      plugins: [
-        ['transform-inline-environment-variables', {
-          include: [
-            'NODE_ENV',
+    try {
+      const result = babel.transform(input, {
+        sourceMap: true,
+        presets: ['es2015', 'stage-2'],
+        plugins: [
+          ['transform-inline-environment-variables', {
+            include: [
+              'NODE_ENV',
+            ],
+          }],
+          'transform-class-properties',
+          'transform-decorators-legacy',
+          'transform-object-rest-spread',
+          'transform-class-properties',
+          'transform-object-rest-spread',
+          'transform-async-functions',
+          'transform-decorators',
+          [
+            "transform-runtime",
+            {
+              "helpers": false,
+              "polyfill": false,
+              "regenerator": true,
+            }
           ],
-        }],
-        'transform-class-properties',
-        'transform-decorators-legacy',
-        'transform-object-rest-spread',
-        'transform-class-properties',
-        'transform-object-rest-spread',
-        'transform-async-functions',
-        'transform-decorators',
-        [
-          "transform-runtime",
-          {
-            "helpers": false,
-            "polyfill": false,
-            "regenerator": true,
-          }
         ],
-      ],
-    });
+      });
+
+      // do something...
+      return result;
+    } catch (err) {
+      console.log(input);
+      console.log(err.message)
+    }
   }
   return input;
 };
@@ -341,12 +349,25 @@ const Cach = (() => {
       return _cach;
     },
     init(id, value) {
-      this.getCach()[id] = value || {};
+      if (!this.has(id)) {
+        this.getCach()[id] = value || {};
+      }
+    },
+    has(id) {
+      return id && !!this.getCach()[id];
     },
     set(id, key, value) {
-      if (key) {
-        this.getCach()[id]  = this.getCach()[id] || {};
-        this.getCach()[id][key] = value;
+      if (id && key) {
+        this.init(id);
+        const thisCach = this.get(id);
+        const type = typeof key;
+        if (type === 'string') {
+          thisCach[key] = value;
+        } else if (type === 'object') {
+          keys(type, (key) => {
+            thisCach[key] = type[key];
+          });
+        }
       }
     },
     get(id, key) {
@@ -445,4 +466,5 @@ module.exports = {
   getSuffix,
   fixWavy,
   getPathBack,
+  toBufferString,
 };

@@ -45,6 +45,7 @@ const {
   getSuffix,
   fixWavy,
   getPathBack,
+  toBufferString,
 } = require('./utils');
 
 const buildRelativeDir = '../';
@@ -60,24 +61,60 @@ let logger;
 
 const jsRe = /\.js$/;
 const jsonRe = /\.json$/;
+const wxmlRe = /\.(?:wxml)$/;
 const npmPrefixRe = /^[~_@a-zA-Z]/;
 const fileNameRe = /\/([^\/]+)$/;
+const imgTypeRe = /\.(?:jpe?g|png|gif|svg)$/;
 
 Cach.init('node_modules');
 let absoluteSrcPath = path.join(__dirname, buildRelativeDir, `${SRC}`);
 let absoluteDestPath = path.join(__dirname, buildRelativeDir, `${DEST}`);
 let absoluteDestNpmPath = path.join(__dirname, buildRelativeDir, `${DEST}/npm`);
-const getRelativeFilePath = (src, prefix) => replaceSlash(src.replace(`${prefix}/`, ''));
+const getRelativeFilePath = (src, prefix, { slash = true } = {}) => replaceSlash(src.replace(`${prefix}${slash ? '/' : ''}`, ''));
 
 const traversePathCode = (
   nodeModulePath = '',
   npmPath = '',
   dest = absoluteDestNpmPath,
-) => (wxTraverse(babelTransform(readS(npmPath)).ast, npmPath, dest, {
+) => (wxTraverse(babelTransform(readS(nodeModulePath)).ast, npmPath, dest, {
   nodeModulePath,
   module: true,
   debug: true,
 }));
+
+const resolveComponentFiles = (
+  src,
+  dest,
+  suffix,
+  originFile,
+  {
+    encoding = 'utf8',
+  },
+) => {
+  copy(src, dest, catchError(() => {
+    switch (suffix) {
+      case 'js':
+        traversePathCode(src, dest);
+        break;
+      case 'json':
+        const file = compressFile(originFile, true);
+        write(dest, jsonWillRewriteHook(
+          file,
+          dest,
+          null,
+          absoluteDestNpmPath, {
+            slash: false,
+          }
+        ) || file, { encoding });
+        break;
+      case 'wxml':
+        Cach.set('wxml', src, toBufferString(originFile));
+        break;
+      default:
+        break;
+    }
+  }));
+};
 
 const copyCachModule = (
   name,
@@ -87,6 +124,7 @@ const copyCachModule = (
     fixSuffix = false,
     isComponent = false,
     nodeModulePath = '',
+    encoding = 'utf8',
   } = {},
 ) => {
   let nodeModuleFoldPath;
@@ -110,24 +148,32 @@ const copyCachModule = (
         Cach.set('node_modules', nodeModulePath, 1);
         const stat = statS(nodeModuleFoldPath);
         if (stat.isDirectory()) {
-          const files = searchFiles(/\.(?:js|wxs|wxml|json|wxss)$/, nodeModuleFoldPath);
+          const files = searchFiles(/\.(?:js|wxs|wxml|json|wxss|jpe?g|png|gif|svg)$/, nodeModuleFoldPath);
           keys(files, (key) => {
             const src = files[key];
+            const suffix = getSuffix(src);
+            const originFile = readS(src);
             const dest = path.join(npmPath, key);
-            copy(src, dest, catchError(() => {
-              if (jsRe.test(src)) {
-                traversePathCode(src, dest);
-              } else if (jsonRe.test(src)) {
-                // TODO
-                // console.log(compressFile(readS(src), true), src, src, absoluteSrcPath);
-                // write(destFile, jsonWillRewriteHook(src, dest), { encoding: 'utf8' });
-              }
-            }));
-          });
 
-          if (isComponent) {
-            minImageFiles(nodeModuleFoldPath, npmPath, { useLog: false });
-          }
+            switch (suffix) {
+              case 'jpeg':
+              case 'jpg':
+              case 'png':
+              case 'svg':
+              case 'gif':
+                minImage(src, dest.replace(fileNameRe, ''));
+                break;
+              case 'wxss':
+                const pathKey = dest.replace(absoluteDestPath, '');
+                webpack(getWebpackCssConfig({ [pathKey]: src }), catchError(() => {
+                  ;
+                }));
+                break;
+              default:
+                resolveComponentFiles(src, dest, suffix, originFile, { encoding });
+                break;      
+            }
+          });
         }
       } catch (err) {
         console.log(err);
@@ -241,6 +287,7 @@ const wxTraverse = (
       }
     },
   });
+
   const { code } = babelGenerator(ast);
   if (module) {
     write(src, isProd() ? uglify(code) : code);
@@ -260,7 +307,11 @@ const compileCompressFile = (
     src = '',
   } = {},
 ) => {
-  const destFile = path.join(__dirname, buildRelativeDir, `./${dest}${destPath}`);
+  const projectDir = path.join(__dirname, buildRelativeDir);
+  const destFile = dest.indexOf(projectDir) === -1
+    ? path.join(projectDir, `./${dest}${destPath}`)
+    : path.join(dest, `./${destPath}`);
+
   if (typeof filePath === 'string') {
     try {
       ensureRunFunc(hooks.start);
@@ -302,7 +353,7 @@ const compileCompressFiles = (
   ensureRunFunc(hooks.start, ...hookArgs);
   delete hooks.start;
   delete hooks.end;
-  keys(entry, key => compileCompressFile(entry[key], key, { compress, hooks, src }), {
+  keys(entry, key => compileCompressFile(entry[key], key, { compress, hooks, src, dest }), {
     // => test file length
     // start: 0,
     // end: 1,
@@ -316,14 +367,15 @@ const jsonWillRewriteHook = (file, ...args) => {
   try {
     const json = JSON.parse(file);
     const { usingComponents } = json;
-    const [ filePath, destFile, src ] = args;
+    const [ srcFile, destFile, src, options = {} ] = args;
+
     if (usingComponents) {
       keys(usingComponents, (compKey) => {
         let compPath = usingComponents[compKey];
         if (npmPrefixRe.test(compPath)) {
           compPath = fixWavy(compPath);
-          const relativeSrcPath = getRelativeFilePath(filePath, src);
-          const prefix = getPathBack(relativeSrcPath);
+          const relativeSrcPath = getRelativeFilePath(srcFile, src, options);
+          const prefix = getPathBack(relativeSrcPath, options);
           compPath = copyCachModule(compPath, {
             isModuleCall: true,
             fixSuffix: true,
@@ -358,10 +410,9 @@ const compileJsonFiles = compileCompressFiles(/\.(?:json)$/, {
   end: 'afterJsonCompile',
 });
 
-const compileWxmlFiles = compileCompressFiles(/\.(?:wxml)$/, {
+const compileWxmlFiles = compileCompressFiles(wxmlRe, {
   start() {
     logger.await('compile wxml');
-    Cach.init('wxml', {});
   },
   didRewrite(file, filePath) {
     Cach.set('wxml', filePath, file);
@@ -428,7 +479,7 @@ const removeUnusedImages = (
   dest = absoluteDestPath,
   callback,
   {
-    imgRe = /.*\/((?:img|images?)\/.+)/g,
+    commonImgRe = /.*\/((?:img|images?|assets?|icons?)\/.+)/g,
     showRemovedImg = true,
     hooks = {},
   } = {},
@@ -436,10 +487,10 @@ const removeUnusedImages = (
   ensureRunFunc(hooks.beforeRemoveUnusedImage);
   logger.await('remove unused image');
   if (isProd()) {
-    const imagePathArray = keys(Cach.get('image'));
+    const imagePathArray = keys(searchFiles(imgTypeRe, dest));
     for (let index = 0; index < imagePathArray.length; index += 1) {
       const imageKey = imagePathArray[index];
-      const imagePath = imageKey.replace(imgRe, '$1');
+      const imagePath = imageKey.replace(commonImgRe, '$1');
       const wxmlKeyArray = keys(Cach.get('wxml'));
       let isUsed = false;
 
@@ -533,22 +584,23 @@ const minImageFiles = async (
   }
 
   const {
-    quality = '65-80',
     hooks = {},
     useLog = true,
   } = options;
-
+  const imgFiles = searchFiles(imgTypeRe, src);
   ensureRunFunc(hooks.beforeMinImage);
+
   if (useLog) {
     logger.await('compile image');
   }
-  Cach.init('image', searchFiles(/\.(?:jpe?g|png|gif|svg)$/, src));
-  const dirArray = keys(Cach.get('image', DIR));
+
+  Cach.init('image', imgFiles);
+  const imgDirArray = keys(Cach.get('image', DIR));
   const spinner = new Spinner('compiling...');
-  for (let index = 0; index < dirArray.length; index += 1) {
-    const dir = dirArray[index];
-    await minImage(`${src}${dir}`, `${dest}${dir}`, options);
-    spinner.say(dir);
+  for (let index = 0; index < imgDirArray.length; index += 1) {
+    const imgDir = imgDirArray[index];
+    await minImage(`${src}${imgDir}`, `${dest}${imgDir}`, options);
+    spinner.say(imgDir);
   }
   spinner.end();
   if (useLog) {
@@ -645,6 +697,7 @@ const compileStart = (
   dest = absoluteDestPath,
   callback,
 ) => {
+  Cach.init('wxml', {});
   time = Date.now();
   removeS(dest);
   ensureRunFunc(callback);
@@ -694,9 +747,9 @@ const STEP_START = [
 ];
 
 const STEP_PROCESS = [
-  compileWxmlFiles,
   compileJsonFiles,
   compileJsFiles,
+  compileWxmlFiles,
   minImageFiles,
   compileWxssFiles,
   removeUnusedImages,
