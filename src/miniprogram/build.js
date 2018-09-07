@@ -168,6 +168,7 @@ const copyCachModule = (
                 break;
               case 'wxml':
                 compileCompressFile(src, pathKey);
+                Cach.set('wxml', src, toBufferString(originFile));
                 break;
               default:
                 resolveComponentFiles(src, dest, suffix, originFile, { encoding });
