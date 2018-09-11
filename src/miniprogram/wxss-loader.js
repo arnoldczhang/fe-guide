@@ -9,6 +9,7 @@ console.warn = signale.warn;
 
 const {
   compressFile,
+  removeEmptyLine,
   CONST,
 } = require('./utils');
 
@@ -57,7 +58,7 @@ module.exports = function (content) {
 
   if (type === 'post') {
     return unCommentImport(
-      compressFile(
+      removeEmptyLine(
         content
       )
     );
