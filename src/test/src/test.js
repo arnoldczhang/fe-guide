@@ -57,8 +57,18 @@
 // console.log(babel.transform(code).code);
 
 
+// const http = require('http');
 
-
+// http.createServer(function(req, res){//回调函数
+//   console.log(req.httpVersion);
+//   console.log(req.headers);
+//   console.log(req.method);
+//   console.log(req.url);
+//   console.log(req.trailers);
+//   console.log(req.complete);
+//   res.writeHead(200,{'Content-Type':'text/javascript'});
+//   res.end(``);
+// }).listen(8000);
 
 
 
