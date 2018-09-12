@@ -70,11 +70,75 @@
 //   res.end(``);
 // }).listen(8000);
 
+// demo1
+// let input = {};
+// let validator = {
+//   set(target, key, value) {
 
+//   },
+//   get(target, key, receiver) {
+//     let copyKey = key;
+//     const lambda = [];
+//     const reMap = {
+//       baseTrans: /^base(\d+)To(\d+)/i,
+//     };
 
+//     const reFunc = {
+//       baseTrans(
+//         methodName = '',
+//         parseNum = 10,
+//         toStringNum = 10,
+//         baseInput = 0,
+//       ) {
+//         if (toStringNum > 36 || parseNum > 36 || toStringNum < 2 || parseNum < 2) {
+//           throw new Error(`TypeError: baseTrans '${methodName}' is not a function`);
+//         }
+//         return parseInt(baseInput, parseNum || 10).toString(toStringNum || 10);
+//       },
+//     };
 
+//     while (copyKey.length) {
+//       const reKeyArray = Object.keys(reMap);
+//       for (let i = 0; i < reKeyArray.length; i += 1) {
+//         const reKey = reKeyArray[i];
+//         const re = reMap[reKey];
+//         const result = copyKey.match(re);
+//         if (result) {
+//           lambda.push(reFunc[reKey].bind(this, ...result));
+//           copyKey = copyKey.slice(result[0].length);
+//           break;
+//         }
+//       }
+//       copyKey = '';
+//     }
+//     return val => lambda.reduce((result, func) => func(result), val);
+//   },
+// };
 
+// // demo2
+// input = function sum(...args) {
+//   return args.reduce((a, b) => a + b, 0);
+// };
+// validator = {
+//   apply(target, thisArg, args) {
+//     console.log(target, thisArg, args);
+//   },
+// };
 
+// window.proxy = new Proxy(input, validator);
 
+const recast = require('recast');
+
+const code =
+  `
+  function add(a, b) {
+    return a +
+      // 有什么奇怪的东西混进来了
+      b;
+  }
+  `;
+const ast = recast.parse(code);
+
+console.log(ast)
 
 

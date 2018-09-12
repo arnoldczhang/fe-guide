@@ -205,6 +205,7 @@
     "react-redux": "^5.0.6",
     "react-scripts": "1.0.17",
     "react-slate": "^0.5.1",
+    "recast": "^0.15.5",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-saga": "^0.16.0",
