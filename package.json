@@ -70,6 +70,7 @@
     "g20:server": "webpack --config ./src/rematch-typescript/build/webpack.dll.config.js & tsc -w -p ./src/rematch-typescript & webpack-dev-server --progress --config ./src/rematch-typescript/build/webpack.dev.js",
     "g21:mock": "cross-env NODE_ENV=development node ./src/miniprogram/bin.js",
     "g21:release": "cross-env NODE_ENV=production node ./src/miniprogram/bin.js",
+    "g22:roll": "rollup --config ./src/treeshake/build/rollup.config.js",
     "gen": "./src/react-cli init",
     "save": "node ./src/test/src/saveImage",
     "lynt": "lynt ./src/lynt/lynt.js",
@@ -79,7 +80,6 @@
   "license": "MIT",
   "dependencies": {
     "@babel/cli": "^7.0.0-beta.40",
-    "@babel/core": "^7.0.0-beta.40",
     "@babel/plugin-syntax-async-generators": "^7.0.0-beta.40",
     "@babel/plugin-transform-runtime": "^7.0.0-beta.32",
     "@babel/preset-env": "^7.0.0-beta.40",
@@ -236,7 +236,11 @@
     "wired-elements": "^0.6.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.1",
+    "@babel/plugin-external-helpers": "^7.0.0",
     "@types/es6-promise": "^3.3.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
     "brotli-webpack-plugin": "^0.5.0",
     "cache-loader": "^1.2.2",
     "cross-env": "^5.2.0",
@@ -258,6 +262,8 @@
     "postcss-modules": "^1.1.0",
     "react-lifecycle-visualizer": "^1.0.2",
     "reactopt": "^1.5.5",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-node-resolve": "^3.4.0",
     "signale": "^1.1.0",
     "sinon-chai": "^2.14.0",
     "ts-loader": "^4.4.1",

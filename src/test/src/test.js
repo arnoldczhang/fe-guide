@@ -127,18 +127,23 @@
 
 // window.proxy = new Proxy(input, validator);
 
-const recast = require('recast');
+// const recast = require('recast');
 
-const code =
-  `
-  function add(a, b) {
-    return a +
-      // 有什么奇怪的东西混进来了
-      b;
-  }
-  `;
-const ast = recast.parse(code);
+// const code =
+//   `
+//   function add(a, b) {
+//     return a +
+//       // 有什么奇怪的东西混进来了
+//       b;
+//   }
+//   `;
+// const ast = recast.parse(code);
 
-console.log(ast)
+// console.log(ast)
 
 
+async function aa() {
+  await Promise.resolve(1);
+}
+
+console.log(aa());

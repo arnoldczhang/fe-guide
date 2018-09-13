@@ -54,9 +54,9 @@ module.exports = {
         options: {
           babelrc: false,
           presets: [
-            "react",
-            ["es2015", { "modules": false }],
-            "stage-2",
+            'react',
+            ['es2015', { modules: false }],
+            'stage-2',
           ],
           plugins: [
             'transform-runtime',
@@ -64,7 +64,7 @@ module.exports = {
             'transform-class-properties',
             'syntax-async-generators',
             ['transform-react-jsx', {
-              "pragma": "React.createElement",
+              pragma: 'React.createElement',
             }],
           ],
         },
