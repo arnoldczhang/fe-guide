@@ -257,3 +257,5 @@ while (result = reg.exec(str)) {
 
 
 
+// 设置Error的stack层数
+Error.stackTraceLimit = Infinity
