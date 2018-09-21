@@ -27,25 +27,25 @@ const config = merge(base, {
   },
   optimization: {
     concatenateModules: false,
+    runtimeChunk: 'single',
     splitChunks: {
-      chunks: 'async',
+      chunks: 'all',
+      maxInitialRequests: Infinity,
+      minSize: 0,
       cacheGroups: {
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
-        },
-        vendors: {
-          name: 'vendor',
-          chunks: 'initial',
+        vendor: {
           test: /[\\/]node_modules[\\/]/,
-          priority: -10,
-          enforce: true,
+          name(module) {
+            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+            return `npm.${packageName.replace('@', '')}`;
+          },
         },
       },
     },
   },
   plugins: [
+    // so that file hashes don't change unexpectedly
+    new webpack.HashedModuleIdsPlugin(),
     new CleanWebpackPlugin(['../test/dist'], {
       root: path.join(__dirname, '..'),
     }),
@@ -53,7 +53,6 @@ const config = merge(base, {
       title: 'Development',
       hash: true,
       template: './src/test/index.html',
-      // filename: '../test/dist/index.min.html',
       minify: {
         removeComments: true,
         collapseWhitespace: true,

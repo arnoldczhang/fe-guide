@@ -31,6 +31,7 @@
 
 ## webpack 4+参考
   - https://juejin.im/entry/5b63eb8bf265da0f98317441
+  - js拆包：https://mp.weixin.qq.com/s/a946nG0oNYnDBMMwgtDBpA
   
 
 
