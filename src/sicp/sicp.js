@@ -2063,14 +2063,14 @@ class Polynomial {
 }
 
 
-// const withdraw = (balance = 100) => (amount) => {
-//   const result = balance - amount;
-//   if (result >= 0) {
-//     balance = result;
-//     return result;
-//   }
-//   return 'Insufficient money';
-// };
+const withdraw = (balance = 100) => (amount) => {
+  const result = balance - amount;
+  if (result >= 0) {
+    balance = result;
+    return result;
+  }
+  return 'Insufficient money';
+};
 
 // const w1 = withdraw(100);
 // console.log(expect(w1(10)).to.be.equal(90));
@@ -2079,31 +2079,31 @@ class Polynomial {
 
 
 
-// const makeAccount = (balance = 100) => (type, amount = 0) => {
-//   let result = balance;
-//   const typeType = typeof type;
+let makeAccount = (balance = 100) => (type, amount = 0) => {
+  let result = balance;
+  const typeType = typeof type;
 
-//   if (typeType === 'string') {
-//     switch (type) {
-//       case 'deposit':
-//         result += amount;
-//         break;
-//       case 'withdraw':
-//         result -= amount;
-//         if (result < 0) {
-//           return 'Insufficient money';
-//         }
-//         break;
-//       default:
-//         throw new Error('action is invalid');
-//         break;
-//     }
-//   } else if (typeType === 'function') {
-//     result = type(result, amount);
-//   }
-//   balance = result;
-//   return result;
-// };
+  if (typeType === 'string') {
+    switch (type) {
+      case 'deposit':
+        result += amount;
+        break;
+      case 'withdraw':
+        result -= amount;
+        if (result < 0) {
+          return 'Insufficient money';
+        }
+        break;
+      default:
+        throw new Error('action is invalid');
+        break;
+    }
+  } else if (typeType === 'function') {
+    result = type(result, amount);
+  }
+  balance = result;
+  return result;
+};
 
 // const dispatch = makeAccount(100);
 // console.log(expect(dispatch('deposit', 10)).to.be.equal(110));
@@ -2111,7 +2111,7 @@ class Polynomial {
 // console.log(expect(dispatch((bal, amt) => ((bal * 2) + amt), 10)).to.be.equal(210));
 
 
-const makeAccount = (password = '12345', balance = 100) => {
+makeAccount = (password = '12345', balance = 100) => {
   const MAX_ATTEMPTS = 7;
   let attempts = 0;
 
@@ -2155,21 +2155,39 @@ const makeAccount = (password = '12345', balance = 100) => {
   };
 };
 
-const dispatch = makeAccount();
-console.log(expect(dispatch('12345', 'deposit', 10)).to.be.equal(110));
-console.log(expect(dispatch('12345', 'withdraw', 10)).to.be.equal(100));
-console.log(expect(dispatch('12345', (bal, amt) => ((bal * 2) + amt), 10)).to.be.equal(210));
-dispatch('1', 'deposit', 10);
-console.log(expect(dispatch('1', 'deposit', 10)).to.be.deep.equal(new Error('password is invalid')));
-dispatch('1', 'deposit', 10);
-dispatch('1', 'deposit', 10);
-dispatch('1', 'deposit', 10);
-dispatch('1', 'deposit', 10);
-dispatch('1', 'deposit', 10);
-console.log(expect(dispatch('1', 'deposit', 10)).to.be.equal('cops coming'));
+// const dispatch = makeAccount();
+// console.log(expect(dispatch('12345', 'deposit', 10)).to.be.equal(110));
+// console.log(expect(dispatch('12345', 'withdraw', 10)).to.be.equal(100));
+// console.log(expect(dispatch('12345', (bal, amt) => ((bal * 2) + amt), 10)).to.be.equal(210));
+// dispatch('1', 'deposit', 10);
+// console.log(expect(dispatch('1', 'deposit', 10)).to.be.deep.equal(new Error('password is invalid')));
+// dispatch('1', 'deposit', 10);
+// dispatch('1', 'deposit', 10);
+// dispatch('1', 'deposit', 10);
+// dispatch('1', 'deposit', 10);
+// dispatch('1', 'deposit', 10);
+// console.log(expect(dispatch('1', 'deposit', 10)).to.be.equal('cops coming'));
+
+// const makeSimplifiedWithdraw = balance => amount => balance -= amount;
+
+// const D = makeSimplifiedWithdraw(100);
+// console.log(expect(D(10)).to.be.equal(90));
+// console.log(expect(D(10)).to.be.equal(80));
+// console.log(expect(D(10)).to.be.equal(70));
 
 
+const f = (input = 0) => {
+  const square = x => x * x;
+  const sumOfSquare = (...args) => (
+    args.reduce((s, num) => (
+      s + square(num)
+    ), 0)
+  );
 
+  return sumOfSquare(input * 2, input + 1);
+};
+
+// console.log(expect(f(5)).to.be.equal(136));
 
 
 // ast
