@@ -2189,6 +2189,20 @@ const f = (input = 0) => {
 
 // console.log(expect(f(5)).to.be.equal(136));
 
+const cons3 = (x, y) => [x, y];
+const car3 = (z) => z[0];
+const cdr3 = (z) => z[1];
+const setCar3 = (z, newVal) => (z[0] = newVal);
+const setCdr3 = (z, newVal) => (z[1] = newVal);
+
+// const x = cons3(1, 2);
+// const list = cons3(x, x);
+// setCar3(cdr3(list), 100);
+// console.log(expect(car3(x)).to.be.equal(100));
+
+
+
+
 
 // ast
 const scripts = `
