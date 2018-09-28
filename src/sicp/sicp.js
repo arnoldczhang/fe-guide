@@ -2201,7 +2201,9 @@ const setCdr3 = (z, newVal) => (z[1] = newVal);
 // console.log(expect(car3(x)).to.be.equal(100));
 
 
+const makeTable = () => {
 
+};
 
 
 // ast
