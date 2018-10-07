@@ -25,8 +25,8 @@ export type Props = Partial<{
 }>;
 
 class Header extends PureComponent<Props, State> {
-  props: Props = initialProps;
   state: State = initialState;
+  static defaultProps = initialProps;
 
   constructor(props: Props) {
     super(props);
