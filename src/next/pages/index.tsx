@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-
+import 'antd/dist/antd.css';
 
 import './index.less';
 import App from '../app/App';

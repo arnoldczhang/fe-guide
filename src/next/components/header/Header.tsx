@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import { DatePicker } from 'antd';
+
 import selector from '../../selectors/header';
 
 const styles = require('./Header.less');
@@ -45,7 +47,7 @@ class Header extends PureComponent<Props, State> {
   }
 
   render() {
-    console.log(this);
+    // console.log(this);
     const {
       name,
     } = this.props;
@@ -60,6 +62,7 @@ class Header extends PureComponent<Props, State> {
         {
           show ? (<span>loading...</span>) : null
         }
+        <DatePicker />
       </header>
     );
   }

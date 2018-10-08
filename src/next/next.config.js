@@ -1,4 +1,5 @@
 const withLess = require('@zeit/next-less');
+const withCSS = require('@zeit/next-css');
 const withTypescript = require('@zeit/next-typescript');
 const withImages = require('next-images');
 
@@ -9,6 +10,11 @@ module.exports = withTypescript({
       importLoaders: 1,
       localIdentName: "[local]___[hash:base64:5]",
     },
-    ...withImages(),
+    lessLoaderOptions: {
+      javascriptEnabled: true,
+    },
+    ...withCSS({
+      ...withImages(),
+    }),
   }),
 });

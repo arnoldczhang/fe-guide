@@ -14,6 +14,7 @@
     "@types/react": "^16.4.15",
     "@types/react-dom": "^16.0.8",
     "@types/react-redux": "^6.0.9",
+    "antd": "^3.10.0",
     "next": "^7.0.1",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@rematch/core": "^1.0.4",
+    "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",
     "@zeit/next-typescript": "^1.1.1",
     "anujs": "^1.4.7",
