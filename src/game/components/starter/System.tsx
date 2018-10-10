@@ -57,7 +57,7 @@ const System: SFC<SystemProps> = ({
 
   return (
     <Row type={'flex'} gutter={8} align={'middle'} justify={'center'}>
-      <Col span={17}>
+      <Col>
       {
         list.map(item => (
           getRadioGroup(item, result[item.key])

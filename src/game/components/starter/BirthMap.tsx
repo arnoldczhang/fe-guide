@@ -58,6 +58,11 @@ const BirthMap: SFC<BirthMapProps> = ({
 
   const getMapIntro: () => ReactNode|void = () => {
     if (selectedArea) {
+      let {
+        martial,
+      } = selectedArea;
+      martial = martial || {};
+
       return (
         <Col span={9}>
           <Row>
@@ -66,6 +71,14 @@ const BirthMap: SFC<BirthMapProps> = ({
           <Row>
             <Col className={styles.tc}>{selectedArea.content}</Col>
           </Row>
+          {
+            Object.keys(martial).map((artKey: string): ReactNode => (
+              <Row>
+                <Col>{artKey}</Col>
+                <Col>{(martial[artKey] || []).map(item => item)}</Col>
+              </Row>
+              ))
+          }
         </Col>
         );
     }
@@ -73,7 +86,7 @@ const BirthMap: SFC<BirthMapProps> = ({
   };
 
   return (
-    <Row className={styles.mb20}>
+    <Row className={styles.mb20} type={'flex'} gutter={0} align={'top'} justify={'center'}>
       <Col span={12} className={styles['map-container']}>
         {getRenderedMap(info)}
       </Col>

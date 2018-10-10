@@ -71,6 +71,13 @@ export const qhyl: MartialArt = {
   traditional: true,
 };
 
+export const pscl: MartialArt = {
+  title: '磐石锤炼篇',
+  skilled: 1,
+  introduce: '暂无',
+  traditional: true,
+};
+
 export const kongsangMAM: MartialArtMap = {
   [Category.internal]: [qhyl],
 };
@@ -79,20 +86,20 @@ export const kongsang: AreaInfo = {
   title: '空桑',
   key: 'kongsang',
   color: 'green',
-  content: '空桑又名空桑药王派，空桑山虽为雪山，却别有洞天',
+  content: '空桑空桑空桑空桑空桑',
   martial: kongsangMAM,
   selected: false,
 };
 
 export const zhujianMAM: MartialArtMap = {
-  [Category.internal]: [qhyl],
+  [Category.internal]: [pscl],
 };
 
 export const zhujian: AreaInfo = {
-  title: '铸剑',
+  title: '铸剑山庄',
   key: 'zhujian',
   color: 'yellow',
-  content: '铸剑铸剑铸剑铸剑',
+  content: '铸剑山庄位于湛庐山，相传乃是铸剑祖师欧冶子所创建。',
   martial: zhujianMAM,
   selected: false,
 };
