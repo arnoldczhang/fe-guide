@@ -1,31 +1,27 @@
 import { ModelConfig } from '@rematch/core';
-import { headerInterface } from '../types';
+import { StarterInterface } from '../types';
 import { cach } from '../utils';
 
 const initialState = cach.get('starter') || {
-
+  step: 0,
 };
 
- const headerModel: ModelConfig = {
+ const starterModel: ModelConfig = {
   state: initialState,
   reducers: {
-  },
-  effects: {
-    async changeTitleAsync(payload: headerInterface): Promise<any> {
-      this.changeTitleStart();
-      await new Promise<string|void>((resolve, reject) => {
-        setTimeout(() => {
-          try {
-            this.changeTitleSuccess(payload);
-            resolve();
-          } catch (err) {
-            this.changeTitleFail(payload);
-            reject();
-          }
-        }, 2000);
+    prevStep(state: StarterInterface): StarterInterface {
+      return Object.assign({}, state, {
+        step: state.step - 1,
+      });
+    },
+    nextStep(state: StarterInterface): StarterInterface {
+      return Object.assign({}, state, {
+        step: state.step + 1,
       });
     },
   },
+  effects: {
+  },
 };
 
-export default headerModel;
+export default starterModel;

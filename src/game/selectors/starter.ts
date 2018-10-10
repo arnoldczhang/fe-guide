@@ -1,19 +1,24 @@
 import { createSelector } from 'reselect';
-import { stateInterface, starterInterface, appInterface } from '../types';
+import {
+  StateInterface,
+  StarterInterface,
+  AppInterface,
+  StarterProps,
+} from '../types';
 
-const appSelector = (state: stateInterface): appInterface => state.app;
-const starterSelector = (state: stateInterface): starterInterface => state.starter;
+const appSelector = (state: StateInterface): AppInterface => state.app;
+const starterSelector = (state: StateInterface): StarterInterface => state.starter;
 
 export default createSelector(
   appSelector,
   starterSelector,
   (
-    app: appInterface,
-    starter: starterInterface,
-  ) => {
+    app: AppInterface,
+    starter: StarterInterface,
+  ): StarterProps => {
     return {
-      ...app,
-      ...starter,
+      stage: app.stage,
+      stepIndex: starter.step,
     };
   }
 );

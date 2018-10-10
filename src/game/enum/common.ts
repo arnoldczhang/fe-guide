@@ -1,6 +1,10 @@
 export enum Stage {
-  create,
-  map,
-  home,
-  fight,
-}
+  Create,
+  Map,
+  Home,
+  Fight,
+};
+
+export enum Category {
+  internal = '内功',
+};

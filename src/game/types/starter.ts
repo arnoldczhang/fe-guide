@@ -1,14 +1,105 @@
-import { Stage } from '../enum';
+import {
+  ReactNode,
+} from 'react';
 
-export interface starterInterface {
+import { CF, CO } from './common';
+import { Stage, CreateStep, SystemKeyEnum } from '../enum';
+
+export type PersonKeys = 'experience' | 'treasure' | 'feature';
+export type SystemKeys = SystemKeyEnum;
+export type StartConfig = {
+  [K in PersonKeys]: Array<string>|void;
+} & {
+  [K in SystemKeys]: string;
+};
+
+export interface StarterInterface {
+  step: number;
+};
+
+export interface StarterState {
+  point: number;
+  count: number;
+  maxPoint: number;
+  maxStep: number;
+  config: StartConfig|any;
+  map: Array<Array<AreaInfo>>;
+  lastMapOuterIndex: number;
+  lastMapInnerIndex: number;
+  selectedArea: AreaInfo|void;
+};
+
+export interface StarterProps {
+  children?: ReactNode;
+  dispatch?: Function|any;
+  stepIndex: CreateStep;
+  stage?: Stage;
+};
+
+export interface StepButtonProps {
+  prevFunc: CF;
+  nextFunc: CF;
+  prevWord?: string;
+  nextWord?: string;
+  finishWord?:string;
+  index?: number;
+  maxIndex?: number;
+};
+
+export interface PersonInfoInterface {
+  title: string;
+  key: PersonKeys;
+  placeholder: string;
+  keyArray: Array<string>;
+  keyObject: CO;
+};
+
+export interface PersonInfoProps {
+  count: number;
+  max: number;
+  result: StartConfig;
+  calcCallback: Function;
+  list: Array<PersonInfoInterface>;
+};
+
+export interface SystemConfigInterface {
+  title: string;
+  key: SystemKeys;
+  keyArray: Array<string>;
+  keyObject: CO;
+  defaultValue?: string;
 }
 
-export type StarterState = Partial<{
-}>;
+export interface MartialArt {
+  title: string;
+  skilled: number;
+  introduce?: string;
+  traditional: boolean;
+  // ...
+}
 
-export type StarterProps = Partial<{
-  children: React.ReactNode;
-  dispatch: Function|any;
-  stage?: Stage;
-}>;
+export interface MartialArtMap {
+  [key: string]: Array<MartialArt>;
+}
+
+export interface AreaInfo {
+  color?: string;
+  title?: string;
+  key?: string;
+  content?: string;
+  martial?: MartialArtMap;
+  selected?: boolean;
+}
+
+export interface SystemProps {
+  result: StartConfig;
+  list: Array<SystemConfigInterface>;
+  selectCallback?: Function;
+};
+
+export interface BirthMapProps {
+  info: Array<Array<AreaInfo>>;
+  clickCallback: Function;
+  selectedArea?: AreaInfo;
+};
 

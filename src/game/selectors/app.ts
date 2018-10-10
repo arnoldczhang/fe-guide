@@ -1,11 +1,11 @@
 import { createSelector } from 'reselect';
-import { stateInterface, appInterface } from '../types';
+import { StateInterface, AppInterface, AppProps } from '../types';
 
-const appSelector = (state: stateInterface): appInterface => state.app;
+const appSelector = (state: StateInterface): AppInterface => state.app;
 
 export default createSelector(
   appSelector,
-  (app: appInterface) => {
+  (app: AppInterface): AppProps => {
     return {
       ...app,
     };

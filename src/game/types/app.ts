@@ -1,7 +1,7 @@
 import { Stage } from '../enum';
 
-export interface appInterface {
-  stage?: Stage,
+export interface AppInterface {
+  stage: Stage,
 }
 
 export type AppState = Partial<{
@@ -9,8 +9,8 @@ export type AppState = Partial<{
 }>;
 
 export type AppProps = Partial<{
-  children: React.ReactNode;
-  dispatch: Function|any;
+  children?: React.ReactNode;
+  dispatch?: Function|any;
   stage: Stage;
 }>;
 

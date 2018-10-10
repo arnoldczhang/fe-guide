@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, ReactNode } from 'react';
 
 import { ErrorState, ErrorProps, ErrorInfo } from '../../../types';
 
@@ -21,18 +21,26 @@ export default class ErrorBoundary extends PureComponent<ErrorProps, ErrorState>
     };
   }
 
-  componentDidCatch(err: Error, info: ErrorInfo) {
+  componentDidCatch(err: Error, info: ErrorInfo): void {
     this.setState({
       hasError: true,
     });
   }
 
-  render(){
+  render(): ReactNode {
+    const {
+      className = '',
+      children,
+    } = this.props;
     if (this.state.hasError) {
       return (
         <div>Something went wrong!</div>
       );
     }
-    return this.props.children;
+    return (
+      <div className={className || ''}>
+        {children}
+      </div>
+      );
   }
 }
