@@ -31,7 +31,7 @@
     - tcp
   - 缓存处理
     - If-Modified-Since：再次请求服务器时，通过此字段通知服务器上次请求时，服务器返回的资源最后修改时间
-    - Expires（与Cache-Control共存时，以Cache-Control为准）
+    - 缓存头部优先级：Pragma > Cache-Control > Expires > ETag > Last-Modified
 
 ## http1.1
   - 缓存处理扩展
@@ -70,6 +70,7 @@
   - HTTP2.0 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DEFLATE
 
 ## quic
+  - 基于UDP
   - 通过减少往返次数，以缩短连接建立时间
   - 使用一种新的ACK确认机制（包含了NACK），达到更好的拥塞控制
   - 多路复用，并解决HTTP/2队头阻塞问题，即一个流的TCP包丢失导致所有流都暂停组装。在QUIC里面，一个流的包丢失只会影响当前流，不会影响其它流。

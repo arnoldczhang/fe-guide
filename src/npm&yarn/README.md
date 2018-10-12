@@ -1,4 +1,9 @@
-# npm & yarn基本操作 & 相关常识
+# npm
+
+## 参考
+  -  https://github.com/diamont1001/blog/issues/11
+
+## npm & yarn基本操作 & 相关常识
   - ## 相关常识
     - 格式
       - 大版本.次要版本.小版本
@@ -46,4 +51,10 @@
       - `发布前打包一下`
     - npm publish
   - ## 其他操作
-    - npm owner add 
+    - ### 查看模块 owner
+    - npm owner ls demo
+    - ### 添加一个发布者
+    - npm owner add xxx@yyy.com demo
+
+    - ### 删除一个发布者
+    - npm owner rm xxx@yyy.com demo

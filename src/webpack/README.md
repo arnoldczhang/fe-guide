@@ -27,3 +27,15 @@
         - EntryOptionPlugin
           - entry-option
         - ...
+
+
+## webpack 4+参考
+  - https://juejin.im/entry/5b63eb8bf265da0f98317441
+  - [js拆包](https://mp.weixin.qq.com/s/a946nG0oNYnDBMMwgtDBpA)
+  
+## 注意事项
+  - 使用 import()，需要dynamic-import插件 (https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/)
+  - ![import](import-polyfill.png)
+
+
+

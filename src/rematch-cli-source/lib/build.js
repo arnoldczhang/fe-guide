@@ -9,10 +9,10 @@ const open = require('opn');
 const { CODE } = require('./steps');
 const { clearConsole } = require('./utils');
 
-const buildDllFile = async (path) => {
+const buildDllFile = async (p) => {
   console.log(color.green('Start compiling the dll file...'));
   try {
-    const dllFile = require(`${path}/build/webpack.dll.config.js`);
+    const dllFile = require(`${p}/build/webpack.dll.config.js`);
     return new Promise((resolve, reject) => {
       webpack(dllFile, (err, stats) => {
         if (err) {
@@ -33,19 +33,42 @@ const buildDllFile = async (path) => {
   }
 };
 
-const buildTsFiles = (path) => {
-  spawn('tsc', ['-w'], { cwd: path });
+const buildTsFiles = (p) => {
+  spawn('tsc', ['-w'], { cwd: p });
   console.log(color.green('Watching the ts files transfer...'));
 };
 
-const runServer = async (path) => {
+const buildProdFiles = (p) => {
+  console.log(color.green('Start compiling the files in production mode...'));
   try {
-    let devConfig = require(`${path}/build/webpack.dev`);
+    const prodFile = require(`${p}/build/webpack.prod.js`);
+    webpack(prodFile, (err, stats) => {
+      if (err) {
+        console.log(err);
+        process.exit(1);
+      }
+
+      if (stats.hasErrors()) {
+        console.log('❌', color.red('webpack compiled failed.'));
+        process.exit(1);
+      }
+      console.log(color.green('all files compiled in production mode...'));
+      process.exit(0);
+    });
+  } catch (err) {
+    console.log(err);
+    process.exit(1);
+  }
+};
+
+const runServer = async (p) => {
+  try {
+    const devConfig = require(`${p}/build/webpack.dev`);
     const config = require('./server.config')(devConfig);
     const devServer = config.devServer || {};
     const {
       port = 8080,
-      host = 'localhost'
+      host = 'localhost',
     } = devServer;
     return Promise.resolve().then(() => {
       return serve({
@@ -83,15 +106,17 @@ const build = async ({
   file = './src/index',
   mode = CODE.DEV,
   type = CODE.TS,
-  path = process.cwd(),
+  p = process.cwd(),
 }) => {
-  await buildDllFile(path);
+  await buildDllFile(p);
   if (type === CODE.TS) {
-    buildTsFiles(path);
+    buildTsFiles(p);
   }
 
   if (mode === CODE.DEV) {
-    await runServer(path);
+    await runServer(p);
+  } else {
+    buildProdFiles(p);
   }
 };
 

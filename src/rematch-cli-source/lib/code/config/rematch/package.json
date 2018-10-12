@@ -8,7 +8,8 @@
   "bin": {
   },
   "scripts": {
-    "start": "rematch build --mode development"
+    "start": "rematch build --mode development",
+    "prod": "rematch build -m production"
   },
   "license": "MIT",
   "dependencies": {

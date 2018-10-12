@@ -9,9 +9,9 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 module.exports = {
   output: {
     path: path.join(__dirname, '../dist'),
-    filename: '[name].[hash].js',
-    chunkFilename: '[name].[chunkhash].js',
-    sourceMapFilename: '[file].[chunkhash].map',
+    filename: '[name].js',
+    chunkFilename: '[name].js',
+    // sourceMapFilename: '[file].[chunkhash].map',
     crossOriginLoading: 'anonymous',
     publicPath: '',
   },
@@ -54,9 +54,9 @@ module.exports = {
         options: {
           babelrc: false,
           presets: [
-            "react",
-            "es2015",
-            "stage-2",
+            'react',
+            ['es2015', { modules: false }],
+            'stage-2',
           ],
           plugins: [
             'transform-runtime',
@@ -64,7 +64,7 @@ module.exports = {
             'transform-class-properties',
             'syntax-async-generators',
             ['transform-react-jsx', {
-              "pragma": "React.createElement",
+              pragma: 'React.createElement',
             }],
           ],
         },

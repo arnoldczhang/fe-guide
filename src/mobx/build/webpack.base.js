@@ -71,24 +71,33 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
-        options: {
-          babelrc: false,
-          presets: [
-            "react",
-            "es2015",
-            "stage-2",
-          ],
-          plugins: [
-            'transform-runtime',
-            'transform-decorators-legacy',
-            'transform-class-properties',
-            'syntax-async-generators',
-            ['transform-react-jsx', {
-              "pragma": "React.createElement",
-            }],
-          ],
-        },
+        use: [
+          {
+            loader: 'cache-loader',
+            options: {
+            },
+          },
+          {
+            loader: 'babel-loader',
+            options: {
+              babelrc: false,
+              presets: [
+                'react',
+                'es2015',
+                'stage-2',
+              ],
+              plugins: [
+                'transform-runtime',
+                'transform-decorators-legacy',
+                'transform-class-properties',
+                'syntax-async-generators',
+                ['transform-react-jsx', {
+                  pragma: 'React.createElement',
+                }],
+              ],
+            },
+          },
+        ],
       },
       // ts-node
       // https://webpack.js.org/configuration/configuration-languages/
@@ -116,12 +125,12 @@ module.exports = {
             {
               loader: 'postcss-loader',
               options: {
-                plugins: (loader) => [
+                plugins: () => [
                   require('autoprefixer')({
                     browsers: [
                       'Android >= 4.0',
                       'last 3 versions',
-                      'iOS > 6'
+                      'iOS > 6',
                     ],
                   }),
                 ],

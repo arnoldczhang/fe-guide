@@ -2,20 +2,21 @@
 const fs = require('fs-extra');
 const path = require('path');
 const color = require('chalk');
-const babel = require("babel-core");
+const babel = require('babel-core');
 const generator = require('babel-generator');
 const babelTraverse = require("babel-traverse");
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const uglifyJS = require('uglify-js');
 const readline = require('readline');
+const ora = require('ora');
+const signale = require('signale');
 const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
-const ora = require('ora');
-const signale = require('signale');
+const imageminSvgo = require('imagemin-svgo');
+const imageminGifsicle = require('imagemin-gifsicle');
 const { Signale } = signale;
 
 console.error = signale.fatal;
@@ -28,11 +29,12 @@ const CODE = {
   PROD: 'production',
 };
 const SRC = '/src';
-const DEST = process.env.NODE_ENV === CODE.PROD ? '/release' : '/destination';
+const DEST = process.env.NODE_ENV === CODE.PROD ? '/release' : '/dist';
 
 const isProd = () => (process.env.NODE_ENV === CODE.PROD);
 const isDev = () => (process.env.NODE_ENV === CODE.DEV);
 const replaceSlash = (str = '') => str.replace(/(\\)\1*/g, '/');
+const replaceIndex = (str = '') => str.replace(/(\.[^\.]+)$/, '\/index$1');
 const logStart = (title = '') => (console.log(`Starting '${color.cyan(title)}'...`));
 const fixWavy = (input = '') => (input.slice(Number(/^~/.test(input))));
 const getSuffix = (input = '') => ((/\.([^\.]+)$/.exec(input) || [])[1] || '');
@@ -186,32 +188,40 @@ const ensureRunFunc = (input, ...args) => {
 const babelTransform = (input, options = {}) => {
   input = toBufferString(input);
   if (typeof input === 'string') {
-    return babel.transform(input, {
-      sourceMap: true,
-      presets: ['es2015', 'stage-2'],
-      plugins: [
-        ['transform-inline-environment-variables', {
-          include: [
-            'NODE_ENV',
+    try {
+      const result = babel.transform(input, {
+        sourceMap: true,
+        presets: ['es2015', 'stage-2'],
+        plugins: [
+          ['transform-inline-environment-variables', {
+            include: [
+              'NODE_ENV',
+            ],
+          }],
+          'transform-class-properties',
+          'transform-decorators-legacy',
+          'transform-object-rest-spread',
+          'transform-class-properties',
+          'transform-object-rest-spread',
+          'transform-async-functions',
+          'transform-decorators',
+          [
+            "transform-runtime",
+            {
+              "helpers": false,
+              "polyfill": false,
+              "regenerator": true,
+            }
           ],
-        }],
-        'transform-class-properties',
-        'transform-decorators-legacy',
-        'transform-object-rest-spread',
-        'transform-class-properties',
-        'transform-object-rest-spread',
-        'transform-async-functions',
-        'transform-decorators',
-        [
-          "transform-runtime",
-          {
-            "helpers": false,
-            "polyfill": false,
-            "regenerator": true,
-          }
         ],
-      ],
-    });
+      });
+
+      // do something...
+      return result;
+    } catch (err) {
+      console.log(input);
+      console.log(err.message)
+    }
   }
   return input;
 };
@@ -228,7 +238,7 @@ const catchError = (
     if (typeof error === 'object') {
       error = JSON.stringify(error);
     }
-    ensureRunFunc(fallback, error) || console.error(color.red(error));
+    ensureRunFunc(fallback, error) || console.trace(color.red(error));
     if (force) {
       process.exit(1);
     }
@@ -251,18 +261,15 @@ const getWebpackCssConfig = (
           safe: true,
           discardComments: {
             removeAll: true,
-          }
+          },
         },
       }),
     ],
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: `..${DEST}[name]`,
+      filename: `..${options.destName || DEST}[name]`,
     }),
-    // new CleanWebpackPlugin([`.${DEST}`], {
-    //   root: path.join(__dirname, '..'),
-    // }),
   ],
   module: {
     rules: [
@@ -277,7 +284,16 @@ const getWebpackCssConfig = (
             },
           },
           {
-            loader: './webpack/combine-loader.js',
+            loader: path.join(__dirname, './wxss-loader.js'),
+            options: Object.assign({}, options, {
+              type: 'post',
+            }),
+          },
+          {
+            loader: 'less-loader',
+          },
+          {
+            loader: path.join(__dirname, './wxss-loader.js'),
             options,
           },
         ],
@@ -287,7 +303,14 @@ const getWebpackCssConfig = (
 });
 
 const uglify = (input = '', callback) => {
-  const { error, code } = uglifyJS.minify(input, { output: {} });
+  const { error, code } = uglifyJS.minify(input, {
+    output: {},
+    compress: true,
+    mangle: {
+      toplevel: true,
+    },
+    toplevel: true,
+  });
   if (error) {
     return console.error(color.red(uglifyRes.error));
   }
@@ -302,13 +325,15 @@ const minImage = async (
     hooks = {},
   } = {},
 ) => {
-  src = /(\.[\w]+)$/.test(src) ? src : `${src}/*.{jpg,jpeg,png,gif}`;
+  src = /(\.[\w]+)$/.test(src) ? src : `${src}/*.{jpg,jpeg,png,gif,svg}`;
   try {
     ensureRunFunc(hooks.start);
     await imagemin([src], `${dest}`, {
       plugins: [
         imageminJpegtran(),
         imageminPngquant({ quality }),
+        imageminSvgo({ plugins: [{removeViewBox: false}] }),
+        imageminGifsicle(),
       ],
     });
     ensureRunFunc(hooks.end);
@@ -324,12 +349,25 @@ const Cach = (() => {
       return _cach;
     },
     init(id, value) {
-      this.getCach()[id] = value || {};
+      if (!this.has(id)) {
+        this.getCach()[id] = value || {};
+      }
+    },
+    has(id) {
+      return id && !!this.getCach()[id];
     },
     set(id, key, value) {
-      if (key) {
-        this.getCach()[id]  = this.getCach()[id] || {};
-        this.getCach()[id][key] = value;
+      if (id && key) {
+        this.init(id);
+        const thisCach = this.get(id);
+        const type = typeof key;
+        if (type === 'string') {
+          thisCach[key] = value;
+        } else if (type === 'object') {
+          keys(type, (key) => {
+            thisCach[key] = type[key];
+          });
+        }
       }
     },
     get(id, key) {
@@ -423,8 +461,10 @@ module.exports = {
   removeEmptyLine,
   ensureRunFunc,
   replaceSlash,
+  replaceIndex,
   keys,
   getSuffix,
   fixWavy,
   getPathBack,
+  toBufferString,
 };

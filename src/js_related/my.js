@@ -38,13 +38,20 @@ indexOf:处理字符串，同是字符串，略快
 
 
 
-// 0.1 + 0.2 !== 0.3 
+// 0.1 + 0.2 !== 0.3
+// 
+// js中的数字都是用IEEE 754 标准的双精度浮点数表示
+// 
+// IEEE双精度格式具有53 位有效数字精度(包含1位符号位)，并总共占用64 位
+// 
 // 计算机中存储小数是先转换成二进制进行存储
 // 
-// 53位存储位
+// Number.MAX_SAFE_INTEGER 2的53次方 - 1
 // 
-// (0.1)10 => (00011001100110011001(1001)...)2
-// (0.2)10 => (00110011001100110011(0011)...)2
+// 9007199254740991
+// 
+// (0.1)10 => (0.00011001100110011001(1001循环)...)2
+// (0.2)10 => (0.00110011001100110011(0011循环)...)2
 
 
 
@@ -225,7 +232,30 @@ const flatArr = [].concat(...arr);
 
 
 
+// async/await和generator
+// async 函数是什么？一句话，它就是 Generator 函数的语法糖。
+// async函数就是将 Generator 函数的星号（*）替换成async，将yield替换成await
+
+
+// localstorage
+// pc端：5-10M，移动端：2.5M
 
 
 
+// 创建对象
+// var atom = Object.setPrototypeOf(new Object, null);
 
+
+
+// 正则递归
+var str = 'abc';
+var reg = /\w/g;
+var result;
+while (result = reg.exec(str)) {
+  console.log(result);
+}
+
+
+
+// 设置Error的stack层数
+Error.stackTraceLimit = Infinity

@@ -2063,11 +2063,147 @@ class Polynomial {
 }
 
 
+const withdraw = (balance = 100) => (amount) => {
+  const result = balance - amount;
+  if (result >= 0) {
+    balance = result;
+    return result;
+  }
+  return 'Insufficient money';
+};
+
+// const w1 = withdraw(100);
+// console.log(expect(w1(10)).to.be.equal(90));
+// console.log(expect(w1(60)).to.be.equal(30));
+// console.log(expect(w1(60)).to.be.equal('Insufficient money'));
 
 
 
+let makeAccount = (balance = 100) => (type, amount = 0) => {
+  let result = balance;
+  const typeType = typeof type;
+
+  if (typeType === 'string') {
+    switch (type) {
+      case 'deposit':
+        result += amount;
+        break;
+      case 'withdraw':
+        result -= amount;
+        if (result < 0) {
+          return 'Insufficient money';
+        }
+        break;
+      default:
+        throw new Error('action is invalid');
+        break;
+    }
+  } else if (typeType === 'function') {
+    result = type(result, amount);
+  }
+  balance = result;
+  return result;
+};
+
+// const dispatch = makeAccount(100);
+// console.log(expect(dispatch('deposit', 10)).to.be.equal(110));
+// console.log(expect(dispatch('withdraw', 10)).to.be.equal(100));
+// console.log(expect(dispatch((bal, amt) => ((bal * 2) + amt), 10)).to.be.equal(210));
 
 
+makeAccount = (password = '12345', balance = 100) => {
+  const MAX_ATTEMPTS = 7;
+  let attempts = 0;
+
+  const callCops = () => {
+    // TODO
+    return 'cops coming';
+  };
+
+  return (pass, type, amount = 0) => {
+    if (attempts >= MAX_ATTEMPTS) {
+      return callCops();
+    }
+
+    if (password !== pass) {
+      attempts += 1;
+      return new Error('password is invalid');
+    }
+
+    let result = balance;
+    const typeType = typeof type;
+
+    if (typeType === 'string') {
+      switch (type) {
+        case 'deposit':
+          result += amount;
+          break;
+        case 'withdraw':
+          result -= amount;
+          if (result < 0) {
+            return 'Insufficient money';
+          }
+          break;
+        default:
+          return new Error('action is invalid');
+      }
+    } else if (typeType === 'function') {
+      result = type(result, amount);
+    }
+    balance = result;
+    return result;
+  };
+};
+
+// const dispatch = makeAccount();
+// console.log(expect(dispatch('12345', 'deposit', 10)).to.be.equal(110));
+// console.log(expect(dispatch('12345', 'withdraw', 10)).to.be.equal(100));
+// console.log(expect(dispatch('12345', (bal, amt) => ((bal * 2) + amt), 10)).to.be.equal(210));
+// dispatch('1', 'deposit', 10);
+// console.log(expect(dispatch('1', 'deposit', 10)).to.be.deep.equal(new Error('password is invalid')));
+// dispatch('1', 'deposit', 10);
+// dispatch('1', 'deposit', 10);
+// dispatch('1', 'deposit', 10);
+// dispatch('1', 'deposit', 10);
+// dispatch('1', 'deposit', 10);
+// console.log(expect(dispatch('1', 'deposit', 10)).to.be.equal('cops coming'));
+
+// const makeSimplifiedWithdraw = balance => amount => balance -= amount;
+
+// const D = makeSimplifiedWithdraw(100);
+// console.log(expect(D(10)).to.be.equal(90));
+// console.log(expect(D(10)).to.be.equal(80));
+// console.log(expect(D(10)).to.be.equal(70));
+
+
+const f = (input = 0) => {
+  const square = x => x * x;
+  const sumOfSquare = (...args) => (
+    args.reduce((s, num) => (
+      s + square(num)
+    ), 0)
+  );
+
+  return sumOfSquare(input * 2, input + 1);
+};
+
+// console.log(expect(f(5)).to.be.equal(136));
+
+const cons3 = (x, y) => [x, y];
+const car3 = (z) => z[0];
+const cdr3 = (z) => z[1];
+const setCar3 = (z, newVal) => (z[0] = newVal);
+const setCdr3 = (z, newVal) => (z[1] = newVal);
+
+// const x = cons3(1, 2);
+// const list = cons3(x, x);
+// setCar3(cdr3(list), 100);
+// console.log(expect(car3(x)).to.be.equal(100));
+
+
+const makeTable = () => {
+
+};
 
 
 // ast
