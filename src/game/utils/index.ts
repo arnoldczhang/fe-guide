@@ -2,7 +2,17 @@ import { Character } from './Character';
 import { Cach, CO, StartConfig } from '../types';
 
 export const func: (value: any) => any = value => value;
+
 export const inArray: (arr: Array<string>, key: any) => boolean = (arr, key) => arr.indexOf(key) > -1;
+
+export const copy: <S = CO, SS = CO>(target: S, ...args: SS[]) => S = (target, ...args) => {
+  args.forEach((arg) => {
+    Object.keys(arg).forEach((key) => {
+      target[key] = (<any>arg)[key];
+    });
+  });
+  return target;
+};
 
 export const cach: Cach = {
   KEY: 'TAIWU',
@@ -67,4 +77,5 @@ export default {
   hasOwn,
   genCharacter,
   genMap,
+  copy,
 };

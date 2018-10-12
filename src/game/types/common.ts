@@ -1,3 +1,5 @@
+import { Category } from '../enum';
+
 export interface StateInterface<S = any, SS = S> {
   app: S,
   starter: S,
@@ -34,42 +36,71 @@ export type Partial<T> = {
 
 export type CF = () => void;
 
-export type CO = {
-  [key: string]: any;
+export type CO<T = any> = {
+  [key: string]: T;
+};
+
+export interface Resource {
+  [Category.wood]: number;
+  [Category.stone]: number;
+  [Category.food]: number;
+  [Category.golden]: number;
+  [Category.cloth]: number;
+};
+
+export interface MartialArt {
+  title: string;
+  skilled: number;
+  introduce?: string;
+  traditional: boolean;
+  required?: CO<number>;
+  effects?: CO<number>;
+  ratio?: CO<number>;
+  // more martial infos...
+};
+
+export interface MartialArtMap {
+  [key: string]: Array<MartialArt>;
 };
 
 export interface BaseAttr {
-  strength: number;
-  agile: number;
-  physique: number;
-  inner: number;
-  speed: number;
-  charm: number;
-  understanding: number;
+  [Category.strength]: number;
+  [Category.agile]: number;
+  [Category.physique]: number;
+  [Category.inner]: number;
+  [Category.speed]: number;
+  [Category.charm]: number;
+  [Category.understanding]: number;
 };
 
 export interface MartialAttr {
-  sword: number[];
-  blade: number[];
-  fist: number[];
-  pike: number[];
-  internal: number[];
+  [Category.sword]: number[];
+  [Category.blade]: number[];
+  [Category.fist]: number[];
+  [Category.pike]: number[];
+  [Category.internal]: number[];
+  [Category.lightfoot]: number[];
+  [Category.special]: number[];
 };
 
 export interface OtherAttr {
-  doctor: number[];
-  carpenter: number[];
-  blacksmith: number[];
-  tao: number[];
-  woven: number[];
-  craft: number[];
-  identification: number[];
+  [Category.doctor]: number[];
+  [Category.carpenter]: number[];
+  [Category.blacksmith]: number[];
+  [Category.tao]: number[];
+  [Category.woven]: number[];
+  [Category.craft]: number[];
+  [Category.identification]: number[];
 };
 
 export interface CharacterAttr {
   name?: string;
   age?: number;
+  favor?: string;
+  hate?: string;
   remain?: number[];
+  martials?: MartialArtMap;
+  resource?: Resource;
   baseAttribute?: BaseAttr;
   martialAttribute?: MartialAttr;
   otherAttribute?: OtherAttr;

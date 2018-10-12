@@ -7,10 +7,61 @@ export enum Stage {
   Fight,
 };
 
+export enum Config {
+  // level
+  simple = 'simple',
+  normal = 'normal',
+  hard = 'hard',
+  challenge = 'challenge',
+  hell = 'hell',
+  // world
+  rich = 'rich',
+  welloff = 'welloff',
+  subsistent = 'subsistent',
+  barren = 'barren',
+  // enemy
+  rare = 'rare',
+  some = 'some',
+  various = 'various',
+  crazy = 'crazy',
+};
+
 export enum Category {
-  internal = '内功',
-  sword = '剑法',
-  blade = '刀法',
-  fist = '拳掌',
-  pike = '长柄',
+  // style
+  wind = 'wind',
+  forest = 'forest',
+  fire = 'fire',
+  moutain = 'moutain',
+  strangeness = 'strangeness',
+  thunder = 'thunder',
+  // attribute
+  speed = 'speed',
+  understanding = 'understanding',
+  inner = 'inner',
+  agile = 'agile',
+  physique = 'physique',
+  strength = 'strength',
+  charm = 'charm',
+  // resource
+  wood = 'wood',
+  stone = 'stone',
+  food = 'food',
+  golden = 'golden',
+  cloth = 'cloth',
+  // martial
+  internal = 'internal',
+  lightfoot = 'lightfoot',
+  special = 'special',
+  sword = 'sword',
+  blade = 'blade',
+  fist = 'fist',
+  pike = 'pike',
+  // other
+  doctor = 'doctor',
+  carpenter = 'carpenter',
+  blacksmith = 'blacksmith',
+  tao = 'tao',
+  woven = 'woven',
+  craft = 'craft',
+  identification   = 'identification',
 };
