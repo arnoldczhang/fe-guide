@@ -12,7 +12,7 @@ const initialState = {
 };
 
 const initialProps = {
-  stage: Stage.Create,
+  stage: Stage.Create_0,
 };
 
 
@@ -28,7 +28,11 @@ class App extends PureComponent<AppProps, AppState> {
   getStageNow() {
     const { stage } = this.props;
     switch (stage) {
-      case Stage.Create:
+      case Stage.Map:
+        // return <Map />;
+      case Stage.Create_0:
+      case Stage.Create_1:
+      case Stage.Create_2:
       default:
         return <Starter />;
     }

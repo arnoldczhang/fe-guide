@@ -28,20 +28,24 @@ const Step = Steps.Step;
 
 const styles = require('./Starter.less');
 
-const initialState = {
+const initialState: StarterState = {
   point: 10,
   count: 0,
   maxPoint: 10,
   maxStep: 2,
-  config: {},
+  config: {
+    name: 'dfwm',
+    age: 16,
+  },
   map: mapInfo,
   lastMapOuterIndex: 0,
   lastMapInnerIndex: 0,
   selectedArea: null,
+  refreshed: false,
 };
 
 const initialProps = {
-  stage: Stage.Create,
+  stage: Stage.Create_0,
   stepIndex: CreateStep.Person,
 };
 
@@ -66,13 +70,29 @@ class Starter extends BaseComponent<StarterProps, StarterState> implements Abstr
     return this.state.point <= 0;
   }
 
+  getCurrentStage(index: CreateStep): Stage {
+    return [Stage.Create_0, Stage.Create_1, Stage.Create_2][index];
+  }
+
+  updateStage(step: number): void {
+    const { stepIndex } = this.props;
+    const stage = this.getCurrentStage(stepIndex + step);
+    dispatch.app.updateStage(stage);
+  }
+
   goPrev(): void {
     dispatch.starter.prevStep();
+    this.updateStage(-1);
   }
 
   goNext(): void {
     const { stepIndex } = this.props;
-    const goNextStep = dispatch.starter.nextStep;
+    const { config } = this.state;
+
+    const goNextStep = () => {
+      dispatch.starter.nextStep();
+      this.updateStage(1);
+    };
 
     switch (stepIndex) {
       case CreateStep.Person:
@@ -92,6 +112,7 @@ class Starter extends BaseComponent<StarterProps, StarterState> implements Abstr
         goNextStep();
         break;
       case CreateStep.Finish:
+        dispatch.app.initWorld(config);
         break;
     }
   }
@@ -173,6 +194,7 @@ class Starter extends BaseComponent<StarterProps, StarterState> implements Abstr
     const {
       maxStep,
     } = this.state;
+
     return (
       <ErrorBoundary className={styles.starter}>
           <Row gutter={8}>

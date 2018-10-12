@@ -11,6 +11,9 @@ export type StartConfig = {
   [K in PersonKeys]: Array<string>|void;
 } & {
   [K in SystemKeys]: string;
+} & {
+  name: string;
+  age: number;
 };
 
 export interface StarterInterface {
@@ -22,11 +25,12 @@ export interface StarterState {
   count: number;
   maxPoint: number;
   maxStep: number;
+  refreshed: boolean;
   config: StartConfig|any;
   map: Array<Array<AreaInfo>>;
   lastMapOuterIndex: number;
   lastMapInnerIndex: number;
-  selectedArea: AreaInfo|void;
+  selectedArea: AreaInfo|null;
 };
 
 export interface StarterProps {
@@ -75,7 +79,7 @@ export interface MartialArt {
   skilled: number;
   introduce?: string;
   traditional: boolean;
-  // ...
+  // more martial infos...
 }
 
 export interface MartialArtMap {
@@ -100,6 +104,6 @@ export interface SystemProps {
 export interface BirthMapProps {
   info: Array<Array<AreaInfo>>;
   clickCallback: Function;
-  selectedArea?: AreaInfo;
+  selectedArea: AreaInfo|null;
 };
 

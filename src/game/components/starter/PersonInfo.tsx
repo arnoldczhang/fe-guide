@@ -2,10 +2,13 @@ import React, {
   ReactElement,
   ReactNode,
   SFC,
+  ChangeEvent,
 } from 'react';
 import {
   Select,
   Row,
+  Input,
+  InputNumber,
   Col,
 } from 'antd';
 import {
@@ -31,6 +34,7 @@ const PersonInfo: SFC<PersonInfoProps> = ({
   count,
   max,
 }) => {
+  //
   const genOptions: (
     arr: Array<string>,
     keyMap: CO,
@@ -50,6 +54,7 @@ const PersonInfo: SFC<PersonInfoProps> = ({
     )
   };
 
+  //
   const calculate: (selectionMap: CO) => number = (selectionMap) => (
     list.reduce((res: number, info: CO): number => {
       const selections = selectionMap[info.key];
@@ -63,6 +68,7 @@ const PersonInfo: SFC<PersonInfoProps> = ({
     }, 0)
     );
 
+  //
   const getPersonRow: (
     rowInfo: PersonInfoInterface,
     defaultValue?: Array<string>|void,
@@ -78,7 +84,7 @@ const PersonInfo: SFC<PersonInfoProps> = ({
       placeholder,
     } = rowInfo;
 
-    const handleChange: (returnValue: SelectValue, options: ReactElement<any>|ReactElement<any>[]) => void = (returnValue) => {
+    const handleSelectionChange: (returnValue: SelectValue, options: ReactElement<any>|ReactElement<any>[]) => void = (returnValue) => {
       result[resKey] = returnValue;
       count = calculate(result);
       calcCallback(count, result);
@@ -93,7 +99,7 @@ const PersonInfo: SFC<PersonInfoProps> = ({
             style={{ width: '100%' }}
             placeholder={placeholder}
             defaultValue={defaultValue || []}
-            onChange={handleChange}
+            onChange={handleSelectionChange}
           >
             {genOptions(value, map, result[resKey] || [])}
           </Select>
@@ -102,8 +108,30 @@ const PersonInfo: SFC<PersonInfoProps> = ({
       );
   };
 
+  //
+  const handleNameChange: (evt: ChangeEvent<Element>) => void = (evt) => {
+    result.name = evt.target.getAttribute('value') || '';
+  };
+
+  //
+  const handleAgeChange: (evt: string|number|void) => void = (evt) => {
+    result.age = Number(evt);
+  };
+
   return (
     <div>
+      <Row type={'flex'} gutter={8} align={'middle'} justify={'start'} className={styles.mb20}>
+        <Col span={6} offset={3} className={styles.tc}>姓名</Col>
+        <Col span={12}>
+          <Input placeholder="请填写姓名" onChange={handleNameChange}/>
+        </Col>
+      </Row>
+      <Row type={'flex'} gutter={8} align={'middle'} justify={'start'} className={styles.mb20}>
+        <Col span={6} offset={3} className={styles.tc}>年龄</Col>
+        <Col span={12}>
+          <InputNumber min={16} max={30} defaultValue={16} onChange={handleAgeChange} />
+        </Col>
+      </Row>
       {
         list.map((info: PersonInfoInterface): ReactNode => (
           getPersonRow(info, result[info.key])

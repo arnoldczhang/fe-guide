@@ -5,6 +5,8 @@ import {
   AreaInfo,
   MartialArt,
   MartialArtMap,
+  BaseAttr,
+  MartialAttr,
 } from '../types';
 import { SystemKeyEnum, Category } from '../enum';
 
@@ -78,6 +80,20 @@ export const pscl: MartialArt = {
   traditional: true,
 };
 
+export const zsnf: MartialArt = {
+  title: '彰施乃服篇',
+  skilled: 1,
+  introduce: '暂无',
+  traditional: true,
+};
+
+export const gbdyj: MartialArt = {
+  title: '工布独一剑',
+  skilled: 1,
+  introduce: '暂无',
+  traditional: true,
+};
+
 export const kongsangMAM: MartialArtMap = {
   [Category.internal]: [qhyl],
 };
@@ -92,7 +108,8 @@ export const kongsang: AreaInfo = {
 };
 
 export const zhujianMAM: MartialArtMap = {
-  [Category.internal]: [pscl],
+  [Category.internal]: [pscl, zsnf],
+  [Category.sword]: [gbdyj],
 };
 
 export const zhujian: AreaInfo = {
@@ -184,3 +201,21 @@ export const mapInfo: Array<Array<AreaInfo>> = [
     {},
   ],
 ];
+
+export const defaultBaseAttribute: BaseAttr = {
+  strength: 50,
+  agile: 50,
+  physique: 50,
+  inner: 50,
+  speed: 50,
+  charm: 50,
+  understanding: 50,
+};
+
+export const defaultMartialAttribute: MartialAttr = {
+  sword: [50, 0],
+  blade: [50, 0],
+  fist: [50, 0],
+  pike: [50, 0],
+  internal: [50, 0],
+};

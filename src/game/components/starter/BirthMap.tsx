@@ -58,24 +58,30 @@ const BirthMap: SFC<BirthMapProps> = ({
 
   const getMapIntro: () => ReactNode|void = () => {
     if (selectedArea) {
-      let {
-        martial,
+      const {
+        martial = {},
+        title,
+        content,
       } = selectedArea;
-      martial = martial || {};
+      const martialKey = Object.keys(martial);
 
       return (
         <Col span={9}>
           <Row>
-            <Col className={styles.tc}>{selectedArea.title}</Col>
+            <Col className={styles.tc}>{title}</Col>
           </Row>
-          <Row>
-            <Col className={styles.tc}>{selectedArea.content}</Col>
+          <Row className={styles.mb20}>
+            <Col>{content}</Col>
           </Row>
           {
-            Object.keys(martial).map((artKey: string): ReactNode => (
-              <Row>
-                <Col>{artKey}</Col>
-                <Col>{(martial[artKey] || []).map(item => item)}</Col>
+            martialKey.map((key: string) => (
+              <Row type={'flex'} gutter={8} align={'top'} justify={'start'}>
+                <Col>{key}：</Col>
+                <Col>
+                  {
+                    martial[key].map((item) => <Row>{item.title}</Row>)
+                  }
+                </Col>
               </Row>
               ))
           }
@@ -86,7 +92,7 @@ const BirthMap: SFC<BirthMapProps> = ({
   };
 
   return (
-    <Row className={styles.mb20} type={'flex'} gutter={0} align={'top'} justify={'center'}>
+    <Row className={styles.mb20} type={'flex'} gutter={16} align={'top'} justify={'center'}>
       <Col span={12} className={styles['map-container']}>
         {getRenderedMap(info)}
       </Col>
