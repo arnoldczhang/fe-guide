@@ -58,8 +58,7 @@ export class Character extends BaseCharacter implements CharacterInterface {
       .configBaseAttr()
       .configMartialAttr()
       .configOtherAttr()
-      .configResource()
-      .generate();
+      .configResource();
   }
 
   getRandom(input?: number) {
@@ -223,7 +222,7 @@ export class Character extends BaseCharacter implements CharacterInterface {
     return this;
   }
 
-  generate() {
+  getInstance() {
     return this.character;
   }
 }

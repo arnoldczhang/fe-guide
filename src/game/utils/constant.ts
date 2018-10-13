@@ -306,9 +306,9 @@ export const defaultOtherAttribute: OtherAttr = {
 };
 
 export const defaultResource: Resource = {
-  [Category.wood]: baseResourceCount;
-  [Category.stone]: baseResourceCount;
-  [Category.food]: baseResourceCount;
-  [Category.golden]: baseResourceCount;
-  [Category.cloth]: baseResourceCount;
+  [Category.wood]: baseResourceCount,
+  [Category.stone]: baseResourceCount,
+  [Category.food]: baseResourceCount,
+  [Category.golden]: baseResourceCount,
+  [Category.cloth]: baseResourceCount,
 };

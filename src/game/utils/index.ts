@@ -1,18 +1,9 @@
 import { Character } from './Character';
-import { Cach, CO, StartConfig } from '../types';
+import { Cach, CO, StartConfig, CharacterAttr } from '../types';
 
 export const func: (value: any) => any = value => value;
 
 export const inArray: (arr: Array<string>, key: any) => boolean = (arr, key) => arr.indexOf(key) > -1;
-
-export const copy: <S = CO, SS = CO>(target: S, ...args: SS[]) => S = (target, ...args) => {
-  args.forEach((arg) => {
-    Object.keys(arg).forEach((key) => {
-      target[key] = (<any>arg)[key];
-    });
-  });
-  return target;
-};
 
 export const cach: Cach = {
   KEY: 'TAIWU',
@@ -61,7 +52,7 @@ export const hasOwn: (target: CO, key: string) => boolean = (target, key) => (
 );
 
 export const genCharacter: (config: StartConfig) => any = (config) => {
-  const character = new Character(config);
+  const character: CharacterAttr = new Character(config).getInstance();
   console.log(character);
 };
 
@@ -77,5 +68,4 @@ export default {
   hasOwn,
   genCharacter,
   genMap,
-  copy,
 };

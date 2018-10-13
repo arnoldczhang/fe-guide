@@ -10,11 +10,11 @@ export interface ErrorInfo {
 };
 
 export interface Cach {
-  readonly KEY: string,
-  readonly get: Function,
-  readonly getKey: Function,
-  readonly set: Function,
-  readonly clear: Function,
+  readonly KEY: string;
+  readonly get: Function;
+  readonly getKey: Function;
+  readonly set: Function;
+  readonly clear: Function;
 };
 
 export interface ErrorState {
