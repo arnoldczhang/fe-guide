@@ -42,6 +42,22 @@ export enum Category {
   physique = 'physique',
   strength = 'strength',
   charm = 'charm',
+  // person data
+  hp = 'hp',
+  ihp = 'ihp',
+  defence = 'defence',
+  idefence = 'idefence',
+  force = 'force', // li dao
+  subtle = 'subtle', // jing miao
+  swift = 'swift', // xun ji
+  unload = 'unload', // xie li
+  tackle = 'tackle', // chai zhao
+  miss = 'miss', // shan bi
+  // TODO other data
+  attackRatio = 'attackRatio',
+  iattackRatio = 'iattackRatio',
+  defenceRatio = 'defenceRatio',
+  idefenceRatio = 'idefenceRatio',
   // resource
   wood = 'wood',
   stone = 'stone',

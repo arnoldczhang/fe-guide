@@ -5,6 +5,7 @@ import {
   MartialAttr,
   OtherAttr,
   Resource,
+  UserData,
 } from '../types';
 import { inArray } from './index';
 import { Category } from '../enum';
@@ -13,22 +14,26 @@ import {
   defaultMartialAttribute,
   defaultOtherAttribute,
   defaultResource,
+  defaultUserData,
   baseResourceCount,
+  baseAttrCount,
   wddj,
 } from './constant';
 
 interface CharacterInterface {
   getRandom(input?: number): number;
-  updateRemainData(): void;
-  updateResource(resource: Resource): void;
-  updateBaseAttr(attribute: BaseAttr): void;
-  updateMartialAttr(attribute: MartialAttr): void;
+  initRemainData(): void;
+  initResource(resource: Resource): void;
+  initBaseAttr(attribute: BaseAttr): void;
+  initMartialAttr(attribute: MartialAttr): void;
+  updateUserData(extraData?: UserData) : void;
   configStaticAttr(): this;
   configBaseAttr(): this;
   configMartialAttr(): this;
   configResource(): this;
   configOtherAttr(): this;
-  generate(): CharacterAttr;
+  calcUserData(): void;
+  getInstance(): CharacterAttr;
 }
 
 class BaseCharacter {
@@ -58,6 +63,7 @@ export class Character extends BaseCharacter implements CharacterInterface {
       .configBaseAttr()
       .configMartialAttr()
       .configOtherAttr()
+      .updateUserData()
       .configResource();
   }
 
@@ -65,7 +71,7 @@ export class Character extends BaseCharacter implements CharacterInterface {
     return Math.ceil(Math.random() * (input || 20));
   }
 
-  updateRemainData() {
+  initRemainData() {
     const { feature } = this.config;
     const remain = new Array<number>(2);
 
@@ -78,7 +84,7 @@ export class Character extends BaseCharacter implements CharacterInterface {
     this.character.remain = remain;
   }
 
-  updateBaseAttr(attribute: BaseAttr) {
+  initBaseAttr(attribute: BaseAttr) {
     const { experience =[] } = this.config;
     experience.forEach((exper: string): void => {
       switch(exper) {
@@ -110,7 +116,7 @@ export class Character extends BaseCharacter implements CharacterInterface {
     });
   }
 
-  updateMartialAttr(attribute: MartialAttr) {
+  initMartialAttr(attribute: MartialAttr) {
     const { experience =[] } = this.config;
     experience.forEach((exper: string): void => {
       switch(exper) {
@@ -134,7 +140,7 @@ export class Character extends BaseCharacter implements CharacterInterface {
     });
   }
 
-  updateOtherAttr(attribute: OtherAttr) {
+  initOtherAttr(attribute: OtherAttr) {
     const { feature =[] } = this.config;
     feature.forEach((feat: string): void => {
       switch(feat) {
@@ -163,7 +169,7 @@ export class Character extends BaseCharacter implements CharacterInterface {
     });
   }
 
-  updateResource(resource: Resource) {
+  initResource(resource: Resource) {
     const { treasure = [] } = this.config;
     treasure.forEach((trea: string): void => {
     switch (trea) {
@@ -186,6 +192,54 @@ export class Character extends BaseCharacter implements CharacterInterface {
     });
   }
 
+  calcUserData() {
+    const userData = Object.assign({}, defaultUserData);
+    const { baseAttribute = {} } = this.character;
+    Object.keys(baseAttribute).forEach((baseKey: string): void => {
+      const diffValue = baseAttribute[baseKey] - baseAttrCount;
+      switch (baseKey) {
+        case Category.strength:
+          userData.force += diffValue;
+          userData.unload += diffValue / 2;
+          break;
+        case Category.agile:
+          userData.subtle += diffValue;
+          userData.tackle += diffValue / 2;
+          break;
+        case Category.physique:
+          userData.hp += diffValue * 5;
+          userData.defence += diffValue;
+          break;
+        case Category.inner:
+          userData.ihp += diffValue * 5;
+          userData.idefence += diffValue;
+          break;
+        case Category.speed:
+          userData.swift += diffValue;
+          userData.miss += diffValue / 2;
+          break;
+        case Category.charm:
+          break;
+        case Category.understanding:
+          break;
+      }
+    });
+    this.character.data = userData;
+  }
+
+  updateUserData(extraData?: UserData) {
+    if (typeof extraData === 'object') {
+      const { data = {} } = this.character;
+      extraData = extraData || {};
+      Object.keys(extraData).forEach((key: string): void => {
+        data[key] += extraData[key];
+      });
+    } else {
+      this.calcUserData();
+    }
+    return this;
+  }
+
   configStaticAttr() {
     const {
       name,
@@ -194,31 +248,31 @@ export class Character extends BaseCharacter implements CharacterInterface {
 
     this.character.name = name;
     this.character.age = age;
-    this.updateRemainData();
+    this.initRemainData();
     return this;
   }
 
   configBaseAttr() {
     this.character.baseAttribute = Object.assign({}, defaultBaseAttribute);
-    this.updateBaseAttr(this.character.baseAttribute);
+    this.initBaseAttr(this.character.baseAttribute);
     return this;
   }
 
   configMartialAttr() {
     this.character.martialAttribute = Object.assign({}, defaultMartialAttribute);
-    this.updateMartialAttr(this.character.martialAttribute);
+    this.initMartialAttr(this.character.martialAttribute);
     return this;
   }
 
   configResource() {
     this.character.resource = Object.assign({}, defaultResource);
-    this.updateResource(this.character.resource);
+    this.initResource(this.character.resource);
     return this;
   }
 
   configOtherAttr() {
     this.character.otherAttribute = Object.assign({}, defaultOtherAttribute);
-    this.updateOtherAttr(this.character.otherAttribute);
+    this.initOtherAttr(this.character.otherAttribute);
     return this;
   }
 

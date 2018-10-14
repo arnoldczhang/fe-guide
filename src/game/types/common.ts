@@ -53,9 +53,9 @@ export interface MartialArt {
   skilled: number;
   introduce?: string;
   traditional: boolean;
-  required?: CO<number>;
-  effects?: CO<number>;
-  ratio?: CO<number>;
+  required?: CO<number>; // required base or other attributes
+  effects?: CO<number>; // hp or ihp damage
+  ratio?: CO<number>; // force\subtle\swift ratio
   // more martial infos...
 };
 
@@ -63,7 +63,24 @@ export interface MartialArtMap {
   [key: string]: Array<MartialArt>;
 };
 
-export interface BaseAttr {
+export interface UserData extends CO {
+  [Category.hp]?: number;
+  [Category.ihp]?: number;
+  [Category.defence]?: number;
+  [Category.idefence]?: number;
+  [Category.force]?: number;
+  [Category.subtle]?: number;
+  [Category.swift]?: number;
+  [Category.tackle]?: number;
+  [Category.unload]?: number;
+  [Category.miss]?: number;
+  [Category.attackRatio]?: number;
+  [Category.iattackRatio]?: number;
+  [Category.defenceRatio]?: number;
+  [Category.idefenceRatio]?: number;
+};
+
+export interface BaseAttr extends CO {
   [Category.strength]: number;
   [Category.agile]: number;
   [Category.physique]: number;
@@ -73,7 +90,7 @@ export interface BaseAttr {
   [Category.understanding]: number;
 };
 
-export interface MartialAttr {
+export interface MartialAttr extends CO {
   [Category.sword]: number[];
   [Category.blade]: number[];
   [Category.fist]: number[];
@@ -83,7 +100,7 @@ export interface MartialAttr {
   [Category.special]: number[];
 };
 
-export interface OtherAttr {
+export interface OtherAttr extends CO {
   [Category.doctor]: number[];
   [Category.carpenter]: number[];
   [Category.blacksmith]: number[];
@@ -104,4 +121,5 @@ export interface CharacterAttr {
   baseAttribute?: BaseAttr;
   martialAttribute?: MartialAttr;
   otherAttribute?: OtherAttr;
+  data?: UserData;
 }

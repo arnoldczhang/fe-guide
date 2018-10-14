@@ -9,12 +9,15 @@ import {
   MartialAttr,
   OtherAttr,
   Resource,
+  UserData,
 } from '../types';
 import { SystemKeyEnum, Category, Config } from '../enum';
 
 export const defaultNone = 'Nothing';
 
 export const baseResourceCount = 1000;
+
+export const baseAttrCount = 50;
 
 // person info
 export const treasureKey: Array<string> = [
@@ -276,33 +279,34 @@ export const mapInfo: Array<Array<AreaInfo>> = [
 ];
 
 export const defaultBaseAttribute: BaseAttr = {
-  [Category.strength]: 50,
-  [Category.agile]: 50,
-  [Category.physique]: 50,
-  [Category.inner]: 50,
-  [Category.speed]: 50,
-  [Category.charm]: 50,
-  [Category.understanding]: 50,
+  [Category.strength]: baseAttrCount,
+  [Category.agile]: baseAttrCount,
+  [Category.physique]: baseAttrCount,
+  [Category.inner]: baseAttrCount,
+  [Category.speed]: baseAttrCount,
+  [Category.charm]: baseAttrCount,
+  [Category.understanding]: baseAttrCount,
 };
 
+// [Talent, attainment]
 export const defaultMartialAttribute: MartialAttr = {
-  [Category.sword]: [50, 0],
-  [Category.blade]: [50, 0],
-  [Category.fist]: [50, 0],
-  [Category.pike]: [50, 0],
-  [Category.internal]: [50, 0],
-  [Category.lightfoot]: [50, 0],
-  [Category.special]: [50, 0],
+  [Category.sword]: [baseAttrCount, 0],
+  [Category.blade]: [baseAttrCount, 0],
+  [Category.fist]: [baseAttrCount, 0],
+  [Category.pike]: [baseAttrCount, 0],
+  [Category.internal]: [baseAttrCount, 0],
+  [Category.lightfoot]: [baseAttrCount, 0],
+  [Category.special]: [baseAttrCount, 0],
 };
 
 export const defaultOtherAttribute: OtherAttr = {
-  [Category.doctor]: [50, 0],
-  [Category.carpenter]: [50, 0],
-  [Category.blacksmith]: [50, 0],
-  [Category.tao]: [50, 0],
-  [Category.woven]: [50, 0],
-  [Category.craft]: [50, 0],
-  [Category.identification]: [50, 0],
+  [Category.doctor]: [baseAttrCount, 0],
+  [Category.carpenter]: [baseAttrCount, 0],
+  [Category.blacksmith]: [baseAttrCount, 0],
+  [Category.tao]: [baseAttrCount, 0],
+  [Category.woven]: [baseAttrCount, 0],
+  [Category.craft]: [baseAttrCount, 0],
+  [Category.identification]: [baseAttrCount, 0],
 };
 
 export const defaultResource: Resource = {
@@ -311,4 +315,21 @@ export const defaultResource: Resource = {
   [Category.food]: baseResourceCount,
   [Category.golden]: baseResourceCount,
   [Category.cloth]: baseResourceCount,
+};
+
+export const defaultUserData: UserData = {
+  [Category.hp]: 100,
+  [Category.ihp]: 100,
+  [Category.defence]: 50,
+  [Category.idefence]: 50,
+  [Category.force]: 10,
+  [Category.subtle]: 10,
+  [Category.swift]: 10,
+  [Category.tackle]: 10,
+  [Category.unload]: 10,
+  [Category.miss]: 10,
+  [Category.attackRatio]: 1,
+  [Category.iattackRatio]: 1,
+  [Category.defenceRatio]: 1,
+  [Category.idefenceRatio]: 1,
 };
