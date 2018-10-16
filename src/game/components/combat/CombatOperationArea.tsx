@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import classnames from 'classnames';
 import { connect } from 'react-redux';
 import {
   Row,
@@ -8,24 +7,24 @@ import {
 import AbstractComponent from '../common/AbstractComponent';
 import BaseComponent from '../common/BaseComponent';
 import ErrorBoundary from '../common/ErrorBoundary';
-import CombatScene from './CombatScene';
-import CombatOperationArea from './CombatOperationArea';
+import CombatDistance from './CombatDistance';
+import CombatOperation from './CombatOperation';
 import { CombatOperationState, CombatProps } from '../../types';
-import { Stage, CreateStep } from '../../enum';
+import { Stage } from '../../enum';
 import selector from '../../selectors/combat';
 import { dispatch } from '../../store';
 
 const styles = require('./Combat.less');
+
 
 const initialState: CombatOperationState = {
 };
 
 const initialProps = {
   stage: Stage.Create_0,
-  stepIndex: CreateStep.Person,
 };
 
-class Combat extends BaseComponent<CombatProps, CombatOperationState> implements AbstractComponent<CombatProps, CombatOperationState> {
+class CombatOperationArea extends BaseComponent<CombatProps, CombatOperationState> implements AbstractComponent<CombatProps, CombatOperationState> {
   displayName?: string = 'Combat';
   state: CombatOperationState = initialState;
   static defaultProps = initialProps;
@@ -38,23 +37,20 @@ class Combat extends BaseComponent<CombatProps, CombatOperationState> implements
   bindInstance(): void {
   }
 
-  handleClick() {
-    console.log(1);
+  handleClick(): void {
+
   }
 
   render(): ReactNode {
     return (
-      <ErrorBoundary className={styles.combat}>
-        <Row
-          className={styles.combat}
-          gutter={0}
-        >
-          <CombatScene />
-          <CombatOperationArea />
+      <ErrorBoundary>
+        <Row className={styles['combat-operation-area']}>
+          <CombatDistance distance={6.1} defaultValue={6.0} addCallback={this.handleClick} minusCallback={this.handleClick}/>
+          <CombatOperation />
         </Row>
       </ErrorBoundary>
     );
   }
 }
 
-export default connect(selector)(Combat);
+export default connect(selector)(CombatOperationArea);

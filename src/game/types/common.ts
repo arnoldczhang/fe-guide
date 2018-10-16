@@ -3,6 +3,7 @@ import { Category } from '../enum';
 export interface StateInterface<S = any, SS = S> {
   app: S,
   starter: S,
+  combat: S,
 };
 
 export interface ErrorInfo {
@@ -102,6 +103,7 @@ export interface MartialAttr extends CO {
 
 export interface OtherAttr extends CO {
   [Category.doctor]: number[];
+  [Category.poison]: number[];
   [Category.carpenter]: number[];
   [Category.blacksmith]: number[];
   [Category.tao]: number[];
@@ -122,4 +124,16 @@ export interface CharacterAttr {
   martialAttribute?: MartialAttr;
   otherAttribute?: OtherAttr;
   combatAttribute?: CombatAttr;
+};
+
+export interface Weapon {
+  title: string;
+  icon?: string;
+  cost?: number;
+  skilled: number;
+  times?: number;
+  introduce?: string;
+  required?: CO<number>; // required base or other attributes
+  effects?: CO<number>; // hp or ihp damage
+  ratio?: CO<number[]>;
 }

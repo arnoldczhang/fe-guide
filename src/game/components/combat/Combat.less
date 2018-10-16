@@ -1,6 +1,7 @@
-@operationHeight: 150px;
+@operationHeight: 250px;
 @combatDistanceHeight: 50px;
-@minusCombatDistanceHeight: calc(100% - @combatDistanceHeight);
+@combatMartialHeight: 100px;
+@minusCombatDistanceHeight: calc(100% - @combatDistanceHeight - @combatMartialHeight);
 
 .combat {
   height: 100%;
@@ -25,6 +26,9 @@
 }
 .combat-operation {
   height: @minusCombatDistanceHeight;
+}
+.combat-martial {
+  height: @combatMartialHeight;
 }
 .combat-operation-col {
   display: flex;

@@ -74,6 +74,7 @@ export enum Category {
   pike = 'pike',
   // other
   doctor = 'doctor',
+  poison = 'poison',
   carpenter = 'carpenter',
   blacksmith = 'blacksmith',
   tao = 'tao',

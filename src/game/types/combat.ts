@@ -1,15 +1,37 @@
 import { ReactNode } from 'react';
 import { Stage } from '../enum';
+import { Weapon } from '../types';
 
 export interface CombatInterface {
-  step: number;
+  clickable: boolean;
+  reloadIndex: number[];
+  selectedIndex: number[];
 };
 
 export interface CombatState {
+  weaponList: Weapon[][];
+};
+
+export interface CombatOperationState {
 };
 
 export interface CombatProps {
   children?: ReactNode;
-  dispatch?: Function | any;
-  stage?: Stage;
+  dispatch?: Function|any;
+  stage: Stage;
+  clickable: boolean;
+  reloadIndex: number[];
+  selectedIndex: number[];
+  distance: number;
+  defaultValue:number;
+};
+
+export interface CombatDistanceProps {
+  distance: number;
+  defaultValue: number;
+  addCallback: Function;
+  minusCallback: Function;
+};
+
+export interface CombatDistanceState {
 };

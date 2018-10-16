@@ -10,6 +10,7 @@ import {
   OtherAttr,
   Resource,
   CombatAttr,
+  Weapon,
 } from '../types';
 import { SystemKeyEnum, Category, Config } from '../enum';
 
@@ -166,17 +167,17 @@ export const wddj: MartialArt = {
   introduce: defaultNone,
   traditional: true,
   required: {
-    sword: 50,
-    tao: 30,
+    [Category.sword]: 50,
+    [Category.tao]: 30,
   },
   effects: {
-    hp: 100,
-    ihp: 60,
+    [Category.hp]: 100,
+    [Category.ihp]: 60,
   },
   ratio: {
-    force: [0.4, 100],
-    subtle: [0.3, 50],
-    swift: [0.3, 30],
+    [Category.force]: [0.4, 100],
+    [Category.subtle]: [0.3, 50],
+    [Category.swift]: [0.3, 30],
   },
 };
 
@@ -314,6 +315,7 @@ export const defaultMartialAttribute: MartialAttr = {
 
 export const defaultOtherAttribute: OtherAttr = {
   [Category.doctor]: [baseAttrCount, 0],
+  [Category.poison]: [baseAttrCount, 0],
   [Category.carpenter]: [baseAttrCount, 0],
   [Category.blacksmith]: [baseAttrCount, 0],
   [Category.tao]: [baseAttrCount, 0],
@@ -346,3 +348,182 @@ export const defaultCombatAttr: CombatAttr = {
   [Category.defenceRatio]: 1,
   [Category.idefenceRatio]: 1,
 };
+
+export const emptyHand: Weapon = {
+  title: '空手',
+  skilled: 1,
+  cost: 1,
+  introduce: defaultNone,
+  required: {
+    [Category.fist]: 50,
+    [Category.agile]: 50,
+  },
+  effects: {
+    [Category.hp]: 100,
+    [Category.ihp]: 60,
+  },
+  ratio: {
+    [Category.force]: [0.4, 100],
+    [Category.subtle]: [0.3, 50],
+    [Category.swift]: [0.3, 30],
+  },
+};
+
+export const branch: Weapon = {
+  title: '树枝',
+  icon: require('../img/shuzhi.jpeg'),
+  skilled: 1,
+  cost: 3,
+  introduce: defaultNone,
+  required: {
+    [Category.sword]: 50,
+    [Category.agile]: 50,
+  },
+  effects: {
+    [Category.hp]: 100,
+    [Category.ihp]: 60,
+  },
+  ratio: {
+    [Category.force]: [0.4, 100],
+    [Category.subtle]: [0.3, 50],
+    [Category.swift]: [0.3, 30],
+  },
+};
+
+export const stone: Weapon = {
+  title: '石子',
+  skilled: 1,
+  cost: 5,
+  introduce: defaultNone,
+  required: {
+    [Category.special]: 50,
+    [Category.agile]: 50,
+  },
+  effects: {
+    [Category.hp]: 100,
+    [Category.ihp]: 60,
+  },
+  ratio: {
+    [Category.force]: [0.4, 100],
+    [Category.subtle]: [0.3, 50],
+    [Category.swift]: [0.3, 30],
+  },
+};
+
+export const woodenSword: Weapon = {
+  title: '木剑',
+  skilled: 1,
+  cost: 5,
+  introduce: defaultNone,
+  required: {
+    [Category.sword]: 50,
+    [Category.agile]: 50,
+  },
+  effects: {
+    [Category.hp]: 100,
+    [Category.ihp]: 60,
+  },
+  ratio: {
+    [Category.force]: [0.4, 101],
+    [Category.subtle]: [0.3, 50],
+    [Category.swift]: [0.3, 30],
+  },
+};
+
+export const woodenPike: Weapon = {
+  title: '木棍',
+  skilled: 1,
+  cost: 5,
+  introduce: defaultNone,
+  required: {
+    [Category.pike]: 50,
+    [Category.agile]: 50,
+  },
+  effects: {
+    [Category.hp]: 100,
+    [Category.ihp]: 60,
+  },
+  ratio: {
+    [Category.force]: [0.4, 101],
+    [Category.subtle]: [0.3, 50],
+    [Category.swift]: [0.3, 30],
+  },
+};
+
+export const woodenDart: Weapon = {
+  title: '竹镖',
+  skilled: 1,
+  cost: 5,
+  introduce: defaultNone,
+  required: {
+    [Category.special]: 50,
+    [Category.agile]: 50,
+  },
+  effects: {
+    [Category.hp]: 100,
+    [Category.ihp]: 60,
+  },
+  ratio: {
+    [Category.force]: [0.4, 101],
+    [Category.subtle]: [0.3, 50],
+    [Category.swift]: [0.3, 30],
+  },
+};
+
+export const heal: Weapon = {
+  title: '治疗',
+  skilled: 1,
+  cost: 3,
+  introduce: defaultNone,
+  times: 2,
+  required: {
+    [Category.agile]: 50,
+    [Category.doctor]: 50,
+  },
+  effects: {
+    [Category.hp]: -60,
+    [Category.ihp]: -30,
+  },
+};
+
+export const depoison: Weapon = {
+  title: '祛毒',
+  skilled: 1,
+  cost: 3,
+  introduce: defaultNone,
+  required: {
+    [Category.poison]: 50,
+  },
+  effects: {
+    [Category.hp]: -60,
+    [Category.ihp]: -30,
+  },
+};
+
+export const escape: Weapon = {
+  title: '逃跑',
+  skilled: 1,
+  cost: 3,
+  introduce: defaultNone,
+  required: {
+    [Category.speed]: 50,
+  },
+};
+
+export const baseWeapon: Weapon[] = [
+  emptyHand,
+  branch,
+  stone,
+];
+
+export const equipedWeapon: Weapon[] = [
+  woodenSword,
+  woodenPike,
+  woodenDart,
+];
+
+export const baseAction: Weapon[] = [
+  heal,
+  depoison,
+  escape,
+];
