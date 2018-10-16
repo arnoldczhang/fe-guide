@@ -5,6 +5,8 @@ export const func: (value: any) => any = value => value;
 
 export const inArray: (arr: Array<string>, key: any) => boolean = (arr, key) => arr.indexOf(key) > -1;
 
+export const copy: <T = CO>(target: T) => T = (target) => Object.assign({}, target);
+
 export const cach: Cach = {
   KEY: 'TAIWU',
   getKey(key: string): string {
@@ -68,4 +70,5 @@ export default {
   hasOwn,
   genCharacter,
   genMap,
+  copy,
 };

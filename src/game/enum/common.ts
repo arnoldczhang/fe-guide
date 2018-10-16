@@ -4,7 +4,7 @@ export enum Stage {
   Create_2,
   Map,
   Home,
-  Fight,
+  Combat,
 };
 
 export enum Config {

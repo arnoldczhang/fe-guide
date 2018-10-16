@@ -5,16 +5,16 @@ import {
   MartialAttr,
   OtherAttr,
   Resource,
-  UserData,
+  CombatAttr,
 } from '../types';
-import { inArray } from './index';
+import { inArray, copy } from './index';
 import { Category } from '../enum';
 import {
   defaultBaseAttribute,
   defaultMartialAttribute,
   defaultOtherAttribute,
+  defaultCombatAttr,
   defaultResource,
-  defaultUserData,
   baseResourceCount,
   baseAttrCount,
   wddj,
@@ -26,13 +26,13 @@ interface CharacterInterface {
   initResource(resource: Resource): void;
   initBaseAttr(attribute: BaseAttr): void;
   initMartialAttr(attribute: MartialAttr): void;
-  updateUserData(extraData?: UserData) : void;
+  updateCombatAttr(extraData?: CombatAttr) : void;
   configStaticAttr(): this;
   configBaseAttr(): this;
   configMartialAttr(): this;
   configResource(): this;
   configOtherAttr(): this;
-  calcUserData(): void;
+  calcCombatAttr(): void;
   getInstance(): CharacterAttr;
 }
 
@@ -63,7 +63,7 @@ export class Character extends BaseCharacter implements CharacterInterface {
       .configBaseAttr()
       .configMartialAttr()
       .configOtherAttr()
-      .updateUserData()
+      .updateCombatAttr()
       .configResource();
   }
 
@@ -192,31 +192,31 @@ export class Character extends BaseCharacter implements CharacterInterface {
     });
   }
 
-  calcUserData() {
-    const userData = Object.assign({}, defaultUserData);
-    const { baseAttribute = {} } = this.character;
+  calcCombatAttr() {
+    const combatAttribute = copy<CombatAttr>(defaultCombatAttr);
+    const { baseAttribute = copy<BaseAttr>(defaultBaseAttribute) } = this.character;
     Object.keys(baseAttribute).forEach((baseKey: string): void => {
       const diffValue = baseAttribute[baseKey] - baseAttrCount;
       switch (baseKey) {
         case Category.strength:
-          userData.force += diffValue;
-          userData.unload += diffValue / 2;
+          combatAttribute.force += diffValue;
+          combatAttribute.unload += diffValue / 2;
           break;
         case Category.agile:
-          userData.subtle += diffValue;
-          userData.tackle += diffValue / 2;
+          combatAttribute.subtle += diffValue;
+          combatAttribute.tackle += diffValue / 2;
           break;
         case Category.physique:
-          userData.hp += diffValue * 5;
-          userData.defence += diffValue;
+          combatAttribute.hp += diffValue * 5;
+          combatAttribute.defence += diffValue;
           break;
         case Category.inner:
-          userData.ihp += diffValue * 5;
-          userData.idefence += diffValue;
+          combatAttribute.ihp += diffValue * 5;
+          combatAttribute.idefence += diffValue;
           break;
         case Category.speed:
-          userData.swift += diffValue;
-          userData.miss += diffValue / 2;
+          combatAttribute.swift += diffValue;
+          combatAttribute.miss += diffValue / 2;
           break;
         case Category.charm:
           break;
@@ -224,18 +224,17 @@ export class Character extends BaseCharacter implements CharacterInterface {
           break;
       }
     });
-    this.character.data = userData;
+    this.character.combatAttribute = combatAttribute;
   }
 
-  updateUserData(extraData?: UserData) {
-    if (typeof extraData === 'object') {
-      const { data = {} } = this.character;
-      extraData = extraData || {};
+  updateCombatAttr(extraData?: CombatAttr) {
+    if (extraData) {
+      const { combatAttribute = copy<CombatAttr>(defaultCombatAttr) } = this.character;
       Object.keys(extraData).forEach((key: string): void => {
-        data[key] += extraData[key];
+        combatAttribute[key] += extraData[key];
       });
     } else {
-      this.calcUserData();
+      this.calcCombatAttr();
     }
     return this;
   }
@@ -253,25 +252,25 @@ export class Character extends BaseCharacter implements CharacterInterface {
   }
 
   configBaseAttr() {
-    this.character.baseAttribute = Object.assign({}, defaultBaseAttribute);
+    this.character.baseAttribute = copy<BaseAttr>(defaultBaseAttribute);
     this.initBaseAttr(this.character.baseAttribute);
     return this;
   }
 
   configMartialAttr() {
-    this.character.martialAttribute = Object.assign({}, defaultMartialAttribute);
+    this.character.martialAttribute = copy<MartialAttr>(defaultMartialAttribute);
     this.initMartialAttr(this.character.martialAttribute);
     return this;
   }
 
   configResource() {
-    this.character.resource = Object.assign({}, defaultResource);
+    this.character.resource = copy<Resource>(defaultResource);
     this.initResource(this.character.resource);
     return this;
   }
 
   configOtherAttr() {
-    this.character.otherAttribute = Object.assign({}, defaultOtherAttribute);
+    this.character.otherAttribute = copy<OtherAttr>(defaultOtherAttribute);
     this.initOtherAttr(this.character.otherAttribute);
     return this;
   }

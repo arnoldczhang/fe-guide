@@ -55,7 +55,7 @@ export interface MartialArt {
   traditional: boolean;
   required?: CO<number>; // required base or other attributes
   effects?: CO<number>; // hp or ihp damage
-  ratio?: CO<number>; // force\subtle\swift ratio
+  ratio?: CO<number[]>; // force\subtle\swift ratio
   // more martial infos...
 };
 
@@ -63,21 +63,21 @@ export interface MartialArtMap {
   [key: string]: Array<MartialArt>;
 };
 
-export interface UserData extends CO {
-  [Category.hp]?: number;
-  [Category.ihp]?: number;
-  [Category.defence]?: number;
-  [Category.idefence]?: number;
-  [Category.force]?: number;
-  [Category.subtle]?: number;
-  [Category.swift]?: number;
-  [Category.tackle]?: number;
-  [Category.unload]?: number;
-  [Category.miss]?: number;
-  [Category.attackRatio]?: number;
-  [Category.iattackRatio]?: number;
-  [Category.defenceRatio]?: number;
-  [Category.idefenceRatio]?: number;
+export interface CombatAttr extends CO {
+  [Category.hp]: number;
+  [Category.ihp]: number;
+  [Category.defence]: number;
+  [Category.idefence]: number;
+  [Category.force]: number;
+  [Category.subtle]: number;
+  [Category.swift]: number;
+  [Category.tackle]: number;
+  [Category.unload]: number;
+  [Category.miss]: number;
+  [Category.attackRatio]: number;
+  [Category.iattackRatio]: number;
+  [Category.defenceRatio]: number;
+  [Category.idefenceRatio]: number;
 };
 
 export interface BaseAttr extends CO {
@@ -121,5 +121,5 @@ export interface CharacterAttr {
   baseAttribute?: BaseAttr;
   martialAttribute?: MartialAttr;
   otherAttribute?: OtherAttr;
-  data?: UserData;
+  combatAttribute?: CombatAttr;
 }

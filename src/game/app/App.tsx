@@ -5,6 +5,8 @@ import { AppState, AppProps } from '../types';
 import { Stage } from '../enum';
 import selector from '../selectors/app';
 import Starter from '../components/starter/Starter';
+import Combat from '../components/combat/Combat';
+import Map from '../components/map/Map';
 
 const styles = require('./App.less');
 
@@ -28,8 +30,10 @@ class App extends PureComponent<AppProps, AppState> {
   getStageNow() {
     const { stage } = this.props;
     switch (stage) {
+      case Stage.Combat:
+        return <Combat />;
       case Stage.Map:
-        // return <Map />;
+        return <Map />;
       case Stage.Create_0:
       case Stage.Create_1:
       case Stage.Create_2:

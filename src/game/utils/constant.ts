@@ -9,7 +9,7 @@ import {
   MartialAttr,
   OtherAttr,
   Resource,
-  UserData,
+  CombatAttr,
 } from '../types';
 import { SystemKeyEnum, Category, Config } from '../enum';
 
@@ -165,6 +165,19 @@ export const wddj: MartialArt = {
   skilled: 1,
   introduce: defaultNone,
   traditional: true,
+  required: {
+    sword: 50,
+    tao: 30,
+  },
+  effects: {
+    hp: 100,
+    ihp: 60,
+  },
+  ratio: {
+    force: [0.4, 100],
+    subtle: [0.3, 50],
+    swift: [0.3, 30],
+  },
 };
 
 export const kongsangMAM: MartialArtMap = {
@@ -317,7 +330,7 @@ export const defaultResource: Resource = {
   [Category.cloth]: baseResourceCount,
 };
 
-export const defaultUserData: UserData = {
+export const defaultCombatAttr: CombatAttr = {
   [Category.hp]: 100,
   [Category.ihp]: 100,
   [Category.defence]: 50,

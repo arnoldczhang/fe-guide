@@ -9,7 +9,7 @@ import {
 
 import AbstractComponent from '../common/AbstractComponent';
 import BaseComponent from '../common/BaseComponent';
-import ErrorBoundary from '../common/errorBoundary';
+import ErrorBoundary from '../common/ErrorBoundary';
 import StepButton from './StepButton';
 import PersonInfo from './PersonInfo';
 import System from './System';

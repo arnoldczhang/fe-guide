@@ -1,0 +1,48 @@
+@operationHeight: 150px;
+@combatDistanceHeight: 50px;
+@minusCombatDistanceHeight: calc(100% - @combatDistanceHeight);
+
+.combat {
+  height: 100%;
+  width: 100%;
+}
+.combat-operation-area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: @operationHeight;
+  width: 100%;
+  // background: skyblue;
+}
+.combat-scene {
+  &:extend(.combat-operation-area);
+  bottom: @operationHeight;
+  height: 200px;
+  // background: grey;
+}
+.combat-distance {
+  height: @combatDistanceHeight;
+}
+.combat-operation {
+  height: @minusCombatDistanceHeight;
+}
+.combat-operation-col {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  line-height: @minusCombatDistanceHeight;
+}
+.distance-word {
+  text-align: center;
+  line-height: @combatDistanceHeight;
+  display: flex;
+  justify-content: center;
+}
+.combat-operation-btn {
+  margin-right: 4px;
+}
+
+.com {
+  background-image: url(https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png);
+}
