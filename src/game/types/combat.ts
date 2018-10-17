@@ -6,6 +6,8 @@ export interface CombatInterface {
   clickable: boolean;
   reloadIndex: number[];
   selectedIndex: number[];
+  distance: number;
+  nextDistance: number;
 };
 
 export interface CombatState {
@@ -23,7 +25,7 @@ export interface CombatProps {
   reloadIndex: number[];
   selectedIndex: number[];
   distance: number;
-  defaultValue:number;
+  nextDistance: number;
 };
 
 export interface CombatDistanceProps {

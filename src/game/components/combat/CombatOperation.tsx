@@ -12,6 +12,7 @@ import selector from '../../selectors/combat';
 import { dispatch } from '../../store';
 import { Stage } from '../../enum';
 import { eq, getBaseOperation } from '../../utils';
+import { baseCost } from '../../utils/constant';
 import Choice from '../common/Choice';
 
 const styles = require('./Combat.less');
@@ -43,12 +44,22 @@ class CombatOperation extends BaseComponent<CombatProps, CombatState>
     dispatch.combat.refreshState(cost);
   }
 
-  handleChoiceClick(outer: number, index: number, cost: number) {
-    dispatch.combat.selectWeapon([outer, index]);
+  handleChoiceClick(
+    outer: number,
+    index: number,
+    preWeapon: Weapon,
+    weapon: Weapon,
+  ) {
     this.setState({
-      weaponList: this.state.weaponList,
+      weaponList: Object.assign([], this.state.weaponList),
     });
-    this.refreshWeaponState(cost);
+
+    if (!weapon.noDelay) {
+      dispatch.combat.selectWeapon([outer, index]);
+      this.refreshWeaponState(preWeapon.cost || baseCost);
+    } else {
+      dispatch.combat.updateReloadIndex([outer, index]);
+    }
   }
 
   getBaseWeapon(): ReactNode[] {
@@ -72,7 +83,8 @@ class CombatOperation extends BaseComponent<CombatProps, CombatState>
                 null,
                 outerIndex,
                 index,
-                weaponList[selectedIndex[0]][selectedIndex[1]].cost
+                weaponList[selectedIndex[0]][selectedIndex[1]],
+                weapon
               )}
             />
           ))

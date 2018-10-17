@@ -20,6 +20,8 @@ export const baseResourceCount = 1000;
 
 export const baseAttrCount = 50;
 
+export const baseCost = 3;
+
 // person info
 export const treasureKey: Array<string> = [
   Category.wood,
@@ -475,7 +477,8 @@ export const heal: Weapon = {
   skilled: 1,
   cost: 3,
   introduce: defaultNone,
-  times: 2,
+  noDelay: true,
+  times: 3,
   required: {
     [Category.agile]: 50,
     [Category.doctor]: 50,
@@ -490,6 +493,8 @@ export const depoison: Weapon = {
   title: '祛毒',
   skilled: 1,
   cost: 3,
+  times: 2,
+  noDelay: true,
   introduce: defaultNone,
   required: {
     [Category.poison]: 50,
@@ -504,6 +509,7 @@ export const escape: Weapon = {
   title: '逃跑',
   skilled: 1,
   cost: 3,
+  noDelay: true,
   introduce: defaultNone,
   required: {
     [Category.speed]: 50,

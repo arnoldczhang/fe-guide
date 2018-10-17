@@ -37,15 +37,11 @@ class CombatOperationArea extends BaseComponent<CombatProps, CombatOperationStat
   bindInstance(): void {
   }
 
-  handleClick(): void {
-
-  }
-
   render(): ReactNode {
     return (
       <ErrorBoundary>
         <Row className={styles['combat-operation-area']}>
-          <CombatDistance distance={6.1} defaultValue={6.0} addCallback={this.handleClick} minusCallback={this.handleClick}/>
+          <CombatDistance />
           <CombatOperation />
         </Row>
       </ErrorBoundary>

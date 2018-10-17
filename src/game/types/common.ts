@@ -131,6 +131,7 @@ export interface Weapon {
   icon?: string;
   cost?: number;
   skilled: number;
+  noDelay?: boolean;
   times?: number;
   introduce?: string;
   required?: CO<number>; // required base or other attributes

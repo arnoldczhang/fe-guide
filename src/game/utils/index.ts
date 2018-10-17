@@ -23,6 +23,9 @@ export const eq: <T = any>(target: T, ...args: T[]) => boolean =
 export const hasOwn: (target: CO, key: string) => boolean =
   (target, key) => target.hasOwnProperty(key) || key in target;
 
+export const isUndef: (target: any) => boolean =
+  target => typeof target === 'undefined';
+
 export const cach: Cach = {
   KEY: 'TAIWU',
   getKey(key: string): string {
@@ -84,4 +87,5 @@ export default {
   copy,
   eq,
   getBaseOperation,
+  isUndef,
 };

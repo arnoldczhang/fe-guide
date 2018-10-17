@@ -4,8 +4,10 @@ import React, {
 import classnames from 'classnames';
 
 import { Weapon } from '../../../types';
+import { baseCost } from '../../../utils/constant';
 
 const styles = require('./index.less');
+
 
 interface ChoiceProps {
   clickable: boolean;
@@ -44,7 +46,7 @@ const Choice: SFC<ChoiceProps> = ({
 
   const choiceClass = classnames({
     [styles.choice]: true,
-    [styles[`choice-loading-${item.cost || 3}`]]: reload,
+    [styles[`choice-loading-${item.cost || baseCost}`]]: reload,
     [styles['choice-selected']]: selected,
   });
   

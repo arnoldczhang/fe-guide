@@ -36,23 +36,31 @@ class CombatDistance extends BaseComponent<CombatProps, CombatDistanceState>
     this.bindInstance();
   }
 
+  componentDidMount(): void {
+    dispatch.combat.initDistance();
+  }
+ 
   bindInstance(): void {
     this.minusCallback = this.minusCallback.bind(this);
     this.addCallback = this.addCallback.bind(this);
   }
 
-  minusCallback() {
+  updateAsyncDistance(distance?: number) {
+    dispatch.combat.updateAsyncDistance(distance);
+  }
 
+  minusCallback() {
+    this.updateAsyncDistance(-0.1);
   }
 
   addCallback() {
-
+    this.updateAsyncDistance(0.1);
   }
 
   render(): ReactNode {
     const {
       distance,
-      defaultValue,
+      nextDistance,
     } = this.props;
     return (
       <Row type={'flex'} justify={'center'} className={styles['combat-distance']}>
@@ -61,7 +69,7 @@ class CombatDistance extends BaseComponent<CombatProps, CombatDistanceState>
             <Button type="primary" onClick={this.minusCallback}>
               <Icon type="left" />
             </Button>
-            <Button>{defaultValue}</Button>
+            <Button shape="circle" className={styles['distance-word-next']}>{nextDistance}</Button>
             <Button type="primary" onClick={this.addCallback}>
               <Icon type="right" />
             </Button>
