@@ -2,6 +2,8 @@
   - https://www.jianshu.com/p/0983e69d58ec
   - https://zhuanlan.zhihu.com/p/30744300
   - https://juejin.im/entry/59082301a22b9d0065f1a186
+  - 深入浏览器事件循环：https://zhuanlan.zhihu.com/p/45111890
+  - Tasks, microtasks：https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
   - ![运行机制](2954145-5bb92d1fbdb9df41.png)
 
 - - -
@@ -10,11 +12,12 @@
 # Event Loop、Call Stack、Web APIs
   - Event Loop - 事件循环
   - Call Stack - 调用栈
+  - Render Step - 渲染节奏
   - Web APIs - 宿主环境
 
 - - -
 
-#Call Stack
+# Call Stack
 * 函数被调用
 * 创建执行上下文
     * a) 创建作用域链
@@ -71,5 +74,50 @@
 
 - - -
 
-#Web APIs
+# Web APIs
 前端：浏览器、node环境
+
+- - -
+
+# Render Step
+    - Structure - 构建 DOM 树的结构
+    - Layout - 确认每个 DOM 的大致位置（排版）
+    - Paint - 绘制每个 DOM 具体的内容（绘制）
+
+## 取消动画合并
+    - 嵌套requestAnimationFrame
+    - box.offsetWidth // 获取排版样式来打断渲染
+
+## requestAnimationFrame和setTimeout的区别
+    - setTimeout加入Event Loop，requestAnimationFrame加入渲染队列
+    - 单位时间，setTimeout会执行多次，requestAnimationFrame严格遵守【执行一次渲染一次】
+    - setTimeout(callback, 1000 / 60)可以模拟requestAnimationFrame，但不适合
+
+
+- - -
+
+# 交互事件触发
+```js
+let button = document.querySelector('#button');
+
+button.addEventListener('click', function CB1() {
+  console.log('Listener 1');
+
+  setTimeout(() => console.log('Timeout 1'))
+
+  Promise.resolve().then(() => console.log('Promise 1'))
+});
+
+button.addEventListener('click', function CB1() {
+  console.log('Listener 2');
+
+  setTimeout(() => console.log('Timeout 2'))
+
+  Promise.resolve().then(() => console.log('Promise 2'))
+});
+
+// 手动点击：Listener 1, Promise 1, Listener 2, Promise 2, Timeout 1, Timeout 2
+// button.click()：Listener 1, Listener 2, Promise 1,  Promise 2, Timeout 1, Timeout 2
+// 解释：手动点击，浏览器不知道下面是否还会有绑定事件，故会先触发事件内的操作，
+// 直接用代码click，浏览器的内部实现是把 2 个 listener 都同步执行
+```

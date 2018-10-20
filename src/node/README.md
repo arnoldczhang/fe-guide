@@ -4,6 +4,9 @@
   - 源码分析：http://efe.baidu.com/blog/nodejs-module-analyze/
   - node问题排查：https://zhuanlan.zhihu.com/p/41178823
 
+## node调试工具-ndb
+  - https://zhuanlan.zhihu.com/p/45851471
+
 ## require原理
   - ![图解require过程](process1.png)
   - 关键

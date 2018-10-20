@@ -142,8 +142,10 @@
 // console.log(ast)
 
 
-async function aa() {
-  await Promise.resolve(1);
-}
+const async_hooks = require('async_hooks');
 
-console.log(aa());
+async_hooks.createHook({
+  init(asyncId) {
+    print({ type: 'init', msg: asyncId });
+  },
+}).enable();
