@@ -8,7 +8,8 @@ import {
 import AbstractComponent from '../common/AbstractComponent';
 import BaseComponent from '../common/BaseComponent';
 import ErrorBoundary from '../common/ErrorBoundary';
-import { CombatState, CombatProps } from '../../types';
+import Man from '../common/Man';
+import { CombatSceneState, CombatProps } from '../../types';
 import { Stage, CreateStep } from '../../enum';
 import selector from '../../selectors/combat';
 import { dispatch } from '../../store';
@@ -17,7 +18,7 @@ const styles = require('./Combat.less');
 
 const ButtonGroup = Button.Group;
 
-const initialState: CombatState = {
+const initialState: CombatSceneState = {
 };
 
 const initialProps = {
@@ -25,9 +26,9 @@ const initialProps = {
   stepIndex: CreateStep.Person,
 };
 
-class CombatScene extends BaseComponent<CombatProps, CombatState> implements AbstractComponent<CombatProps, CombatState> {
+class CombatScene extends BaseComponent<CombatProps, CombatSceneState> implements AbstractComponent<CombatProps, CombatSceneState> {
   displayName?: string = 'Combat';
-  state: CombatState = initialState;
+  state: CombatSceneState = initialState;
   static defaultProps = initialProps;
 
   constructor(props: CombatProps) {
@@ -43,9 +44,11 @@ class CombatScene extends BaseComponent<CombatProps, CombatState> implements Abs
   }
 
   render(): ReactNode {
+    const { distance } = this.props;
     return (
       <ErrorBoundary>
         <Row className={styles['combat-scene']}>
+          <Man dist={distance}/>
         </Row>
       </ErrorBoundary>
     );

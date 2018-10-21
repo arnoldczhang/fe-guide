@@ -6,9 +6,6 @@ export interface StateInterface<S = any, SS = S> {
   combat: S,
 };
 
-export interface ErrorInfo {
-  componentStack: string;
-};
 
 export interface Cach {
   readonly KEY: string;
@@ -16,6 +13,10 @@ export interface Cach {
   readonly getKey: Function;
   readonly set: Function;
   readonly clear: Function;
+};
+
+export interface ErrorInfo {
+  componentStack: string;
 };
 
 export interface ErrorState {
@@ -26,6 +27,20 @@ export interface ErrorProps {
   children: React.ReactNode;
   className?: string;
 };
+
+export interface ManInterface {
+};
+
+export interface ManState {
+  active?: boolean;
+};
+
+export interface ManProps {
+  className?: string;
+};
+
+
+
 
 export type Readonly<T> = {
     readonly [P in keyof T]: T[P];

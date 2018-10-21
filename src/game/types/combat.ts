@@ -10,6 +10,9 @@ export interface CombatInterface {
   nextDistance: number;
 };
 
+export interface CombatSceneState {
+};
+
 export interface CombatState {
   weaponList: Weapon[][];
 };

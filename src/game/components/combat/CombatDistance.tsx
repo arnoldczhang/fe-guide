@@ -66,11 +66,11 @@ class CombatDistance extends BaseComponent<CombatProps, CombatDistanceState>
       <Row type={'flex'} justify={'center'} className={styles['combat-distance']}>
         <Col span={8} className={styles['distance-word']}>
           <ButtonGroup>
-            <Button type="primary" onClick={this.minusCallback}>
+            <Button type="primary" onClick={this.addCallback}>
               <Icon type="left" />
             </Button>
             <Button shape="circle" className={styles['distance-word-next']}>{nextDistance}</Button>
-            <Button type="primary" onClick={this.addCallback}>
+            <Button type="primary" onClick={this.minusCallback}>
               <Icon type="right" />
             </Button>
           </ButtonGroup>
