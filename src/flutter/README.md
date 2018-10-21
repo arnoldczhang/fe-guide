@@ -13,3 +13,10 @@
  - Flutter的第三方库还很少，RN发展的早，虽然也还不完善，但是比Flutter好
  - RN的界面布局更像网页布局，而Flutter的布局更像native布局
  - Flutter在跨平台这方面做得更彻底一些
+
+## 其他
+  - ![GPU-render](gpu-render.png)
+  - ![state](state.png)
+
+
+
