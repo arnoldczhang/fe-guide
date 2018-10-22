@@ -6,7 +6,6 @@ export interface StateInterface<S = any, SS = S> {
   combat: S,
 };
 
-
 export interface Cach {
   readonly KEY: string;
   readonly get: Function;
@@ -38,9 +37,6 @@ export interface ManState {
 export interface ManProps {
   className?: string;
 };
-
-
-
 
 export type Readonly<T> = {
     readonly [P in keyof T]: T[P];
