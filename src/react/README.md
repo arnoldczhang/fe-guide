@@ -9,6 +9,7 @@
 5. fiber：https://zhuanlan.zhihu.com/p/37098539
 6.  HOC复用和拆分：https://zhuanlan.zhihu.com/p/40245156
 7. react-redux：https://segmentfault.com/a/1190000012976767
+8. react17：https://zhuanlan.zhihu.com/p/46147401
 
 
 ## lifecycle
