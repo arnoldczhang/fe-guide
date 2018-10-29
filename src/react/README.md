@@ -10,7 +10,7 @@
 6.  HOC复用和拆分：https://zhuanlan.zhihu.com/p/40245156
 7. react-redux：https://segmentfault.com/a/1190000012976767
 8. react17：https://zhuanlan.zhihu.com/p/46147401
-
+9. redux大型项目：https://zhuanlan.zhihu.com/p/47396514
 
 ## lifecycle
   - ```js
@@ -51,11 +51,134 @@
   - componentDidUpdate
 
 
+## redux大型项目构建
 
+### 使用索引（index）存储数据，使用选择器（selector）访问数据
 
+#### 使用索引（index）存储数据
+```js
+// 接口返回
+/*
+{
+  userList: [
+    {
+      id: 123,
+      name: abc,
+      // ...
+    },
+    // ...
+  ],
+}
+*/
 
+// 前端存储（转换成散列表索引）
+/*
+{
+  userList: {
+    123: {
+      id: 123,
+      name: abc,
+      // ...
+    },
+    // ...
+  },
+}
+ */
+```
 
+#### 使用选择器（selector）访问数据
+```js
+const getUserList = ({ userMap }) => (
+  Object.keys(userMap).map(key => userMap[key])
+);
 
+const getSelectedUserList = ({ selectedIdList, userMap }) => (
+  selectedIdList.map(id => userMap[id])
+);
+```
 
+### 状态隔离
+```js
+// 只有view状态
+/*
+{
+  userList: {
+    123: {
+      id: 123,
+      name: abc,
+      // ...
+    },
+    // ...
+  },
+}
+*/
+
+// 新增edit状态
+/*
+{
+  userList: {
+    123: {
+      id: 123,
+      name: abc,
+      // ...
+    },
+    // ...
+  },
+  editingUserList: {
+    123: {
+      id: 123,
+      name: abc,
+      // ...
+    },
+    // ...
+  },
+}
+
+ */
+```
+
+### 重用reducer
+
+#### 作用域（scope）或者前缀（prefix）对动作类型（types）进行特殊处理
+```js
+const initialPaginationState = {
+  startElement: 0,
+  pageSize: 100,
+  count: 0,
+};
+
+const paginationReducerFor = (prefix) => {
+  const paginationReducer = (state = initialPaginationState, action) => {
+    const { type, payload } = action;
+    switch (type) {
+      case prefix + types.SET_PAGINATION:
+        const {
+          startElement,
+          pageSize,
+          count,
+        } = payload;
+        return Object.assign({}, state, {
+          startElement,
+          pageSize,
+          count,
+        });
+      default:
+        return state;
+    }
+  };
+  return paginationReducer;
+};
+
+// 加前缀
+const usersReducer = combineReducers({
+  usersData: usersDataReducer,
+  paginationData: paginationReducerFor('USERS_'),
+});
+
+const domainsReducer = combineReducers({
+  domainsData: domainsDataReducer,
+  paginationData: paginationReducerFor('DOMAINS_'),
+});
+```
 
 
