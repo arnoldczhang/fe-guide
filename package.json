@@ -71,6 +71,7 @@
     "g21:mock": "cross-env NODE_ENV=development node ./src/miniprogram/bin.js",
     "g21:release": "cross-env NODE_ENV=production node ./src/miniprogram/bin.js",
     "g22:roll": "rollup --config ./src/treeshake/build/rollup.config.js",
+    "g23": "nodemon ./src/socket/socket.js",
     "gen": "./src/react-cli init",
     "save": "node ./src/test/src/saveImage",
     "lynt": "lynt ./src/lynt/lynt.js",

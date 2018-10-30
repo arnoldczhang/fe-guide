@@ -1,0 +1,20 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>aaa</h1>
+    <input type="text" name="" id="aa" maxlength="4"/>
+    <input type="text" name="" id="fake-aa" maxlength="4"/>
+    <script type="text/javascript" src='./bundle.client.io.js'></script>
+    <script type="text/javascript">
+      var socket = new eio.Socket('ws://localhost:8999/');
+      socket.on('open', function () {
+        // socket.send(new Int8Array(5));
+        socket.on('message', function(data){
+          console.log(data);
+        });
+        socket.on('close', function(){});
+      });
+    </script>
+  </body>
+</html>
