@@ -1,10 +1,22 @@
+# websocket升级指南
+
+## server搭建
+
+### 步骤
+1. 创建node-server和websocket-server
+2. 监听node-server的upgrade事件（请求头会携带【Upgrade:websocket】）
+3. 触发upgrade事件后，执行websocket-server的upgrade事件
+4. 触发websocket-server的connection
+
+### 实现
+```js
 const http = require('http');
 const url = require('url');
 const WebsocketServer = new require('ws').Server;
 
-const handleUpgrade = (request, socket, header, wsServer) => {
-  wsServer.handleUpgrade(request, socket, header.copy(new Buffer(header.length)), (ws) => {
-    wsServer.emit('connection', ws, request);
+const handleUpgrade = (request, socket, header, server) => {
+  server.handleUpgrade(request, socket, header.copy(new Buffer(header.length)), (ws) => {
+    server.emit('connection', ws, request);
   });
 };
 
@@ -41,38 +53,4 @@ server.on('upgrade', (req, socket, head) => {
   console.log('pathname', pathname);
   handleUpgrade(req, socket, head, websocketServer);
 });
-
-
-
-
-// const engine = require('engine.io');
-// const server = engine.listen(8999, {}, () => {
-//   console.log('socket started');
-// });
-// 
-// 
-
-// console.log(server.listeners('request').slice(0));
-
- 
-// server.on('connection', function(socket){
-//   socket.send('hi');
-// });
- 
-// // …
-// server.on('handshake', function(req, socket, head){
-//   console.log('11111');
-//   // server.handleUpgrade(req, socket, head);
-// });
-// server.on('request', function(req, res){
-//   console.log('ddd');
-//   server.handleRequest(req, res);
-// });
-
-
-
-
-
-
-
-
+```
