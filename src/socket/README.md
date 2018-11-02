@@ -54,3 +54,28 @@ server.on('upgrade', (req, socket, head) => {
   handleUpgrade(req, socket, head, websocketServer);
 });
 ```
+
+## websocket原理
+1. header升级
+```js
+const key = crypto.createHash('sha1')
+  .update(req.headers['sec-websocket-key'] + constants.GUID, 'binary')
+  .digest('base64');
+
+const headers = [
+  'HTTP/1.1 101 Switching Protocols',
+  'Upgrade: websocket',
+  'Connection: Upgrade',
+  `Sec-WebSocket-Accept: ${key}`
+];
+
+let protocol = req.headers['sec-websocket-protocol'];
+
+if (protocol) {
+  protocol = protocol.trim().split(/ *, */);
+  headers.push(`Sec-WebSocket-Protocol: ${protocol}`);
+}
+socket.emit('headers', headers, req);
+socket.write(headers.concat('\r\n').join('\r\n'));
+```
+
