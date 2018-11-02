@@ -6,8 +6,13 @@
   "scripts": {
     "g1": "webpack --config ./webpack/webpack.base.config.js --progress",
     "g1:w": "webpack --config ./webpack/webpack.base.config.js -w --progress",
-    "g1:release": "cross-env NODE_ENV=production node ./webpack/bin.js",
-    "g1:mock": "cross-env NODE_ENV=development node ./webpack/bin.js"
+    "release": "cross-env NODE_ENV=production node ./webpack/bin.js",
+    "mock": "cross-env NODE_ENV=development node ./webpack/bin.js",
+    "b1": "cross-env NODE_ENV=development node ./webpack/wxml",
+    "b2": "cross-env NODE_ENV=development node ./webpack/image",
+    "b3": "cross-env NODE_ENV=development node ./webpack/wxss",
+    "b4": "cross-env NODE_ENV=development node ./webpack/json",
+    "b5": "cross-env NODE_ENV=development node ./webpack/js"
   },
   "author": "arnold1205 <arnold.c.zhang@gmail.com>",
   "license": "MIT",

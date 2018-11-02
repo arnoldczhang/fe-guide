@@ -58,6 +58,7 @@ let {
 
 let time;
 let logger;
+let watcher;
 
 const jsRe = /\.js$/;
 const jsonRe = /\.json$/;
@@ -572,7 +573,7 @@ const compileJsFiles = (
   ensureRunFunc(callback);
 };
 
-const minImageFiles = async (
+const compileImageFiles = async (
   src = absoluteSrcPath,
   dest = absoluteDestPath,
   callback,
@@ -682,7 +683,7 @@ const runWatcher = async (
     }
   };
 
-  chokidar.watch(src, { ignored: /(^|[\/\\])\../ })
+  watcher = chokidar.watch(src, { ignored: /(^|[\/\\])\../ })
     .on('ready', () => (initial = true))
     .on('unlinkDir', unlinkFunc)
     .on('unlink', unlinkFunc)
@@ -698,6 +699,11 @@ const compileStart = (
   dest = absoluteDestPath,
   callback,
 ) => {
+  if (typeof src === 'function') {
+    callback = src;
+    src = absoluteSrcPath;
+    dest = absoluteDestPath;
+  }
   Cach.init('wxml', {});
   time = Date.now();
   removeS(dest);
@@ -710,10 +716,17 @@ const compileFinish = async (
   callback,
 ) => {
   if (isDev()) {
+    if (typeof src === 'function') {
+      callback = src;
+      src = absoluteSrcPath;
+      dest = absoluteDestPath;
+    }
     await clearConsole();
     logEnd('compile', time);
-    console.log();
-    console.log(color.magenta('watching file changes...'));
+    if (watcher) {
+      console.log();
+      console.log(color.magenta('watching file changes...'));
+    }
     ensureRunFunc(callback);
   } else {
     logEnd('compile', time);
@@ -751,7 +764,7 @@ const STEP_PROCESS = [
   compileJsonFiles,
   compileJsFiles,
   compileWxmlFiles,
-  minImageFiles,
+  compileImageFiles,
   compileWxssFiles,
   removeUnusedImages,
 ];
@@ -766,7 +779,9 @@ const STEP_SERIES = [
   ...STEP_END,
 ];
 
-module.exports = async ({
+logger = Logger(STEP_PROCESS.length);
+
+const Compiler = async ({
   src = absoluteSrcPath,
   dest = absoluteDestPath,
   options = {},
@@ -774,7 +789,6 @@ module.exports = async ({
 } = {}) => {
   resolveOptions(options);
   options = Object.assign({}, options, { hooks });
-  logger = Logger(STEP_PROCESS.length);
 
   const wrapper = (fn, index) => (callback) => (
     fn(src, dest, callback, options)
@@ -786,3 +800,12 @@ module.exports = async ({
     //...
   }));
 };
+
+module.exports = Compiler;
+Compiler.compileStart = compileStart;
+Compiler.compileFinish = compileFinish;
+Compiler.compileWxmlFiles = compileWxmlFiles;
+Compiler.compileWxssFiles = compileWxssFiles;
+Compiler.compileImageFiles = compileImageFiles;
+Compiler.compileJsonFiles = compileJsonFiles;
+Compiler.compileJsFiles = compileJsFiles;
