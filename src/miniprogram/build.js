@@ -385,6 +385,10 @@ const jsonWillRewriteHook = (file, ...args) => {
           });
           usingComponents[compKey] = `${prefix || './'}npm/${compPath}`;
         }
+      }, {
+        // => test file length
+        // start: 0,
+        // end: 1,
       });
       return JSON.stringify(json);
     }
@@ -486,9 +490,15 @@ const removeUnusedImages = (
     hooks = {},
   } = {},
 ) => {
+  let forceRemove = false;
+  if (typeof src === 'boolean') {
+    forceRemove = src;
+    src = absoluteSrcPath;
+    dest = absoluteDestPath;
+  }
   ensureRunFunc(hooks.beforeRemoveUnusedImage);
   logger.await('remove unused image');
-  if (isProd()) {
+  if (forceRemove || isProd()) {
     const imagePathArray = keys(searchFiles(imgTypeRe, dest));
     for (let index = 0; index < imagePathArray.length; index += 1) {
       const imageKey = imagePathArray[index];
@@ -781,7 +791,7 @@ const STEP_SERIES = [
 
 logger = Logger(STEP_PROCESS.length);
 
-const Compiler = async ({
+const compile = async ({
   src = absoluteSrcPath,
   dest = absoluteDestPath,
   options = {},
@@ -801,11 +811,12 @@ const Compiler = async ({
   }));
 };
 
-module.exports = Compiler;
-Compiler.compileStart = compileStart;
-Compiler.compileFinish = compileFinish;
-Compiler.compileWxmlFiles = compileWxmlFiles;
-Compiler.compileWxssFiles = compileWxssFiles;
-Compiler.compileImageFiles = compileImageFiles;
-Compiler.compileJsonFiles = compileJsonFiles;
-Compiler.compileJsFiles = compileJsFiles;
+module.exports = compile;
+compile.compileStart = compileStart;
+compile.compileFinish = compileFinish;
+compile.compileWxmlFiles = compileWxmlFiles;
+compile.compileWxssFiles = compileWxssFiles;
+compile.compileImageFiles = compileImageFiles;
+compile.compileJsonFiles = compileJsonFiles;
+compile.compileJsFiles = compileJsFiles;
+compile.removeUnusedImages = removeUnusedImages;

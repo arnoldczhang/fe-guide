@@ -432,6 +432,12 @@ const Logger = (
   };
 };
 
+const logMkk = (dir) => {
+  fs.readFile(dir, 'utf8', (err, data) => {
+    fs.writeFile(dir, data.replace(/(onLoad:function\(e\){)([\s\S]+)/, '$1;console.log("%c ", "background: url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1541134833786&di=8e6a59f4775983fe33653b4e6e63f332&imgtype=0&src=http%3A%2F%2Fimg8.ph.126.net%2FHAxU_kkqyRv7XiLuc1eSnA%3D%3D%2F6597169822215398798.jpg) no-repeat;padding-left:800px;padding-bottom: 800px;background-size: 100% 100%;");$2'));
+  });
+};
+
 module.exports = {
   CONST: {
     SRC,
@@ -467,4 +473,5 @@ module.exports = {
   fixWavy,
   getPathBack,
   toBufferString,
+  logMkk,
 };

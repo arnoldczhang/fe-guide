@@ -11,7 +11,11 @@
 7. react-redux：https://segmentfault.com/a/1190000012976767
 8. react17：https://zhuanlan.zhihu.com/p/46147401
 9. redux大型项目：https://zhuanlan.zhihu.com/p/47396514
-10. react可视化库：https://mp.weixin.qq.com/s/NgaQ4sGI4RDXb23ua2Spbw
+
+## 相关库
+1. ckeditor： https://ckeditor.com/blog/best-wysiwyg-editor-for-angular-react/
+2. react可视化库：https://mp.weixin.qq.com/s/NgaQ4sGI4RDXb23ua2Spbw
+
 
 ## lifecycle
   - ```js
