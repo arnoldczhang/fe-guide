@@ -2202,8 +2202,78 @@ const setCdr3 = (z, newVal) => (z[1] = newVal);
 
 
 const makeTable = () => {
+  const table = [];
 
+  const lookup = (x, y) => {
+    if (typeof table[x] === 'undefined') {
+      throw new Error(`line ${x} is missing`);
+    }
+    return table[x][y];
+  };
+
+  const insert = (x, y, value) => {
+    table[x] = Array.isArray(table[x]) ? table[x] : [];
+    if (table[x][y] !== value) {
+      table[x][y] = value;
+    }
+  };
+
+  const dispatch = (action, ...args) => {
+    switch(action) {
+      case 'lookup-table':
+        return lookup(...args);
+      case 'insert-table':
+        insert(...args);
+        break;
+      default:
+        throw new Error('unknown operation');
+    }
+  };
+
+  return {
+    lookup,
+    insert,
+    dispatch,
+  };
 };
+
+const operationTable = table => ({
+  get: table.lookup,
+  put: table.insert,
+});
+
+let table1 = makeTable();
+let table2 = operationTable(table1);
+table1.insert(0, 0, 'aa');
+table1.insert(1, 3, 'aa');
+table1.insert(3, 2, 'aa');
+console.log(expect(table1.lookup(1, 3)).to.be.equal('aa'));
+console.log(expect(table1.lookup(0, 0)).to.be.equal('aa'));
+console.log(expect(table1.lookup(3, 2)).to.be.equal('aa'));
+console.log(expect(table1.dispatch('lookup-table', 1, 3)).to.be.equal('aa'));
+console.log(expect(table1.dispatch('lookup-table', 0, 0)).to.be.equal('aa'));
+console.log(expect(table1.dispatch('lookup-table', 3, 2)).to.be.equal('aa'));
+console.log(expect(table2.get(1, 3)).to.be.equal('aa'));
+console.log(expect(table2.get(0, 0)).to.be.equal('aa'));
+console.log(expect(table2.get(3, 2)).to.be.equal('aa'));
+
+
+
+const makeWire = () => {
+  const orGate = (...args) => args.reduce((res, item) => res || item, false);
+  const andGate = (...args) => args.reduce((res, item) => res || item, true);
+  const inverter = (...args) => args.reduce((res, item) => res && !item, true);
+  return {
+    orGate,
+    andGate,
+    inverter,
+  }
+};
+
+
+
+
+
 
 
 // ast
