@@ -2259,16 +2259,47 @@ console.log(expect(table2.get(3, 2)).to.be.equal('aa'));
 
 
 
+const orGate = (...args) => args.reduce((res, item) => res || item, false);
+const andGate = (...args) => args.reduce((res, item) => res || item, true);
+const inverter = (...args) => args.reduce((res, item) => res && !item, true);
+
 const makeWire = () => {
-  const orGate = (...args) => args.reduce((res, item) => res || item, false);
-  const andGate = (...args) => args.reduce((res, item) => res || item, true);
-  const inverter = (...args) => args.reduce((res, item) => res && !item, true);
+  const getSignal = () => {
+
+  };
+
+  const setSignal = () => {
+
+  };
+
+  const addAction = () => {
+
+  };
+
+  const dispatch = (type, ...args) => {
+    switch(type) {
+      case 'get-signal':
+        return getSignal(...args);
+      case 'set-signal':
+        return setSignal(...args);
+      case 'add-action':
+        return addAction(...args);
+      default:
+        throw new Error('unknown operation');
+    }
+  };
+
   return {
-    orGate,
-    andGate,
-    inverter,
+    getSignal,
+    setSignal,
+    addAction,
   }
 };
+
+
+
+
+
 
 
 
