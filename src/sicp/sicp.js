@@ -2268,8 +2268,11 @@ const makeWire = () => {
 
   };
 
-  const setSignal = () => {
-
+  const setSignal = (signal = {}, newValue) => {
+    if (signal.value !== newValue) {
+      signal.value = newValue;
+    }
+    return signal;
   };
 
   const addAction = () => {
