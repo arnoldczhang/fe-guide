@@ -4,6 +4,8 @@ const signale = require('signale');
 const chai = require('chai');
 const expect = chai.expect;
 const TRUE = true;
+const NULL = null;
+
 console.log = (...inputs) => {
   return signale.success(...inputs.map((input) => {
     if (typeof input === 'object') {
@@ -62,6 +64,8 @@ const paska = (line = 1, result = {}) => {
 
 
 // 幂
+const isNull = val => val == NULL;
+const hasValue = val => !isNull(val);
 const isEven = num => num % 2 === 0;
 const isOdd = num => !isEven(num);
 const square = num => num * num;
@@ -2299,6 +2303,27 @@ const makeWire = () => {
   }
 };
 
+const squarer = (x, res) => {
+  const processNewValue = () => {
+    if (hasValue(x)) {
+      if (x !== 0) {
+        res = x * x;
+      } else {
+        throw new Error('square result less than 0');
+      }
+    }
+
+    if (hasValue(res) && isNull(x)) {
+      x = Math.sqrt(res);
+    }
+
+    return res;
+  };
+
+  return {
+    processNewValue,
+  }
+};
 
 
 
