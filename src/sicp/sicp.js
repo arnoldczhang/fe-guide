@@ -2320,8 +2320,19 @@ const squarer = (x, res) => {
     return res;
   };
 
+  const processForgetValue = () => {
+    if (hasValue(x)) {
+      x = NULL;
+    }
+
+    if (hasValue(res)) {
+      res = NULL;
+    }
+  };
+
   return {
     processNewValue,
+    processForgetValue,
   }
 };
 
