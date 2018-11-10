@@ -107,4 +107,19 @@ client.call('add', 1, 2, function(err, n){
   });
   ```
 
+### pm2初始化过程
+```js
+// 
+this.client = new Client({
+  // ...
+});
+
+//
+KMDaemon.ping(this._conf, () => {
+  // ...
+});
+```
+
+
+
 
