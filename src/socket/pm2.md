@@ -1,5 +1,8 @@
 # pm2
 
+## 参考
+1. [流程解读](https://www.jianshu.com/p/ac843b516fda)
+
 ## 相关概念
 
 ### rpc
@@ -56,7 +59,8 @@ client.call('add', 1, 2, function(err, n){
 - [两者对比](http://zhenhua-lee.github.io/node/socket.html/)
 
 ### net
-- net.createConnection
+
+#### net.createConnection
   ```js
   const client = net.createConnection({ port: 8124 }, () => {
     //'connect' listener
@@ -69,7 +73,7 @@ client.call('add', 1, 2, function(err, n){
     client.end();
   });
   ```
-- net.Socket
+#### net.Socket
   ```js
   const net = require('net');
 
@@ -85,7 +89,7 @@ client.call('add', 1, 2, function(err, n){
     clientSocket.end();
   });
   ```
-- net-server
+#### net-server
   ```js
   const net = require('net');
 
@@ -108,18 +112,113 @@ client.call('add', 1, 2, function(err, n){
   ```
 
 ### pm2初始化过程
-```js
-// 
-this.client = new Client({
-  // ...
-});
 
-//
-KMDaemon.ping(this._conf, () => {
-  // ...
-});
+#### pm2/lib/API.js
+```js
+class API {
+  constructor() {
+    // ...
+    this.client = new Client({
+      // ...
+    });
+
+    // ...
+    KMDaemon.ping(this._conf, () => {
+      // ...
+    });
+  }
+
+  connect() {
+    // ...
+    this.client.start();
+  }
+
+  start() {
+    // ...
+  }
+}
 ```
 
+#### pm2/lib/Client.js
+```js
+class Client {
+  constructor() {
+    // ...
+  }
 
+  start() {
+    // ...
+    this.pingDaemon();
+    this.launchDaemon();
+
+    // master进程
+    this.daemon = new Daemon({
+      // ...
+    })
+  }
+
+  pingDaemon() {
+    var req = axon.socket('req');
+    var client = new rpc.Client(req);
+    client.socket.once('connect reconnect attempt error' () => {
+      // ...
+    });
+    req.connect(this.rpc_socket_file);
+  }
+
+  launchDaemon() {
+    var req = axon.socket('req');
+    this.client = new rpc.Client(req);
+    this.client.socket.once('connect reconnect attempt error' () => {
+      // ...
+    });
+    this.client_sock = req.connect(this.rpc_socket_file);
+  }
+
+  close() {
+    // ...
+    // master挂了，会切断daemon与satan的rpc连接，清空子进程监听
+    async.series([
+      this.disconnectRPC(),
+      this.disconnectBus(),
+    ])
+  }
+}
+```
+
+#### pm2/lib/Daemon.js
+```js
+// master进程
+class Deamon {
+  constructor() {
+    // ...
+  }
+
+  start() {
+    // ...
+    const d = domain.create();
+
+   d.once('error', function(err) {
+     // ...
+     console.error('[PM2] Resurrecting PM2');
+     // ...
+   });
+  }
+}
+```
+
+#### @pm2/agent/src/InteractorClient.js
+```js
+class KMDaemon {
+  static ping() {
+    const req = axon.socket('req');
+    const client = new rpc.Client(req);
+    client.socket.once('connect reconnect attempt error' () => {
+      // ...
+    });
+    req.connect(opts.INTERACTOR_RPC_PORT);
+  }
+}
+```
 
 
