@@ -3,6 +3,9 @@
 ## 参考
 1. [流程解读](https://www.jianshu.com/p/ac843b516fda)
 
+## 0.4.10流程图
+![pm2流程](pm2流程.jpeg)
+
 ## 相关概念
 
 ### rpc
@@ -73,6 +76,7 @@ client.call('add', 1, 2, function(err, n){
     client.end();
   });
   ```
+
 #### net.Socket
   ```js
   const net = require('net');
@@ -89,6 +93,7 @@ client.call('add', 1, 2, function(err, n){
     clientSocket.end();
   });
   ```
+
 #### net-server
   ```js
   const net = require('net');
@@ -111,9 +116,9 @@ client.call('add', 1, 2, function(err, n){
   });
   ```
 
-### pm2初始化过程
+## pm2流程
 
-#### pm2/lib/API.js
+### pm2/lib/API.js
 ```js
 class API {
   constructor() {
@@ -139,7 +144,7 @@ class API {
 }
 ```
 
-#### pm2/lib/Client.js
+### pm2/lib/Client.js
 ```js
 class Client {
   constructor() {
@@ -186,7 +191,7 @@ class Client {
 }
 ```
 
-#### pm2/lib/Daemon.js
+### pm2/lib/Daemon.js
 ```js
 // master进程
 class Deamon {
@@ -207,7 +212,7 @@ class Deamon {
 }
 ```
 
-#### @pm2/agent/src/InteractorClient.js
+### @pm2/agent/src/InteractorClient.js
 ```js
 class KMDaemon {
   static ping() {
@@ -221,4 +226,6 @@ class KMDaemon {
 }
 ```
 
-
+## 总结
+1. pm2也是采用cluster.fork实现的集群，由于God Deamon这个Master进程一直执行，
+可以保证对每一个子进程监听事件，从而进行相应的操作。
