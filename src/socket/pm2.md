@@ -116,7 +116,10 @@ client.call('add', 1, 2, function(err, n){
   });
   ```
 
-## pm2流程
+## pm2(v0.4.10)流程
+参考目录下的simple-pm2
+
+## pm2(v3.2.2)流程
 
 ### pm2/lib/API.js
 ```js
