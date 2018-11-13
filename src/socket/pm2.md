@@ -232,3 +232,4 @@ class KMDaemon {
 ## 总结
 1. pm2也是采用cluster.fork实现的集群，由于God Deamon这个Master进程一直执行，
 可以保证对每一个子进程监听事件，从而进行相应的操作。
+2. pm2的master挂了，会根据pm2_env判断，如果是强制关闭，会重启，如果正常kill，相关子进程也会关闭。
