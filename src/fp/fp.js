@@ -16,9 +16,18 @@ const lt = t => v => v < t;
 
 const rand = (base = 10) => base + parseInt(Math.random() * base, 10);
 
-const pipe = (result, ...funcs) => funcs.reduce((res, func) => func(res), result);
+const pipe = (result, ...funcs) => {
+  if (!funcs.length && isArray(result)) {
+    funcs = result.slice(1);
+    result = result[0];
+  }
+  return funcs.reduce((res, func) => func(res), result);
+};
 
-const compose = (...funcs) => value => funcs.reduce((res, func) => func(res), value);
+const compose = (...funcs) => value => {
+  const funcsArray = funcs.length === 1 && isArray(funcs[0]) ? funcs[0] : funcs;
+  return funcsArray.reduce((res, func) => func(res), value);
+};
 
 const array = (length = 0) => from({ length });
 

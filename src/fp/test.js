@@ -13,7 +13,7 @@ const genMessage = (val) => `the sum is ${val}`;
 
 const testArray = pipe(
   array(10),
-  (v) => v.map(rand),
+  v => v.map(rand),
 );
 
 const filterArray = compose(
@@ -21,9 +21,8 @@ const filterArray = compose(
   filter(lt(18)),
 )(testArray);
 
-const match = pipe(
-  filterArray,
-  sum,
+const match = pipe([
+  sum(filterArray),
   genMessage,
   console.log,
-);
+]);
