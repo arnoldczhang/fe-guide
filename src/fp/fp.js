@@ -39,6 +39,14 @@ const partial = (fn, ...preArgs) => (...lastArgs) => fn(...preArgs, ...lastArgs)
 
 const partialRight = (fn, ...preArgs) => (...lastArgs) => fn(...lastArgs, ...preArgs);
 
+const not = predicate => (...args) => !predicate(...args);
+
+const when = (predicate, fn) => (...args) => {
+  if (predicate(...args)) {
+    return fn(...args);
+  }
+};
+
 const curry = (fn, arity = fn.length) => {
   return (function nextCurried(prevArgs) {
     return (...nextArgs) => {
@@ -62,6 +70,26 @@ const uncurry = (fn) => {
   };
 };
 
+const curryProps = (fn, arity = fn.length) => {
+  const nextCurry = (preProps) => {
+    return (nextProps = {}) => {
+      const [key] = Object.keys(nextProps);
+      const props = Object.assign({}, preProps, { [key]: nextProps[key] });
+      if (Object.keys(props).length >= arity) {
+        return fn(props);
+      }
+      return nextCurry(props);
+    };
+  };
+  return nextCurry({});
+};
+
+const partialProps = (fn,presetArgsObj) => {
+    return (laterArgsObj) => {
+        return fn(Object.assign({}, presetArgsObj, laterArgsObj));
+    };
+};
+
 const FP = {
   eq,
   gt,
@@ -77,6 +105,10 @@ const FP = {
   curry,
   looseCurry: curry,
   uncurry,
+  curryProps,
+  partialProps,
+  not,
+  when,
 };
 
 module.exports = FP;

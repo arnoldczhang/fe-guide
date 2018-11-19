@@ -10,6 +10,11 @@ const {
   partial,
   curry,
   uncurry,
+  partialRight,
+  curryProps,
+  partialProps,
+  not,
+  when,
 } = require('./fp');
 
 // compose/pipe
@@ -74,6 +79,40 @@ const curriedSum2 = curry( sumAll, 5 );
 const unCurriedSum = uncurry(curriedSum2);
 console.log(`[curry] ${unCurriedSum(1, 2, 3, 4, 5 )}`); // 15
 console.log(`[curry] ${unCurriedSum(1, 2, 3)(4)(5)}`); // 15
+
+const sumAllObj = (nums) => {
+    var total = 0;
+    Object.values(nums).forEach((val) => {
+        total += val;
+    });
+    return total;
+};
+
+const curriedSumObject = curryProps(sumAllObj, 3);
+console.log(`[curry] ${curriedSumObject({ a: 1 })({ b: 2 })({ c: 3 })}`); // 6
+
+const partialSumObject = partialProps(sumAllObj, { a: 1 });
+console.log(`[curry] ${partialSumObject({ b: 2, c: 3 })}`); // 6
+
+
+// not
+const isShortEnough = (str) => {
+  return str.length <= 5;
+};
+
+const isLongEnough = not(isShortEnough);
+
+const str = 'abcdef';
+
+const outputNot = (s) => console.log(`[not] ${s}`);
+
+if (isLongEnough(str)) {
+  outputNot(str);
+}
+
+// when
+const printIf = uncurry(partialRight(when, outputNot));
+printIf(isLongEnough, str);
 
 
 
