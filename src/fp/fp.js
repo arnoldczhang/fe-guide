@@ -35,6 +35,33 @@ const sum = (arr = []) => isArray(arr) ? arr.reduce((res, val) => res + val, 0) 
 
 const filter = condition => arr => isArray(arr) ? arr.filter(condition) : arr;
 
+const partial = (fn, ...preArgs) => (...lastArgs) => fn(...preArgs, ...lastArgs);
+
+const partialRight = (fn, ...preArgs) => (...lastArgs) => fn(...lastArgs, ...preArgs);
+
+const curry = (fn, arity = fn.length) => {
+  return (function nextCurried(prevArgs) {
+    return (...nextArgs) => {
+      const args = [...prevArgs, ...nextArgs];
+
+      if (args.length >= arity) {
+        return fn(...args);
+      }
+      return nextCurried(args);
+    };
+  })([]);
+};
+
+const uncurry = (fn) => {
+  return (...args) => {
+    let ret = fn;
+    for (let arg of args) {
+      ret = ret(arg);
+    }
+    return ret;
+  };
+};
+
 const FP = {
   eq,
   gt,
@@ -45,6 +72,11 @@ const FP = {
   array,
   sum,
   filter,
+  partial,
+  partialRight,
+  curry,
+  looseCurry: curry,
+  uncurry,
 };
 
 module.exports = FP;
