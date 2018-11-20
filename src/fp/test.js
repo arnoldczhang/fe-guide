@@ -1,7 +1,11 @@
+const chai = require('chai');
+const colors = require('colors');
+const expect = chai.expect;
 const {
   rand,
   pipe,
   compose,
+  composeRight,
   array,
   filter,
   gt,
@@ -48,21 +52,19 @@ list.map((val) => {
 });
 
 const list2 = list.map(partial(add, 3));
-console.log(`[partial] ${list2}`); // [4,5,6,7]
+expect(list2).to.be.deep.equal([4,5,6,7]);
 
 
 // curry
 const addThree = (x, y, z) => x + y + z;
-
 const addCurry = curry(addThree);
-
 const addCurry1 = addCurry(1);
-const addCurry2 = addCurry(2, 3);
-console.log(`[curry] ${addCurry2}`); // 6
+const addCurry2 = addCurry1(2, 3);
+expect(addCurry2).to.be.equal(6);
 
 const adder = curry(add);
 const list3 = list.map(adder(3));
-console.log(`[curry] ${list3}`); // [4,5,6,7]
+expect(list3).to.be.deep.equal([4,5,6,7]);
 
 const sumAll = (...nums) => {
     var total = 0;
@@ -73,12 +75,12 @@ const sumAll = (...nums) => {
 };
 
 const curriedSum = curry( sumAll, 5 );
-console.log(`[curry] ${curriedSum( 1 )( 2, 3 )( 4, 5 )}`); // 15
+expect(curriedSum(1)(2, 3)(4, 5)).to.be.equal(15);
 
 const curriedSum2 = curry( sumAll, 5 );
 const unCurriedSum = uncurry(curriedSum2);
-console.log(`[curry] ${unCurriedSum(1, 2, 3, 4, 5 )}`); // 15
-console.log(`[curry] ${unCurriedSum(1, 2, 3)(4)(5)}`); // 15
+expect(unCurriedSum(1, 2, 3, 4, 5)).to.be.equal(15);
+expect(unCurriedSum(1, 2, 3)(4)(5)).to.be.equal(15);
 
 const sumAllObj = (nums) => {
     var total = 0;
@@ -89,10 +91,10 @@ const sumAllObj = (nums) => {
 };
 
 const curriedSumObject = curryProps(sumAllObj, 3);
-console.log(`[curry] ${curriedSumObject({ a: 1 })({ b: 2 })({ c: 3 })}`); // 6
+expect(curriedSumObject({ a: 1 })({ b: 2 })({ c: 3 })).to.be.equal(6);
 
 const partialSumObject = partialProps(sumAllObj, { a: 1 });
-console.log(`[curry] ${partialSumObject({ b: 2, c: 3 })}`); // 6
+expect(partialSumObject({ b: 2, c: 3 })).to.be.equal(6);
 
 
 // not
@@ -114,6 +116,62 @@ if (isLongEnough(str)) {
 const printIf = uncurry(partialRight(when, outputNot));
 printIf(isLongEnough, str); // abcdef
 printIf(isShortEnough, str); // 无输出
+
+
+// composeRight
+const text = "To compose two functions together, pass the \
+output of the first function call as the input of the \
+second function call.";
+
+const words = str => 
+  String( str )
+    .toLowerCase()
+    .split(/\s|\b/)
+    .filter(v => /^[\w]+$/.test( v ));
+
+const unique = (list) => {
+  const uniqList = [];
+  for (let v of list) {
+    if (uniqList.indexOf(v) === -1 ) {
+      uniqList.push(v);
+    }
+  }
+  return uniqList;
+};
+
+const skipShortWords = (words) => {
+  const filteredWords = [];
+  for (let word of words) {
+    if (word.length > 4) {
+      filteredWords.push(word);
+    }
+  }
+  return filteredWords;
+};
+
+const skipLongWords = (words) => {
+  const filteredWords = [];
+  for (let word of words) {
+    if (word.length <= 4) {
+      filteredWords.push(word);
+    }
+  }
+  return filteredWords;
+};
+
+const composeWord = partialRight(composeRight, unique, words);
+const skipShort = composeWord(skipShortWords);
+const skipLong = composeWord(skipLongWords);
+expect(skipShort(text)).to.be.deep.equal(["compose", "functions", "together", "output", "first",  "function", "input", "second"]);
+expect(skipLong(text)).to.be.deep.equal(["to","two","pass","the","of","call","as"]);
+
+
+
+
+
+
+
+
 
 
 

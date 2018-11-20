@@ -24,9 +24,20 @@ const pipe = (result, ...funcs) => {
   return funcs.reduce((res, func) => func(res), result);
 };
 
-const compose = (...funcs) => value => {
+const compose = (...funcs) => (value) => {
   const funcsArray = funcs.length === 1 && isArray(funcs[0]) ? funcs[0] : funcs;
   return funcsArray.reduce((res, func) => func(res), value);
+};
+
+const composeRight = (...funcs) => (value) => {
+  // method: 1
+  // return [...funcs].reverse().reduce((res, func) => func(res), value);
+  // method: 2
+  const list = [...funcs];
+  while(list.length) {
+    value = list.pop()(value);
+  }
+  return value;
 };
 
 const array = (length = 0) => from({ length });
@@ -44,7 +55,7 @@ const not = predicate => (...args) => !predicate(...args);
 const when = (predicate, fn) => (...args) => predicate(...args) ? fn(...args) : void 0;
 
 const curry = (fn, arity = fn.length) => {
-  return (function nextCurried(prevArgs) {
+  const nextCurried = (prevArgs) => {
     return (...nextArgs) => {
       const args = [...prevArgs, ...nextArgs];
 
@@ -53,7 +64,8 @@ const curry = (fn, arity = fn.length) => {
       }
       return nextCurried(args);
     };
-  })([]);
+  };
+  return nextCurried([]);
 };
 
 const uncurry = (fn) => {
@@ -69,7 +81,7 @@ const uncurry = (fn) => {
 const curryProps = (fn, arity = fn.length) => {
   const nextCurry = (preProps) => {
     return (nextProps = {}) => {
-      const [key] = Object.keys(nextProps);
+      const [ key ] = Object.keys(nextProps);
       const props = Object.assign({}, preProps, { [key]: nextProps[key] });
       if (Object.keys(props).length >= arity) {
         return fn(props);
@@ -92,6 +104,7 @@ const FP = {
   lt,
   rand,
   compose,
+  composeRight,
   pipe,
   array,
   sum,
