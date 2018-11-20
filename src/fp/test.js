@@ -107,12 +107,13 @@ const str = 'abcdef';
 const outputNot = (s) => console.log(`[not] ${s}`);
 
 if (isLongEnough(str)) {
-  outputNot(str);
+  outputNot(str); // abcdef
 }
 
 // when
 const printIf = uncurry(partialRight(when, outputNot));
-printIf(isLongEnough, str);
+printIf(isLongEnough, str); // abcdef
+printIf(isShortEnough, str); // 无输出
 
 
 

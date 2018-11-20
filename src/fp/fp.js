@@ -41,11 +41,7 @@ const partialRight = (fn, ...preArgs) => (...lastArgs) => fn(...lastArgs, ...pre
 
 const not = predicate => (...args) => !predicate(...args);
 
-const when = (predicate, fn) => (...args) => {
-  if (predicate(...args)) {
-    return fn(...args);
-  }
-};
+const when = (predicate, fn) => (...args) => predicate(...args) ? fn(...args) : void 0;
 
 const curry = (fn, arity = fn.length) => {
   return (function nextCurried(prevArgs) {

@@ -121,7 +121,6 @@ const copyCachModule = (
     module = false,
     isModuleCall = false,
     fixSuffix = false,
-    isComponent = false,
     nodeModulePath = '',
     encoding = 'utf8',
   } = {},
@@ -141,8 +140,11 @@ const copyCachModule = (
     npmPath = npmPath.replace(fileNameRe, '');
   }
 
-  if ((isModuleCall || module) && !Cach.get('node_modules', nodeModulePath)) {
-    if (!jsRe.test(nodeModulePath)) {
+  const hasNodeCach = Cach.get('node_modules', nodeModulePath);
+  const isJs = jsRe.test(nodeModulePath);
+
+  if ((isModuleCall || module) && !hasNodeCach) {
+    if (!isJs) {
       try {
         Cach.set('node_modules', nodeModulePath, 1);
         const stat = statS(nodeModuleFoldPath);
@@ -153,7 +155,6 @@ const copyCachModule = (
             const suffix = getSuffix(src);
             const originFile = readS(src);
             const dest = path.join(npmPath, key);
-            const destPath = dest.replace(fileNameRe, '');
             const pathKey = dest.replace(absoluteDestPath, '');
 
             switch (suffix) {
@@ -210,7 +211,6 @@ const resolveNpmPath = (
   prefixPath = '',
   {
     module = false,
-    debug = false,
     nodeModulePath = '',
   } = {},
 ) => {
@@ -261,7 +261,7 @@ const wxTraverse = (
   prefixPath = absoluteSrcPath,
   options = {},
 ) => {
-  const { nodeModulePath, module } = options;
+  const { module } = options;
   babelTraverse(ast, {
     CallExpression({ node }) {
       if (node) {
@@ -369,7 +369,7 @@ const jsonWillRewriteHook = (file, ...args) => {
   try {
     const json = JSON.parse(file);
     const { usingComponents } = json;
-    const [ srcFile, destFile, src, options = {} ] = args;
+    const [ srcFile, src, options = {} ] = args;
 
     if (usingComponents) {
       keys(usingComponents, (compKey) => {
@@ -381,7 +381,6 @@ const jsonWillRewriteHook = (file, ...args) => {
           compPath = copyCachModule(compPath, {
             isModuleCall: true,
             fixSuffix: true,
-            isComponent: true,
           });
           usingComponents[compKey] = `${prefix || './'}npm/${compPath}`;
         }
@@ -539,6 +538,11 @@ const compileJsFile = (
   if (typeof src === 'string') {
     ensureRunFunc(hooks.start, src);
     let { code, ast, error } = babelTransform(readS(src));
+
+    if (error) {
+      console.note(error);
+    }
+
     code = wxTraverse(ast, src);
     code = (isProd() || ugly) ? uglify(code) : code;
     compileCompressFile(src, dest, {
@@ -800,15 +804,14 @@ const compile = async ({
   resolveOptions(options);
   options = Object.assign({}, options, { hooks });
 
-  const wrapper = (fn, index) => (callback) => (
+  const wrapper = fn => callback => (
     fn(src, dest, callback, options)
   );
 
-  async.series(STEP_SERIES.map((fn, index) => (
-    wrapper(fn, index)
-  )), catchError(() => {
-    //...
-  }));
+  async.series(STEP_SERIES.map(wrapper),
+    catchError(() => {
+      //...
+    }));
 };
 
 module.exports = compile;

@@ -219,8 +219,7 @@ const babelTransform = (input, options = {}) => {
       // do something...
       return result;
     } catch (err) {
-      console.log(input);
-      console.log(err.message)
+      console.log(err);
     }
   }
   return input;
