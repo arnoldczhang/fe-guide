@@ -24,12 +24,20 @@ const pipe = (result, ...funcs) => {
   return funcs.reduce((res, func) => func(res), result);
 };
 
+const pipe2 = (...funcs) => (value) => {
+  const list = [...funcs];
+  while(list.length) {
+    value = list.shift()(value);
+  }
+  return value;
+};
+
 const compose = (...funcs) => (value) => {
   const funcsArray = funcs.length === 1 && isArray(funcs[0]) ? funcs[0] : funcs;
   return funcsArray.reduce((res, func) => func(res), value);
 };
 
-const composeRight = (...funcs) => (value) => {
+const compose2 = (...funcs) => (value) => {
   // method: 1
   // return [...funcs].reverse().reduce((res, func) => func(res), value);
   // method: 2
@@ -104,8 +112,9 @@ const FP = {
   lt,
   rand,
   compose,
-  composeRight,
+  compose2,
   pipe,
+  pipe2,
   array,
   sum,
   filter,

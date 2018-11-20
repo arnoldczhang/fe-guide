@@ -4,8 +4,9 @@ const expect = chai.expect;
 const {
   rand,
   pipe,
+  pipe2,
   compose,
-  composeRight,
+  compose2,
   array,
   filter,
   gt,
@@ -118,7 +119,7 @@ printIf(isLongEnough, str); // abcdef
 printIf(isShortEnough, str); // 无输出
 
 
-// composeRight
+// compose2
 const text = "To compose two functions together, pass the \
 output of the first function call as the input of the \
 second function call.";
@@ -159,20 +160,24 @@ const skipLongWords = (words) => {
   return filteredWords;
 };
 
-const composeWord = partialRight(composeRight, unique, words);
+const composeWord = partialRight(compose2, unique, words);
 const skipShort = composeWord(skipShortWords);
 const skipLong = composeWord(skipLongWords);
 expect(skipShort(text)).to.be.deep.equal(["compose", "functions", "together", "output", "first",  "function", "input", "second"]);
 expect(skipLong(text)).to.be.deep.equal(["to","two","pass","the","of","call","as"]);
 
 
+// pipe2
+const pipe2Word = partial(pipe2, words, unique, skipShortWords);
+const pipe2Word2 = pipe2(words, unique, skipShortWords);
+expect(pipe2Word()(text)).to.be.deep.equal(["compose", "functions", "together", "output", "first",  "function", "input", "second"]);
+expect(pipe2Word2(text)).to.be.deep.equal(["compose", "functions", "together", "output", "first",  "function", "input", "second"]);
 
 
-
-
-
-
-
-
+const prop = (key, obj) => {
+  return obj[key];
+}
+const propID = partial(prop, "personId");
+expect(propID({ personId: 'abc'})).to.be.equal('abc');
 
 
