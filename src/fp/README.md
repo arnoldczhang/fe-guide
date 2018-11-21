@@ -65,7 +65,9 @@ f2( { z: 3, x: 1 } ); // x:1 y:2 z:3
 - not/when
 - compose/pipe
 - 纯函数
-
+- 不可变性
+  - 对外部域变量的影响
+  - const、Object.freeze对本域的变量影响
 
 
 
