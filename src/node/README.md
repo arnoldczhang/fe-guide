@@ -5,7 +5,8 @@
   - [node问题排查](https://zhuanlan.zhihu.com/p/41178823)
   - [node性能提升！！](https://zhuanlan.zhihu.com/p/50055740)
 
-## node好用的工具
+## 好用的库
+- [监听文件夹变化](https://github.com/dt-fe/weekly/blob/master/59.%E7%B2%BE%E8%AF%BB%E3%80%8A%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%20Nodejs%20%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E3%80%8B.md)
 - [调试工具ndb](https://zhuanlan.zhihu.com/p/45851471)
 - [fast-json-stringify](https://github.com/fastify/fast-json-stringify)
   - 预设字段类型，加速stringify
@@ -20,7 +21,9 @@
 - [性能诊断node-clinic](https://github.com/nearform/node-clinic)
 - [压测autocannon](https://github.com/mcollina/autocannon)
 
-## require原理
+## 原理解析
+
+### require原理
   - ![图解require过程](process1.png)
   - 关键
     - 核心 JavaScript 模块源代码是通过 process.binding('natives') 从内存中获取
@@ -187,15 +190,18 @@
         };
           ```
 
-## node监听文件夹变化
-  - 参考
-    - https://github.com/dt-fe/weekly/blob/master/59.%E7%B2%BE%E8%AF%BB%E3%80%8A%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%20Nodejs%20%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E3%80%8B.md
-
-## node中的event loop
+### event loop
   - ![event_loop](node-event-loop.jpg)
 
+### GC
 
-
+#### 新生代、老生代
+- 老生代
+  - 使用大对象作为缓存，多次查询后进入老生代，使用三色标记 + DFS 的方式进行 GC，慢
+- 新生代
+  - 默认分配的内存64MB，由于使用Scavenge算法，实际可用32MB
+  - node --max-semi-space-size=128 app.js // 修改内存上限，64或128较合理
+  - 内存分配过大也会导致单次GC耗时久
 
 
 

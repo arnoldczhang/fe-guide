@@ -5,6 +5,7 @@
 2. [mostly-adequate-guide](https://mostly-adequate.gitbooks.io/mostly-adequate-guide/)
 
 ## 思考
+- 业务开发，面向人；库开发，面向v8；
 - 声明式代码（根据函数声明，能大致了解入参内容及可能的处理）
 - 函数应该总是有输出
 
