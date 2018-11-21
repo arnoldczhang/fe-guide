@@ -1,11 +1,24 @@
 # node
 
 ## 参考
-  - 源码分析：http://efe.baidu.com/blog/nodejs-module-analyze/
-  - node问题排查：https://zhuanlan.zhihu.com/p/41178823
+  - [源码分析](http://efe.baidu.com/blog/nodejs-module-analyze/)
+  - [node问题排查](https://zhuanlan.zhihu.com/p/41178823)
+  - [node性能提升！！](https://zhuanlan.zhihu.com/p/50055740)
 
-## node调试工具-ndb
-  - https://zhuanlan.zhihu.com/p/45851471
+## node好用的工具
+- [调试工具ndb](https://zhuanlan.zhihu.com/p/45851471)
+- [fast-json-stringify](https://github.com/fastify/fast-json-stringify)
+  - 预设字段类型，加速stringify
+- [bluebird](https://github.com/petkaantonov/bluebird)
+  - V8 原生实现的 Promise 比 bluebird 这样第三方实现的 Promise 库要慢很多
+  - 可以在代码中把全局的 Promise 换为 bluebird 的实现，比如
+
+  ```js
+  global.Promise = require('bluebird');
+  ```
+- [pipeline-stream](https://nodejs.org/dist/latest-v10.x/docs/api/stream.html#stream_stream_pipeline_streams_callback)
+- [性能诊断node-clinic](https://github.com/nearform/node-clinic)
+- [压测autocannon](https://github.com/mcollina/autocannon)
 
 ## require原理
   - ![图解require过程](process1.png)
