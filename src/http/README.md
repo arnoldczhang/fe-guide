@@ -1,27 +1,33 @@
 # network
 
 ## 参考
-  - https://www.fastly.com/blog/headers-we-dont-want
-  - https://www.nihaoshijie.com.cn/index.php/archives/630/
-  - 前端必须明白的 http 知识点：https://mp.weixin.qq.com/s/4tluvji9YVtxloqmssY-Nw
-  - 把网站升级到QUIC：https://www.yinchengli.com/2018/06/10/quic/
-  - https连接的前几毫秒发生了什么：https://fed.renren.com/2017/02/03/https/
-  - 流量劫持：https://zhuanlan.zhihu.com/p/40682772
+- https://www.fastly.com/blog/headers-we-dont-want
+- https://www.nihaoshijie.com.cn/index.php/archives/630/
+- [前端必须明白的 http 知识点](https://mp.weixin.qq.com/s/4tluvji9YVtxloqmssY-Nw)
+- [把网站升级到QUIC](https://www.yinchengli.com/2018/06/10/quic/)
+- [https连接的前几毫秒发生了什么](https://fed.renren.com/2017/02/03/https/)
+- [流量劫持](https://zhuanlan.zhihu.com/p/40682772)
 
-## 请求无用头部（新版）
-  - server
-  - expires
-  - x-powered-by
-  - pragma
-    - 可用Cache-Control: no-store, private替代
-  - x-frame-options
-    - 防范[clickjacking](https://en.wikipedia.org/wiki/Clickjacking)（UI虚假内容点击，比如下载按钮搞成图片）
-    - 可用Content-Security-Policy: frame-ancestors 'self'代替
-  - x-cache
-  - via
-  - p3p
-  - x-aspnet-version
-  - x-ua-compatible
+## request header
+
+### 请求无用头部（新版）
+- server
+- expires
+- x-powered-by
+- pragma
+  - 可用Cache-Control: no-store, private替代
+- x-frame-options
+  - 防范[clickjacking](https://en.wikipedia.org/wiki/Clickjacking)（UI虚假内容点击，比如下载按钮搞成图片）
+  - 可用Content-Security-Policy: frame-ancestors 'self'代替
+- x-cache
+- via
+- p3p
+- x-aspnet-version
+- x-ua-compatible
+
+### 未来头部新字段
+- "Device-Memory" ":" #memory-value
+  - 浏览器可以返回设备内存大小给服务端，Chrome 63+ 和 Opera50+支持
 
 ## http1.0
   - 带宽限制
@@ -96,12 +102,12 @@
   - 过程 -> 3RTT
     - ![https](201208201734403507.png)
 
-## HTTP、HTTPS、TCP、SSL/TLS
+### HTTP、HTTPS、TCP、SSL/TLS
   - HTTP基于TCP
   - SSL/TLS基于TCP
   - HTTPS基于SSL/TLS
 
-## ssl和tls
+### ssl和tls
   - tls由ssl演变而来，目前ssl已极不安全
   - 推荐tls1.2
   - ![ssl-tls](ssl-tls.jpg)
