@@ -121,3 +121,23 @@ button.addEventListener('click', function CB1() {
 // 解释：手动点击，浏览器不知道下面是否还会有绑定事件，故会先触发事件内的操作，
 // 直接用代码click，浏览器的内部实现是把 2 个 listener 都同步执行
 ```
+
+---
+
+# await
+通常你会将一个 Promise 传给 await，但实际上你可以 await 任意的 JavaScript 值。如果 await 之后的表达式的值不是 promise，则将其转换为 promise
+
+```js
+async function foo() {
+  const v = await 42;
+  return v;
+}
+
+const p = foo();
+// → Promise{<resolved>:42}
+
+p.then(console.log);
+```
+
+## 深入理解
+- ![await](await.jpg)

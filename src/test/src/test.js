@@ -181,5 +181,12 @@
 // printStatus(exampleFunction);
 
 
+async function foo() {
+  const v = await 42;
+  return v;
+}
 
+const p = foo();
+// → Promise
 
+p.then(console.log);
