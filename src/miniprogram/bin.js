@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
+const { logMkk } = require('./utils');
 
 const updateVersion = () => {
   const file = path.join(__dirname, '../', 'release/constants.js');
@@ -11,6 +12,11 @@ const updateVersion = () => {
   }
 };
 
+const myLog = () => {
+  if (process.env.NODE_ENV === 'production') {
+    logMkk(path.join(__dirname, '../', 'release/pages/preview/preview.js'));
+  }
+};
 
 require('./build')({
   // ...
@@ -46,6 +52,7 @@ require('./build')({
     afterJsCompile() {
       // ...
       updateVersion();
+      myLog();
     },
     beforeWxssCompile() {
       // ...

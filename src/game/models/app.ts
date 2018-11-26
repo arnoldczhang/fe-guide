@@ -7,7 +7,7 @@ import {
 import { Stage } from '../enum';
 
 const initialState = cach.get('app_props') || {
-  stage: Stage.Create_0,
+  stage: Stage.Combat,
   character: {},
   map: [],
 };

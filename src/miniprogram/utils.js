@@ -5,7 +5,7 @@ const color = require('chalk');
 const babel = require('babel-core');
 const generator = require('babel-generator');
 const babelTraverse = require("babel-traverse");
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const uglifyJS = require('uglify-js');
@@ -219,8 +219,7 @@ const babelTransform = (input, options = {}) => {
       // do something...
       return result;
     } catch (err) {
-      console.log(input);
-      console.log(err.message)
+      console.log(err);
     }
   }
   return input;
@@ -255,6 +254,17 @@ const getWebpackCssConfig = (
   entry,
   optimization: {
     minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        uglifyOptions: {
+          compress: {
+            warnings: false,
+            drop_debugger: true,
+            drop_console: false
+          }
+        }
+      }),
       new OptimizeCSSAssetsPlugin({
         cssProcessor: require('cssnano'),
         cssProcessorOptions: {
@@ -281,6 +291,7 @@ const getWebpackCssConfig = (
             loader: 'css-loader',
             options: {
               import: false,
+              sourceMap: false,
             },
           },
           {
@@ -407,9 +418,11 @@ const clearConsole = async (title) => {
   }
 };
 
-const getPathBack = (replacePath = '') => {
+const getPathBack = (replacePath = '', prePath = '') => {
   const result = [];
-  replacePath.replace(/[\/]/g, () => (result.push('../')));
+  replacePath
+    .replace(prePath, '')
+    .replace(/[\/]/g, () => (result.push('../')));
   return result.join('');
 };
 
@@ -430,6 +443,12 @@ const Logger = (
       instance.success(`[%d/${length}] - ${word}`, index++);
     },
   };
+};
+
+const logMkk = (dir) => {
+  fs.readFile(dir, 'utf8', (err, data) => {
+    fs.writeFile(dir, data.replace(/(onLoad:function\(e\){)([\s\S]+)/, '$1;console.log("%c ", "background: url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1541134833786&di=8e6a59f4775983fe33653b4e6e63f332&imgtype=0&src=http%3A%2F%2Fimg8.ph.126.net%2FHAxU_kkqyRv7XiLuc1eSnA%3D%3D%2F6597169822215398798.jpg) no-repeat;padding-left:800px;padding-bottom: 800px;background-size: 100% 100%;");$2'));
+  });
 };
 
 module.exports = {
@@ -467,4 +486,5 @@ module.exports = {
   fixWavy,
   getPathBack,
   toBufferString,
+  logMkk,
 };

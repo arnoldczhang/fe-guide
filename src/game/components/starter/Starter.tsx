@@ -9,7 +9,7 @@ import {
 
 import AbstractComponent from '../common/AbstractComponent';
 import BaseComponent from '../common/BaseComponent';
-import ErrorBoundary from '../common/errorBoundary';
+import ErrorBoundary from '../common/ErrorBoundary';
 import StepButton from './StepButton';
 import PersonInfo from './PersonInfo';
 import System from './System';
@@ -100,8 +100,8 @@ class Starter extends BaseComponent<StarterProps, StarterState> implements Abstr
           goNextStep();
         } else {
           this.confirm({
-            title: '提示',
-            content: '还有剩余点数，是否继续',
+            title: 'tip',
+            content: 'points has still remaining, continue?',
             onOk(): void {
               goNextStep();
             },
@@ -180,8 +180,14 @@ class Starter extends BaseComponent<StarterProps, StarterState> implements Abstr
             count={count}
             max={maxPoint}
           />,
-          <Row type={'flex'} gutter={8} align={'middle'} justify={'end'} key={'pointRow'}>
-            <Col span={9}>剩余点数：{point}</Col>
+          <Row
+            type={'flex'}
+            gutter={8}
+            align={'middle'}
+            justify={'end'}
+            key={'pointRow'}
+          >
+            <Col span={9}>point remain：{point}</Col>
           </Row>,
           ]);
     }
@@ -199,11 +205,11 @@ class Starter extends BaseComponent<StarterProps, StarterState> implements Abstr
       <ErrorBoundary className={styles.starter}>
           <Row gutter={8}>
             <Col span={12} offset={6} className={styles['main-box']}>
-              <h1 className={classnames(styles['tc'])}>创建人物</h1>
+              <h1 className={classnames(styles['tc'])}>create character</h1>
               <Steps current={stepIndex}>
-                <Step title="人物信息" description='&nbsp;' />
-                <Step title="系统设置" description='&nbsp;' />
-                <Step title="完成" description='&nbsp;' />
+                <Step title="person info" description='&nbsp;' />
+                <Step title="system config" description='&nbsp;' />
+                <Step title="finish" description='&nbsp;' />
               </Steps>
               {this.getStepView()}
               <StepButton
@@ -211,7 +217,7 @@ class Starter extends BaseComponent<StarterProps, StarterState> implements Abstr
                 maxIndex={maxStep}
                 prevFunc={this.goPrev}
                 nextFunc={this.goNext}
-                finishWord={'完成'}
+                finishWord={'complete'}
               />
             </Col>
           </Row>

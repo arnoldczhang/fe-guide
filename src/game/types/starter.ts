@@ -2,6 +2,7 @@ import {
   ReactNode,
 } from 'react';
 
+import { MartialArtMap } from './common';
 import { CF, CO } from './common';
 import { Stage, CreateStep, SystemKeyEnum } from '../enum';
 
@@ -56,6 +57,7 @@ export interface PersonInfoInterface {
   placeholder: string;
   keyArray: Array<string>;
   keyObject: CO;
+  keyExplain?: CO<Array<string>>;
 };
 
 export interface PersonInfoProps {
@@ -72,18 +74,6 @@ export interface SystemConfigInterface {
   keyArray: Array<string>;
   keyObject: CO;
   defaultValue?: string;
-}
-
-export interface MartialArt {
-  title: string;
-  skilled: number;
-  introduce?: string;
-  traditional: boolean;
-  // more martial infos...
-}
-
-export interface MartialArtMap {
-  [key: string]: Array<MartialArt>;
 }
 
 export interface AreaInfo {

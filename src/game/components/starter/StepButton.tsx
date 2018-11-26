@@ -16,9 +16,9 @@ import { StepButtonProps } from '../../types';
 const StepButton: SFC<StepButtonProps> = ({
   prevFunc,
   nextFunc,
-  prevWord = '上一步',
-  nextWord = '下一步',
-  finishWord = '下一步',
+  prevWord = 'prev step',
+  nextWord = 'next step',
+  finishWord = 'next step',
   index = 0,
   maxIndex = 2,
 }) => {

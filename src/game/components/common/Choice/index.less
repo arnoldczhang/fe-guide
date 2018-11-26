@@ -1,0 +1,96 @@
+@counter: 10;
+
+.choice-container {
+  position: relative;
+}
+.choice {
+  cursor: pointer;
+  user-select:none;
+  width: 64px;
+  height: 64px;
+  line-height: 64px;
+  font-size: 32px;
+  margin-right: 10px;
+  box-sizing: border-box;
+  list-style: none;
+  display: inline-block;
+  text-align: center;
+  position: relative;
+  vertical-align: middle;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #ccc;
+  box-shadow: 0 0 1px #333;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.choice-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.choice-word {
+  transform: scale(0.666667);
+  position: absolute;
+  display: inline-block;
+  top: 0;
+  left: calc(50% - 31px);
+}
+
+.choice-loading-base {
+  content: '';
+  z-index: 1;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, .5);
+  will-change: height;
+  width: 100%;
+  animation-name: loadingAnim;
+  animation-iteration-count: 1;
+}
+
+.loop(@count) when (@count > 0) {
+  .newloading(@count);
+  .loop(@count - 1);
+}
+
+.newloading(@num) {
+  .choice-loading-@{num}::after {
+    &:extend(.choice-loading-base);
+    animation-duration: (1s*@num);
+  }
+}
+.loop(@counter);
+
+@keyframes loadingAnim {
+  0% {
+    height: 100%;
+  }
+  100% {
+    height: 0;
+  }
+}
+
+.choice-selected {
+  box-shadow: 0 0 10px #333;
+}
+
+.choice-tips::before {
+  content: attr(data-times);
+  text-align: center;
+  overflow: initial;
+  z-index: 2;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: red;
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  font-size: 12px;
+  border-radius: 50%;
+}

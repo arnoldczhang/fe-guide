@@ -5,6 +5,7 @@
   - 5个新css属性：https://zhuanlan.zhihu.com/p/40736286
   - flex：https://mp.weixin.qq.com/s/WtGzVMzh1RupixD_4474mg
   - 23中垂直方法：https://mp.weixin.qq.com/s/JL-9juZgbpz_Cnp6FnLVAQ
+  - CSSOM：https://mp.weixin.qq.com/s/xST3cjumPrxdHbcZcYlLvQ
 
 
 ## 属性
@@ -31,6 +32,10 @@ width: max-content/min-content
   - 不要使用类选择器和ID选择器修饰元素标签，如h3#markdown-content，这样多此一举，还会降低效率
   - 不要为了追求速度而放弃可读性与可维护性
 
+
+## CSSOM
+  - js运算安全操作css属性
+  - chrome66，chromium70+支持
 
 ## 答疑
 

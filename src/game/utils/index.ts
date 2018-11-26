@@ -1,8 +1,30 @@
 import { Character } from './Character';
-import { Cach, CO, StartConfig } from '../types';
+import {
+  baseWeapon,
+  equipedWeapon,
+  baseAction,
+} from './constant';
+import { Cach, CO, StartConfig, CharacterAttr, Weapon } from '../types';
 
 export const func: (value: any) => any = value => value;
-export const inArray: (arr: Array<string>, key: any) => boolean = (arr, key) => arr.indexOf(key) > -1;
+
+export const inArray: <T = string>(arr: Array<T>, key: T) => boolean =
+  (arr, key) => arr.indexOf(key) > -1;
+
+export const without: <T = string>(arr: Array<T>, item: T) => boolean =
+  (arr, item) => arr.indexOf(item) === -1;
+
+export const copy: <T = CO>(target: T) => T =
+  (target) => Object.assign({}, target);
+
+export const eq: <T = any>(target: T, ...args: T[]) => boolean =
+  (target, ...args) => !!args.length && args.every(arg => arg === target);
+
+export const hasOwn: (target: CO, key: string) => boolean =
+  (target, key) => target.hasOwnProperty(key) || key in target;
+
+export const isUndef: (target: any) => boolean =
+  target => typeof target === 'undefined';
 
 export const cach: Cach = {
   KEY: 'TAIWU',
@@ -38,20 +60,15 @@ export const cach: Cach = {
   },
 };
 
-export const without: (
-  targetArray: Array<any>,
-  item: any,
-) => boolean = (
-  targetArray,
-  item,
-) => targetArray.indexOf(item) === -1;
-
-export const hasOwn: (target: CO, key: string) => boolean = (target, key) => (
-  target.hasOwnProperty(key) || key in target
-);
+export const getBaseOperation: () => Weapon[][] = () => {
+  const base = baseWeapon.map(weapon => copy(weapon));
+  const equiped = equipedWeapon.map(weapon => copy(weapon));
+  const action = baseAction.map(action => copy(action));
+  return [base, equiped, action];
+};
 
 export const genCharacter: (config: StartConfig) => any = (config) => {
-  const character = new Character(config);
+  const character: CharacterAttr = new Character(config).getInstance();
   console.log(character);
 };
 
@@ -67,4 +84,8 @@ export default {
   hasOwn,
   genCharacter,
   genMap,
+  copy,
+  eq,
+  getBaseOperation,
+  isUndef,
 };

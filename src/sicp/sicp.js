@@ -4,6 +4,8 @@ const signale = require('signale');
 const chai = require('chai');
 const expect = chai.expect;
 const TRUE = true;
+const NULL = null;
+
 console.log = (...inputs) => {
   return signale.success(...inputs.map((input) => {
     if (typeof input === 'object') {
@@ -62,6 +64,8 @@ const paska = (line = 1, result = {}) => {
 
 
 // 幂
+const isNull = val => val == NULL;
+const hasValue = val => !isNull(val);
 const isEven = num => num % 2 === 0;
 const isOdd = num => !isEven(num);
 const square = num => num * num;
@@ -2202,8 +2206,144 @@ const setCdr3 = (z, newVal) => (z[1] = newVal);
 
 
 const makeTable = () => {
+  const table = [];
 
+  const lookup = (x, y) => {
+    if (typeof table[x] === 'undefined') {
+      throw new Error(`line ${x} is missing`);
+    }
+    return table[x][y];
+  };
+
+  const insert = (x, y, value) => {
+    table[x] = Array.isArray(table[x]) ? table[x] : [];
+    if (table[x][y] !== value) {
+      table[x][y] = value;
+    }
+  };
+
+  const dispatch = (action, ...args) => {
+    switch(action) {
+      case 'lookup-table':
+        return lookup(...args);
+      case 'insert-table':
+        insert(...args);
+        break;
+      default:
+        throw new Error('unknown operation');
+    }
+  };
+
+  return {
+    lookup,
+    insert,
+    dispatch,
+  };
 };
+
+const operationTable = table => ({
+  get: table.lookup,
+  put: table.insert,
+});
+
+let table1 = makeTable();
+let table2 = operationTable(table1);
+table1.insert(0, 0, 'aa');
+table1.insert(1, 3, 'aa');
+table1.insert(3, 2, 'aa');
+console.log(expect(table1.lookup(1, 3)).to.be.equal('aa'));
+console.log(expect(table1.lookup(0, 0)).to.be.equal('aa'));
+console.log(expect(table1.lookup(3, 2)).to.be.equal('aa'));
+console.log(expect(table1.dispatch('lookup-table', 1, 3)).to.be.equal('aa'));
+console.log(expect(table1.dispatch('lookup-table', 0, 0)).to.be.equal('aa'));
+console.log(expect(table1.dispatch('lookup-table', 3, 2)).to.be.equal('aa'));
+console.log(expect(table2.get(1, 3)).to.be.equal('aa'));
+console.log(expect(table2.get(0, 0)).to.be.equal('aa'));
+console.log(expect(table2.get(3, 2)).to.be.equal('aa'));
+
+
+
+const orGate = (...args) => args.reduce((res, item) => res || item, false);
+const andGate = (...args) => args.reduce((res, item) => res || item, true);
+const inverter = (...args) => args.reduce((res, item) => res && !item, true);
+
+const makeWire = () => {
+  const getSignal = () => {
+
+  };
+
+  const setSignal = (signal = {}, newValue) => {
+    if (signal.value !== newValue) {
+      signal.value = newValue;
+    }
+    return signal;
+  };
+
+  const addAction = () => {
+
+  };
+
+  const dispatch = (type, ...args) => {
+    switch(type) {
+      case 'get-signal':
+        return getSignal(...args);
+      case 'set-signal':
+        return setSignal(...args);
+      case 'add-action':
+        return addAction(...args);
+      default:
+        throw new Error('unknown operation');
+    }
+  };
+
+  return {
+    getSignal,
+    setSignal,
+    addAction,
+  }
+};
+
+const squarer = (x, res) => {
+  const processNewValue = () => {
+    if (hasValue(x)) {
+      if (x !== 0) {
+        res = x * x;
+      } else {
+        throw new Error('square result less than 0');
+      }
+    }
+
+    if (hasValue(res) && isNull(x)) {
+      x = Math.sqrt(res);
+    }
+
+    return res;
+  };
+
+  const processForgetValue = () => {
+    if (hasValue(x)) {
+      x = NULL;
+    }
+
+    if (hasValue(res)) {
+      res = NULL;
+    }
+  };
+
+  return {
+    processNewValue,
+    processForgetValue,
+  }
+};
+
+
+
+
+
+
+
+
+
 
 
 // ast

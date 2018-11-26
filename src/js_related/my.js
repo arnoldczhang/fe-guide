@@ -259,3 +259,31 @@ while (result = reg.exec(str)) {
 
 // 设置Error的stack层数
 Error.stackTraceLimit = Infinity
+
+
+
+
+
+//// this显式绑定
+class MeowctComponent {
+  constructor() {
+    this.paw = document.getElementById('button');
+  }
+
+  meow() {
+    console.info('🐱 on this: ', this.paw);
+  }
+}
+const cat = new MeowctComponent();
+
+// 方式1：箭头函数
+cat.paw.addEventListener('click', () => cat.meow());
+// 方式2：bind
+cat.paw.addEventListener('click', cat.meow.bind(cat));
+// 方式3：绑定操作符::（提案）
+cat.paw.addEventListener('click', ::cat.meow);
+
+
+
+
+

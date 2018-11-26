@@ -8,6 +8,7 @@ import {
   Select,
   Row,
   Input,
+  Popover,
   InputNumber,
   Col,
 } from 'antd';
@@ -23,6 +24,9 @@ import {
 import {
   without,
 } from '../../utils';
+import {
+  defaultNone,
+} from '../../utils/constant';
 
 const Option = Select.Option;
 const styles = require('./Starter.less');
@@ -35,21 +39,37 @@ const PersonInfo: SFC<PersonInfoProps> = ({
   max,
 }) => {
   //
+  const genExplain: (explains: Array<string>) => ReactNode = (explains = [defaultNone]) => (
+    <div>{explains.map(explain => <p key={explain}>{explain}</p>)}</div>
+    );
+
+  //
   const genOptions: (
     arr: Array<string>,
     keyMap: CO,
     selectedArr: Array<string>,
+    keyExplain?: CO,
   ) => Array<ReactNode> = (
     arr,
     keyMap,
     selectedArr,
+    keyExplain = {},
   ) => {
     return (
       arr.map(item => (
-        <Option
-          key={item}
-          disabled={count + keyMap[item] > max && without(selectedArr, item)}
-        >{item}</Option>
+          <Option
+            key={item}
+            disabled={count + keyMap[item] > max && without(selectedArr, item)}
+          >
+            <Popover
+              trigger="hover"
+              placement="right"
+              content={genExplain(keyExplain[item])}
+              title={item}
+            >
+              <div className={styles['full-option']}>{item}</div>
+            </Popover>
+          </Option>
         ))
     )
   };
@@ -81,6 +101,7 @@ const PersonInfo: SFC<PersonInfoProps> = ({
       key: resKey,
       keyArray: value,
       keyObject: map,
+      keyExplain: explain,
       placeholder,
     } = rowInfo;
 
@@ -101,7 +122,7 @@ const PersonInfo: SFC<PersonInfoProps> = ({
             defaultValue={defaultValue || []}
             onChange={handleSelectionChange}
           >
-            {genOptions(value, map, result[resKey] || [])}
+            {genOptions(value, map, result[resKey] || [], explain)}
           </Select>
         </Col>
       </Row>
@@ -121,13 +142,13 @@ const PersonInfo: SFC<PersonInfoProps> = ({
   return (
     <div>
       <Row type={'flex'} gutter={8} align={'middle'} justify={'start'} className={styles.mb20}>
-        <Col span={6} offset={3} className={styles.tc}>姓名</Col>
+        <Col span={6} offset={3} className={styles.tc}>name</Col>
         <Col span={12}>
-          <Input placeholder="请填写姓名" onChange={handleNameChange}/>
+          <Input placeholder="please input your name" onChange={handleNameChange}/>
         </Col>
       </Row>
       <Row type={'flex'} gutter={8} align={'middle'} justify={'start'} className={styles.mb20}>
-        <Col span={6} offset={3} className={styles.tc}>年龄</Col>
+        <Col span={6} offset={3} className={styles.tc}>age</Col>
         <Col span={12}>
           <InputNumber min={16} max={30} defaultValue={16} onChange={handleAgeChange} />
         </Col>

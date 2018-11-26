@@ -1,18 +1,21 @@
+import { Category } from '../enum';
+
 export interface StateInterface<S = any, SS = S> {
   app: S,
   starter: S,
+  combat: S,
+};
+
+export interface Cach {
+  readonly KEY: string;
+  readonly get: Function;
+  readonly getKey: Function;
+  readonly set: Function;
+  readonly clear: Function;
 };
 
 export interface ErrorInfo {
   componentStack: string;
-};
-
-export interface Cach {
-  readonly KEY: string,
-  readonly get: Function,
-  readonly getKey: Function,
-  readonly set: Function,
-  readonly clear: Function,
 };
 
 export interface ErrorState {
@@ -21,6 +24,17 @@ export interface ErrorState {
 
 export interface ErrorProps {
   children: React.ReactNode;
+  className?: string;
+};
+
+export interface ManInterface {
+};
+
+export interface ManState {
+  active?: boolean;
+};
+
+export interface ManProps {
   className?: string;
 };
 
@@ -34,43 +48,104 @@ export type Partial<T> = {
 
 export type CF = () => void;
 
-export type CO = {
-  [key: string]: any;
+export type CO<T = any> = {
+  [key: string]: T;
 };
 
-export interface BaseAttr {
-  strength: number;
-  agile: number;
-  physique: number;
-  inner: number;
-  speed: number;
-  charm: number;
-  understanding: number;
+export interface Resource {
+  [Category.wood]: number;
+  [Category.stone]: number;
+  [Category.food]: number;
+  [Category.golden]: number;
+  [Category.cloth]: number;
 };
 
-export interface MartialAttr {
-  sword: number[];
-  blade: number[];
-  fist: number[];
-  pike: number[];
-  internal: number[];
+export interface MartialArt {
+  title: string;
+  skilled: number;
+  introduce?: string;
+  traditional: boolean;
+  required?: CO<number>; // required base or other attributes
+  effects?: CO<number>; // hp or ihp damage
+  ratio?: CO<number[]>; // force\subtle\swift ratio
+  // more martial infos...
 };
 
-export interface OtherAttr {
-  doctor: number[];
-  carpenter: number[];
-  blacksmith: number[];
-  tao: number[];
-  woven: number[];
-  craft: number[];
-  identification: number[];
+export interface MartialArtMap {
+  [key: string]: Array<MartialArt>;
+};
+
+export interface CombatAttr extends CO {
+  [Category.hp]: number;
+  [Category.ihp]: number;
+  [Category.defence]: number;
+  [Category.idefence]: number;
+  [Category.force]: number;
+  [Category.subtle]: number;
+  [Category.swift]: number;
+  [Category.tackle]: number;
+  [Category.unload]: number;
+  [Category.miss]: number;
+  [Category.attackRatio]: number;
+  [Category.iattackRatio]: number;
+  [Category.defenceRatio]: number;
+  [Category.idefenceRatio]: number;
+};
+
+export interface BaseAttr extends CO {
+  [Category.strength]: number;
+  [Category.agile]: number;
+  [Category.physique]: number;
+  [Category.inner]: number;
+  [Category.speed]: number;
+  [Category.charm]: number;
+  [Category.understanding]: number;
+};
+
+export interface MartialAttr extends CO {
+  [Category.sword]: number[];
+  [Category.blade]: number[];
+  [Category.fist]: number[];
+  [Category.pike]: number[];
+  [Category.internal]: number[];
+  [Category.lightfoot]: number[];
+  [Category.special]: number[];
+};
+
+export interface OtherAttr extends CO {
+  [Category.doctor]: number[];
+  [Category.poison]: number[];
+  [Category.carpenter]: number[];
+  [Category.blacksmith]: number[];
+  [Category.tao]: number[];
+  [Category.woven]: number[];
+  [Category.craft]: number[];
+  [Category.identification]: number[];
 };
 
 export interface CharacterAttr {
   name?: string;
   age?: number;
+  favor?: string;
+  hate?: string;
   remain?: number[];
+  martials?: MartialArtMap;
+  resource?: Resource;
   baseAttribute?: BaseAttr;
   martialAttribute?: MartialAttr;
   otherAttribute?: OtherAttr;
+  combatAttribute?: CombatAttr;
+};
+
+export interface Weapon {
+  title: string;
+  icon?: string;
+  cost?: number;
+  skilled: number;
+  noDelay?: boolean;
+  times?: number;
+  introduce?: string;
+  required?: CO<number>; // required base or other attributes
+  effects?: CO<number>; // hp or ihp damage
+  ratio?: CO<number[]>;
 }
