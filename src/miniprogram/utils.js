@@ -5,7 +5,7 @@ const color = require('chalk');
 const babel = require('babel-core');
 const generator = require('babel-generator');
 const babelTraverse = require("babel-traverse");
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const uglifyJS = require('uglify-js');
@@ -254,6 +254,17 @@ const getWebpackCssConfig = (
   entry,
   optimization: {
     minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        uglifyOptions: {
+          compress: {
+            warnings: false,
+            drop_debugger: true,
+            drop_console: false
+          }
+        }
+      }),
       new OptimizeCSSAssetsPlugin({
         cssProcessor: require('cssnano'),
         cssProcessorOptions: {
@@ -280,6 +291,7 @@ const getWebpackCssConfig = (
             loader: 'css-loader',
             options: {
               import: false,
+              sourceMap: false,
             },
           },
           {
@@ -406,9 +418,11 @@ const clearConsole = async (title) => {
   }
 };
 
-const getPathBack = (replacePath = '') => {
+const getPathBack = (replacePath = '', prePath = '') => {
   const result = [];
-  replacePath.replace(/[\/]/g, () => (result.push('../')));
+  replacePath
+    .replace(prePath, '')
+    .replace(/[\/]/g, () => (result.push('../')));
   return result.join('');
 };
 

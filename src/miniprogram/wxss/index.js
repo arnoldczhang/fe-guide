@@ -1,7 +1,14 @@
 const {
+  compileStart,
+  compileImageFiles,
   compileWxssFiles,
   compileFinish,
 } = require('../build');
 
-compileWxssFiles();
-compileFinish();
+const compileWxss = async () => {
+  compileStart();
+  await compileImageFiles();
+  compileWxssFiles();
+  compileFinish();
+};
+compileWxss();

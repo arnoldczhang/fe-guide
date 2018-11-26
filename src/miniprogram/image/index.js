@@ -4,6 +4,9 @@ const {
   compileFinish,
 } = require('../build');
 
-compileStart();
-compileImageFiles();
-compileFinish();
+const compileImage = async () => {
+  compileStart();
+  await compileImageFiles();
+  compileFinish();
+};
+compileImage();

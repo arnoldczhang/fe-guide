@@ -319,7 +319,7 @@ const compileCompressFile = (
       ensureRunFunc(hooks.start);
       ensureRunFunc(hooks.willCompress, filePath, destPath);
       const file = compressFile(input || readS(filePath), compress);
-      const hookArgs = [file, filePath, destFile, src];
+      const hookArgs = [file, filePath, destFile, src, dest];
       ensureRunFunc(hooks.didCompress, ...hookArgs);
       ensureRunFunc(hooks.willCopy, ...hookArgs);
       copyS(filePath, destFile);
