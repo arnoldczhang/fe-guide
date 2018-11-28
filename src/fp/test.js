@@ -9,6 +9,8 @@ const {
   compose2,
   array,
   filter,
+  filter2,
+  reduce,
   gt,
   lt,
   sum,
@@ -20,6 +22,10 @@ const {
   partialProps,
   not,
   when,
+  unary,
+  binary,
+  unique: unique2,
+  flatten,
 } = require('./fp');
 
 // compose/pipe
@@ -192,10 +198,10 @@ function depth(node) {
 };
 
 // PTC
-function sum(num1, num2, ...nums) {
+function sumFunc(num1, num2, ...nums) {
   num1 = num1 + num2;
   if (nums.length === 0) return num1;
-  return sum(num1, ...nums);
+  return sumFunc(num1, ...nums);
 };
 
 // trampoline
@@ -208,12 +214,35 @@ function trampoline(fn) {
     return result;
   };
 };
+var sum2 = trampoline(sumFunc);
 
-var sum2 = trampoline(sum);
+var isOdd = v => v % 2 == 1;
+var isEven = not(isOdd);
+var filterIn = filter2;
+
+function filterOut(predicateFn, arr) {
+    return filterIn( not( predicateFn ), arr );
+}
+
+expect(isOdd(3)).to.be.equal(true);
+expect(isEven(2)).to.be.equal(true);
+expect(filterOut(isEven, [1,2,3,4,5] )).to.be.deep.equal([1,3,5]);
+expect(filterIn(isOdd, [1,2,3,4,5] )).to.be.deep.equal([1,3,5]);
+
+expect(reduce((res, v) => (res + v), [1, 2, 3])).to.be.equal(6);
 
 
+var pipeReducer = binary( pipe );
+
+var fn =
+    [3,17,6,4]
+    .map( v => n => v * n )
+    .reduce( pipeReducer );
+
+expect(unique2( [1,4,7,1,3,1,7,9,2,6,4,0,5,3])).to.be.deep.equal([1, 4, 7, 3, 9, 2, 6, 0, 5]);
 
 
+expect(flatten( [[0,1],2,3,[4,[5,6,7],[8,[9,[10,[11,12],13]]]]])).to.be.deep.equal([0,1,2,3,4,5,6,7,8,9,10,11,12,13]);
 
 
 
