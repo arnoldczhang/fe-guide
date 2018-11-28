@@ -181,3 +181,42 @@ const propID = partial(prop, "personId");
 expect(propID({ personId: 'abc'})).to.be.equal('abc');
 
 
+// 二叉树深度
+function depth(node) {
+  if (node) {
+    let depthLeft = depth( node.left );
+    let depthRight = depth( node.right );
+    return 1 + Math.max(depthLeft, depthRight);
+  }
+  return 0;
+};
+
+// PTC
+function sum(num1, num2, ...nums) {
+  num1 = num1 + num2;
+  if (nums.length === 0) return num1;
+  return sum(num1, ...nums);
+};
+
+// trampoline
+function trampoline(fn) {
+  return function trampolined(...args) {
+    var result = fn( ...args );
+    while (typeof result == "function") {
+      result = result();
+    }
+    return result;
+  };
+};
+
+var sum2 = trampoline(sum);
+
+
+
+
+
+
+
+
+
+
