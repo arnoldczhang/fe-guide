@@ -26,6 +26,10 @@ const {
   binary,
   unique: unique2,
   flatten,
+  partialThis,
+  composeChained,
+  map,
+  invoker,
 } = require('./fp');
 
 // compose/pipe
@@ -231,7 +235,13 @@ expect(filterIn(isOdd, [1,2,3,4,5] )).to.be.deep.equal([1,3,5]);
 
 expect(reduce((res, v) => (res + v), [1, 2, 3])).to.be.equal(6);
 
+function sum3 (a, b) {
+  return a + b;
+};
 
+function double(a) {
+  return a * 2;
+}
 var pipeReducer = binary( pipe );
 
 var fn =
@@ -239,13 +249,25 @@ var fn =
     .map( v => n => v * n )
     .reduce( pipeReducer );
 
-expect(unique2( [1,4,7,1,3,1,7,9,2,6,4,0,5,3])).to.be.deep.equal([1, 4, 7, 3, 9, 2, 6, 0, 5]);
+expect(unique2([1,4,7,1,3,1,7,9,2,6,4,0,5,3])).to.be.deep.equal([1, 4, 7, 3, 9, 2, 6, 0, 5]);
+expect(flatten([[0,1],2,3,[4,[5,6,7],[8,[9,[10,[11,12],13]]]]])).to.be.deep.equal([0,1,2,3,4,5,6,7,8,9,10,11,12,13]);
 
+expect(composeChained(
+  partialThis(Array.prototype.reduce, sum3, 0),
+  partialThis(Array.prototype.map, double),
+  partialThis(Array.prototype.filter, isOdd)
+)([1,2,3,4,5])).to.be.equal(18);
 
-expect(flatten( [[0,1],2,3,[4,[5,6,7],[8,[9,[10,[11,12],13]]]]])).to.be.deep.equal([0,1,2,3,4,5,6,7,8,9,10,11,12,13]);
+function aa () {
+  const filter = invoker( "filter", 2 );
+  const map = invoker( "map", 2 );
+  const reduce = invoker( "reduce", 3 );
 
-
-
-
-
+  return compose2(
+    reduce(sum3)(0),
+    map(double),
+    filter(isOdd)
+  )([1,2,3,4,5]);  
+};
+expect(aa()).to.be.equal(18);
 

@@ -59,7 +59,7 @@ const filter = condition => arr => isArray(arr) ? arr.filter(condition) : arr;
 const partial = (fn, ...preArgs) => (...lastArgs) => fn(...preArgs, ...lastArgs);
 
 const partialThis = (fn, ...preArgs) => function partialThisInner(...lastArgs) {
-  fn.call(this, ...preArgs, ...lastArgs);
+  return fn.call(this, ...preArgs, ...lastArgs);
 };
 
 const partialRight = (fn, ...preArgs) => (...lastArgs) => fn(...lastArgs, ...preArgs);
@@ -165,17 +165,27 @@ const flatMap =
     (mapperFn, arr) =>
         flatten(arr.map( mapperFn ), 1);
 
-const zip = (arr1,arr2) => {
+const zip = (arr1, arr2) => {
   const zipped = [];
   arr1 = [...arr1];
   arr2 = [...arr2];
 
   while (arr1.length > 0 && arr2.length > 0) {
-      zipped.push( [ arr1.shift(), arr2.shift() ] );
+    zipped.push([arr1.shift(), arr2.shift()]);
   }
   return zipped;
 };
 
+const composeChained = (...funcs) => result => 
+  funcs.reduceRight((res, func) => {
+    return func.call(res);
+  }, result);
+
+const invoker = (methodName, argLength) =>
+  curry((...args) => {
+    const obj = args.pop();
+    return obj[methodName]( ...args);
+  }, argLength);
 
 
 const FP = {
@@ -208,6 +218,9 @@ const FP = {
   flatten,
   flatMap,
   zip,
+  map,
+  composeChained,
+  invoker,
 };
 
 module.exports = FP;
