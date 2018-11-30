@@ -271,3 +271,35 @@ function aa () {
 };
 expect(aa()).to.be.equal(18);
 
+
+var removeInvalidChars = str => str.replace( /[^\w]*/g, "" );
+
+var upper = str => str.toUpperCase();
+
+var elide = str =>
+    str.length > 10 ?
+        str.substr( 0, 7 ) + "..." :
+        str;
+
+var wordssss = "Mr. Jones isn't responsible for this disaster!".split( /\s/ );
+
+expect(wordssss
+  .map(
+    pipe2( removeInvalidChars, upper, elide )
+  )).to.be.deep.equal(['MR', 'JONES', 'ISNT', 'RESPONS...', 'FOR', 'THIS', 'DISASTER']);
+
+expect(
+  map(
+    pipe2(removeInvalidChars, upper, elide),
+    wordssss
+  )
+).to.be.deep.equal(['MR', 'JONES', 'ISNT', 'RESPONS...', 'FOR', 'THIS', 'DISASTER']);
+
+
+
+
+
+
+
+
+
