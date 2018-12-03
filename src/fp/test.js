@@ -26,6 +26,7 @@ const {
   binary,
   unique: unique2,
   flatten,
+  flatMap,
   partialThis,
   composeChained,
   map,
@@ -296,7 +297,23 @@ expect(
 ).to.be.deep.equal(['MR', 'JONES', 'ISNT', 'RESPONS...', 'FOR', 'THIS', 'DISASTER']);
 
 
+function listify(listOrItem) {
+  if (!Array.isArray( listOrItem )) {
+    return [ listOrItem ];
+  }
+  return listOrItem;
+};
 
+const getDOMChildren = pipe2(
+  listify,
+  flatMap(
+    pipe2(
+      curry( prop )( "childNodes" ),
+      Array.from
+    ),
+    []
+  )
+);
 
 
 
