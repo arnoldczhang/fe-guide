@@ -78,7 +78,8 @@
     "save": "node ./src/test/src/saveImage",
     "lynt": "lynt ./src/lynt/lynt.js",
     "test": "mocha",
-    "storybook": "start-storybook -p 9001 -c .storybook"
+    "storybook": "start-storybook -p 9001 -c .storybook",
+    "deploy": "gh-pages -d build"
   },
   "author": "arnold",
   "license": "MIT",
@@ -258,6 +259,7 @@
     "fork-ts-checker-webpack-plugin": "^0.4.2",
     "fpack": "^0.5.3",
     "fs-extra": "^6.0.1",
+    "gh-pages": "^2.0.1",
     "https": "^1.0.0",
     "jsqr": "^1.1.1",
     "karma-chrome-launcher": "^2.2.0",
