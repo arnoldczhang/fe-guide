@@ -74,8 +74,19 @@ f2( { z: 3, x: 1 } ); // x:1 y:2 z:3
   - 尾递归 PTC
     - 若这个函数调用的是本身
 
+- 函数反应式编程
+当监听内容发生变化时，执行操作
+```js
+var a = new LazyArray();
 
+var b = a.map(function double(v){
+    return v * 2;
+});
 
+setInterval(function everySecond(){
+    a.push(Math.random());
+}, 1000);
+```
 
 
 
