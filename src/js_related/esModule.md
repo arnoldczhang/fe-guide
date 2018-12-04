@@ -1,7 +1,7 @@
 # esModule
 
 ## 参考
-  - https://zhuanlan.zhihu.com/p/40733281
+- https://zhuanlan.zhihu.com/p/40733281
 
 ## 细节
   - export
