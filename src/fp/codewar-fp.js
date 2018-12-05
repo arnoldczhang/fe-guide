@@ -101,6 +101,125 @@ function queueTime(customers, n) {
   return Math.max(...tillArray);
 }
 
+// weight for weight
+function orderWeight(strng) {
+  const weightMap = {};
+  const weightArray = strng.split(' ');
+  const sort = (sortFunc, list = []) => list.sort(sortFunc);
+  const toDigit = val => Number(val);
+  const reduce = (reduceFunc, initial, list = []) => list.reduce(reduceFunc, initial);
+  const concat = (base = [], ...args) => [].concat.call(base, ...args);
+  const forEach = (forEachFunc, list = []) => list.forEach(forEachFunc);
+  const map = (mapFunc, list = []) => list.map(mapFunc);
+  const add = (...args) => args.length ? reduce((a, b) => a + b, 0, args) : 0;
+  const getDigitSum = val => add(...map(toDigit, String(val).split('')));
+  
+  forEach((weight) => {
+    weightSum = getDigitSum(weight);
+    weightMap[weightSum] = weightMap[weightSum] || [];
+    weightMap[weightSum].push(weight);
+  }, weightArray);
+  
+  return concat(
+    ...map(
+      key => sort((pre, next) => pre > next, weightMap[key]),
+      Object.keys(weightMap),
+    ),
+  ).join(' ');
+}
+
+// Which are in
+function inArray(array1,array2){
+  const result = [];
+  const str = array2.join(' ');
+  const forEach = (forEachFunc, list = []) => list.forEach(forEachFunc);
+  forEach((val) => {
+    if (str.indexOf(val) > -1) {
+      result.push(val);
+    }
+  }, array1);
+  return result.sort();
+}
+
+// Who likes it
+function likes(names) {
+  let result;
+  const [first, second, third, ...others] = names;
+  switch(names.length) {
+    case 0:
+      result = 'no one likes this';
+      break;
+    case 1:
+      result = `${first} likes this`;
+      break;
+    case 2:
+      result = `${first} and ${second} like this`;
+      break;
+    case 3:
+      result = `${first}, ${second} and ${third} like this`;
+      break;
+    default:
+      result = `${first}, ${second} and ${others.length + 1} others like this`;
+      break;
+  }
+  return result;
+}
+
+// Human readable duration format
+function formatDuration (seconds) {
+  let tempSec = seconds;
+  const PER_HOUR = 60;
+  const PER_DAY = 24;
+  const PER_YEAR = 365;
+  const SECOND = 1;
+  const MINUTE = 60;
+  const HOUR = PER_HOUR * MINUTE;
+  const DAY = PER_DAY * HOUR;
+  const YEAR = PER_YEAR * DAY;
+  const timeArray = [[YEAR, 'year'], [DAY, 'day'], [HOUR, 'hour'], [MINUTE, 'minute'], [SECOND, 'second']];
+  const result = [];
+  
+  const forEachIf = (ifFunc, iterator, list = []) => {
+    for (let [index, item] of list.entries()) {
+      if (!ifFunc()) {
+        return;
+      }
+      iterator(item, index, list);
+    }
+  };
+  
+  forEachIf(() => tempSec > 0, ([time, word]) => {
+    const count = tempSec / time | 0;
+    if (count) {
+      result.push(`${count} ${word}${count > 1 ? 's' : ''}`);
+      tempSec -= count * time;
+    }
+  }, timeArray);
+  return seconds ? result.join(', ').replace(/(, )([^,]+)$/, ' and $2') : 'now';
+}
+
+// Sum Strings as Numbers
+function sumStrings(a,b) {
+  let result = '';
+  let carry = 0;
+  const ten = 10;
+  const getNumArray = str => str.replace(/^0+/, '').split('').reverse();
+  const aArray = getNumArray(a);
+  const bArray = getNumArray(b);
+  
+  const reduce = (reduceFunc, initial, list = []) => list.reduce(reduceFunc, initial);
+  const add = (...args) => args.length ? reduce((a, b) => a + b, 0, args) : 0;
+  
+  for (let i = 0; i < Math.max(aArray.length, bArray.length); i += 1) {
+    const numA = +aArray[i] || 0;
+    const numB = +bArray[i] || 0;
+    const sum = add(numA, numB, carry);
+    const digit = sum % ten;
+    result = digit + result;
+    carry = sum >= ten ? 1 : 0;
+  }
+  return carry ? `${carry}${result}` : result;
+}
 
 
 
