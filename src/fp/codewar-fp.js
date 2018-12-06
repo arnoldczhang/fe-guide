@@ -238,9 +238,6 @@ function mix(s1, s2) {
       return map;
     }, {}, str.split(''));
   const diySort = (sortMap = {}) => {
-    // key: 键值
-    // max: 哪个list
-    // maxVal: 多少个
     const result = [];
     forEach(key =>
       forEach(keyInner => {
@@ -280,5 +277,155 @@ function mix(s1, s2) {
       )
     ))).substring(1);
 }
+
+// Double Cola
+function whoIsNext(names, r){
+  let drinker;
+  const queue = [...names];
+  const forEachIf = (ifFunc, iterator) => {
+    while(ifFunc()) {
+      iterator();
+    }
+  };
+  forEachIf(() => r-- > 0, () => {
+    drinker = queue.shift();
+    queue[queue.length] = drinker;
+    queue[queue.length] = drinker;
+  });
+  return drinker;
+}
+
+// Sudoku Solution Validator
+function validSolution(board){
+  const filter = (filterFunc, array = []) => array.filter(filterFunc);
+  const every = (everyFunc, array = []) => array.every(everyFunc);
+  const map = (mapFunc, array = []) => array.map(mapFunc);
+  
+  const deRepeat = (array = []) => array.filter((v, i) => array.indexOf(v) === i);
+  const checkSudoKu = (array = []) => every(item => item.length === deRepeat(item).length, array);
+  let result = checkSudoKu(board);
+  
+  if (result) {
+    const lArray = map((item, i) => {
+      const res = [];
+      let j = 0;
+      while (j < board.length) {
+        res.push(board[j++][i]);
+      }
+      return res;
+    }, board);
+    
+    if (lArray.toString() === board.toString()) {
+      result = false;
+    } else {
+      result = checkSudoKu(lArray);
+    }
+  }
+  return result;
+}
+
+// Boggle Word Checker
+function checkWord( board, word ) {
+  debugger;
+  const forEach = (forEachFunc, list) => list.forEach(forEachFunc);
+  const every = (everyFunc, array = []) => array.every(everyFunc);
+  const map = (mapFunc, array = []) => array.map(mapFunc);
+  const reduce = (reduceFunc, initial, list = []) => list.reduce(reduceFunc, initial);
+  const has = (list = [], item) => list.indexOf(item) > -1;
+
+  const getAdjacentList = list => (xyStrList = [], result = {}, withoutList = []) => {
+    const getAdj = (xyStr, exists) => {
+      const [ x, y ] = map(v => +v, xyStr.split(','));
+      const [ preX, preY, nextX, nextY ] = [x - 1, y - 1, x + 1, y + 1];
+      const adjList = [
+        `${x},${preY}`,
+        `${nextX},${preY}`,
+        `${nextX},${y}`,
+        `${nextX},${nextY}`,
+        `${x},${nextY}`,
+        `${preX},${nextY}`,
+        `${preX},${y}`,
+        `${preX},${preY}`,
+      ];
+
+      if (Array.isArray(exists)) {
+        for (let item of adjList) {
+          if (has(exists, item)) {
+            return item;
+          }
+        }
+      } else {
+        reduce((res, pointKey) => {
+          const w = pointMap[pointKey];
+          if (w) {
+            res[w] = res[w] || [];
+            if (!has(withoutList, pointKey) && !has(res[w], pointKey)) {
+              res[w].push(pointKey);
+            }
+          }
+          return res;
+        }, result, adjList);    
+      }
+    };
+
+    if (typeof xyStrList === 'string') {
+      return getAdj(xyStrList, result);
+    } else {
+      forEach(getAdj, xyStrList);
+    }
+  };
+  
+  const getAdjacent = getAdjacentList(board);
+  const genXyMap = (list = []) => {
+    const wMap = {};
+    const pMap = {};
+    forEach((itemList, y) => {
+      forEach((item, x) => {
+        const point = `${x},${y}`;
+        wMap[item] = wMap[item] || [];
+        wMap[item].push(point);
+        pMap[point] = item; 
+      }, itemList);
+    }, list);
+    return [wMap, pMap];
+  };
+  
+  const getLine = (input = word, length = input.length) => {
+    let result = true;
+    let i = 0;
+    let tempMap = wordMap;
+    let points = [];
+    const reached = [];
+    while (i < length) {
+      let inp = input[i];
+      const thisPoints = tempMap[inp];
+      tempMap = {};
+      if (thisPoints) {
+        if (i === length - 1) break;
+        if (thisPoints.length === 1) {
+          reached[i] = thisPoints[0];
+          let j = i;
+          while (j >= 0 && !reached[j - 1]) {
+            reached[j - 1] = getAdjacent(reached[j], points[j - 1]);
+            j--;
+          }
+        }
+        getAdjacent(thisPoints, tempMap, reached);
+        i++;
+        points.push(thisPoints);
+        continue;
+      }
+      result = false;
+      break;
+    }
+    return result;
+  };
+  const [ wordMap, pointMap ] = genXyMap(board);
+  return getLine();
+}
+
+
+
+
 
 
