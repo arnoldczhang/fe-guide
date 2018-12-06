@@ -221,6 +221,64 @@ function sumStrings(a,b) {
   return carry ? `${carry}${result}` : result;
 }
 
-
+// Strings Mix
+function mix(s1, s2) {
+  const filter = (filterFunc, list) => list.filter(filterFunc);
+  const sort = (sortFunc, list) => list.sort(sortFunc || void 0);
+  const forEach = (forEachFunc, list) => list.forEach(forEachFunc);
+  const reduce = (reduceFunc, initial, list = []) => list.reduce(reduceFunc, initial);
+  const concat = (base = [], ...args) => [].concat.call(base, ...args);
+  const compose = (...funcs) => value => funcs.reduce((res, func) => func(res), value);
+  
+  const removeUseless = str => str.replace(/[^a-z]/g, '');
+  const toLower = str => str.toLocaleLowerCase();
+  const filterLetterMap = str =>
+    reduce((map, val) => {
+      map[val] = (map[val] | 0) + 1;
+      return map;
+    }, {}, str.split(''));
+  const diySort = (sortMap = {}) => {
+    // key: 键值
+    // max: 哪个list
+    // maxVal: 多少个
+    const result = [];
+    forEach(key =>
+      forEach(keyInner => {
+          const finalArray = sortMap[key][keyInner];
+          result.push(...sort((pre, next) => pre.key > next.key, finalArray));
+        },
+        Object.keys(sortMap[key]),
+      ),
+      Object.keys(sortMap).reverse(),
+    );
+    return result;
+  };
+  const genSMap = compose(
+    removeUseless,
+    toLower,
+    filterLetterMap,
+  );
+  
+  const s1Map = genSMap(s1);
+  const s2Map = genSMap(s2);
+  
+  return reduce((res, { key, max, maxVal }) => res += `/${max}:${key.repeat(maxVal)}`, '',
+    diySort(reduce((res, key) => {
+      const s1Val = s1Map[key] || 0;
+      const s2Val = s2Map[key] || 0;
+      const needRecord = s1Val > 1 || s2Val > 1;
+      const [max, maxVal] = s1Val > s2Val ? [1, s1Val] : s1Val < s2Val ? [2, s2Val] : ['=', s1Val];
+      if (needRecord) {
+        res[maxVal] = res[maxVal] || {};
+        res[maxVal][max] = res[maxVal][max] || [];
+        res[maxVal][max].push({ key, max, maxVal });
+      }
+      return res;
+    }, {}, filter(
+      (val, i, list) => list.indexOf(val) === i,
+      concat(Object.keys(s1Map), Object.keys(s2Map)),
+      )
+    ))).substring(1);
+}
 
 
