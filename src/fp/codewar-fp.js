@@ -544,7 +544,7 @@ function nextSmaller(n) {
 /**
  * 算法解法
  */
-const nextSmaller = n => {
+const nextSmaller2 = n => {
   let min = minify(n);
   while (--n >= min) if (minify(n) === min) return n;
   return -1;
@@ -552,6 +552,112 @@ const nextSmaller = n => {
 
 const minify = n => [...`${n}`].sort().join``.replace(/^(0+)([1-9])/, '$2$1');
 
+// Rail Fence Cipher: Encoding and Decoding
+/**
+ * 正常解法
+ */
+function encodeRailFenceCipher (string, numberRails) {
+  const cipherArray = getCipherArray(string, numberRails);
+  return arrayJoin(cipherArray);
+}
+
+function decodeRailFenceCipher(string, numberRails) {
+  const cipherArray = getCipherArray(string, numberRails);
+  let i = 0;
+  let cipherIndex = 0;
+  const result = [];
+  const length = string.length;
+  const strArray = [...string];
+  
+  const forEach = (forEachFunc, array = []) => array.forEach(forEachFunc);
+  const getCipherIndex = getCipherListIndex(cipherArray);
+  
+  forEach((item, index) => {
+    forEach((it, idx) => {
+      cipherArray[index][idx] = strArray.shift();
+    }, item);
+  }, cipherArray);
+  
+  while (i < length) {
+    result.push(cipherArray[cipherIndex][i]);
+    cipherIndex = getCipherIndex(cipherIndex);
+    i++;
+  }
+  
+  return result.join('');
+}
+
+function arrayJoin(array) {
+  const map = (mapFunc, arr = []) => arr.map(mapFunc);
+  return map(item => item.join(''), array).join('');
+};
+
+function getCipherListIndex(array = []) {
+  let next = true;
+  const max = array.length - 1;
+  return (index) => {
+    if (next) {
+      if (index < max) {
+        index++;
+      } else {
+        next = false;
+        index--;
+      }
+    } else {
+      if (index > 0) {
+        index--;
+      } else {
+        next = true;
+        index++;
+      }
+    }
+    return index;
+  };
+};
+
+function getCipherArray(string, numberRails) {
+  let cipherIndex = 0;
+  const cipherArray = Array.from({ length: numberRails || 1 }).fill(1);
+  const strArray = [...string];
+  
+  const forEach = (forEachFunc, array = []) => array.forEach(forEachFunc);
+  const getCipherIndex = getCipherListIndex(cipherArray);
+  
+  forEach((item, index) => cipherArray[index] = [], cipherArray);
+  for(let [ index, letter ] of strArray.entries()) {
+    cipherArray[cipherIndex][index] = letter;
+    cipherIndex = getCipherIndex(cipherIndex);
+  }
+  return cipherArray;
+}
+
+function* rails(rn, ln) {
+    for (var rc = 0; rc < rn; ++rc) {
+        var rv = rc, rd = rc;
+        while (rv < ln) {
+            yield rv;
+            rv += 2 * (rn - 1 - (rn == rd + 1 ? 0 : rd));
+            rd = rn - 1 - rd;
+        }
+    }
+}
+
+/**
+ * 算法解法
+ */
+function encodeRailFenceCipher2(s, numberRails) {
+    return Array.from(rails(numberRails, s.length)).map(function(i) {
+        return s[i];
+    }).join("");
+}
+
+function decodeRailFenceCipher2(s, numberRails) {
+    var r = [];
+    for (var [i, k] of Array.from(rails(numberRails, s.length)).entries()) {
+        r[k] = s[i];
+    }
+    return r.join("");
+}
 
 
 
