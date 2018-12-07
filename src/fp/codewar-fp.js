@@ -424,6 +424,137 @@ function checkWord( board, word ) {
   return getLine();
 }
 
+// The observed PIN
+function getPINs(observed) {
+  const reduce = (reduceFunc, initial, array = []) => array.reduce(reduceFunc, initial);
+  const filter = (filterFunc, array = []) => array.filter(filterFunc);
+  const forEach = (forEachFunc, array = []) => array.forEach(forEachFunc);
+  const map = (mapFunc, array = []) => array.map(mapFunc);
+  const concat = (base = [], ...args) => [].concat.call(base, ...args)
+
+  const getAdjacent = (xyStr) => {
+    const [ x, y ] = map(v => +v, xyStr.split(','));
+    const adjArray = [
+      `${x - 1},${y}`,
+      `${x + 1},${y}`,
+      `${x},${y - 1}`,
+      `${x},${y + 1}`,
+    ];
+    
+    return reduce((res, coord) => {
+      const digit = coord2DigitMap[coord];
+      if (digit !== void 0) {
+        res.push(digit);
+      }
+      return res;
+    }, [], adjArray);
+  };
+  
+  const possibleArray = [];
+  let result;
+  const digit2CoordMap = {
+    0: '1,3',
+    1: '0,0',
+    2: '1,0',
+    3: '2,0',
+    4: '0,1',
+    5: '1,1',
+    6: '2,1',
+    7: '0,2',
+    8: '1,2',
+    9: '2,2',
+  };
+  const coord2DigitMap = reduce((res, [ key, val ]) => {
+    res[val] = key;
+    return res;
+  }, {}, Object.entries(digit2CoordMap));
+  
+  forEach((digit) => {
+    const coord = digit2CoordMap[digit];
+    possibleArray.push(concat([digit], ...getAdjacent(coord)));
+  }, observed.split(''));
+  
+  for (let possible of possibleArray) {
+    if (!result) {
+      result = possible;
+    } else {
+      result = concat(...map(item => map(res => res + item, result), possible));
+    }
+  }
+  return result;
+}
+
+// Next smaller number with the same digits
+/**
+ * 正常解法
+ */
+function nextSmaller(n) {
+  debugger;
+  if (n <= 10) return -1;
+  let digitArray = [...`${n}`];
+  const length = digitArray.length;
+  let tempArray = [digitArray[length - 1]];
+  let result = n;
+  
+  const compose = (...funcs) => value => funcs.reduce((res, func) => func(res), value);
+  const filter = (filterFunc, list) => list.filter(filterFunc);
+  const concat = (base = [], ...args) => [].concat.call(base, ...args);
+  const sort = (sortFunc, list = []) => list.sort(sortFunc);
+  
+  const getSmaller = () => {
+    let i = length - 1;
+    let result = false;
+    while (--i >= 0) {
+      let swap;
+      let swapIndex;
+      const digit = digitArray[i];
+      const smallerArray = filter(item => item < digit, tempArray);
+      if (!smallerArray.length) {
+        tempArray.unshift(digit);
+      } else {
+        swap = String(Math.max(...smallerArray));
+        swapIndex = tempArray.indexOf(swap);
+        if (swapIndex > -1) {
+          tempArray.splice(swapIndex, 1, digit);
+          digitArray = concat(digitArray.slice(0, i), swap, ...tempArray);
+          result = true;
+          break;
+        }
+      }
+    }
+    return result;
+  };
+  
+  const getBiggest = (changed) => {
+    if (!changed || !+digitArray[0]) {
+      return -1;
+    }
+    return +concat(
+      digitArray.slice(0, length - tempArray.length),
+      sort((pre, next) => pre < next, tempArray)
+    ).join('');
+  };
+  
+  return compose(
+    getSmaller,
+    getBiggest,
+  )();
+}
+
+/**
+ * 算法解法
+ */
+const nextSmaller = n => {
+  let min = minify(n);
+  while (--n >= min) if (minify(n) === min) return n;
+  return -1;
+};
+
+const minify = n => [...`${n}`].sort().join``.replace(/^(0+)([1-9])/, '$2$1');
+
+
+
+
 
 
 
