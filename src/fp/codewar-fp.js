@@ -659,8 +659,43 @@ function decodeRailFenceCipher2(s, numberRails) {
     return r.join("");
 }
 
+Array.prototype.sameStructureAs = function (other) {
+    if (this.length !== other.length) {
+      return false;
+    }
+};
 
+// Nesting Structure Comparison
+/**
+ * 正常解法
+ */
+Array.prototype.sameStructureAs = function (other) {
+  if (this.length !== other.length) {
+    return false;
+  }
+  
+  for (let [ index, item ] of this.entries()) {
+    const isThisArray = Array.isArray(item);
+    const otherItem = other[index];
+    const isOtherArray = Array.isArray(otherItem);
+    
+    if (isThisArray && isOtherArray) {
+      return item.sameStructureAs(otherItem);
+    } else if (isThisArray | isOtherArray === 1){
+      return false;
+    }
+  }
+  return true;
+};
 
+/**
+ * 算法解法
+ */
+ Array.prototype.sameStructureAs = function (other) {
+    return (this.length === other.length) ? this.every(function(el, i){
+      return Array.isArray(el) ? el.sameStructureAs(other[i]) : true;
+    }) : false;
+};
 
 
 
