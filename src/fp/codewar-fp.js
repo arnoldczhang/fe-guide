@@ -697,7 +697,63 @@ Array.prototype.sameStructureAs = function (other) {
     }) : false;
 };
 
-
-
-
-
+// Centre of attention
+function central_pixels(image, color) {
+  const {
+    pixels: points,
+    width: offset,
+    height,
+  } = image;
+  const length = points.length;
+  const maxIndex = length - 1;
+  const DEP = Math.min(offset, height) / 4;
+  let maxDepth;
+  
+  const reduce = (reduceFunc, initial, list = []) => list.reduce(reduceFunc, initial);
+  const every = (everyFunc, array = []) => array.every(everyFunc);
+  const map = (mapFunc, list = []) => list.map(mapFunc);
+  
+  const getAdjacentIndex = (index) => {
+    return [index - offset, index + 1, index + offset, index - 1];
+  };
+  const notHorizonBorder = index => index > offset && index < maxIndex - offset;
+  const notVerticalBorder = index => index % offset !== 0 && (index + 1) % offset !== 0;
+  
+  const getDepth = (cr, index, depth = 0) => {
+    if (depth >= DEP) {
+      return depth;
+    }
+    const adjIndex = getAdjacentIndex(index);
+    const withinArea = every(
+      idx => idx >= 0 && idx <= maxIndex,
+      adjIndex,
+    );
+    if (withinArea) {
+      const withinBorder = every(
+        idx => notHorizonBorder(idx) && notVerticalBorder(idx),
+        adjIndex,
+      );
+      const isTheSameColor = every(idx => points[idx] === cr, adjIndex);
+      if (withinBorder && isTheSameColor) {
+        depth = Math.min(...map(val => getDepth(cr, val, depth + 1), adjIndex));
+      } else if (isTheSameColor) {
+        depth += 1;
+      }
+    }
+    return depth;
+  };
+  
+  return reduce((res, point, index) => {
+    if (point === color) {
+      const depth = getDepth(point, index);
+      if (!res.length || maxDepth === depth) {
+        maxDepth = depth;
+        res[res.length] = index;
+      } else if (depth > maxDepth) {
+        maxDepth = depth;
+        res = [index];
+      }
+    }
+    return res;
+  }, [], points);
+}
