@@ -706,14 +706,16 @@ function central_pixels(image, color) {
   } = image;
   const length = points.length;
   const maxIndex = length - 1;
-  const DEP = Math.min(offset, height) / 4;
+  const DEP = Math.min(offset, height) / 2;
+  const maxDepMap = {};
   let maxDepth;
+  let maxDepList = [];
   
-  const reduce = (reduceFunc, initial, list = []) => list.reduce(reduceFunc, initial);
+  const forEach = (forEachFunc, array = []) => array.forEach(forEachFunc);
   const every = (everyFunc, array = []) => array.every(everyFunc);
   const map = (mapFunc, list = []) => list.map(mapFunc);
   
-  const getAdjacentIndex = (index) => {
+  const getAdjacentIndex = (index, rect = 1) => {
     return [index - offset, index + 1, index + offset, index - 1];
   };
   const notHorizonBorder = index => index > offset && index < maxIndex - offset;
@@ -723,6 +725,7 @@ function central_pixels(image, color) {
     if (depth >= DEP) {
       return depth;
     }
+    
     const adjIndex = getAdjacentIndex(index);
     const withinArea = every(
       idx => idx >= 0 && idx <= maxIndex,
@@ -735,7 +738,7 @@ function central_pixels(image, color) {
       );
       const isTheSameColor = every(idx => points[idx] === cr, adjIndex);
       if (withinBorder && isTheSameColor) {
-        depth = Math.min(...map(val => getDepth(cr, val, depth + 1), adjIndex));
+        depth = Math.min(...map(val => maxDepList.indexOf(val) > -1 ? (maxDepMap[val] + 1) : getDepth(cr, val, depth + 1), adjIndex));
       } else if (isTheSameColor) {
         depth += 1;
       }
@@ -743,17 +746,17 @@ function central_pixels(image, color) {
     return depth;
   };
   
-  return reduce((res, point, index) => {
+  forEach((point, index) => {
     if (point === color) {
-      const depth = getDepth(point, index);
-      if (!res.length || maxDepth === depth) {
-        maxDepth = depth;
-        res[res.length] = index;
+      const depth = getDepth(point, index, 0);
+      if (!maxDepList.length || maxDepth === depth) {
+        maxDepMap[index] = maxDepth = depth;
+        maxDepList[maxDepList.length] = index;
       } else if (depth > maxDepth) {
-        maxDepth = depth;
-        res = [index];
+        maxDepMap[index] = maxDepth = depth;
+        maxDepList = [index];
       }
     }
-    return res;
-  }, [], points);
+  }, points);
+  return maxDepList;
 }
