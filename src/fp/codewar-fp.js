@@ -698,6 +698,7 @@ Array.prototype.sameStructureAs = function (other) {
 };
 
 // Centre of attention
+// https://www.codewars.com/kata/centre-of-attention/javascript
 function central_pixels(image, color) {
   const {
     pixels: points,
