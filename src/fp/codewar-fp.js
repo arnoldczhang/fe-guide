@@ -761,3 +761,182 @@ function central_pixels(image, color) {
   }, points);
   return maxDepList;
 }
+
+// Password System
+/**
+ * 正常解法
+ */
+function helpZoom(key){
+  const len = key.length;
+  let result = 'No';
+  const halfLen = len / 2;
+  const [ pre, next ] = [key.slice(0, halfLen), key.slice(Math.ceil(halfLen))];
+  if (pre.join() === next.reverse().join()) {
+    result = 'Yes';
+  }
+  return result;
+}
+
+/**
+ * 算法解法
+ */
+ function helpZoom2(key){
+  return key.join('') == key.reverse().join('') ? 'Yes' : 'No';
+}
+
+// Line Safari - Is that a line?
+function line(grid) {
+  debugger;
+  const DIR = {
+    UP: '-1,0',
+    DOWN: '1,0',
+    LEFT: '0,-1',
+    RIGHT: '0,1',
+  };
+  const POINT = {
+    END: 'X',
+    HOR: '-',
+    VER: '|',
+    CORN: '+',
+  };
+  const {
+    END,
+    HOR,
+    VER,
+    CORN,
+  }= POINT;
+  const {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+  } = DIR;
+  const PDMAP = {
+    [UP]: [ CORN, VER, END ],
+    [DOWN]: [ CORN, VER, END ],
+    [LEFT]: [ CORN, HOR, END ],
+    [RIGHT]: [ CORN, HOR, END ],
+  };
+  const PMAP = {
+    [END]: [ CORN, HOR, VER, END ],
+    [HOR]: [ CORN, HOR, END ],
+    [CORN]: [ CORN, HOR, VER, END ],
+    [VER]: [ CORN, VER, END ],
+  };
+  let isLine = false;
+  let isEnd = false;
+  let points;
+  let tempPoints;
+  const pointReached = [];
+
+  const filter = (filterFunc, array = []) => array.filter(filterFunc);
+  const compose = (...funcs) => value => funcs.reduce((res, func) => func(res), value);
+  const forEach = (forEachFunc, array = []) => array.forEach(forEachFunc);
+  const map = (mapFunc, array = []) => array.map(mapFunc);
+  const reduce = (reduceFunc, initial, list = []) => list.reduce(reduceFunc, initial);
+  const indexOf = (array = [], el) => array.indexOf(el);
+  const within = (...args) => indexOf(...args) > -1;
+  const every = (everyFunc, array = []) => array.every(everyFunc);
+  const concat = (base = [], ...args) => [].concat.call(base, ...args);
+
+  const findStartX = (grid) => {
+    for (let i = 0; i < grid.length; i += 1) {
+      const thisLine = grid[i];
+      const subI = indexOf(thisLine, END);
+      if (subI > -1) {
+        return [ i, subI, END ];
+      }
+    }
+    return [];
+  };
+  
+  const getPoint = pos => pos.join();
+  const getPos = point => point.split(',');
+  const add2Reached = (...pos) => pointReached.push(...pos);
+  const getImgPoint = ([ i, subI ]) => grid[i] && grid[i][subI];
+  
+  const getStartIndex = compose(
+    findStartX,
+    getPoint,
+  );
+  
+  const getAdjPoints = (points) => map(
+    (point) => {
+      const [ index, subIndex ] = getPos(point);
+      const adjacent = [
+        [ +index, +subIndex - 1 ],
+        [ +index, +subIndex + 1 ],
+        [ +index - 1, +subIndex ],
+        [ +index + 1, +subIndex ],
+      ];
+      return reduce((res, adj) => {
+        const img = getImgPoint(adj);
+        if (img && img !== ' ') {
+          adj = getPoint([ ...adj, img ]);
+          if (!within(pointReached, adj)) {
+            add2Reached(adj);
+          } else {
+            adj = true;
+          }
+          res.push(adj);
+        }
+        return res;
+      }, [], adjacent);
+    },
+    points,
+  );
+  
+  const isMatched = (prePoints, adjPoints) => {
+    let result = true;
+    for (let i = 0; i < prePoints.length; i += 1) {
+      const [ preI, preSubI, preImg ] = getPos(prePoints[i]);
+      const adjPoint = adjPoints[i];
+      const preRes = every((info) => {
+        if (typeof info === 'boolean' && info) {
+          return true;
+        }
+        const [ i, subI, adjImg ] = getPos(info);
+        const key = `${i - preI},${subI - preSubI}`;
+        return within(PDMAP[key], adjImg) && within(PMAP[preImg], adjImg);
+      }, adjPoint);
+      
+      if (!preRes) {
+        result = false;
+        break;
+      }
+    }
+    return result;
+  };
+  
+  const isEndPoint = (points) => {
+    return points.length === 1 && getPos(points[0])[2] === END;
+  };
+  
+  grid = map(gr => gr.join(''), grid);
+  points = [getStartIndex(grid)];
+  add2Reached(...points);
+
+  if (points && points.length) {
+    while (!isEnd) {
+      tempPoints = getAdjPoints(points);
+      if (isMatched(points, tempPoints)) {
+        points = filter(point => typeof point !== 'boolean', concat(...tempPoints));
+        if (isEndPoint(points)) {
+          isEnd = true;
+          isLine = true;
+          break;
+        }
+      } else {
+        isLine = false;
+        isEnd = true;
+        break;
+      }
+    }
+  }
+  return isLine;
+}
+
+
+
+
+
