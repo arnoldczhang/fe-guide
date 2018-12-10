@@ -936,7 +936,90 @@ function line(grid) {
   return isLine;
 }
 
+// Snail
+/**
+ * 正常解法
+ */
+const snail = function(array) {
+  const result = [];
+  const roadMap = {};
+  const [ UP, DOWN, LEFT, RIGHT ] = [ 0, 1, 2, 3 ];
+  const [ height, width ] = [ array.length, array[0].length ];
 
+  let point = [ 0, 0 ];
+  let isEnd = false;
+  let dir = RIGHT;
+  
+  if (!width) return [];
+  
+  const walk = (p = point) => roadMap[`${p[0]},${p[1]}`] = 1;
+  const inMap = ([ x, y ]) => !!roadMap[`${x},${y}`];
+  const isBeyond = ([ x, y ]) => x < 0 || y < 0 || x >= height || y >= width;
+  const isExcept = (p = point) => inMap(p) || isBeyond(p);
+  const getVal = (p = point) => {
+    const [ x, y ] = p;
+    result.push(array[x][y]);
+  };
+  
+  const updateDir = (p = point) => {
+    const nextPoint = goNext();
+    if (isExcept(nextPoint)) {
+      dir = [ RIGHT, LEFT, UP, DOWN ][dir];
+    }
+  };
+  
+  const goNext = (p = point, d = dir) => {
+    const [ x, y ] = p;
+    switch(d) {
+      case UP:
+        return [x - 1, y];
+      case DOWN:
+        return [x + 1, y];
+      case LEFT:
+        return [x, y - 1];
+      case RIGHT:
+        return [x, y + 1];
+    };
+  };
 
+  const forEach = (forEachFunc, array = []) => array.forEach(forEachFunc);
+  const comb = (...funcs) => (val) => {
+    forEach(func => func(val), funcs);
+  };
 
+  const dealPoint = comb(
+    walk,
+    getVal,
+    updateDir,
+  );
+  
+  while (!isEnd) {
+    dealPoint(point);
+    point = goNext();
+    if (isExcept(point)) {
+      isEnd = true;
+    }
+  }
+  return result;
+}
+
+/**
+ * 算法解法
+ */
+const snail2 = function(array) {
+  var result;
+  while (array.length) {
+    // Steal the first row.
+    result = (result ? result.concat(array.shift()) : array.shift());
+    // Steal the right items.
+    for (var i = 0; i < array.length; i++)
+      result.push(array[i].pop());
+    // Steal the bottom row.
+    result = result.concat((array.pop() || []).reverse());
+    // Steal the left items.
+    for (var i = array.length - 1; i >= 0; i--)
+      result.push(array[i].shift());
+  }
+  return result;
+}
 
