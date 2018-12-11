@@ -1150,6 +1150,7 @@ function whoIsWinner(piecesPositionList){
   }
   return result;
 }
+
 /**
  * 算法解法
  */
@@ -1189,9 +1190,182 @@ function dirReduc(arr){
   }, [], arr);
 }
 
+// Sum of Pairs
+/**
+ * 正常解法
+ */
+var sum_pairs = function(ints, s){
+  const intMap = {};
+  const intsClone = ints.filter((intN, idx) => {
+    intMap[intN] = intMap[intN] || 0;
+    if (intMap[intN] === 2) {
+      return false;
+    } else {
+      intMap[intN] += 1;
+    }
+    return true;
+  });
+  const length = intsClone.length;
+  const match = new Array(length);
+  let maxIndex = length;
+  let min;
+  let i = 0;
+  let j;
+  
+  while (i < maxIndex){
+    const intNum = intsClone[i];
+    j = i + 1;
+    while (j < maxIndex) {
+      const nextNum = intsClone[j];
+      if (intNum + nextNum === s) {
+        match[i] = j;
+        min = maxIndex = j;
+        break;
+      }
+      j++;
+    }
+    i++;
+  }
+  
+  if (min === undefined) {
+    return min;
+  }
+  
+  min = Math.min(...match.filter(v => v));
+  return [intsClone[match.indexOf(min)], intsClone[min]];
+}
 
+/**
+ * 算法解法
+ */
+var sum_pairs2 = function(ints, s){
+  var seen = {}
+  for (var i = 0; i < ints.length; ++i) {
+    if (seen[s - ints[i]]) return [s - ints[i], ints[i]];
+    seen[ints[i]] = true
+  }
+}
 
+// Valid Parentheses
+/**
+ * 正常解法
+ */
+function validParentheses(parens){
+  if (parens[parens.length - 1] === '(') {
+    return false;
+  }
+  const temp = [];
+  const paranMap = {
+    '(': ')',
+    ')': '(',
+  };
+  parans = [...parens];
+  while (parans.length) {
+    const paran = parans.shift();
+    if (temp[temp.length - 1] === paranMap[paran]) {
+      temp.pop();
+    } else {
+      temp.push(paran);
+    }
+  }
+  return !temp.length;
+}
 
+/**
+ * 算法解法
+ */
+function validParentheses(string){
+   var tokenizer = /[()]/g, // ignores characters in between; parentheses are
+       count = 0,           // pretty useless if they're not grouping *something*
+       token;
+   while(token = tokenizer.exec(string), token !== null){
+      if(token == "(") {
+         count++;
+      } else if(token == ")") {
+         count--;
+         if(count < 0) {
+            return false;
+         }
+      }
+   }
+   return count == 0;
+}
 
+// Simple Pig Latin
+/**
+ * 正常解法
+ */
+function pigIt(str){
+  return str.split(' ').map(item => /\w/.test(item) ? `${item.substr(1)}${item[0]}ay` : item).join(' ')
+}
 
+/**
+ * 算法解法
+ */
+function pigIt(str){
+  return str.replace(/(\w)(\w*)(\s|$)/g, "\$2\$1ay\$3")
+}
 
+// A Chain adding function
+function add(n, o = 0){
+  const result = add.bind(null, n += o);
+  result.valueOf = () => n;
+  return result;
+}
+
+// Maximum subarray sum
+/**
+ * 正常解法
+ */
+var maxSequence = function(arr){
+  if (!arr.length) {
+    return 0;
+  }
+  const every = (everyFunc, array = []) => array.every(everyFunc);
+  const reduce = (reduceFunc, initial, list = []) => list.reduce(reduceFunc, initial);
+
+  const isNegative = val => val < 0;
+  const isPositive = val => val >= 0;
+
+  const len = arr.length;
+  const sum = reduce((res, val) => res += val, 0, arr);
+  let max = sum;
+  let result;
+  
+  if (every(isPositive, arr)) {
+    return sum;
+  }
+  
+  if (every(isNegative, arr)) {
+    return 0;
+  }
+  
+  for (let i = 0; i < len; i += 1) {
+    if (arr[i] > 0) {
+      const tempCountArr = reduce((res, val) => {
+        res[res.length] = res[res.length - 1] + val;
+        return res;
+      }, [arr[i]], arr.slice(i + 1));
+      const tempMax = Math.max(...tempCountArr);
+      
+      if (tempMax > max) {
+        max = tempMax;
+        result = arr.slice(i, tempCountArr.indexOf(tempMax));
+      }
+    }
+  }
+  return max;
+}
+
+/**
+ * 算法解法
+ */
+var maxSequence = function(arr){
+  var min = 0, ans = 0, i, sum = 0;
+  for (i = 0; i < arr.length; ++i) {
+    sum += arr[i];
+    min = Math.min(sum, min);
+    ans = Math.max(ans, sum - min);
+  }
+  return ans;
+}
