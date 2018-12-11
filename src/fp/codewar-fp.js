@@ -1023,3 +1023,175 @@ const snail2 = function(array) {
   return result;
 }
 
+// ConnectFour
+/**
+ * 正常解法
+ */
+function whoIsWinner(piecesPositionList){
+  const DRAW = 'Draw';
+  const colMap = {};
+  const players = {
+    Red: [],
+    Yellow: [],
+  };
+  const cols = 'ABCDEFG';
+  const input = [...piecesPositionList];
+  let result = 'Draw';
+  let hand = 0;
+
+  const forEach = (forEachFunc, array = []) => array.forEach(forEachFunc);
+  const some = (someFunc, array = []) => array.some(someFunc);
+  const map = (mapFunc, array = []) => array.map(mapFunc);
+  const sort = (sortFunc, array = []) => Array.isArray(sortFunc) ? sortFunc.sort() : array.sort(sortFunc);
+  const hasFound = () => result !== DRAW;
+  const oneReMatch = res => str => some(re => re.test(str), res);
+
+  const getPlayStr = (key, func) => {
+    if (typeof func === 'function') {
+      return func(players[key]);
+    }
+    return sort(players[key]).join('');
+  };
+  
+  const getlineRE = (str) => {
+    const [ a, b, c, d ] = str.split('');
+    return new RegExp(`${a}(\\d).*${b}\\1.*${c}\\1.*${d}\\1`);
+  };
+  
+  const getColRE = (str) => {
+    const [ i, j, k, l ] = str.split('');
+    return new RegExp(`([ABCDEFG])[${i}].*\\1[${j}].*\\1[${k}].*\\1[${l}]`);
+  };
+  
+  const getLRDiagoRE = (str, reverse = false) => {
+    let [ a, b, c, d ] = str.split('');
+    if (reverse) {
+      return [
+        new RegExp(`${a}6.*${b}5.*${c}4.*${d}3`),
+        new RegExp(`${a}5.*${b}4.*${c}3.*${d}2`),
+        new RegExp(`${a}4.*${b}3.*${c}2.*${d}1`),
+        new RegExp(`${a}3.*${b}4.*${c}5.*${d}6`),
+        new RegExp(`${a}2.*${b}3.*${c}4.*${d}5`),
+        new RegExp(`${a}1.*${b}2.*${c}3.*${d}4`),
+      ];
+    }
+    return [
+      new RegExp(`${a}1.*${b}2.*${c}3.*${d}4`),
+      new RegExp(`${a}2.*${b}3.*${c}4.*${d}5`),
+      new RegExp(`${a}3.*${b}4.*${c}5.*${d}6`),
+      new RegExp(`${a}4.*${b}3.*${c}2.*${d}1`),
+      new RegExp(`${a}5.*${b}4.*${c}3.*${d}2`),
+      new RegExp(`${a}6.*${b}5.*${c}4.*${d}3`),
+    ];
+  };
+  
+  const getRLDiagoRE = str => getLRDiagoRE(str, true);
+  
+  const getDiagonRE = (str) => {
+    return [].concat(...map((col) => {
+      switch(col) {
+        case 'A':
+          return getLRDiagoRE('ABCD');
+        case 'B':
+          return getLRDiagoRE('BCDE');
+        case 'C':
+          return getLRDiagoRE('CDEF');
+        case 'D':
+          return [...getLRDiagoRE('DEFG'), ...getRLDiagoRE('DEFG')];
+        case 'E':
+          return getRLDiagoRE('BCDE');
+        case 'F':
+          return getRLDiagoRE('CDEF');
+        case 'G':
+          return getRLDiagoRE('DEFG');
+      }
+    }, [...str]));
+  };
+  
+  const isLineWin = oneReMatch([
+    getlineRE('ABCD'),
+    getlineRE('BCDE'),
+    getlineRE('CDEF'),
+    getlineRE('DEFG'),
+  ]);
+  
+  const isColWin = oneReMatch([
+    getColRE('1234'),
+    getColRE('2345'),
+    getColRE('3456'),
+  ]);
+  
+  const isDiagonWin = oneReMatch([
+    ...getDiagonRE(cols),
+  ]);
+
+  const findTheWinner = () => {
+    forEach((key) => {
+      playerStr = getPlayStr(key);
+      if (isLineWin(playerStr) || isColWin(playerStr) || isDiagonWin(playerStr)) {
+        result = key;
+      }
+    }, Object.keys(players));
+  };
+  
+  for (let col of [...cols]) {
+    colMap[col] = 0;
+  }
+  
+  while(input.length) {
+    const thisHand = input.shift();
+    const [ col, color ] = thisHand.split('_');
+    colMap[col] += 1;
+    players[color].push(`${col}${colMap[col]}`);
+    if (++hand >= 8) {
+      findTheWinner();
+      if (hasFound()) break;
+    }
+  }
+  return result;
+}
+/**
+ * 算法解法
+ */
+function whoIsWinner2(piecesPositionList){
+ dict = {A: 35, B: 36, C: 37, D: 38, E: 39, F: 40, G:41};
+  res = new Array(42).fill("-");
+  for(s of piecesPositionList){
+    res[dict[s[0]]] = s[2];
+    dict[s[0]] -= 7;
+    if(/((R.{6}){3}R)|(^((.{0,3}|.{7,10}|.{14,17}|.{21,24}|.{28,31}|.{35,38})R{4}))|(^((.{3,6}|.{10,13}|.{17,20})(R.{5}){3}R))|(^(.{0,3}|.{7,10}|.{14,17})(R.{7}){3}R)/.test(res.join(""))) return "Red";
+    if(/((Y.{6}){3}Y)|(^((.{0,3}|.{7,10}|.{14,17}|.{21,24}|.{28,31}|.{35,38})Y{4}))|(^((.{3,6}|.{10,13}|.{17,20})(Y.{5}){3}Y))|(^(.{0,3}|.{7,10}|.{14,17})(Y.{7}){3}Y)/.test(res.join(""))) return "Yellow";
+  }
+  return "Draw";
+}
+
+// Directions Reduction
+function dirReduc(arr){
+  const dirMap = {
+    NORTH: 'SOUTH',
+    SOUTH: 'NORTH',
+    EAST: 'WEST',
+    WEST: 'EAST',
+  };
+  
+  const reduce = (reduceFunc, initial, list = []) => list.reduce(reduceFunc, initial);
+  
+  return reduce((res, dir) => {
+    if(res.length) {
+      const preDir = res.pop();
+      if (preDir !== dirMap[dir]) {
+        res.push(preDir, dir);
+      }
+    } else {
+      res.push(dir);
+    }
+    return res;
+  }, [], arr);
+}
+
+
+
+
+
+
+
