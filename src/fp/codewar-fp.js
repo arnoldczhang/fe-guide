@@ -1369,3 +1369,104 @@ var maxSequence = function(arr){
   }
   return ans;
 }
+
+// Scramblies
+function scramble(str1, str2) {
+  const str1L = str1.length;
+  const str2L = str2.length;
+  const indexMap = {};
+  let result = true;
+  let i = 0;
+  if (str1L < str2L) return false;
+  while (i < str2L) {
+    const word = str2[i];
+    const matchIndex = str1.indexOf(word, indexMap[word] ? (indexMap[word] + 1) : 0);
+    if (matchIndex === -1) {
+      result = false;
+      break;
+    }
+    indexMap[word] = matchIndex;
+    i += 1;
+  }
+  return result;
+}
+
+// Molecule to atoms
+/**
+ * 正常解法
+ */
+function parseMolecule(formula) {
+  const hasParanthese = input => /[\{\(\[]/.test(input);
+  const ParentheseRE = /([\{\(\[])([A-Za-z\d]+)([\}\)\]])([1-9]*)/g;
+  const elementRE = /([A-Z][a-z]?)(\d*)/g;
+  const result = {};
+  let elementExecRes;
+
+  while(hasParanthese(formula)) {
+    formula = formula.replace(ParentheseRE, (...args) => {
+      const [ , leftBracket, word, rightBracket, times ] = args;
+      let output = '';
+      if (leftBracket && rightBracket) {
+        let re = /([A-Z][a-z]*)(\d*)/g;
+        let res;
+        if (times) {
+          while (res = re.exec(word)) {
+            const [ , w, i = 1 ] = res;
+            output += `${w}${(+i || 1) * (+times || 1)}`;
+          }
+          return output;
+        }
+      }
+      return word;
+    });
+  }
+  
+  while(elementExecRes = elementRE.exec(formula)) {
+    const [ , key, value ] = elementExecRes;
+    result[key] = result[key] || 0;
+    result[key] += +value || 1;
+  }
+  return result;
+}
+
+/**
+ * 算法解法
+ */
+function parseMolecule2(s) {
+  var o = {}
+  while (s != (s = s.replace(/[\[\(\{]([a-z0-9]+)[\]\)\}]([0-9]+)/gi, (f,e,n) => repeat(e,n))));
+  s.replace(/([A-Z][a-z]?)([0-9]+)?/g, (f,e,n) => (o[e] = (o[e] || 0) + +(n || 1)));
+  return o;
+}
+
+function repeat(s, n) {
+  for (var r = ""; n--; r += s);
+  return r;
+}
+
+// Human Readable Time
+/**
+ * 正常解法
+ */
+function humanReadable(seconds) {
+  const reduce = (reduceFunc, initial, list = []) => list.reduce(reduceFunc, initial);
+  const format = val => String(val).length === 1 ? `0${val}` : val;
+
+  return reduce((res,unit) => {
+    const count = Math.floor(seconds / unit);
+    seconds -= count * unit;
+    res += ':' + format(count);
+    return res;
+  }, '', [60 * 60, 60, 1]).substr(1);
+}
+
+/**
+ * 算法解法
+ */
+function humanReadable2(seconds) {
+  var pad = function(x) { return (x < 10) ? "0"+x : x; }
+  return pad(parseInt(seconds / (60*60))) + ":" +
+         pad(parseInt(seconds / 60 % 60)) + ":" +
+         pad(seconds % 60)
+}
+
