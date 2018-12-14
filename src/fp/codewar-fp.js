@@ -279,20 +279,44 @@ function mix(s1, s2) {
 }
 
 // Double Cola
+
+/**
+ * 正常解法
+ */
 function whoIsNext(names, r){
-  let drinker;
   const queue = [...names];
-  const forEachIf = (ifFunc, iterator) => {
-    while(ifFunc()) {
-      iterator();
-    }
+  const len = queue.length;
+  let isEnd = false;
+  
+  const reduce = (reduceFunc, initial, list = []) => list.reduce(reduceFunc, initial);
+  const iterator = (val, step = len, res = 1, n = 0) => {
+    if (res >= val) {
+      return res - val;
+    } 
+    return iterator(val, step, res + step * Math.pow(2, n), n + 1);
   };
-  forEachIf(() => r-- > 0, () => {
-    drinker = queue.shift();
-    queue[queue.length] = drinker;
-    queue[queue.length] = drinker;
-  });
-  return drinker;
+  
+  const [ minCount, lastIndex ] = reduce((res, val, i) => {
+    if (isEnd) return res;
+    let [ min, idx ] = res;
+    const count = iterator(r, i + len, i + 1);
+    isEnd = count === 0;
+    if (count <= min) {
+      min = count;
+      idx = i;
+    }
+    return [ min, idx ];
+  }, [Infinity, 0], queue);
+  return queue[minCount === 0 ? lastIndex : lastIndex > 0 ? lastIndex - 1 : len - 1 + lastIndex ];
+}
+
+/**
+ * 算法解法
+ */
+function whoIsNext(names, r) {
+  var l = names.length;
+  while (r >= l) { r -= l; l *= 2; }
+  return names[Math.ceil(names.length * r / l)-1];
 }
 
 // Sudoku Solution Validator
@@ -1469,4 +1493,75 @@ function humanReadable2(seconds) {
          pad(parseInt(seconds / 60 % 60)) + ":" +
          pad(seconds % 60)
 }
+
+// Moving Zeros To The End
+/**
+ * 正常解法
+ */
+var moveZeros = function (arr) {
+  let zeroCount = 0;
+  const filter = (filterFunc, array = []) => array.filter(filterFunc);
+  arr = filter((item) => {
+    const isZero = item === 0;
+    if (isZero) zeroCount++;
+    return !isZero;
+  }, arr);
+  arr.push(...new Array(zeroCount).fill(0));
+  return arr;
+}
+
+/**
+ * 算法解法
+ */
+var moveZeros2 = function (arr) {
+  return arr.filter(function(x) {return x !== 0}).concat(arr.filter(function(x) {return x === 0;}));
+}
+
+// Integers: Recreation One
+/**
+ * 正常解法
+ */
+function listSquared(m, n) {
+  let index = m;
+  const result = [];
+  
+  const getSumSquare = (target) => {
+    const max = Math.floor(index / 2);
+    let idx = 1;
+    let res = 0;
+    while(idx <= max) {
+      if (target % idx === 0) {
+        res += Math.pow(idx, 2);
+      }
+      idx++;
+    }
+    return res + Math.pow(target, 2);
+  };
+  
+  while(index <= n) {
+    let sum = getSumSquare(index);
+    let sqrtSum = Math.sqrt(sum);
+    if (sqrtSum === sqrtSum >>> 0) {
+      result.push([index, sum]);
+    }
+    index++;
+  }
+  return result;
+}
+
+/**
+ * 算法解法
+ */
+ function listSquared2(m, n) {
+  var arr = [];
+  for (var i = m; i <= n; i++){
+    var temp = 0;
+    for (var j = 1; j <= i; j++) {
+      if ( i % j == 0) temp += j*j;  
+    };
+    if ( Math.sqrt(temp) % 1 == 0) arr.push([i, temp]);
+  };
+  return arr;
+}
+
 
