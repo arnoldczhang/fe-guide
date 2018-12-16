@@ -1565,3 +1565,25 @@ function listSquared(m, n) {
 }
 
 
+// Can you get the loop ?
+function loop_size(node){
+  let next;
+  let count = 0;
+  const map = new Map();
+  while(next = node.next) {
+    let nextRes;
+    if (nextRes = map.get(next)) {
+      count -= Math.max(0, nextRes[1] - 1);
+      break;
+    }
+    map.set(node, [next, count++]);
+    node = next;
+  }
+  return count;
+}
+
+
+
+
+
+

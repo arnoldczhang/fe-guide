@@ -6,7 +6,7 @@
   - [v8优化骚套路](https://github.com/petkaantonov/bluebird/wiki/Optimization-killers)
   - [对象模式](https://zhuanlan.zhihu.com/p/25069272)
 
-## 并发标记
+## 并发标记(mark-and-sweep)
   - 三色标记
     - 白色：收集器还未发现该对象
     - 灰色：收集器发现，并已推到标记工作表
