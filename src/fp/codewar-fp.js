@@ -1582,6 +1582,94 @@ function loop_size(node){
   return count;
 }
 
+// Next bigger number with the same digits
+// UNFINISHED
+function nextBigger(n){
+  const num = String(n);
+  const digitArray = [...num];
+  const sortedArray = [...digitArray].sort((pre, next) => next - pre);
+  const passedDigit = [];
+  let result;
+  for(let [ dIdx, dVal ] of digitArray.entries()) {
+    let max = sortedArray.length - 1;
+    for (let [ index, val ] of sortedArray.entries()) {
+      if (val < dVal || (dIdx === digitArray.length - 2 && val <= dVal)) {
+        passedDigit.push(...sortedArray.splice(Math.max(index - 1, 0), 1));
+        break;
+      } else if (index === max) {
+        passedDigit.push(...sortedArray.splice(max, 1));
+      }
+    }
+  }
+  
+  result = passedDigit.join('');
+  if (result === num) {
+
+    return -1;
+  }
+  return +result;
+}
+
+// Recover a secret string from random triplets
+// UNFINISHED
+var recoverSecret = function(triplets) {
+  debugger;
+  let headNode;
+  const map = {};
+  const forEach = (forEachFunc, array = []) => array.forEach(forEachFunc);
+
+  function Node(letter) {
+    this.letter = letter;
+  };
+
+  Node.prototype.getValue = function getValue() {
+    let result = this.letter;
+    let child = this.child;
+    while(child) {
+      result += child.letter;
+      child = child.child;
+    }
+    return result;
+  };
+
+  function has(letter, next) {
+    const node = map[letter];
+    if(node && node.child) {
+      letter = node.child.letter;
+      return letter === next ? true : has(letter, next);
+    }
+    return false;
+  };
+
+  function add(letter, next) {
+    if (next && has(letter, next)) {
+      return map[letter];
+    }
+    let node = map[letter] || new Node(letter);
+
+    if (next) {
+      node.child = add(next);
+      node.child.parent = node;
+    }
+    map[letter] = node;
+    return node;
+  };
+  
+  forEach((triplet) => {
+    map;
+    forEach((val, i, arr) => {
+      add(val, arr[i + 1]);
+    }, triplet);
+  }, triplets);
+  
+  forEach((node) => {
+    if (!node.parent) {
+      headNode = node;
+      return;
+    }
+  }, Object.values(map));
+  return headNode.getValue();
+}
 
 
 
