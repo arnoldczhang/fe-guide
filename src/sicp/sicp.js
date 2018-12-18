@@ -2336,12 +2336,60 @@ const squarer = (x, res) => {
   }
 };
 
+const constraintSys = (() => {
+  return {
+    hasValue() {},
+    getValue() {},
+    setValue() {},
+    forgetValue() {},
+    connect() {},
+  };
+})();
 
+// 串行化执行
+makeAccount = (balance = 100) => (type, amount = 0) => {
+  let result = balance;
+  const typeType = typeof type;
 
+  const deposit = (res, amt) => {
+    return res + amt;
+  };
 
+  const withdraw = (res, amt) => {
+    res -= amt;
+    if (res < 0) {
+      return 'Insufficient money';
+    }
+    return res;
+  };
 
+  if (typeType === 'string') {
+    switch (type) {
+      case 'deposit':
+        result = deposit(result, amount);
+        break;
+      case 'withdraw':
+        result = withdraw(result, amount);
+        break;
+      default:
+        throw new Error('action is invalid');
+        break;
+    }
+  } else if (typeType === 'function') {
+    result = type(result, amount);
+  }
+  balance = result;
+  return result;
+};
 
-
+// 互斥元
+isPending = false;
+if (!isPending) {
+  isPending = true;
+  // sth is done
+  // .....
+  isPending = false;
+}
 
 
 

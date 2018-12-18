@@ -1671,6 +1671,70 @@ var recoverSecret = function(triplets) {
   return headNode.getValue();
 }
 
+// Is my friend cheating?
+function removeNb(n, result = []) {
+  const sum = (1 + n) * n / 2;
+  for (let i = 1; i <= n; i += 1) {
+    let target = (sum - i) / (i + 1);
+    if (target === ~~target && target <= n) {
+      result.push([i, target]);
+    }
+  }
+  return result;
+};
+
+// Square into Squares. Protect trees!
+/**
+ * 正常解法
+ */
+function decompose(n) {
+  const sum = Math.pow(n, 2);
+  const getNextLess = num => ~~Math.sqrt(num);
+  const iteratorDe = (index, step = 0, remain = sum, cach = [index]) => {
+    remain -= Math.pow(index, 2);
+    if (!remain) return cach;
+    const nextNum = getNextLess(remain) - step;
+    if (!nextNum) return;
+    if (cach.indexOf(nextNum) > -1) return false;
+    if (nextNum > 1) {
+      cach.push(nextNum);
+      return iteratorDe(nextNum, 0, remain, cach);
+    } else if (remain === 1) {
+      cach.push(nextNum);
+      return cach;
+    } else {
+      return false;
+    }
+  };
+
+  const iteratorCompose = (idx) => {
+    let step = 0;
+    let res;
+    while((res = iteratorDe(idx, step++)) !== undefined) {
+      if (res) break;
+      continue;
+    }
+    return res;
+  };
+
+  for (let i = n - 1, result; i > 1; i -= 1) {
+    if (result = iteratorCompose(i)) {
+      return result.sort((pre, next) => pre - next);
+    }
+  }
+  return null;
+};
+
+/**
+ * 算法解法
+ */
+function decompose(n, n2=n*n, i=n, prev) {
+  while(n2>0 && i-->1) if (prev = decompose(n, n2-i*i, i)) return prev.concat([i]);
+  return (n2 == 0) ? [] : null;
+}
+
+
+
 
 
 
