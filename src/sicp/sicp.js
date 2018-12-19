@@ -2391,6 +2391,15 @@ if (!isPending) {
   isPending = false;
 }
 
+// 可读流
+const fs = require('fs');
+const rreader = fs.createReadStream('package.json');
+rreader.on('readable', () => {
+  console.log(`读取的数据: ${rreader.read()}`);
+});
+rreader.on('end', () => {
+  console.log('结束');
+});
 
 
 
