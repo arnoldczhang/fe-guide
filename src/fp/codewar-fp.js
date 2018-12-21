@@ -1734,8 +1734,105 @@ function decompose(n, n2=n*n, i=n, prev) {
 }
 
 
+// 判断范围内素数
+function getPrimes(start, end) {
+  if (end === undefined) {
+    end = start;
+    start = 0;
+  }
+  const prime = new Array(Math.abs(end - start));
+  for (let i = 0; i < prime.length; i += 1) {
+    prime[i] = Boolean(i % 2);
+  }
+
+  for (let i = Math.max(3, start); i <= Math.sqrt(end); i += 2) {
+    if (prime[i]) {
+      for (let j = i + i; j <= end; j += i ) prime[j] = false;
+    }
+  }
+  return prime.reduce((res, val, index) => {
+    if (val && index > 2) {
+      res.push(index);
+    }
+    return res;
+  }, []);
+};
 
 
+// Gap in Primes
+function gap(g, m, n) {
+  const getPrimes = (start, end) => {
+    if (end === undefined) {
+      end = start;
+      start = 0;
+    }
+    const prime = new Array(Math.abs(end));
+    for (let i = 0; i < prime.length; i += 1) {
+      prime[i] = Boolean(i % 2);
+    }
+  
+    for (let i = 3; i <= Math.sqrt(end); i += 2) {
+      if (prime[i]) {
+        for (let j = i + i; j <= end; j += i )
+          prime[j] = false;
+      }
+    }
+    return prime.reduce((res, val, index) => {
+      if (index >= start && val) {
+        res.push(index);
+      }
+      return res;
+    }, []);
+  };
+  
+  let result = null;
+  const array = getPrimes(m, n);
+  for (let [index, val] of array.entries()) {
+    if (array[index + 1] - val === g) {
+      result = [val, array[index + 1]];
+      break;
+    }
+  }
+  return result;
+}
 
+// Where my anagrams at?
+function anagrams(word, words) {
+  const result = [];
+  
+  const every = (everyFunc, array = []) => array.every(everyFunc);
+  const toMap = (str) => {
+    const map = {};
+    str.replace(/\w/g, (m) => {
+      map[m] = map[m] || 0;
+      map[m] += 1;
+      return m;
+    });
+    return map;
+  };
+  
+  const eq = (t, o) => {
+    const tKeys = Object.keys(t);
+    const oKeys = Object.keys(o);
+    return tKeys.length === oKeys.length
+      && every(key => t[key] === o[key], tKeys);
+  };
+  
+  const target = toMap(word);
+  for (let w of words) {
+    if (eq(target, toMap(w))) {
+      result.push(w);
+    }
+  }
+  return result;
+}
 
+function anagrams2(word, words) {
+  String.prototype.sort = function() {
+    return this.split("").sort().join("");
+  };
+  return words.filter(function(x) {
+      return x.sort() === word.sort();
+  });
+}
 
