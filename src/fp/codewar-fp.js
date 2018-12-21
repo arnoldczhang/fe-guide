@@ -1836,3 +1836,28 @@ function anagrams2(word, words) {
   });
 }
 
+// RGB To Hex Conversion
+function rgb(r, g, b){
+  const toHex = (num) => {
+    num = Math.max(Math.min(num, 255), 0).toString(16);
+    return num < 10 ? `0${num}` : num;
+  };
+  return `${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
+}
+
+// String incrementer
+function incrementString (strng) {
+  return strng.replace(/\d*$/, (m) => {
+    const len = m.length;
+    if (!len) return 1;
+    const numM = +m + 1;
+    const numMLen = String(numM).length;
+    return `${numMLen < len ? '0'.repeat(len - numMLen) + numM : numM}`;
+  });
+}
+
+function incrementString2(input) {
+  return input.replace(/([0-8]?)(9*)$/, function(s, d, ns) {
+      return +d + 1 + ns.replace(/9/g, '0');
+    });
+}
