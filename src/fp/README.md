@@ -3,6 +3,7 @@
 ## 参考
 1. [functional-light js](https://github.com/getify/Functional-Light-JS/blob/master/manuscript/ch1.md/#chapter-1-why-functional-programming)
 2. [mostly-adequate-guide](https://mostly-adequate.gitbooks.io/mostly-adequate-guide/)
+3. [30-seconds](https://github.com/30-seconds/30-seconds-of-code/blob/master/README.md)
 
 ## 思考
 - 业务开发，面向人；库开发，面向v8；
@@ -69,6 +70,26 @@ f2( { z: 3, x: 1 } ); // x:1 y:2 z:3
 - 不可变性
   - 对外部域变量的不可变
   - 对本域的变量的不可变（const、Object.freeze）
+- 尾调用 TC
+  - 指函数里的最后操作是一个函数调用
+  - 尾递归 PTC
+    - 若这个函数调用的是本身
+
+- 函数反应式编程
+当监听内容发生变化时，执行操作
+```js
+var a = new LazyArray();
+
+var b = a.map(function double(v){
+    return v * 2;
+});
+
+setInterval(function everySecond(){
+    a.push(Math.random());
+}, 1000);
+```
+
+
 
 
 

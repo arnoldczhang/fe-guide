@@ -9,6 +9,8 @@ const {
   compose2,
   array,
   filter,
+  filter2,
+  reduce,
   gt,
   lt,
   sum,
@@ -20,6 +22,15 @@ const {
   partialProps,
   not,
   when,
+  unary,
+  binary,
+  unique: unique2,
+  flatten,
+  flatMap,
+  partialThis,
+  composeChained,
+  map,
+  invoker,
 } = require('./fp');
 
 // compose/pipe
@@ -179,5 +190,133 @@ const prop = (key, obj) => {
 }
 const propID = partial(prop, "personId");
 expect(propID({ personId: 'abc'})).to.be.equal('abc');
+
+
+// 二叉树深度
+function depth(node) {
+  if (node) {
+    let depthLeft = depth( node.left );
+    let depthRight = depth( node.right );
+    return 1 + Math.max(depthLeft, depthRight);
+  }
+  return 0;
+};
+
+// PTC
+function sumFunc(num1, num2, ...nums) {
+  num1 = num1 + num2;
+  if (nums.length === 0) return num1;
+  return sumFunc(num1, ...nums);
+};
+
+// trampoline
+function trampoline(fn) {
+  return function trampolined(...args) {
+    var result = fn( ...args );
+    while (typeof result == "function") {
+      result = result();
+    }
+    return result;
+  };
+};
+var sum2 = trampoline(sumFunc);
+
+var isOdd = v => v % 2 == 1;
+var isEven = not(isOdd);
+var filterIn = filter2;
+
+function filterOut(predicateFn, arr) {
+    return filterIn( not( predicateFn ), arr );
+}
+
+expect(isOdd(3)).to.be.equal(true);
+expect(isEven(2)).to.be.equal(true);
+expect(filterOut(isEven, [1,2,3,4,5] )).to.be.deep.equal([1,3,5]);
+expect(filterIn(isOdd, [1,2,3,4,5] )).to.be.deep.equal([1,3,5]);
+
+expect(reduce((res, v) => (res + v), [1, 2, 3])).to.be.equal(6);
+
+function sum3 (a, b) {
+  return a + b;
+};
+
+function double(a) {
+  return a * 2;
+}
+var pipeReducer = binary( pipe );
+
+var fn =
+    [3,17,6,4]
+    .map( v => n => v * n )
+    .reduce( pipeReducer );
+
+expect(unique2([1,4,7,1,3,1,7,9,2,6,4,0,5,3])).to.be.deep.equal([1, 4, 7, 3, 9, 2, 6, 0, 5]);
+expect(flatten([[0,1],2,3,[4,[5,6,7],[8,[9,[10,[11,12],13]]]]])).to.be.deep.equal([0,1,2,3,4,5,6,7,8,9,10,11,12,13]);
+
+expect(composeChained(
+  partialThis(Array.prototype.reduce, sum3, 0),
+  partialThis(Array.prototype.map, double),
+  partialThis(Array.prototype.filter, isOdd)
+)([1,2,3,4,5])).to.be.equal(18);
+
+function aa () {
+  const filter = invoker( "filter", 2 );
+  const map = invoker( "map", 2 );
+  const reduce = invoker( "reduce", 3 );
+
+  return compose2(
+    reduce(sum3)(0),
+    map(double),
+    filter(isOdd)
+  )([1,2,3,4,5]);  
+};
+expect(aa()).to.be.equal(18);
+
+
+var removeInvalidChars = str => str.replace( /[^\w]*/g, "" );
+
+var upper = str => str.toUpperCase();
+
+var elide = str =>
+    str.length > 10 ?
+        str.substr( 0, 7 ) + "..." :
+        str;
+
+var wordssss = "Mr. Jones isn't responsible for this disaster!".split( /\s/ );
+
+expect(wordssss
+  .map(
+    pipe2( removeInvalidChars, upper, elide )
+  )).to.be.deep.equal(['MR', 'JONES', 'ISNT', 'RESPONS...', 'FOR', 'THIS', 'DISASTER']);
+
+expect(
+  map(
+    pipe2(removeInvalidChars, upper, elide),
+    wordssss
+  )
+).to.be.deep.equal(['MR', 'JONES', 'ISNT', 'RESPONS...', 'FOR', 'THIS', 'DISASTER']);
+
+
+function listify(listOrItem) {
+  if (!Array.isArray( listOrItem )) {
+    return [ listOrItem ];
+  }
+  return listOrItem;
+};
+
+const getDOMChildren = pipe2(
+  listify,
+  flatMap(
+    pipe2(
+      curry( prop )( "childNodes" ),
+      Array.from
+    ),
+    []
+  )
+);
+
+
+
+
 
 

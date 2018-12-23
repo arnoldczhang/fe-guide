@@ -41,7 +41,7 @@ javascript ASI - DONE
 
 
 
-## cyclejs
+## 响应式编程 cyclejs
 
 
 
@@ -78,10 +78,16 @@ javascript ASI - DONE
 ## taro
 
 
+## clojure
+
+
 
 ## book
 1. https://mp.weixin.qq.com/s/prmMT4RQ3VNcINA8uOWwqA
 2. [frontendmasters](https://frontendmasters.com/books/front-end-handbook/2018/)
+3. [haskell](http://learnyouahaskell.com/chapters)
+4. [how to learn](https://link.juejin.im/?target=https%3A%2F%2Fwww.coursera.org%2Flearn%2Flearning-how-to-learn)
 
 ## share with other
 1. [zero to frontent](https://juejin.im/post/5bb9aed1e51d451a3f4c3923)
+2. [2018年终回顾](https://juejin.im/post/5bdfb387e51d452c8e0aa902)

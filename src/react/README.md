@@ -1,16 +1,17 @@
 # react16+
 
 ## 参考
-1. 16.3升级指南：https://zcfy.cc/article/update-on-async-rendering
+1. [16.3升级指南](https://zcfy.cc/article/update-on-async-rendering)
 2. ![react16.3](react16.3.png)
 2. ![react-native](v2-e00f66e71bd03b9d4c60d056c57be2e3_hd.jpg)
 3. 解析过程见 ./src/mobx/react16-*.png
 4. vdom见 https://zhuanlan.zhihu.com/p/35876032
-5. fiber：https://zhuanlan.zhihu.com/p/37098539
-6.  HOC复用和拆分：https://zhuanlan.zhihu.com/p/40245156
-7. react-redux：https://segmentfault.com/a/1190000012976767
-8. react17：https://zhuanlan.zhihu.com/p/46147401
-9. redux大型项目：https://zhuanlan.zhihu.com/p/47396514
+5. [fiber](https://zhuanlan.zhihu.com/p/37098539)
+6. [ HOC复用和拆分](https://zhuanlan.zhihu.com/p/40245156)
+7. [react-redux](https://segmentfault.com/a/1190000012976767)
+8. [react17](https://zhuanlan.zhihu.com/p/46147401)
+9. [redux大型项目](https://zhuanlan.zhihu.com/p/47396514)
+10. [react16新特性](https://zhuanlan.zhihu.com/p/52016989?utm_source=75weekly&utm_medium=75weekly)
 
 ## 相关库
 1. ckeditor： https://ckeditor.com/blog/best-wysiwyg-editor-for-angular-react/

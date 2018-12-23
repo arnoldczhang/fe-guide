@@ -1,0 +1,43 @@
+{
+  "name": "test",
+  "version": "0.0.1",
+  "description": "test",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "webpack",
+    "precommit": "lint-staged",
+    "prepublish": "npm run build",
+    "start": "webpack"
+  },
+  "author": "arnold.zhang",
+  "keywords": [
+    "test"
+  ],
+  "files": [
+    "dist"
+  ],
+  "lint-staged": {
+    "src/**/*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "devDependencies": {
+
+  },
+  "dependencies": {
+   
+  }
+}

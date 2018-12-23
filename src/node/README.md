@@ -1,18 +1,25 @@
 # node
 
 ## 参考
-  - [源码分析](http://efe.baidu.com/blog/nodejs-module-analyze/)
-  - [node问题排查](https://zhuanlan.zhihu.com/p/41178823)
-  - [node性能提升！！](https://zhuanlan.zhihu.com/p/50055740)
+- [源码分析](http://efe.baidu.com/blog/nodejs-module-analyze/)
+- [node问题排查](https://zhuanlan.zhihu.com/p/41178823)
+- [node性能提升！！](https://zhuanlan.zhihu.com/p/50055740)
+
+## 参数
+- --async-stack-traces
+  - 示例：node --async-stack-traces index.js
+  - 异步堆栈跟踪
 
 ## 好用的库
 - [监听文件夹变化](https://github.com/dt-fe/weekly/blob/master/59.%E7%B2%BE%E8%AF%BB%E3%80%8A%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%20Nodejs%20%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E3%80%8B.md)
 - [调试工具ndb](https://zhuanlan.zhihu.com/p/45851471)
-- [fast-json-stringify](https://github.com/fastify/fast-json-stringify)
+- [JSON.stringify工具fast-json-stringify](https://github.com/fastify/fast-json-stringify)
   - 预设字段类型，加速stringify
-- [bluebird](https://github.com/petkaantonov/bluebird)
+- [类promise工具bluebird](https://github.com/petkaantonov/bluebird)
   - V8 原生实现的 Promise 比 bluebird 这样第三方实现的 Promise 库要慢很多
   - 可以在代码中把全局的 Promise 换为 bluebird 的实现，比如
+- [打包工具ncc](https://zeit.co/blog/ncc)
+- [图片压缩工具sharp](https://github.com/lovell/sharp?utm_source=75weekly&utm_medium=75weekly)
 
   ```js
   global.Promise = require('bluebird');
