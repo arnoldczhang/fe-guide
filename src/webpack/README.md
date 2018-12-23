@@ -1,3 +1,8 @@
+# webpack
+
+## 参考
+- [tapable插件机制解析](https://segmentfault.com/a/1190000017420937)
+
 ## webpack-3.8.1解析
 
 - 主体
