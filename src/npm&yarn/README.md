@@ -54,7 +54,7 @@
     - ### 查看模块 owner
     - npm owner ls demo
     - ### 添加一个发布者
-    - npm owner add xxx@yyy.com demo
+    - npm owner add 用户名 项目名
 
     - ### 删除一个发布者
-    - npm owner rm xxx@yyy.com demo
+    - npm owner rm 用户名 项目名

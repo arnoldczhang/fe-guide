@@ -190,3 +190,16 @@ const p = foo();
 // → Promise
 
 p.then(console.log);
+
+
+
+function highlight(...args) {
+  console.log(args);
+};
+
+const name = 'arnold';
+const age = 123;
+highlight`hello ${name},age ${age}`;
+
+
+
