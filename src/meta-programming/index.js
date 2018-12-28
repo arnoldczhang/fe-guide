@@ -1,6 +1,8 @@
 /**
  * Object.prototype.beSmart(schema)
  */
+const SCHEMA = 'schema';
+
 const baseObject = {};
 
 const variableMax = 10;
@@ -41,6 +43,10 @@ defineProperties(baseObject, {
   entries: {
     ...baseProp,
     value: function* () {},
+  },
+  [SCHEMA]: {
+    ...baseProp,
+    value: void 0,
   },
   [Symbol.toPrimitive]: {
     ...baseProp,
@@ -88,7 +94,7 @@ function valueOfKlass(Klass, schema, result = new Klass) {
 function getSmartObject(schema, result = smartObject) {
   if (isEqual(typeof schema, 'object')) {
     result = create(result);
-    defineProperty(result, 'schema', {
+    defineProperty(result, SCHEMA, {
       ...baseProp,
       value: schema,
     });
@@ -100,7 +106,7 @@ function smartWrapper(inst, schema) {
   return new Proxy(inst, {
     get(target, key) {
       let value = Reflect.get(target, key);
-      const thisType = Reflect.get(schema, key);
+      const thisType = Reflect.get(schema || {}, key);
       if (isEqual(value, void 0)) {
         value = thisType ? valueOfKlass(thisType, schema) : getSmartObject(schema);
       }
@@ -111,41 +117,16 @@ function smartWrapper(inst, schema) {
 
 defineProperty(ObjectProto, 'beSmart', {
   ...baseProp,
-  value(schema = {}) {
+  value(schema) {
     debugger;
-    try {
-      if (isProto(this, smartObject)) {
-        return this;
-      }
-      return smartWrapper(this, schema);
-    } catch(err) {
-      console.log('rrr');
+    if (isProto(this, smartObject)) {
+      return this;
     }
+    return smartWrapper(this, schema);
   },
 });
 
 module.exports = {
   smartObject,
+  variableMax,
 };
-
-// const obj = {
-//       a: 1,
-//       b: 2,
-//       z: {aaaa: 1},
-//     };
-//     const {
-//       a,
-//       b,
-//       c: {
-//         d,
-//         e,
-//         f: [i, j, k],
-//         l,
-//         cc,
-//       },
-//       z,
-//     } = obj.beSmart({
-//       d: Array,
-//       c: Object,
-//       cc: Object,
-//     });
