@@ -15,11 +15,30 @@
 ## Symbol
 
 ### Symbol.iterator
+使用场景
+- for...of
+- const [a, b, c] = array
+- [...array]
+
+普通用法
 ```js
 var arr = ['a', 'b', 'c'];
 for (let val of arr[Symbol.iterator]()) {
   console.log(val);
 }
+```
+
+迭代器重写
+```js
+var mix = {
+  [Symbol.iterator]: function* () {
+    var i = 1;
+    while(i < 10) {
+      yield i;
+      i++;
+    }
+  }
+};
 ```
 
 ### Symbol.toStringTag
@@ -155,7 +174,7 @@ obj = {
   }
 };
 
-// 这里很巧妙，如果key是obj熟悉，则不会走到原型，也就不会触发proxy
+// 这里很巧妙，如果key是obj属性，则不会走到原型，也就不会触发proxy
 Object.setPrototypeOf( obj, pobj );
 
 obj.a = 3;
