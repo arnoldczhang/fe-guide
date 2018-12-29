@@ -1,12 +1,9 @@
 /**
- * Object.prototype.beSmart(schema)
+ * Object.prototype.beDitto(schema)
+ *
+ * ditto - 百变怪
+ * 
  */
-const SCHEMA = 'schema';
-
-const baseObject = {};
-
-const variableMax = 10;
-
 const {
   prototype: arrayProto,
 } = Array;
@@ -18,16 +15,46 @@ const {
   setPrototypeOf,
   freeze,
   create,
+  assign,
   prototype: ObjectProto,
 } = Object;
 
-const baseProp = {
+const SCHEMA = 'schema';
+
+const base = {};
+
+const variableMax = 10;
+
+const getProp = {
   enumerable: false,
   configurable: false,
+};
+
+const baseProp = {
+  ...getProp,
   writable: false,
 };
 
-defineProperties(baseObject, {
+const baseSymbol = {
+  [Symbol.toStringTag]: {
+    ...getProp,
+    get() {
+      return 'ditto';
+    },
+  },
+  [Symbol.toPrimitive]: {
+    ...baseProp,
+    value: () => 0,
+  },
+  [Symbol.iterator]: {
+    ...baseProp,
+    value: function* iteratorGenerator() {
+      yield* Array.from({ length: variableMax }).fill(ditto);
+    },
+  },
+};
+
+defineProperties(base, assign({
   length: {
     ...baseProp,
     value: 0,
@@ -45,26 +72,18 @@ defineProperties(baseObject, {
     value: function* () {},
   },
   [SCHEMA]: {
-    ...baseProp,
-    value: void 0,
-  },
-  [Symbol.toPrimitive]: {
-    ...baseProp,
-    value: () => 0,
-  },
-  [Symbol.iterator]: {
-    ...baseProp,
-    value: function* () {
-      yield* Array.from({ length: variableMax }).fill(smartObject);
+    ...getProp,
+    get() {
+      return void 0;
     },
-  }
-});
+  },
+}, baseSymbol));
 
-const smartObject = freeze(setPrototypeOf(baseObject,
+const ditto = freeze(setPrototypeOf(base,
   new Proxy({}, {
-    get(target, key, context, result = smartObject) {
+    get(target, key, context, result = ditto) {
       if (key in arrayProto) {
-        return () => smartObject;
+        return () => ditto;
       }
 
       const { schema } = context;
@@ -78,20 +97,22 @@ const smartObject = freeze(setPrototypeOf(baseObject,
     }
   })));
 
-freeze(baseObject);
-
 const isProto = (target, proto) => target === proto || getPrototypeOf(target) === proto;
 
 const isEqual = (target, source) => target === source;
 
+function* iteratorGenerator() {
+  yield* Array.from({ length: variableMax }).fill(ditto);
+};
+
 function valueOfKlass(Klass, schema, result = new Klass) {
   if (isEqual(Klass, Object)) {
-    return getSmartObject(schema);
+    return getDitto(schema);
   }
   return result.valueOf();
 };
 
-function getSmartObject(schema, result = smartObject) {
+function getDitto(schema, result = ditto) {
   if (isEqual(typeof schema, 'object')) {
     result = create(result);
     defineProperty(result, SCHEMA, {
@@ -102,31 +123,30 @@ function getSmartObject(schema, result = smartObject) {
   return result;
 };
 
-function smartWrapper(inst, schema) {
-  return new Proxy(inst, {
+function dittoWrapper(inst, schema) {
+  return create(new Proxy(inst, {
     get(target, key) {
       let value = Reflect.get(target, key);
       const thisType = Reflect.get(schema || {}, key);
       if (isEqual(value, void 0)) {
-        value = thisType ? valueOfKlass(thisType, schema) : getSmartObject(schema);
+        value = thisType ? valueOfKlass(thisType, schema) : getDitto(schema);
       }
       return value;  
     },
-  });
+  }), baseSymbol);
 };
 
-defineProperty(ObjectProto, 'beSmart', {
+defineProperty(ObjectProto, 'beDitto', {
   ...baseProp,
   value(schema) {
-    debugger;
-    if (isProto(this, smartObject)) {
+    if (isProto(this, ditto)) {
       return this;
     }
-    return smartWrapper(this, schema);
+    return dittoWrapper(this, schema);
   },
 });
 
 module.exports = {
-  smartObject,
+  ditto,
   variableMax,
 };

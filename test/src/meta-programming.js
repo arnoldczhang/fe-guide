@@ -1,4 +1,4 @@
-const { smartObject, variableMax } = require('../../src/meta-programming/index.js');
+const { ditto, variableMax } = require('../../src/meta-programming/index.js');
 const chai = require('chai');
 const colors = require('colors');
 const expect = chai.expect;
@@ -16,10 +16,10 @@ describe('meta-programming', () => {
       c: {
         d,
       },
-    } = obj.beSmart();
+    } = obj.beDitto();
     expect(a).to.be.equal(1);
     expect(b).to.be.equal(2);
-    expect(d).to.be.equal(smartObject);
+    expect(d).to.be.equal(ditto);
     done();
   });
 
@@ -35,7 +35,7 @@ describe('meta-programming', () => {
       c: {
         d,
       },
-    } = obj.beSmart({
+    } = obj.beDitto({
       d: Boolean,
     });
     expect(a).to.be.equal(1);
@@ -60,7 +60,7 @@ describe('meta-programming', () => {
         l,
         c: ccc,
       },
-    } = obj.beSmart({
+    } = obj.beDitto({
       d: Array,
     });
 
@@ -73,15 +73,15 @@ describe('meta-programming', () => {
     expect(a).to.be.equal(1);
     expect(b).to.be.equal(2);
     expect(d).to.be.deep.equal([]);
-    expect(i).to.be.equal(smartObject);
-    expect(j).to.be.equal(smartObject);
-    expect(k).to.be.equal(smartObject);
-    expect(f).to.be.equal(smartObject);
-    expect(g).to.be.equal(smartObject);
-    expect(h).to.be.equal(smartObject);
-    expect(ccc).to.be.equal(smartObject);
+    expect(i).to.be.equal(ditto);
+    expect(j).to.be.equal(ditto);
+    expect(k).to.be.equal(ditto);
+    expect(f).to.be.equal(ditto);
+    expect(g).to.be.equal(ditto);
+    expect(h).to.be.equal(ditto);
+    expect(ccc).to.be.equal(ditto);
     expect(args.length).to.be.deep.equal(variableMax);
-    expect(args[0]).to.be.deep.equal(smartObject);
+    expect(args[0]).to.be.deep.equal(ditto);
     done();
   });
 
@@ -102,7 +102,7 @@ describe('meta-programming', () => {
         cc,
       },
       z,
-    } = obj.beSmart({
+    } = obj.beDitto({
       d: Array,
       c: Object,
       cc: Object,
@@ -111,13 +111,77 @@ describe('meta-programming', () => {
     expect(a).to.be.equal(1);
     expect(b).to.be.equal(2);
     expect(d).to.be.deep.equal([]);
-    expect(i).to.be.equal(smartObject);
-    expect(j).to.be.equal(smartObject);
-    expect(e).to.be.equal(smartObject);
-    expect(l).to.be.equal(smartObject);
-    expect(k).to.be.equal(smartObject);
-    expect(cc).to.be.equal(smartObject);
+    expect(i).to.be.equal(ditto);
+    expect(j).to.be.equal(ditto);
+    expect(e).to.be.equal(ditto);
+    expect(l).to.be.equal(ditto);
+    expect(k).to.be.equal(ditto);
+    expect(cc).to.be.equal(ditto);
     expect(z).to.be.deep.equal({ aaaa: 1 });
+    done();
+  });
+
+  it('use iterator variable3', (done) => {
+    const obj = {
+      a: [],
+      b: 2,
+    };
+    const [ a, b, c ] = obj.beDitto();
+    a.forEach();
+    a.map(() => {});
+    a.some(() => {});
+    a.filter(() => {});
+    a.reduce(() => {});
+    c.forEach();
+    c.map(() => {});
+    c.some(() => {});
+    c.filter(() => {});
+    c.reduce(() => {});
+    a.b.b.b.b.b.b.g.b.b.b;
+    b.b.c.h.b.z.b.b.b.b.b;
+    c.b.b.b.b.b.b.b.d.b.b;
+
+    const { a: aa, b: bb, c: cc } = obj.beDitto();
+    expect(bb).to.be.equal(2);
+    expect(aa).to.be.deep.equal([]);
+    expect(cc).to.be.deep.equal(ditto);
+    cc[10000][1][2][3][4][5];
+
+    const aaa = obj.beDitto().a;
+    const ccc = obj.beDitto().c;
+    const ddd = obj.beDitto().d;
+    ccc.forEach();
+    ccc.map(() => {});
+    ccc.some(() => {});
+    ccc.filter(() => {});
+    ccc.reduce(() => {});
+    ccc.b.b.b.b.b.b.b.d.b.b;
+    ddd.b.c.h.b.z.b.b.b.b.b;
+    expect(aaa).to.be.deep.equal([]);
+    ccc[10000][1][2][3][4][5];
+    ddd[10000][1][2][3][4][5];
+
+    const aaaa = obj.beDitto()[10];
+    const bbbb = obj.beDitto()[222];
+    const cccc = obj.beDitto()[3333];
+    aaaa.b.b.b.b.b.b.g.b.b.b;
+    bbbb.b.c.h.b.z.b.b.b.b.b;
+    cccc.b.b.b.b.b.b.b.d.b.b;
+    cccc.forEach();
+    cccc.map(() => {});
+    cccc.some(() => {});
+    cccc.filter(() => {});
+    cccc.reduce(() => {});
+    aaaa[10000].b.a.c[1][2][3][4][5];
+    bbbb[10000][1][2].b.a.c[3][4][5];
+    cccc[10000][1][2][3][4].b.a.c[5];
+
+    const [ aaaaa ] = aaaa[10000].b.a.c[1][2][3][4][5];
+    const { bbbbb, c: [ ccccc ] } = bbbb[10000][1][2].b.a.c[3][4][5];
+
+    aaaaa.b[2][3][4].c.h.b.z.b.b.b.b.b;
+    bbbbb.b.b.b.b[2][3][4].b.b.g.b.b.b;
+    ccccc.b.c.h.b.z.b.b.b.b[2][3][4].b;
     done();
   });
 
@@ -133,7 +197,7 @@ describe('meta-programming', () => {
         e,
         f: [i, j, k],
       },
-    } = obj.beSmart({
+    } = obj.beDitto({
       d: Array,
     });
     for(let et of d.entries()) {
@@ -166,9 +230,8 @@ describe('meta-programming', () => {
     i.some(() => {});
     i.filter(() => {});
     i.reduce(() => {});
-    expect(k).to.be.equal(smartObject);
-    obj.beSmart().aa.a.a;
+    expect(k).to.be.equal(ditto);
+    obj.beDitto().aa.a.a;
     done();
   });
-
 });

@@ -12,8 +12,8 @@ const KEY = {
   STATUS: '[[PromiseStatus]]',
 };
 
-/*
 describe('Promise', () => {
+/*
     it('promise.then', (done) => {
       // Test1
       let p1 = new Promise(function(resolve,reject) {
@@ -472,5 +472,5 @@ describe('Promise', () => {
     it('Promise.finally', (done) => {
       done();
     });
-});
 */
+});
