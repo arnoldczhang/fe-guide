@@ -5,7 +5,7 @@
  * 
  */
 const {
-  prototype: arrayProto,
+  prototype: ArrayProto,
 } = Array;
 
 const {
@@ -36,10 +36,14 @@ const baseProp = {
 };
 
 const baseSymbol = {
+  entries: {
+    ...baseProp,
+    value: function* () {},
+  },
   [Symbol.toStringTag]: {
     ...getProp,
     get() {
-      return 'ditto';
+      return 'Ditto';
     },
   },
   [Symbol.toPrimitive]: {
@@ -67,10 +71,6 @@ defineProperties(base, assign({
     ...baseProp,
     value: false,
   },
-  entries: {
-    ...baseProp,
-    value: function* () {},
-  },
   [SCHEMA]: {
     ...getProp,
     get() {
@@ -82,8 +82,8 @@ defineProperties(base, assign({
 const ditto = freeze(setPrototypeOf(base,
   new Proxy({}, {
     get(target, key, context, result = ditto) {
-      if (key in arrayProto) {
-        return () => ditto;
+      if (key in ArrayProto) {
+        return dittoFunc(key);
       }
 
       const { schema } = context;
@@ -98,8 +98,15 @@ const ditto = freeze(setPrototypeOf(base,
   })));
 
 const isProto = (target, proto) => target === proto || getPrototypeOf(target) === proto;
-
+const isSelfExecute = key => ['toString', 'toLocaleString'].indexOf(key) > -1;
 const isEqual = (target, source) => target === source;
+
+function dittoFunc(key) {
+  if (isSelfExecute(key)) {
+    return () => ObjectProto[key].call(ditto);
+  }
+  return () => ditto;
+};
 
 function* iteratorGenerator() {
   yield* Array.from({ length: variableMax }).fill(ditto);
@@ -112,7 +119,11 @@ function valueOfKlass(Klass, schema, result = new Klass) {
   return result.valueOf();
 };
 
-function getDitto(schema, result = ditto) {
+function getDitto(schema, key, result = ditto) {
+  if (key in ArrayProto) {
+    return dittoFunc(key);
+  }
+
   if (isEqual(typeof schema, 'object')) {
     result = create(result);
     defineProperty(result, SCHEMA, {
@@ -129,7 +140,7 @@ function dittoWrapper(inst, schema) {
       let value = Reflect.get(target, key);
       const thisType = Reflect.get(schema || {}, key);
       if (isEqual(value, void 0)) {
-        value = thisType ? valueOfKlass(thisType, schema) : getDitto(schema);
+        value = thisType ? valueOfKlass(thisType, schema) : getDitto(schema, key);
       }
       return value;  
     },
@@ -139,6 +150,7 @@ function dittoWrapper(inst, schema) {
 defineProperty(ObjectProto, 'beDitto', {
   ...baseProp,
   value(schema) {
+    debugger;
     if (isProto(this, ditto)) {
       return this;
     }

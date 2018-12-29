@@ -4,6 +4,17 @@ const colors = require('colors');
 const expect = chai.expect;
 
 describe('meta-programming', () => {
+  it('who am I', (done) => {
+    const obj = {
+      a: 1,
+      b: 2,
+    };
+    const dittoOne = obj.beDitto();
+    expect(dittoOne.toString()).to.be.equal('[object Ditto]');
+    expect(dittoOne.toLocaleString()).to.be.equal('[object Ditto]');
+    done();
+  });
+
   it('normal variable', (done) => {
     const obj = {
       a: 1,
@@ -232,6 +243,23 @@ describe('meta-programming', () => {
     i.reduce(() => {});
     expect(k).to.be.equal(ditto);
     obj.beDitto().aa.a.a;
+    done();
+  });
+
+  it('method test2', (done) => {
+    const obj = {
+      a: 1,
+      b: 2,
+    };
+
+    obj.beDitto().forEach(() => {});
+    obj.beDitto().map(() => {});
+    obj.beDitto().some(() => {});
+    obj.beDitto().filter(() => {});
+    obj.beDitto().reduce(() => {});
+    for (let key of obj.beDitto().entries()) {
+      expect(false).to.be.equal(true);
+    }
     done();
   });
 });
