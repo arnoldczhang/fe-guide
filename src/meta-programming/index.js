@@ -52,9 +52,7 @@ const baseSymbol = {
   },
   [Symbol.iterator]: {
     ...baseProp,
-    value: function* iteratorGenerator() {
-      yield* Array.from({ length: variableMax }).fill(ditto);
-    },
+    value: iteratorGenerator,
   },
 };
 
@@ -112,7 +110,14 @@ function* iteratorGenerator() {
   yield* Array.from({ length: variableMax }).fill(ditto);
 };
 
-function valueOfKlass(Klass, schema, result = new Klass) {
+function valueOfKlass(Klass, schema, result) {
+  try {
+    result = new Klass;
+  } catch(err) {
+    console.warn(`${Klass} - is not a constructorrrr!!!`);
+    return getDitto(schema);
+  }
+
   if (isEqual(Klass, Object)) {
     return getDitto(schema);
   }
@@ -150,7 +155,6 @@ function dittoWrapper(inst, schema) {
 defineProperty(ObjectProto, 'beDitto', {
   ...baseProp,
   value(schema) {
-    debugger;
     if (isProto(this, ditto)) {
       return this;
     }

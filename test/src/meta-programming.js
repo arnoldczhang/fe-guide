@@ -34,7 +34,7 @@ describe('meta-programming', () => {
     done();
   });
 
-  it('with schema variable', (done) => {
+  it('with schema variable1', (done) => {
     const obj = {
       a: 1,
       b: 2,
@@ -52,6 +52,46 @@ describe('meta-programming', () => {
     expect(a).to.be.equal(1);
     expect(b).to.be.equal(2);
     expect(d).to.be.equal(false);
+    done();
+  });
+
+  it('with schema variable2', (done) => {
+    const obj = {
+      a: 1,
+      b: 2,
+    };
+    
+    const {
+      a,
+      b,
+      c,
+      d,
+      e,
+      f,
+      g,
+      h,
+      i,
+      j,
+    } = obj.beDitto({
+      c: Boolean,
+      d: Map,
+      e: Set,
+      f: Number,
+      g: String,
+      h: Symbol,
+      i: WeakSet,
+      j: WeakMap,
+    });
+    expect(a).to.be.equal(1);
+    expect(b).to.be.equal(2);
+    expect(c).to.be.equal(false);
+    expect(d).to.be.deep.equal(new Map);
+    expect(e).to.be.deep.equal(new Set);
+    expect(f).to.be.equal(0);
+    expect(g).to.be.equal('');
+    expect(h).to.be.deep.equal(ditto);
+    expect(i).to.be.deep.equal(new WeakSet);
+    expect(j).to.be.deep.equal(new WeakMap);
     done();
   });
 
