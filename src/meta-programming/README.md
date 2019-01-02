@@ -1,7 +1,8 @@
 # 元编程
 
 ## 参考
-- https://segmentfault.com/a/1190000016133613
+- [元编程合集](https://segmentfault.com/a/1190000016133613)
+- [你不知道的js-元编程](https://github.com/getify/You-Dont-Know-JS/blob/master/es6%20%26%20beyond/ch7.md)
 
 ## 目录
 <details>

@@ -249,6 +249,7 @@
     "ant-design-vue": "^1.1.2",
     "async_hooks": "^1.0.0",
     "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-import": "^1.11.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "brotli-webpack-plugin": "^0.5.0",
     "cache-loader": "^1.2.2",
