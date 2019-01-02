@@ -25,6 +25,8 @@ const {
   prototype: ObjectProto,
 } = Object;
 
+let cachSchema = new Map;
+
 const SCHEMA = 'schema';
 
 const base = {};
@@ -90,7 +92,7 @@ const ditto = freeze(setPrototypeOf(base,
         return dittoFunc(key);
       }
 
-      const { schema } = context;
+      const { schema = cachSchema.get(SCHEMA) } = context;
       if (schema && has(schema, key)) {
         result = valueOfKlass(get(schema, key));
       }
@@ -104,6 +106,7 @@ const ditto = freeze(setPrototypeOf(base,
 const isProto = (target, proto) => target === proto || getPrototypeOf(target) === proto;
 const isSelfExecute = key => ['toString', 'toLocaleString'].indexOf(key) > -1;
 const isEqual = (target, source) => target === source;
+const clearCachLater = () => setTimeout(() => cachSchema.clear());
 
 function dittoFunc(key) {
   if (isSelfExecute(key)) {
@@ -161,10 +164,14 @@ function dittoWrapper(inst, schema) {
 defineProperty(ObjectProto, 'beDitto', {
   ...baseProp,
   value(schema) {
+    debugger;
     if (isProto(this, ditto)) {
       return this;
     }
-    return dittoWrapper(this, schema);
+    cachSchema.set(SCHEMA, schema);
+    const result = dittoWrapper(this, schema);
+    clearCachLater(this);
+    return result;
   },
 });
 

@@ -65,11 +65,23 @@ describe('meta-programming', () => {
       a,
       b,
       c,
-      d,
+      dd: {
+        d,
+      },
       e,
       f,
-      g,
-      h,
+      ggg: {
+        gg: {
+          g,
+        },
+      },
+      hhhh: {
+        hhh: {
+          hh: {
+            h,
+          },
+        },
+      },
       i,
       j,
     } = obj.beDitto({
