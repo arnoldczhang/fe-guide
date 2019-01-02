@@ -9,6 +9,12 @@ const {
 } = Array;
 
 const {
+  get,
+  set,
+  has,
+} = Reflect;
+
+const {
   defineProperty,
   defineProperties,
   getPrototypeOf,
@@ -85,8 +91,8 @@ const ditto = freeze(setPrototypeOf(base,
       }
 
       const { schema } = context;
-      if (schema && Reflect.has(schema, key)) {
-        result = valueOfKlass(Reflect.get(schema, key));
+      if (schema && has(schema, key)) {
+        result = valueOfKlass(get(schema, key));
       }
       return result;
     },
@@ -142,8 +148,8 @@ function getDitto(schema, key, result = ditto) {
 function dittoWrapper(inst, schema) {
   return create(new Proxy(inst, {
     get(target, key) {
-      let value = Reflect.get(target, key);
-      const thisType = Reflect.get(schema || {}, key);
+      let value = get(target, key);
+      const thisType = get(schema || {}, key);
       if (isEqual(value, void 0)) {
         value = thisType ? valueOfKlass(thisType, schema) : getDitto(schema, key);
       }
