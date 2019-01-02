@@ -12,13 +12,13 @@ const {
   get,
   set,
   has,
+  defineProperty,
+  getPrototypeOf,
+  setPrototypeOf,
 } = Reflect;
 
 const {
-  defineProperty,
   defineProperties,
-  getPrototypeOf,
-  setPrototypeOf,
   freeze,
   create,
   assign,
@@ -28,8 +28,6 @@ const {
 let cachSchema = new Map;
 
 const SCHEMA = 'schema';
-
-const base = {};
 
 const variableMax = 10;
 
@@ -64,49 +62,56 @@ const baseSymbol = {
   },
 };
 
-defineProperties(base, assign({
-  length: {
-    ...baseProp,
-    value: 0,
-  },
-  valueOf: {
-    ...baseProp,
-    value: false,
-  },
-  toString: {
-    ...baseProp,
-    value: false,
-  },
-  [SCHEMA]: {
-    ...getProp,
-    get() {
-      return void 0;
-    },
-  },
-}, baseSymbol));
-
-const ditto = freeze(setPrototypeOf(base,
-  new Proxy({}, {
-    get(target, key, context, result = ditto) {
-      if (key in ArrayProto) {
-        return dittoFunc(key);
-      }
-
-      const { schema = cachSchema.get(SCHEMA) } = context;
-      if (schema && has(schema, key)) {
-        result = valueOfKlass(get(schema, key));
-      }
-      return result;
-    },
-    set() {
-      return false;
-    }
-  })));
+const ditto = freeze(dittoGen());
 
 const isProto = (target, proto) => target === proto || getPrototypeOf(target) === proto;
 const isSelfExecute = key => ['toString', 'toLocaleString'].indexOf(key) > -1;
 const isEqual = (target, source) => target === source;
 const clearCachLater = () => setTimeout(() => cachSchema.clear());
+
+function dittoGen() {
+  const base = {};
+
+  defineProperties(base, assign({
+    length: {
+      ...baseProp,
+      value: 0,
+    },
+    valueOf: {
+      ...baseProp,
+      value: false,
+    },
+    toString: {
+      ...baseProp,
+      value: false,
+    },
+    [SCHEMA]: {
+      ...getProp,
+      get() {
+        return void 0;
+      },
+    },
+  }, baseSymbol));
+
+  setPrototypeOf(base,
+    new Proxy({}, {
+      get(target, key, context, result = ditto) {
+        if (key in ArrayProto) {
+          return dittoFunc(key);
+        }
+
+        const { schema = cachSchema.get(SCHEMA) } = context;
+        if (schema && has(schema, key)) {
+          result = valueOfKlass(get(schema, key));
+        }
+        return result;
+      },
+      set() {
+        return false;
+      }
+    }));
+  return base;
+};
 
 function dittoFunc(key) {
   if (isSelfExecute(key)) {

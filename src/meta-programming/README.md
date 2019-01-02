@@ -9,6 +9,7 @@
 
 * [`Symbol`](#Symbol)
 * [`Proxy`](#Proxy)
+* [`ditto`](#ditto)
 
 </details>
 
@@ -120,6 +121,64 @@ b[Symbol.isConcatSpreadable] = false;
 [].concat( a, b );    // [1,2,3,[4,5,6]]
 ```
 
+### Symbol.OwnPropertyKeys
+
+### Symbol.for('[[Prototype]]')
+```js
+var obj1 = {
+    name: "obj-1",
+    foo() {
+      console.log( "obj1.foo:", this.name );
+    },
+  },
+  obj2 = {
+    name: "obj-2",
+    foo() {
+      console.log( "obj2.foo:", this.name );
+    },
+    bar() {
+      console.log( "obj2.bar:", this.name );
+    }
+  },
+  handlers = {
+    get(target,key,context) {
+      if (Reflect.has( target, key )) {
+        return Reflect.get(
+          target, key, context
+        );
+      }
+      // fake multiple `[[Prototype]]`
+      else {
+        for (var P of target[
+          Symbol.for( "[[Prototype]]" )
+        ]) {
+          if (Reflect.has( P, key )) {
+            return Reflect.get(
+              P, key, context
+            );
+          }
+        }
+      }
+    }
+  },
+  obj3 = new Proxy(
+    {
+      name: "obj-3",
+      baz() {
+        this.foo();
+        this.bar();
+      }
+    },
+    handlers
+  );
+
+// fake multiple `[[Prototype]]` links
+obj3[ Symbol.for( "[[Prototype]]" ) ] = [
+  obj1, obj2
+];
+obj3.baz();
+```
+
 ## Proxy
 
 ### new Proxy(target, handler);
@@ -183,6 +242,23 @@ obj.foo();      // a: 3
 obj.b = 4;      // Error: No such property/method!
 obj.bar();      // Error: No such property/method!
 ```
+
+## Refelct
+
+### Reflect.getOwnPropertyDescriptor(..)
+### Reflect.defineProperty(..)
+### Reflect.getPrototypeOf(..)
+### Reflect.setPrototypeOf(..)
+### Reflect.preventExtensions(..)
+### Reflect.isExtensible(..)
+### Reflect.ownKeys(..)
+
+## ditto
+
+### 简介
+基于proxy、Reflect的参数申明兜底方法，使用到了元编程技巧
+* 代码见[代码](index.js)
+* 测试案例见[测试案例](../../test/src/meta-programming.js)
 
 
 
