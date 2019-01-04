@@ -227,8 +227,23 @@
 * 组件化
 * 组件内部分层
 * 公共方法抽离成npm
-* 分离app和server配置
+* 分离app、server配置
+* 配置文件分级
 
+### 错误处理
+* 使用await、promise
+* 抽象通用错误类
+```js
+function CommonError(name, httpCode, description, isOperational) {
+  Error.call(this);
+  Error.captureStackTrace(this);
+  this.name = name;
+  //...在这赋值其它属性
+};
+CommonError.prototype.__proto__ = Error.prototype;
+// 使用
+throw new CommonError('abc');
+```
 
 
 
