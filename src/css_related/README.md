@@ -8,6 +8,15 @@
 - [CSSOM](https://mp.weixin.qq.com/s/xST3cjumPrxdHbcZcYlLvQ)
 - [css与网络性能](https://mp.weixin.qq.com/s/OigM7dPFS3OGEBUE6KjHQA)
 
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`属性`](#属性)
+* [`须知`](#须知)
+* [`答疑`](#答疑)
+
+</details>
 
 ## 属性
 
@@ -26,19 +35,33 @@ html {
 ### width: auto
 width: max-content/min-content
 
+## 须知
 
-## 选择器
+### 选择器
   - 保持简单，不要使用嵌套过多过于复杂的选择器
   - 通配符和属性选择器效率最低，需要匹配的元素最多，尽量避免使用
   - 不要使用类选择器和ID选择器修饰元素标签，如h3#markdown-content，这样多此一举，还会降低效率
   - 不要为了追求速度而放弃可读性与可维护性
 
-## 优化建议
+### 优化建议
 - 如果 JS 文件没有依赖 CSS，你应该将 JS 代码放在样式表之前
 
-## CSSOM
+### CSSOM
   - js运算安全操作css属性
   - chrome66，chromium70+支持
+
+### css动画要点
+FLIP技术
+- F：First，指的是在任何事情发生之前（过渡之前），记录当前元素的位置和尺寸。
+```js
+el.getBoundingClientRect();
+```
+- L：Last：执行一段代码，让元素发生相应的变化，并记录元素在最后状态的位置和尺寸。
+```js
+el.classList.add('totes-at-the-end');
+// 记录元素最后状态的位置和尺寸大小
+const last = el.getBoundingClientRect();
+```
 
 ## 答疑
 
