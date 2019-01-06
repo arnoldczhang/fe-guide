@@ -51,16 +51,32 @@ width: max-content/min-content
   - chrome66，chromium70+支持
 
 ### css动画要点
-FLIP技术
+[FLIP技术](https://www.w3cplus.com/javascript/animating-layouts-with-the-flip-technique.html)
 - F：First，指的是在任何事情发生之前（过渡之前），记录当前元素的位置和尺寸。
 ```js
 el.getBoundingClientRect();
 ```
-- L：Last：执行一段代码，让元素发生相应的变化，并记录元素在最后状态的位置和尺寸。
+- L：Last，执行一段代码，让元素发生相应的变化，并记录元素在最后状态的位置和尺寸。
 ```js
 el.classList.add('totes-at-the-end');
 // 记录元素最后状态的位置和尺寸大小
 const last = el.getBoundingClientRect();
+```
+- I：Invert，计算元素第一个位置（first）和最后一个位置（last）之间的（位置、尺寸）变化
+```js
+const deltaX = first.left - last.left;
+const deltaY = first.top - last.top;
+const deltaW = first.width / last.width;
+const deltaH = first.height / last.height;
+```
+- P：Play，让元素有动画效果
+```js
+// Web Animations API
+elm.animate([
+  { transformOrigin: 'top left', transform: ` translate(${deltaX}px, ${deltaY}px) scale(${deltaW}, ${deltaH}) ` },
+  { transformOrigin: 'top left', transform: 'none' }],
+  { duration: 300, easing: 'ease-in-out', fill: 'both' },
+]);
 ```
 
 ## 答疑
