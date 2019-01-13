@@ -35,6 +35,18 @@ html {
 ### width: auto
 width: max-content/min-content
 
+### display:none和visibility:hidden
+区别：
+1. 空间占据 ：
+  - display: none-在网页中不占任何的位置，接近移除
+  - visibility:hidden-仅仅将元素隐藏，但是在网页中还占着位置
+2. 回流与渲染：
+  - display: none-同时触发repaint和reflow
+  - visibility:hidden-仅触发一次repaint
+3. 株连性：
+  - display: none-子孙元素无法重现
+  - visibility:hidden-子孙元素可用visibility:visible重新显示
+
 ## 须知
 
 ### 选择器
