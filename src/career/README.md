@@ -23,10 +23,9 @@
 
 ## 专业技能
 [前端团队产能](https://mp.weixin.qq.com/s?__biz=MzU1NjUxNTkxMg==&mid=2247483709&idx=1&sn=0555c95330ddfcd0c266caed7b94f1ce)
-- 规划
-- 培养新人
-- 沟通
-- 执行
+- 编码能力
+- 工程能力
+- 架构能力
 
 ## 前后端交互流程
 
