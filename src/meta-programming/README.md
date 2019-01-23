@@ -262,7 +262,7 @@ obj.bar();      // Error: No such property/method!
 * 测试案例见[测试案例](../../test/src/meta-programming.js)
 
 ### 用法
-*普通的变量声明*
+**普通的变量声明**
 ```js
 const obj = {
   a: 1,
@@ -282,7 +282,7 @@ c.forEach(() => {
 });
 ```
 
-*用了ditto之后*
+**用了ditto之后**
 ```js
 const obj = {
   a: 1,
