@@ -47,6 +47,25 @@ width: max-content/min-content
   - display: none-子孙元素无法重现
   - visibility:hidden-子孙元素可用visibility:visible重新显示
 
+### 波浪线
+```css
+.circle1 {
+    position: absolute;
+    z-index: 5;
+    top: -10px;
+    left: 0;
+    transform-origin: center left;
+    transform: rotate(90deg);
+    width: 220px;
+    height: 9px;
+    <!-- 4px决定圆的实际范围 -->
+    background-image: radial-gradient(circle, #fff, #fff 4px, transparent 0px, transparent 2px, transparent 22px, transparent);
+    <!-- 决定圆的最大范围 -->
+    background-size: 10px 10px;
+    background-repeat: repeat-x;
+}
+```
+
 ## 须知
 
 ### 选择器
