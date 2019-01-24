@@ -8,6 +8,20 @@
 - [https连接的前几毫秒发生了什么](https://fed.renren.com/2017/02/03/https/)
 - [流量劫持](https://zhuanlan.zhihu.com/p/40682772)
 
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`request header`](#request header)
+* [`http1.0`](#http1.0)
+* [`http1.1`](#http1.1)
+* [`spdy`](#spdy)
+* [`http 2.0`](#http 2.0)
+* [`quic`](#quic)
+* [`https`](#https)
+
+</details>
+
 ## request header
 
 ### 请求无用头部（新版）
@@ -61,34 +75,34 @@
   - ![缓存字段](缓存字段.jpg)
 
 ## spdy
-  - 多路复用
-  - 请求优先级（可设置）
-  - 首部压缩
-  - 服务端推送
+- 多路复用
+- 请求优先级（可设置）
+- 首部压缩
+- 服务端推送
 
 ## http 2.0
-  - 多路复用：同一个tcp连接上并行请求，双向交换消息
-  - ![多路复用](多路复用.png)
-  - 二进制分帧：将首部信息和请求体，采用二进制编码封装进HEADER和BODY frame
-  - ![二进制分帧](二进制分帧.png)
-  - 首部压缩
-  - 服务端推送
+- 多路复用：同一个tcp连接上并行请求，双向交换消息
+- ![多路复用](多路复用.png)
+- 二进制分帧：将首部信息和请求体，采用二进制编码封装进HEADER和BODY frame
+- ![二进制分帧](二进制分帧.png)
+- 首部压缩
+- 服务端推送
 
-## spdy与http 2.0区别
-  - HTTP2.0 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS
-  - HTTP2.0 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DEFLATE
+### spdy与http 2.0区别
+- HTTP2.0 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS
+- HTTP2.0 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DEFLATE
 
 ## quic
-  - 基于UDP
-  - 通过减少往返次数，以缩短连接建立时间
-  - 使用一种新的ACK确认机制（包含了NACK），达到更好的拥塞控制
-  - 多路复用，并解决HTTP/2队头阻塞问题，即一个流的TCP包丢失导致所有流都暂停组装。在QUIC里面，一个流的包丢失只会影响当前流，不会影响其它流。
-  - 使用FEC（前向纠错）恢复丢失的包，以减少超时重传
-  - 使用一个随机数标志一个连接，取代传统IP + 端口号的方式，使得切换网络环境如从4G到wifi仍然能使用之前的连接。
-  - ![quic](6.png)
+- 基于UDP
+- 通过减少往返次数，以缩短连接建立时间
+- 使用一种新的ACK确认机制（包含了NACK），达到更好的拥塞控制
+- 多路复用，并解决HTTP/2队头阻塞问题，即一个流的TCP包丢失导致所有流都暂停组装。在QUIC里面，一个流的包丢失只会影响当前流，不会影响其它流。
+- 使用FEC（前向纠错）恢复丢失的包，以减少超时重传
+- 使用一个随机数标志一个连接，取代传统IP + 端口号的方式，使得切换网络环境如从4G到wifi仍然能使用之前的连接。
+- ![quic](6.png)
 
 ### 对比http/https/quic
-  - ![tls](p10.png)
+- ![tls](p10.png)
 
 ## https
   - http + tls
@@ -103,13 +117,13 @@
     - ![https](201208201734403507.png)
 
 ### HTTP、HTTPS、TCP、SSL/TLS
-  - HTTP基于TCP
-  - SSL/TLS基于TCP
-  - HTTPS基于SSL/TLS
+- HTTP基于TCP
+- SSL/TLS基于TCP
+- HTTPS基于SSL/TLS
 
 ### ssl和tls
-  - tls由ssl演变而来，目前ssl已极不安全
-  - 推荐tls1.2
-  - ![ssl-tls](ssl-tls.jpg)
+- tls由ssl演变而来，目前ssl已极不安全
+- 推荐tls1.2
+- ![ssl-tls](ssl-tls.jpg)
 
 

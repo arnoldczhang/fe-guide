@@ -12,6 +12,9 @@
 8. [react17](https://zhuanlan.zhihu.com/p/46147401)
 9. [redux大型项目](https://zhuanlan.zhihu.com/p/47396514)
 10. [react16新特性](https://zhuanlan.zhihu.com/p/52016989?utm_source=75weekly&utm_medium=75weekly)
+11. [Dan对react内部的解释](https://overreacted.io/)
+12. [react-christmas](https://react.christmas)
+13. [Vuex、Flux、Redux、Redux-saga、Dva、MobX](https://zhuanlan.zhihu.com/p/53599723)
 
 ## 相关库
 1. ckeditor： https://ckeditor.com/blog/best-wysiwyg-editor-for-angular-react/

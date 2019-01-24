@@ -5,6 +5,16 @@
 - [node问题排查](https://zhuanlan.zhihu.com/p/41178823)
 - [node性能提升！！](https://zhuanlan.zhihu.com/p/50055740)
 
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`好用的库`](#好用的库)
+* [`原理解析`](#原理解析)
+* [`最佳实践`](#最佳实践)
+
+</details>
+
 ## 参数
 - --async-stack-traces
   - 示例：node --async-stack-traces index.js
@@ -210,6 +220,30 @@
   - node --max-semi-space-size=128 app.js // 修改内存上限，64或128较合理
   - 内存分配过大也会导致单次GC耗时久
 
+
+## 最佳实践
+
+### 项目结构
+* 组件化
+* 组件内部分层
+* 公共方法抽离成npm
+* 分离app、server配置
+* 配置文件分级
+
+### 错误处理
+* 使用await、promise
+* 抽象通用错误类
+```js
+function CommonError(name, httpCode, description, isOperational) {
+  Error.call(this);
+  Error.captureStackTrace(this);
+  this.name = name;
+  //...在这赋值其它属性
+};
+CommonError.prototype.__proto__ = Error.prototype;
+// 使用
+throw new CommonError('abc');
+```
 
 
 

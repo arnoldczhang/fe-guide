@@ -2392,11 +2392,60 @@ if (!isPending) {
 }
 
 // 可读流
-const fs = require('fs');
-const rreader = fs.createReadStream('package.json');
-rreader.on('readable', () => {
-  console.log(`读取的数据: ${rreader.read()}`);
-});
-rreader.on('end', () => {
-  console.log('结束');
-});
+// const fs = require('fs');
+// const rreader = fs.createReadStream('package.json');
+// rreader.on('readable', () => {
+//   console.log(`读取的数据: ${rreader.read()}`);
+// });
+// rreader.on('end', () => {
+//   console.log('结束');
+// });
+
+
+// 流计算π
+const getPI = (factor = 1, res = 1, calc = '-') => {
+  if (res * 4 === Math.PI) {
+    return;
+  }
+
+  factor += 2;
+
+  if (calc === '-') {
+    calc = '+';
+    res -= 1 / factor;
+  } else {
+    calc = '-';
+    res += 1 / factor;
+  }
+  console.log(res * 4);
+  return setTimeout(() => getPI(factor, res, calc));
+};
+
+// getPI();
+
+// 交替流
+const consStream = (el, stream) => {
+  return [el].concat(stream);
+};
+
+const streamAppend = (stream1, stream2) => {
+  if (!stream1.length) {
+    return stream2;
+  }
+  return consStream(stream1.shift(), streamAppend(stream1, stream2)); 
+};
+expect(streamAppend([1, 2, 3], [4, 5, 6, 7])).to.be.deep.equal([1,2,3,4,5,6,7]);
+
+const interleave = (stream1, stream2) => {
+  if (!stream1.length) {
+    return stream2;
+  }
+  return consStream(stream1.shift(), interleave(stream2, stream1));
+};
+expect(interleave([1, 2, 3], [4, 5, 6, 7])).to.be.deep.equal([1,4,2,5,3,6,7]);
+
+
+
+
+
+

@@ -2,6 +2,8 @@
 
 ## 参考
 - [tapable插件机制解析](https://segmentfault.com/a/1190000017420937)
+- [webpack4js拆包](https://mp.weixin.qq.com/s/a946nG0oNYnDBMMwgtDBpA)
+- [webpack4配置指南](https://mp.weixin.qq.com/s/cX7yuneDxDk8_NnMy3Bc8Q)
 
 ## webpack-3.8.1解析
 
@@ -36,7 +38,6 @@
 
 ## webpack 4+参考
   - https://juejin.im/entry/5b63eb8bf265da0f98317441
-  - [js拆包](https://mp.weixin.qq.com/s/a946nG0oNYnDBMMwgtDBpA)
   
 ## 注意事项
   - 使用 import()，需要dynamic-import插件 (https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/)

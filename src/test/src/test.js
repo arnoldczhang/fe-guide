@@ -180,13 +180,6 @@
 // //Check
 // printStatus(exampleFunction);
 
-
-async function foo() {
-  const v = await 42;
-  return v;
-}
-
-const p = foo();
-// → Promise
-
-p.then(console.log);
+const CryptoJS = require('crypto-js');
+const msg = CryptoJS.SHA256("Message Part 1");
+console.log(msg);
