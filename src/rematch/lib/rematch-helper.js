@@ -19,7 +19,7 @@ export const expect = (val, checkFn, message) => {
   }
 };
 
-export const getInstance = () => {
+export const getCurrentPage = () => {
   const pages = getCurrentPages();
   return pages[pages.length - 1];
 };

@@ -1,8 +1,8 @@
-const {
+import {
   createStore,
   applyMiddleware,
   combineReducers,
-} = require('redux');
+} form 'redux';
 import * as models from './models';
 import { init, combineModels } from './rematch';
 
