@@ -8,11 +8,11 @@ const {
   keys,
 } = Object;
 
-// store.dispatch
+// eslint-disable-next-line
 export let dispatch = () => {};
-// store.getState
+// eslint-disable-next-line
 export let getState = () => {};
-// store.subscribe
+// eslint-disable-next-line
 export let subscribe = () => {};
 
 const initStore = (store) => {
@@ -52,15 +52,14 @@ const checkAndExtendsStore = (
     target = target({
       dispatch,
       getState,
+      // ...
     });
   }
   return target;
 };
 
-const transferModelToAction = (model, key) => {
-  if (!is.object(model)) {
-    return;
-  }
+const transferModelToAction = (model = {}, key) => {
+  expect(model, is.object, 'model必须是object类型');
   const { state = {}, reducers = {} } = model;
   dispatch[key] = {};
   const finalReducer = dispatch[key];
@@ -96,14 +95,15 @@ const initModel = (models) => {
   const modelKeys = keys(models);
   modelKeys.forEach((key) => {
     const model = models[key];
+    if (is.bool(model)) {
+      return;
+    }
     transferModelToAction(model, key);
   });
 };
 
-export const transferModelToReducer = (model, key, parent = {}) => {
-  if (!is.object(model)) {
-    return;
-  }
+export const transferModelToReducer = (model = {}, key, parent = {}) => {
+  expect(model, is.object, 'model必须是object类型');
   const { state: initialState = {}, reducers = {} } = model;
 
   parent[key] = function rematchReducer(state = initialState, action) {
@@ -114,7 +114,7 @@ export const transferModelToReducer = (model, key, parent = {}) => {
 
       if (actionFound) {
         const nextState = reducers[actionKey].call(getCurrentPage(), state, payload);
-        const isNullOrPromise = !nextState || is.promise(nextState);
+        const isNullOrPromise = is.void0(nextState) || is.null(nextState) || is.promise(nextState);
         return isNullOrPromise ? state : nextState;
       }
     }
@@ -127,6 +127,9 @@ export const combineModels = (models) => {
   const modelKeys = keys(models);
   modelKeys.forEach((key) => {
     const model = models[key];
+    if (is.bool(model)) {
+      return;
+    }
     transferModelToReducer(model, key, reducers);
   });
   return reducers;

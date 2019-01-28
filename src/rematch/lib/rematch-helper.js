@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 const isType = type => value => typeof value === type;
 
 export const is = {
@@ -5,9 +6,11 @@ export const is = {
   func: isType('function'),
   arr: Array.isArray,
   void0: isType('undefined'),
+  bool: isType('boolean'),
 };
 
 is.promise = obj => obj && is.func(obj.then);
+is.null = obj => !obj && is.object(obj);
 
 export const expect = (val, checkFn, message) => {
   if (is.func(checkFn)) {
