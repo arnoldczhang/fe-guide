@@ -16,10 +16,21 @@
 12. [react-christmas](https://react.christmas)
 13. [Vuex、Flux、Redux、Redux-saga、Dva、MobX](https://zhuanlan.zhihu.com/p/53599723)
 
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`相关库`](#相关库)
+* [`lifecycle`](#lifecycle)
+* [`更新过程`](#更新过程)
+* [`redux大型项目构建`](#redux大型项目构建)
+* [`React Hooks流程`](#React Hooks流程)
+
+</details>
+
 ## 相关库
 1. ckeditor： https://ckeditor.com/blog/best-wysiwyg-editor-for-angular-react/
 2. react可视化库：https://mp.weixin.qq.com/s/NgaQ4sGI4RDXb23ua2Spbw
-
 
 ## lifecycle
   - ```js
@@ -190,4 +201,5 @@ const domainsReducer = combineReducers({
 });
 ```
 
-
+## React Hooks流程
+![react hooks](react-hook.jpg)
