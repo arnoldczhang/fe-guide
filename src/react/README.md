@@ -15,6 +15,7 @@
 11. [Dan对react内部的解释](https://overreacted.io/)
 12. [react-christmas](https://react.christmas)
 13. [Vuex、Flux、Redux、Redux-saga、Dva、MobX](https://zhuanlan.zhihu.com/p/53599723)
+14. [ReactFiber在并发模式下的运行机制](https://zhuanlan.zhihu.com/p/54042084)
 
 ## 目录
 <details>
