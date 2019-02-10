@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { dispatch } from '@rematch/core';
+import { Button, Badge } from 'evergreen-ui';
 
 import styles from './App.css';
 // import logo from '../logo.svg';
@@ -68,6 +69,8 @@ class App extends PureComponent {
     return [
       <div className={styles.App} key="App">
         <FancyButton ref={ref}>Click me!</FancyButton>
+        <Button>I am using 🌲 Evergreen!</Button>
+        <Badge color="green">Success</Badge>
         <button onClick={this.increase}>click</button>
         {React.cloneElement(<Header />, {
           name: 'arnold',

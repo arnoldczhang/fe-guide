@@ -43,7 +43,7 @@ class App extends PureComponent {
       dispatch,
     } = this.props;
 
-    actionInitApp(dispatch);
+    // actionInitApp(dispatch);
 
     return [
       <div className={styles.App} key="App">

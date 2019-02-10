@@ -1,3 +1,7 @@
+/**
+ * 千万不要升这个版本，升了就跑不起来
+ * "babel-loader": "^7.1.2",
+ */
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
