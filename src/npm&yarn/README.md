@@ -1,7 +1,8 @@
 # npm
 
 ## 参考
-  -  https://github.com/diamont1001/blog/issues/11
+-  https://github.com/diamont1001/blog/issues/11
+- [现代化js封装库标准配置](https://github.com/yanhaijing/jslib-base)
 
 ## npm & yarn基本操作 & 相关常识
   - ## 相关常识
