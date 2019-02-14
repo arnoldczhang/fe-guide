@@ -7,9 +7,12 @@ const {
   writeFile: write,
 } = require('fs-extra');
 
+let baseData = [];
+
 const fileExprCach = {};
-const rootFilePath = './src/pages/';
-const savePath = './all.json';
+const rootPath = './src/pages/';
+const savePath = './src/all.js';
+const baseWxmlPath = './src/pages/base.wxml';
 
 const exprRE = /{{([^{}]+)}}/g;
 const spliterRE = /\s*(?:,|&&|\|\|)\s*/;
@@ -38,7 +41,7 @@ const commonSpliter = input => input.split(compareRE)
   ).filter(val => !stringRE.test(val));
 
 const findFileData = (content) => {
-  const output = [];
+  const output = [].concat(baseData);
   let result = exprRE.exec(content);
   while (result) {
     const phrase = result[1].split(spliterRE);
@@ -67,16 +70,23 @@ const findFileData = (content) => {
   return output;
 };
 
-const saveJson = () => {
-  write(savePath, JSON.stringify(fileExprCach, null, 4));
+const saveFile = () => {
+  write(savePath, `
+    module.exports = ${JSON.stringify(fileExprCach, null, 4)}
+  `);
+};
+
+const analyseBaseFile = () => {
+  const baseContent = readS(baseWxmlPath, 'utf-8');
+  baseData = findFileData(baseContent);
 };
 
 const analysePageFiles = () => {
-  const dirs = readDirS(rootFilePath);
+  const dirs = readDirS(rootPath);
   dirs.forEach((dir) => {
     // if (dir !== '') return;
     try {
-      const fileContent = readS(`${rootFilePath}${dir}/${dir}.wxml`, 'utf-8');
+      const fileContent = readS(`${rootPath}${dir}/${dir}.wxml`, 'utf-8');
       const data = findFileData(fileContent);
       fileExprCach[dir] = [...new Set(data)];
       console.log(`${dir}.wxml is done`);
@@ -87,8 +97,9 @@ const analysePageFiles = () => {
 };
 
 const exportDataToJson = () => {
+  analyseBaseFile();
   analysePageFiles();
-  saveJson();
+  saveFile();
 };
 
 exportDataToJson();
