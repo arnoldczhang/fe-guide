@@ -59,3 +59,8 @@
 
     - ### 删除一个发布者
     - npm owner rm 用户名 项目名
+
+## package.json属性
+* [module](https://github.com/rollup/rollup/wiki/pkg.module)
+  - webpack或rollup打包时会优先引入module对应的文件
+  - 主要用于做依赖分析，或npm包的复用
