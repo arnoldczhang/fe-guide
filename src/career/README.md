@@ -5,6 +5,7 @@
 - [沟通相关书籍推荐](https://www.zhihu.com/question/20118643)
 - [从点到面设计前端项目](https://yq.aliyun.com/articles/680238?utm_content=g_1000031626)
 - [程序员成长之路](https://github.com/fouber/blog/blob/master/201805/01.md)
+- [2019面试题](https://juejin.im/post/5c64d15d6fb9a049d37f9c20#heading-14)
 
 ## 目录
 <details>
