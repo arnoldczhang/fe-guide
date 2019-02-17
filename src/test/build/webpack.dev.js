@@ -11,7 +11,7 @@ const host = 'localhost' || internalIP.v4() || '0.0.0.0';
 const port = 2222;
 
 const config = merge(base, {
-  devtool: 'source-map',
+  // devtool: 'source-map',
   mode: 'development',
   entry: {
     // webdriver: './src/test/src/webdriver.js',
@@ -29,23 +29,22 @@ const config = merge(base, {
     concatenateModules: false,
     runtimeChunk: 'single',
     splitChunks: {
-      chunks: 'all',
-      maxInitialRequests: Infinity,
-      minSize: 0,
+      chunks: 'all',// 默认 async 可选值 all 和 initial
+      maxInitialRequests: Infinity,// 一个入口最大的并行请求数
+      minSize: 0,// 避免模块体积过小而被忽略
+      minChunks: 1, // 默认也是一表示最小引用次数
       cacheGroups: {
         vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name(module) {
-            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-            return `npm.${packageName.replace('@', '')}`;
+          test: /[\\/]node_modules[\\/]/,// 如果需要的依赖特别小，可以直接设置成需要打包的依赖名称
+          name(module, chunks, chcheGroupKey) {// 可提供布尔值、字符串和函数，如果是函数，可编写自定义返回值
+            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];// 获取模块名称
+            return `npm.${packageName.replace('@', '')}`;// 可选，一般情况下不需要将模块名称 @ 符号去除
           },
         },
       },
     },
   },
   plugins: [
-    // so that file hashes don't change unexpectedly
-    new webpack.HashedModuleIdsPlugin(),
     new CleanWebpackPlugin(['../test/dist'], {
       root: path.join(__dirname, '..'),
     }),

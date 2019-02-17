@@ -9,8 +9,8 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 module.exports = {
   output: {
     path: path.join(__dirname, '../dist'),
-    filename: '[name].js',
-    chunkFilename: '[name].js',
+    filename: '[name].[contenthash].js',
+    // chunkFilename: '[name].js',
     // sourceMapFilename: '[file].[chunkhash].map',
     crossOriginLoading: 'anonymous',
     publicPath: '',
@@ -21,6 +21,7 @@ module.exports = {
       allChunks: true,
       disable: false,
     }),
+    new webpack.HashedModuleIdsPlugin(), // 根据模块的相对路径生成 HASH 作为模块 ID
   ],
   node: {
     fs: 'empty',
