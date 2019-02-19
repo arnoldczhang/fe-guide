@@ -231,6 +231,7 @@
     "selenium-webdriver": "^4.0.0-alpha.1",
     "style-loader": "^0.19.0",
     "transform-runtime": "^0.0.0",
+    "ts-creator": "^1.2.2",
     "tslint": "^5.10.0",
     "tui-grid": "^3.0.0",
     "uglifyjs-webpack-plugin": "^1.2.5",
