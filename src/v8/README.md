@@ -7,6 +7,19 @@
 - [对象模式](https://zhuanlan.zhihu.com/p/25069272)
 - [v8全文档](https://v8.js.cn/docs/)
 
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`并发标记`](#并发标记(mark-and-sweep))
+* [`新v8架构的优化`](#新v8架构的优化)
+* [`字节码和机器码`](#字节码和机器码)
+* [`部分原生方法解析`](#部分原生方法解析)
+* [`v8调试方式`](#v8调试方式-node)
+* [`v8本地安装`](#v8本地安装)
+
+</details>
+
 ## 并发标记(mark-and-sweep)
 - 三色标记
   - 白色：收集器还未发现该对象
@@ -33,12 +46,28 @@
 - 每次循环会做in判断导致比for-loop慢
 
 
-## v8调试方式 - By node
+## v8调试方式-node
 - --print-bytecode // 打印字节码
 - --trace-gc // 查看内存
 - --trace_gc_verbose // 查看内存明细
 - --allow-natives-syntax // 允许使用V8 引擎内部调试函数
 
+## v8本地安装
+* [Getting the Code](https://chromium.googlesource.com/v8/v8.git)
+* [GET DEPOT TOOLS](http://www.chromium.org/developers/how-tos/install-depot-tools)
+```js
+// clone depot_tools
+git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+
+// set path
+export PATH=$PATH:/path/to/depot_tools
+// restart terminal
+
+// or
+fetch v8
+
+gclient sync
+```
 
 
 
