@@ -63,10 +63,30 @@ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 export PATH=$PATH:/path/to/depot_tools
 // restart terminal
 
-// or
+// use `fetch` in depot_tools to get v8 source
 fetch v8
 
+// stay up to date
+git pull origin
 gclient sync
+
+// get gn library
+gclient runhooks
+
+// add `gm` to alias
+alias gm=/path/to/v8/tools/dev/gm.py
+
+// build V8 for known configurations
+gm x64.release
+
+// run specific tests
+gm x64.debug mjsunit/string-split
+
+// build & run all test
+gm x64.release.check
+
+// run benchmarks
+gm x64.debug benchmarks
 ```
 
 
