@@ -18,7 +18,8 @@
 * [`项目设计`](#项目设计)
 * [`团队规范`](#团队规范)
 * [`推销五步`](#推销五步)
-* [`前端领域元素`](#前端领域元素)
+* [`前端集成解决方案`](#前端集成解决方案)
+* [`依赖管理`](#依赖管理)
 
 </details>
 
@@ -82,6 +83,23 @@
     - 避免用户误操作，或有一定提示
   - 效率
 
+### 核心思考点
+* 可用性
+  - api暴露
+  - 同步/异步
+  - 兼容性
+  - 异常处理
+  - 降级
+  - 日志埋点
+* 可扩展性
+  - 代码维护：typescript、eslint、git-flow、code-review、版本控制
+  - 功能封装/分层：底层通用方法、中间件、对外暴露的功能
+* 安全性
+  - 权限管理
+  - 缓存读写
+  - 用户输入/反馈
+  - cookies
+
 ### UI工程要素
 [UI工程要素](https://mp.weixin.qq.com/s?__biz=MzU0Nzk1MTg5OA==&mid=2247484673&idx=1&sn=2056a95b60b9bc3b4739afc353564f7b&chksm=fb47c174cc3048623148ece520a0bc2581b100d99ea97a780b66df16dc9c6937ee8bce2c2ee2&mpshare=1&scene=2&srcid=&from=timeline&ascene=2&devicetype=androi)
 * 前后页面之间数据一致性
@@ -108,6 +126,7 @@
   - 对比传统和要推销的东西
 5. 提出证据，你能让这一切变成现实
 
+
 ## 前端集成解决方案
 [前端集成解决方案](https://github.com/fouber/blog/issues/1)
 1. 开发规范
@@ -129,4 +148,24 @@
   * 见[`开发流程`](#开发流程)
 8. 开发工具
   * 构建与优化工具、开发-调试-部署等流程工具，以及组件库获取、提交等相关工具
+
+
+## 依赖管理
+大型前端项目可以使用npm模块的方式进行管理
+1. 将本地目录安装成为local_module
+```js
+npm install ./path/to/module1
+```
+2. 安装后package.json变更
+```json
+{
+  // ...
+  "module1": "./path/to/module1",
+}
+```
+3. local_module引用
+```js
+import module1 from 'module1'
+// ...
+```
 
