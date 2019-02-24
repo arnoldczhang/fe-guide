@@ -1,0 +1,19 @@
+{
+  "name": "aaa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "npm start"
+  },
+  "author": "arnold",
+  "license": "MIT",
+  "dependencies": {
+    "@wmfe/portm-wxapp": "0.1.16"
+  },
+  "devDependencies": {
+  }
+}

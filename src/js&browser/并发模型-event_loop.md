@@ -10,6 +10,19 @@
 
 - - -
 
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`javascript并发模型`](#javascript并发模型)
+* [`Call Stack`](#调用栈（Call Stack）)
+* [`Event Loop`](#事件循环（Event Loop）)
+* [`task`](#任务队列（task）)
+* [`await`](#await)
+* [`例子`](#交互事件触发)
+
+</details>
+
 
 ## javascript并发模型
 - Event Loop - 事件循环
@@ -37,6 +50,8 @@
 - - -
 
 ## 事件循环（Event Loop）
+
+### 浏览器环境
 ![任务队列](68747470733a2f2f736661756c742d696d6167652e62302e7570616979756e2e636f6d2f3134392f3930352f313439393035313630392d356138616434376663653736345f61727469636c6578.png)
 * 每个线程都有自己的event loop
 * 浏览器可以有多个event loop，browsing contexts和web workers就是相互独立的
@@ -62,6 +77,15 @@
   8. 如果这是一个worker event loop，但是没有任务在task队列中，并且WorkerGlobalScope对象的closing标识为true，
   则销毁event loop，中止这些步骤，然后进行 run a worker
   9. 返回第一步
+
+### node
+* timers: 执行setTimeout和setInterval中到期的callback。
+* pending callback: 上一轮循环中少数的callback会放在这一阶段执行。
+* idle, prepare: 仅在内部使用。
+* poll: 最重要的阶段，执行pending callback，在适当的情况下会阻塞在这个阶段。
+* check: 执行setImmediate(setImmediate()是将事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行setImmediate指定的回调函数)的callback。
+* close callbacks: 执行close事件的callback，例如socket.on('close'[,fn])或者http.server.on('close, fn)。
+
 
 - - -
 
@@ -101,7 +125,8 @@
 
 - - -
 
-## 交互事件触发
+## 交互事件触发:
+例1：
 ```js
 let button = document.querySelector('#button');
 
@@ -127,6 +152,66 @@ button.addEventListener('click', function CB1() {
 // 直接用代码click，浏览器的内部实现是把 2 个 listener 都同步执行
 ```
 
+例2：
+```js
+/*
+script start
+script end
+先清空microtask
+promise1
+promise2
+setTimeout
+*/
+console.log('script start');
+setTimeout(function() {
+  console.log('setTimeout');
+}, 0);
+Promise.resolve().then(function() {
+  console.log('promise1');
+}).then(function() {
+  console.log('promise2');
+});
+console.log('script end');
+```
+
+例3：
+```js
+/*
+await 将后面对象转为promise
+script start
+async2 end
+Promise
+script end
+promise1
+promise2
+async1 end
+setTimeout
+*/
+console.log('script start')
+
+async function async1() {
+  await async2()
+  console.log('async1 end')
+}
+async function async2() {
+  console.log('async2 end')
+}
+async1()
+setTimeout(function() {
+  console.log('setTimeout')
+}, 0)
+
+new Promise(resolve => {
+  console.log('Promise')
+  resolve()
+}).then(function() {
+  console.log('promise1')
+}).then(function() {
+  console.log('promise2')
+})
+console.log('script end')
+```
+
 ---
 
 ## await
@@ -134,15 +219,18 @@ button.addEventListener('click', function CB1() {
 如果 await 之后的表达式的值不是 promise，则将其转换为 promise
 
 ```js
-async function foo() {
-  const v = await 42;
-  return v;
+async function f() {
+  await p
+  console.log('ok')
 }
 
-const p = foo();
-// → Promise{<resolved>:42}
+// 也表示
+function f() {
+  return RESOLVE(p).then(() => {
+    console.log('ok')
+  })
+}
 
-p.then(console.log);
 ```
 
 ### 深入理解

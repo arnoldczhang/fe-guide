@@ -1,5 +1,8 @@
 # redux + rematch
 
+## 参考
+- [Vuex、Flux、Redux、Redux-saga、Dva、MobX](https://zhuanlan.zhihu.com/p/53599723)
+
 ## steps
   1. init
   2. initStore

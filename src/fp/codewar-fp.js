@@ -1861,3 +1861,79 @@ function incrementString2(input) {
       return +d + 1 + ns.replace(/9/g, '0');
     });
 }
+
+// 数组中重复的数字
+// 1. 小->大排序
+// 2. 根据索引根据i和num[i]找到相同的值
+function duplicate(nums, duplication = []) {
+  function swap(pre, next) {
+    const temp = nums[pre];
+    nums[pre] = nums[next];
+    nums[next] = temp;
+  };
+
+  for (let i = 0; i < nums.length; i += 1) {
+    while (nums[i] !== i) {
+      if (nums[i] === nums[nums[i]]) {
+        duplication[0] = nums[i];
+        return duplication;
+      }
+      swap(i, nums[i]);
+    }
+  }
+  return duplication;
+};
+
+console.log(duplicate([2, 3, 1, 0, 2, 5]));
+
+// 二维数组中的查找
+// 1. 从右上角开始找
+// 2. <则从当前子数组中找，>则从下个子数组找
+function matrixFind(matrix, target) {
+  if (target == null || !matrix.length) {
+    return false;
+  }
+
+  let row = 0;
+  let index = matrix[0].length - 1;
+
+  while (row < matrix.length && index >= 0) {
+    const num = matrix[row][index];
+    if (target < num) {
+      index--;
+    } else if (target === num) {
+      return true;
+    } else {
+      row++;
+    }
+  }
+  return false;
+};
+console.log(matrixFind([
+  [1,   4,  7, 11, 15],
+  [2,   5,  8, 12, 19],
+  [3,   6,  9, 16, 22],
+  [10, 13, 14, 17, 24],
+  [18, 21, 23, 26, 30]
+], 5)); // true
+
+// 跳台阶
+// 一只青蛙一次可以跳上 1 级台阶，也可以跳上 2 级。
+// 求该青蛙跳上一个 n 级的台阶总共有多少种跳法。
+function JumpFloor(n) {
+  if (n <= 2)
+      return n;
+  var pre2 = 1, pre1 = 2;
+  var result = 1;
+  for (var i = 2; i < n; i++) {
+    result = pre2 + pre1;
+    pre2 = pre1;
+    pre1 = result;
+  }
+  return result;
+}
+
+
+
+
+

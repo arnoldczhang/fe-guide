@@ -1,7 +1,8 @@
 # npm
 
 ## 参考
-  -  https://github.com/diamont1001/blog/issues/11
+-  https://github.com/diamont1001/blog/issues/11
+- [现代化js封装库标准配置](https://github.com/yanhaijing/jslib-base)
 
 ## npm & yarn基本操作 & 相关常识
   - ## 相关常识
@@ -58,3 +59,8 @@
 
     - ### 删除一个发布者
     - npm owner rm 用户名 项目名
+
+## package.json属性
+* [module](https://github.com/rollup/rollup/wiki/pkg.module)
+  - webpack或rollup打包时会优先引入module对应的文件
+  - 主要用于做依赖分析，或npm包的复用

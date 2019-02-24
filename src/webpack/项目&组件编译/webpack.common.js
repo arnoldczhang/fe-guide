@@ -7,11 +7,12 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
+  target: 'node',
   output: {
     path: path.join(__dirname, '../dist'),
-    filename: '[name].[contenthash].js',
-    // chunkFilename: '[name].js',
-    // sourceMapFilename: '[file].[chunkhash].map',
+    filename: '[name].js',
+    chunkFilename: '[name].js',
+    sourceMapFilename: '[file].[chunkhash].map',
     crossOriginLoading: 'anonymous',
     publicPath: '',
   },
@@ -21,7 +22,6 @@ module.exports = {
       allChunks: true,
       disable: false,
     }),
-    new webpack.HashedModuleIdsPlugin(), // 根据模块的相对路径生成 HASH 作为模块 ID
   ],
   node: {
     fs: 'empty',
