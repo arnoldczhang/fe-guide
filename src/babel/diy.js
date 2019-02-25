@@ -1,18 +1,18 @@
 module.exports = function (ref) {
-  console.log(ref);
   return {
     visitor: {
       Identifier(path) {
-        const name = path.node.name;
-        // console.log(name);
+        if (path.node.name === 'wx') {
+          path.node.name = "tt";
+        }
       },
 
       BlockStatement(path) {
-        // console.log(path);
+        // console.log('BlockStatement', path);
       },
 
       FunctionDeclaration(path) {
-        // console.log()
+        // console.log('FunctionDeclaration', path);
       },
     }
   };
