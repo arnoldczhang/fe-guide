@@ -1,10 +1,25 @@
-module.exports = function (ref) {
+// babel-types
+module.exports = function ({ types: t }) {
   return {
+    name: "transform-diy",
+    pre(file) {
+      // console.log(this);
+    },
     visitor: {
-      Identifier(path) {
-        if (path.node.name === 'wx') {
-          path.node.name = "tt";
-        }
+      CallExpression(...args) {
+        // console.log(args);
+      },
+      Identifier: {
+        enter(path) {
+          const { node } = path;
+          const { name } = node;
+          if (name === 'wx') {
+            path.replaceWithSourceString('tt');
+          }
+        },
+        exit() {
+
+        },
       },
 
       BlockStatement(path) {
@@ -14,6 +29,9 @@ module.exports = function (ref) {
       FunctionDeclaration(path) {
         // console.log('FunctionDeclaration', path);
       },
-    }
+    },
+    post(file) {
+
+    },
   };
 }
