@@ -6,14 +6,12 @@ module.exports = function ({ types: t }) {
       // console.log(this);
     },
     visitor: {
-      CallExpression(...args) {
-        // console.log(args);
-      },
       Identifier: {
         enter(path) {
           const { node } = path;
           const { name } = node;
-          if (name === 'wx') {
+          if (name === 'n') {
+            console.log(path.get('n'));
             path.replaceWithSourceString('tt');
           }
         },

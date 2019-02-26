@@ -8,7 +8,8 @@ const input = `
 
   function calc(n) {
     return n * n;
-  };
+  }
+  n;
 
   const calcArrow = n => n * n;
 `;
