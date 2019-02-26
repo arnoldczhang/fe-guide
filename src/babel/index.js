@@ -11,14 +11,13 @@ const input = `
   }
   n;
 
-  const calcArrow = n => n * n;
+  const calcArrow = zzz => n * n;
 `;
 
 const { ast } = babel.transform(input, {
   sourceMap: true,
-  presets: ['es2015', 'stage-2'],
+  presets: ["es2015", "stage-0"],
   plugins: [
-    'transform-class-properties',
     './src/babel/diy',
   ],
 });
@@ -33,4 +32,4 @@ babelTraverse(ast, {
 
 const { code } = babelGenerator(ast);
 
-// console.log(code);
+console.log(code);

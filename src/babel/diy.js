@@ -1,21 +1,24 @@
 // babel-types
-module.exports = function ({ types: t }) {
+module.exports = function ({ types: t, template }) {
   return {
     name: "transform-diy",
     pre(file) {
-      // console.log(this);
     },
     visitor: {
+      Program: {
+        exit(path) {
+          path.node.body.unshift(template(`const bb = require('./test');`)());
+        }
+      },
       Identifier: {
         enter(path) {
+        },
+        exit(path) {
           const { node } = path;
           const { name } = node;
-          if (name === 'n') {
-            console.log(path.get('n'));
-            path.replaceWithSourceString('tt');
+          if (name === 'zzz') {
+            console.log(path.parentPath.node.body);
           }
-        },
-        exit() {
 
         },
       },
