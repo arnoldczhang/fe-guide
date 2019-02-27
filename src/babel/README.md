@@ -221,7 +221,8 @@ function call(key) {
   return fn.call(this.state, this, this.state);
 }
 ```
-
+4. babel-types/lib/definitions/core.js和babel-types/lib/definitions/flow.js
+// hook都可以在这两个文件里查
 
 
 
