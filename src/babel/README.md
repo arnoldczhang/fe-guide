@@ -147,7 +147,80 @@ OptionManager.memoisePluginContainer = function memoisePluginContainer(fn, loc, 
 };
 ```
 
+### babelTraverse(parent, opts, scope, state, parentPath)
+1. babel-traverse/lib/index.js
+```js
+function traverse(parent, opts, scope, state, parentPath) {
+  if (!parent) return;
+  if (!opts) opts = {};
 
+  if (!opts.noScope && !scope) {
+    if (parent.type !== "Program" && parent.type !== "File") {
+      throw new Error(messages.get("traverseNeedsParent", parent.type));
+    }
+  }
+
+  visitors.explode(opts);
+
+  traverse.node(parent, opts, scope, state, parentPath);
+}
+
+traverse.node = function (node, opts, scope, state, parentPath, skipKeys) {
+  // ...
+  const keys = t.VISITOR_KEYS[node.type];
+  const context = new context2.default(scope, opts, state, parentPath);
+  // ...
+  keys.forEach((node, key) => {
+    // ...
+    // context见3
+    if (context.visit(node, key)) return;
+  });
+};
+```
+2. babel-traverse/lib/visitors.js
+```js
+function explode(visitor) {
+  // 1. hook名做split("|")，分别赋值原fns
+  // 例：'Identifier|BinaryExpression': (path) { ... }
+  // 转换成
+  // Identifier(path) { ... }
+  // BinaryExpression(path) { ... }
+
+  // 2. 校验visitor类型、key是否该ignore，或是否在babel-types.TYPES里
+
+  // 3. hook如果是function，转成 hookName: { enter: hookFn }
+
+  // 4. 如果hook有enter或exit，但不是数组，转成 visitor[hookName].enter = [visitor[hookName].enter]
+
+  // 5. 如果hookName属于virtualTypes（babel-traverse/lib/path/lib/virtual-types.js），将
+  // virtualTypes[hookName]加入virtualTypes[hookName].types的hook处理队列中
+
+  // 6. deprecratedKey检查
+};
+```
+3. babel-traverse/lib/path/context.js
+// hook的参数，比如path，state都会定义在这里
+```js
+function visit() {
+  // ...各种黑名单、标记检测
+  if (this.call("enter") || this.shouldSkip) {
+    return this.shouldStop;
+  }
+  // ...
+  _index2.default.node(this.node, this.opts, this.scope, this.state, this, this.skipKeys);
+  this.call("exit");
+  return this.shouldStop;
+}
+
+function call(key) {
+  // ...找到hook
+  const fn = this.opts[key];
+  // ...
+  if (this.shouldStop || this.shouldSkip || this.removed) return true;
+  // ...hook的参数path就是context实例，参数state和this都指向实例的state
+  return fn.call(this.state, this, this.state);
+}
+```
 
 
 

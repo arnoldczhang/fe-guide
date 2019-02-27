@@ -14,7 +14,7 @@ const input = `
   const calcArrow = zzz => n * n;
 `;
 
-const { ast } = babel.transform(input, {
+const { ast, metadata } = babel.transform(input, {
   sourceMap: true,
   presets: ["es2015", "stage-0"],
   plugins: [
