@@ -7,6 +7,7 @@
 * [`学习指南`](#学习指南)
 * [`babel6解析`](#babel6解析)
 * [`babel7解析`](#babel7解析)
+* [`test`](#test)
 
 </details>
 
