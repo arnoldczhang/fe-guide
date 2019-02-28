@@ -199,7 +199,7 @@ function explode(visitor) {
 };
 ```
 3. babel-traverse/lib/path/context.js
-// hook的参数，比如path，state都会定义在这里
+// hook的入参，比如path，state都会定义在这里
 ```js
 function visit() {
   // ...各种黑名单、标记检测
