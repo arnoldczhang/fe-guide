@@ -4,6 +4,7 @@
 - [tapable插件机制解析](https://segmentfault.com/a/1190000017420937)
 - [webpack4js拆包](https://mp.weixin.qq.com/s/a946nG0oNYnDBMMwgtDBpA)
 - [webpack4配置指南](https://mp.weixin.qq.com/s/cX7yuneDxDk8_NnMy3Bc8Q)
+- [webpack4配置指南2](https://mp.weixin.qq.com/s/si4yq-M_JS0DqedAhTlKng)
 
 ## webpack-3.8.1解析
 
