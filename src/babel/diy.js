@@ -1,4 +1,17 @@
 // babel-types
+
+// self/this/xxx.createSelectorQuery -> tt.createSelectorQuery
+const replaceCreateSelectorQuery = (path) => {
+  const { node, parent } = path;
+  const { name } = node;
+  if (name === 'createSelectorQuery') {
+    const { type } = parent.object;
+    if (type === 'Identifier') {
+      parent.object.name = 'tt';
+    }
+  }
+};
+
 module.exports = function ({ types: t, template }) {
   return {
     name: "transform-diy",
@@ -12,23 +25,16 @@ module.exports = function ({ types: t, template }) {
       },
       Identifier: {
         enter(path) {
+          replaceCreateSelectorQuery(path);
         },
         exit(path) {
-          const { node } = path;
-          const { name } = node;
-          if (name === 'zzz') {
-            console.log(path.parentPath.node.body);
-          }
-
         },
       },
 
       BlockStatement(path) {
-        // console.log('BlockStatement', path);
       },
 
       FunctionDeclaration(path) {
-        // console.log('FunctionDeclaration', path);
       },
     },
     post(file) {

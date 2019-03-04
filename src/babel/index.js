@@ -3,15 +3,27 @@ const babelTraverse = require("babel-traverse").default;
 const babelGenerator = require('babel-generator').default;
 
 const input = `
-  const aa = 123;
-  wx.setStorageSync('aa', 123);
+var obj = {
+  ready: function() {
+    owl.tryRun(function(){
+      var self = this
+      this.midasId = createMidasId()
+      this.setData({
+          midasId: this.midasId
+      })
+      try {
+          self.triggerEvent('loadend', self.data.callbackParams, self.data.loadExtra)
+      } catch (e) { 
+          owl.errorLog('loadend-error', e.message)
+      }
 
-  function calc(n) {
-    return n * n;
-  }
-  n;
-
-  const calcArrow = zzz => n * n;
+      var query = self.createSelectorQuery()
+      query.selectViewport().fields({
+          size: true
+      });
+    });
+  },
+};
 `;
 
 const { ast, metadata } = babel.transform(input, {
