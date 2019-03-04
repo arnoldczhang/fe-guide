@@ -69,6 +69,14 @@ width: max-content/min-content
 ### 虚拟滚动
 https://fusion.design/component/virtual-list?themeid=1
 
+### 换肤
+[rel=>alternate](https://www.zhangxinxu.com/wordpress/2019/02/link-rel-alternate-website-skin/comment-page-1/#comment-391940)
+```js
+document.link.disabled = true;
+document.link.disabled = false;
+```
+
+
 ## 须知
 
 ### 选择器
