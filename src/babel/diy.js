@@ -20,7 +20,7 @@ module.exports = function ({ types: t, template }) {
     visitor: {
       Program: {
         exit(path) {
-          path.node.body.unshift(template(`const bb = require('./test');`)());
+          path.node.body.unshift(template(`var bb = require('./test');`)());
         }
       },
       Identifier: {

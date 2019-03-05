@@ -76,6 +76,7 @@
     "g25": "nodemon ./src/fp/test.js",
     "g26": "webpack --config ./src/cyclejs/webpack.config.js",
     "g27": "postcss ./src/postcss/test.less -o ./src/postcss/test.css --config ./src/postcss/postcss.config.js",
+    "g28": "node ./src/babel",
     "gen": "./src/react-cli init",
     "save": "node ./src/test/src/saveImage",
     "lynt": "lynt ./src/lynt/lynt.js",
