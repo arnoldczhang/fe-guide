@@ -53,7 +53,6 @@ const init = () => {
     const { rules } = ast.stylesheet;
     iterateRules(rules);
     writeFile(getPath('./test.css'), css.stringify(ast));
-    // writeFile(getPath('./test.json'), JSON.stringify(ast, null, 2));
   });
 };
 
