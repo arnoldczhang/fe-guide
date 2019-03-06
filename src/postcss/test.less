@@ -1,12 +1,46 @@
-@media aa
-.a {
-  .b {
-    transform: translate3d(0, 0, 0);
+.add-bg-size(@size) {
+  background-size+: @size;
+}
+
+@default-size: 20px;
+
+.box {
+  .add-bg-size(@default-size (@default-size / 2));
+  .add-bg-size(cover);
+  width: calc(100% - 50px);
+}
+
+.bb{
+  @media wx {
+    color: red;
+  }
+  @media tt {
+    color: blue;
+  }
+  background-size: 100%;
+  background-color: red;
+  .aa {
+    transform: translateX(90deg);
+    @media wx {
+      .ee {
+        display: none;
+      }
+    }
+    @media tt {
+      .ff {
+        display: block;
+      }
+    }
   }
 }
-@media bb
-.c {
-  .d {
-    transform: translate3d(1, 1, 1);
+
+@media wx {
+    .cc {
+      font-size: 24rpx;
+    }
   }
-}
+  @media tt {
+    .dd {
+      font-size: 224rpx;
+    }
+  }
