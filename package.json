@@ -8,6 +8,11 @@
     "rematch": "/Users/dianping/website/fe-guide/node_modules/rematch-cli/bin/rematch.js"
   },
   "scripts": {
+    "preinstall": "echo 'preinstall'",
+    "install": "echo 'install'",
+    "postinstall": "echo 'postinstall'",
+    "prepublish": "echo 'prepublish'",
+    "prepare": "echo 'prepare'",
     "reactopt": "node node_modules/reactopt/main.js",
     "start": "node bin.js",
     "webpack": "webpack",
@@ -267,6 +272,7 @@
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "brotli-webpack-plugin": "^0.5.0",
     "cache-loader": "^1.2.2",
+    "chalk": "^2.4.2",
     "cross-env": "^5.2.0",
     "css": "^2.2.4",
     "cssnano": "^4.1.10",
