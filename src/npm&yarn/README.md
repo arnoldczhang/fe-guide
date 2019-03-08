@@ -80,6 +80,7 @@
 * [module](https://github.com/rollup/rollup/wiki/pkg.module)
   - webpack或rollup打包时会优先引入module对应的文件
   - 主要用于做依赖分析，或npm包的复用
+  - module属性是非标准属性，可参考[pr](https://github.com/browserify/resolve/pull/187)
 
 ## npm安装原理
 1. preinstall
