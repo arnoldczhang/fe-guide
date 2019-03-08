@@ -33,6 +33,7 @@
   - 可以在代码中把全局的 Promise 换为 bluebird 的实现，比如
 - [打包工具ncc](https://zeit.co/blog/ncc)
 - [图片压缩工具sharp](https://github.com/lovell/sharp?utm_source=75weekly&utm_medium=75weekly)
+- [检查库的两个版本间的diff](https://diff.intrinsic.com/)
 
   ```js
   global.Promise = require('bluebird');
