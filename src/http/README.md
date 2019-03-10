@@ -7,6 +7,7 @@
 - [把网站升级到QUIC](https://www.yinchengli.com/2018/06/10/quic/)
 - [https连接的前几毫秒发生了什么](https://fed.renren.com/2017/02/03/https/)
 - [流量劫持](https://zhuanlan.zhihu.com/p/40682772)
+- [http3.0](https://mp.weixin.qq.com/s?__biz=MzA5NzkwNDk3MQ==&mid=2650589264&idx=1&sn=6ff446e3029c40eaabcff373c070e0f7&chksm=8891d874bfe6516261a18cdd029aa5e8730f0e955641ac7468f6bbae27e3b6acf8b4fb3813a3&mpshare=1&scene=1&srcid=&key=cb09f7b1396893c712194eeb7d524d812aaa1d6fd932852583a9a7574e6641a4a96b4f1563570eb1d4082bccaeade398aa998d7795c039cc6f06a1adc02a6e8236aeca8dd63d762fb6ffe09a33f210c1&ascene=1&uin=MjkyNDMwMjUwNg%3D%3D&devicetype=Windows+10&version=62060728&lang=zh_CN&pass_ticket=iFII9Td9YjjFZBzWoNyPFItjPfv26zZMyl%2By%2ByRZ3h5qwAJTlx0MoRSGaGIS%2B2jK)
 
 ## 目录
 <details>
@@ -16,7 +17,8 @@
 * [`http1.0`](#http1.0)
 * [`http1.1`](#http1.1)
 * [`spdy`](#spdy)
-* [`http 2.0`](#http 2.0)
+* [`http2.0`](#http2.0)
+* [`http3.0`](#http3.0)
 * [`quic`](#quic)
 * [`https`](#https)
 
@@ -90,13 +92,23 @@
 - 首部压缩
 - 服务端推送
 
-## http 2.0
-- 多路复用：同一个tcp连接上并行请求，双向交换消息
+## http2.0
+- 多路复用
+  * 同个域名只需要占用一个 TCP 连接
+  * 同一个tcp连接上并行请求任意数量的双向交换消息
 - ![多路复用](多路复用.png)
-- 二进制分帧：将首部信息和请求体，采用二进制编码封装进HEADER和BODY frame
-- ![二进制分帧](二进制分帧.png)
+- 二进制分帧
+  * 将首部信息和请求体，采用二进制编码封装进HEADER和BODY frame
+  * ![二进制分帧](二进制分帧.png)
 - 首部压缩
+  * 客户端和服务器端使用“首部表”来跟踪和存储之前发送的键－值对
+  * 相同的数据，不再通过每次请求和响应发送
+  * 每个新的首部键－值对要么被追加到当前表的末尾，要么替换表中之前的值
 - 服务端推送
+  * 服务端可以主动把JS和CSS文件推送给客户端，而不需要客户端解析HTML时再发送这些请求
+  * 遵守同源策略
+  * 如果资源已经被浏览器缓存，浏览器可以通过发送RST_STREAM帧来拒收
+  * prefetch
 
 ### spdy与http 2.0区别
 - HTTP2.0 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS
@@ -114,6 +126,10 @@
 ### 对比http/https/quic
 - ![tls](p10.png)
 
+## http3.0
+基于UDP协议的QUIC
+0RTT
+
 ## https
   - http + tls
   - ![加密](24.png)
@@ -124,6 +140,8 @@
   - ![https-2](https-2.jpg)
   - 公钥加密，私钥解密
   - 过程 -> 3RTT
+    - 1次tcp RTT
+    - 2次tls RTT
     - ![https](201208201734403507.png)
 
 ### HTTP、HTTPS、TCP、SSL/TLS
