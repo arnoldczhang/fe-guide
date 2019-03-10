@@ -127,8 +127,19 @@
 - ![tls](p10.png)
 
 ## http3.0
-基于UDP协议的QUIC
-0RTT
+- 基于UDP协议的QUIC
+- 加密认证的报文
+  * TCP 协议头部
+- 无阻塞的多路复用
+- 0RTT
+- 向前纠错机制
+  * 每个数据包中含有部分其他数据包的内容，丢包可能会触发重组，而无需重传
+  * 以上仅限于单个包丢失的情况
+
+### 对比http2.0和http3.0
+- 多路复用
+  * http2.0：单个连接上有多个stream之间会阻塞，stream丢包会影响之后的stream
+  * http3.0：stream之间无影响
 
 ## https
   - http + tls
