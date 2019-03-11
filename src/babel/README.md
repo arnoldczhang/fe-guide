@@ -7,6 +7,7 @@
 * [`学习指南`](#学习指南)
 * [`babel6解析`](#babel6解析)
 * [`babel7解析`](#babel7解析)
+* [`babel-macro`](#babel-macro)
 
 </details>
 
@@ -223,6 +224,43 @@ function call(key) {
 ```
 4. babel-types/lib/definitions/core.js和babel-types/lib/definitions/flow.js
 // hook都可以在这两个文件里查
+
+## babel-macro
+编译阶段预处理js逻辑
+[babel-plugin-macros](https://github.com/kentcdodds/babel-plugin-macros)
+
+**注**
+仅针对静态编译的内容
+
+### 使用方法
+1. 安装macros
+```js
+npm install --save-dev babel-plugin-macros
+
+// 如果需要其他.macros，需要手动安装
+// .macros可以参考[awesome-babel-macros](https://github.com/jgierer12/awesome-babel-macros)
+npm install --save-dev ms.macro
+```
+2. 配置使用macros
+```js
+const { ast } = require('babel-core').transform(input, {
+  // ...
+  plugins: [
+    // ...
+    'macros',
+  ],
+});
+```
+3. 代码使用
+```js
+import ms from 'ms.macro';
+
+const ONE_DAY = ms('1 day');
+```
+4. 编译后输出的内容
+```js
+var ONE_DAY = 86400000;
+```
 
 
 

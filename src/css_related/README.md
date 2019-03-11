@@ -28,9 +28,13 @@
 - contain
 
 ### 平滑滚动
+[滚动](https://xiaotianxia.github.io/blog/vuepress/js/scroll_behaviors.html)
 html {
   scroll-behavior: smooth;
 }
+
+### 滚动不传播父元素
+overscroll-behavior: contain;
 
 ### width: auto
 width: max-content/min-content
