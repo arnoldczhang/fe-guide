@@ -21,17 +21,14 @@ const replaceProcessEnv = (path, types, options) => {
     const key = path.toComputedKey();
     let envKey;
 
-    // console.log(key);
-
     if (types.isStringLiteral(key)) {
       envKey = key.value;
     } else if (types.isBinaryExpression(key)) {
       envKey = getLeaf(types, key);
-      console.log(envKey);
     }
-    // if (include && include.indexOf(envKey) !== -1) {
-    //   path.replaceWith(types.valueToNode(process.env[envKey]));
-    // }
+    if (include && include.indexOf(envKey) !== -1) {
+      path.replaceWith(types.valueToNode(process.env[envKey]));
+    }
   }
 };
 
@@ -39,14 +36,14 @@ const getLeaf = (types, { left, right, operator }, result = '') => {
   if (types.isStringLiteral(left)) {
     result += left.value;
   } else if (types.isBinaryExpression(left)) {
-    getLeaf(types, left, result);
+    result += getLeaf(types, left);
   }
 
   if (operator === '+') {
     if (types.isStringLiteral(right)) {
       result += right.value;
     } else if (types.isBinaryExpression(right)) {
-      getLeaf(types, right, result);
+      result += getLeaf(types, right);
     }
   }
   return result;
