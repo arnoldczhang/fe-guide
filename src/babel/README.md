@@ -223,7 +223,10 @@ function call(key) {
 }
 ```
 4. babel-types/lib/definitions/core.js和babel-types/lib/definitions/flow.js
-// hook都可以在这两个文件里查
+hook都可以在这两个文件里查
+5. @babel/core/node_modules/@babel/types/lib/index.d.ts
+和 @babel/core/node_modules/@babel/types/lib/index.js
+types可以在这两个文件里查
 
 ---
 
@@ -241,16 +244,32 @@ function call(key) {
 参考[options](https://babeljs.io/docs/en/options)
 
 **ast**
+
 是否生成ast
+
 默认false，返回null
 
 **code**
+
 是否生成code
+
 默认true
 
+**envName**
+
+环境变量
+
+默认process.env.BABEL_ENV || process.env.NODE_ENV || "development"
+
 **sourceMap**
+
 **babelrc**
+
+默认true
+
 **configFile**
+
+默认path.resolve(opts.root, "babel.config.js")
 
 ---
 

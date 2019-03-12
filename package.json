@@ -260,6 +260,7 @@
   "devDependencies": {
     "@babel/core": "^7.0.1",
     "@babel/plugin-external-helpers": "^7.0.0",
+    "@babel/template": "^7.2.2",
     "@storybook/addon-actions": "^4.0.2",
     "@storybook/react": "^4.0.2",
     "@types/es6-promise": "^3.3.0",
