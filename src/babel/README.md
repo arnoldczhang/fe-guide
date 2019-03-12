@@ -225,6 +225,35 @@ function call(key) {
 4. babel-types/lib/definitions/core.js和babel-types/lib/definitions/flow.js
 // hook都可以在这两个文件里查
 
+---
+
+## babel7解析
+
+### 文件<->方法变更
+1. @babel/core
+  * transform
+  * transformSync
+  * transformAsync
+2. @babel/generator
+  * default
+
+### options
+参考[options](https://babeljs.io/docs/en/options)
+
+**ast**
+是否生成ast
+默认false，返回null
+
+**code**
+是否生成code
+默认true
+
+**sourceMap**
+**babelrc**
+**configFile**
+
+---
+
 ## babel-macro
 编译阶段预处理js逻辑
 [babel-plugin-macros](https://github.com/kentcdodds/babel-plugin-macros)
