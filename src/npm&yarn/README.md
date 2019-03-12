@@ -94,7 +94,17 @@
   - 当发现有重复模块时，则将其丢弃（由于存在版本兼容范围，所以不一定要版本完全一致）
 6. 执行工程自身生命周期
   - install
-6. postinstall
-prepublish
-prepare
+6. postinstall + prepublish + prepare
+
+### npm2安装机制
+![npm2](npm2.png)
+弊端：相同模块大量冗余
+
+### npm3安装机制
+![npm3](npm3对比npm2.png)
+弊端：相同模块部分冗余，如下图：
+![npm3模块冗余](npm3模块冗余.png)
+
+### npm去重
+npm dedupe
 
