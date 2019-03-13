@@ -82,6 +82,7 @@
     "g26": "webpack --config ./src/cyclejs/webpack.config.js",
     "g27": "node ./src/postcss/postcss.js&postcss ./src/postcss/test.css -o ./src/postcss/test.css --config ./src/postcss/postcss.config.js",
     "g28": "node ./src/babel",
+    "g29": "webpack --config ./src/webpack/webpack.simple.js",
     "gen": "./src/react-cli init",
     "save": "node ./src/test/src/saveImage",
     "lynt": "lynt ./src/lynt/lynt.js",
