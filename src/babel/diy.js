@@ -1,7 +1,12 @@
 const { declare } = require('@babel/helper-plugin-utils');
 const template = require('@babel/template').default;
 
-// self/this/xxx.createSelectorQuery -> tt.createSelectorQuery
+/************plugins*************/
+/**
+ * self/this/xxx.createSelectorQuery -> tt.createSelectorQuery
+ * @param  {[type]} path [description]
+ * @return {[type]}      [description]
+ */
 const replaceCreateSelectorQuery = (path) => {
   const { node, parent } = path;
   const { name } = node;
@@ -13,7 +18,13 @@ const replaceCreateSelectorQuery = (path) => {
   }
 };
 
-// 代码中的process.env[KEY]替换成环境变量值
+/**
+ * 代码中的process.env[KEY]替换成环境变量值
+ * @param  {[type]} path    [description]
+ * @param  {[type]} types   [description]
+ * @param  {[type]} options [description]
+ * @return {[type]}         [description]
+ */
 const replaceProcessEnv = (path, types, options) => {
   const { include = [] } = options;
   if (path.get('object').matchesPattern('process.env')) {
@@ -25,12 +36,17 @@ const replaceProcessEnv = (path, types, options) => {
       envKey = key.value;
     } else if (types.isBinaryExpression(key)) {
       envKey = getLeaf(types, key);
+    } else {
+      // console.log(key);
     }
+
     if (include && include.indexOf(envKey) !== -1) {
       path.replaceWith(types.valueToNode(process.env[envKey]));
     }
   }
 };
+
+/************utils*************/
 
 const getLeaf = (types, { left, right, operator }, result = '') => {
   if (types.isStringLiteral(left)) {

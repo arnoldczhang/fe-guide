@@ -4,30 +4,30 @@ const uglifyJS = require('uglify-js');
 
 module.exports = () => {
   const input = `
-    // const obj = {
-    //   ready: function() {
-    //     if (ENV === 'tt') {
-    //       //
-    //     } else {
-    //       aa.tryRun(function(){
-    //         const self = this
-    //         const query = self.createSelectorQuery()
-    //         query.selectViewport().fields({
-    //             size: true
-    //         });
-    //       });
-    //     }
-    //   },
+    const obj = {
+      ready: function() {
+        if (ENV === 'tt') {
+          //
+        } else {
+          aa.tryRun(function(){
+            const self = this
+            const query = self.createSelectorQuery()
+            query.selectViewport().fields({
+                size: true
+            });
+          });
+        }
+      },
 
-    //   test() {
-    //     var a = ['a', 'b', 'c'];
-    //     var b = [...a, 'foo'];
-    //     for (let item of b) {
-    //       console.log(item);
-    //     }
-    //   }
-    // };
-    // obj.test(1);
+      test() {
+        var a = ['a', 'b', 'c'];
+        var b = [...a, 'foo'];
+        for (let item of b) {
+          console.log(item);
+        }
+      }
+    };
+    obj.test(1);
 
     if (process.env.NODE_ENV === 'production') {
       console.log(1);
@@ -35,6 +35,12 @@ module.exports = () => {
     if (process.env['NO' + 'DE' + '_ENV'] === 'production') {
       console.log(2);
     }
+
+    if (process.env[env] === 'production') {
+      console.log(2);
+    }
+
+    const env = 'NODE_ENV';
   `;
 
   const { ast } = transformSync(input, {
@@ -87,5 +93,5 @@ module.exports = () => {
     },
   });
 
-  console.log(code);
+  console.log(ast);
 };
