@@ -1,11 +1,13 @@
 const babelConsole = require('./babel-plugin-console');
 const babelMacro = require('./babel-plugin-macro');
-const babel7Diy = require('./babel-plugin-diy');
+const babel7Diy = require('./babel-run-diy');
+const babelInlineEnv = require('./babel-run-inline-env');
 
 const runMap = {
   babel7Diy,
   babelConsole,
   babelMacro,
+  babelInlineEnv,
 };
 
 /**
@@ -18,5 +20,4 @@ const run = () => {
     func();
   }
 };
-
 run();

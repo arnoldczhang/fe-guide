@@ -1,97 +1,60 @@
-const { traverse, transformSync } = require('@babel/core');
-const babelGenerator = require('@babel/generator').default;
-const uglifyJS = require('uglify-js');
+const { declare } = require('@babel/helper-plugin-utils');
+const template = require('@babel/template').default;
 
-module.exports = () => {
-  const input = `
-    const obj = {
-      ready: function() {
-        if (ENV === 'tt') {
-          //
-        } else {
-          aa.tryRun(function(){
-            const self = this
-            const query = self.createSelectorQuery()
-            query.selectViewport().fields({
-                size: true
-            });
-          });
+/************plugins*************/
+/**
+ * self/this/xxx.createSelectorQuery -> tt.createSelectorQuery
+ * @param  {[type]} path [description]
+ * @return {[type]}      [description]
+ */
+function replaceCreateSelectorQuery(path) {
+  const { node, parent } = path;
+  const { name } = node;
+  if (name === 'createSelectorQuery') {
+    const { type } = parent.object;
+    if (type === 'Identifier') {
+      parent.object.name = 'tt';
+    }
+  }
+};
+
+module.exports = declare(({ assertVersion, types }, options) => {
+  assertVersion(7);
+  return {
+    name: "transform-diy",
+    pre(file) {
+    },
+    visitor: {
+      Program: {
+        exit(path) {
+          path.node.body.unshift(template(`var bb = require('./test');`)());
         }
       },
+      Identifier: {
+        enter(path) {
+          replaceCreateSelectorQuery(path);
+        },
+        exit(path) {
+        },
+      },
 
-      test() {
-        var a = ['a', 'b', 'c'];
-        var b = [...a, 'foo'];
-        for (let item of b) {
-          console.log(item);
-        }
-      }
-    };
-    obj.test(1);
+      BlockStatement(path) {
+      },
 
-    if (process.env.NODE_ENV === 'production') {
-      console.log(1);
-    }
-    if (process.env['NO' + 'DE' + '_ENV'] === 'production') {
-      console.log(2);
-    }
 
-    if (process.env[env] === 'production') {
-      console.log(2);
-    }
+      BinaryExpression(path) {
+      },
 
-    const env = 'NODE_ENV';
-  `;
+      MemberExpression(path) {
+      },
 
-  const { ast } = transformSync(input, {
-    ast: true,
-    code: false,
-    sourceMap: true,
-    babelrc: false,
-    configFile: false,
-    presets: ['@babel/env', 'minify'],
-    plugins: [
-      // '@babel/plugin-transform-for-of',
-      // [
-      //   '@babel/plugin-transform-runtime',
-      //   {
-      //     "corejs": 2,
-      //     "helpers": true,
-      //     "regenerator": true,
-      //     "useESModules": false
-      //   }
-      // ],
-      ['./src/babel/diy', {
-        include: ['NODE_ENV'],
-      }],
-    ],
-  });
+      VariableDeclarator(path) {
+      },
 
-  traverse(ast, {
-    CallExpression({ node }) {
-
+      FunctionDeclaration(path) {
+      },
     },
-    VariableDeclarator({ node }) {
-
+    post(file) {
     },
-  });
-
-  const { code: babelCode } = babelGenerator(ast, {
-    minified: false,
-  });
-
-  const { error, code } = uglifyJS.minify(babelCode, {
-    output: {},
-    compress: {
-      dead_code: true,
-      global_defs: {
-        ENV: 'tt',
-      }
-    },
-    mangle: {
-      toplevel: false,
-    },
-  });
-
-  console.log(ast);
-};
+  };
+});
