@@ -279,11 +279,12 @@ types可以在这两个文件里查
 ## ast解析
 
 ### path
-path是所有hook的第一个入参，结构如下：
+path是所有hook的第一个入参
 
+#### 结构
 path
 - node
-  * 当前ast节点的主体信息
+  * 表示当前ast节点的主体信息
   * 结构：
   ```js
   interface BaseNode {
@@ -307,16 +308,18 @@ path
     block: path.node,
     parentBlock: path.parent,
     parent: parentScope,
-    bindings: [...], 
+    bindings: [...],  // 列出当前作用域绑定的变量，用Object.keys看起来较方便
   }
   ```
 - type
+  * 词法类型
 
 #### 常用方法
 - path.get(key)
 - path.isXXXX() or path.get(key).isXXXX()
+- path.replaceWith(types.valueToNode(/**/));
 
-### 常用hook
+### 常用词法类型hook
 
 #### CallExpression
 **作用**
@@ -327,27 +330,115 @@ path
 
 [CallExpression](https://babeljs.io/docs/en/next/babel-types.html#callexpression)
 
-**path.node常用字段**
-
-* callee
-* arguments
-
 **示例**
 ```js
 aa();
 aa.bb();
 ```
 
+**常用字段**
+
+* callee
+  - 调用的方法名
+  - path.get('callee').node.name
+* arguments
+  - 方法入参
+  - // 基本类型
+  path.get('arguments').map(arg => arg.node.value)
+  - // 引用类型
+  path.get('arguments').map(arg => arg.node.properties)
+
+
 #### VariableDeclarator
+**作用**
+
+捕获赋值操作
+
+**参考**
+
+[VariableDeclarator](https://babeljs.io/docs/en/next/babel-types.html#variabledeclarator)
+
+**示例**
+
+```js
+var _require = require('./test'),
+  aaaa = _require.isPlainObject;
+
+var test = require('./test');
+```
+
+**常用字段**
+
+* init
+  - 赋值语块
+  - path.get('init').get('callee')
+  - path.get('init').get('object')
+  - path.get('init').get('arguments')
+  - path.get('init').get('property')
+
 
 #### ImportDeclaration
+**作用**
+
+捕获`import sth from url`
+
+**参考**
+
+[importdeclaration](https://babeljs.io/docs/en/next/babel-types.html#importdeclaration)
+
+**示例**
+
+```js
+import { isPlainObject, isAa } from './test';
+```
+
+**常用字段**
+
+* source
+  - 引用路径
+  - path.get('source').node.value
+* specifiers
+  - 静态引入的变量(方法)名
+  - path.get('specifiers').map(specifier => 
+      specifier.get('imported').node.name
+    )
 
 #### MemberExpression
+**作用**
+
+捕获短语取值/调用的方法名词组
+
+**参考**
+
+[memberexpression](https://babeljs.io/docs/en/next/babel-types.html#Memberexpression)
+
+**示例**
+
+```js
+_require.isPlainObject
+
+test.isPlainObject({})
+```
+
+**常用字段**
+
+* object
+  - 短语前置语
+  - 比如上面的_require、test
+* property
+  - 短语后置语
+  - 比如上面的isPlainObject
 
 #### FunctionDeclaration
+**作用**
+**参考**
+**示例**
+**常用字段**
 
 #### ForInStatement
-
+**作用**
+**参考**
+**示例**
 **常用字段**
 
 * left
