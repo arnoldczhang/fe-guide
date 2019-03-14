@@ -406,7 +406,7 @@ import { isPlainObject, isAa } from './test';
 #### MemberExpression
 **作用**
 
-捕获短语取值/调用的方法名词组
+捕获短语取值和调用的方法名
 
 **参考**
 
@@ -428,6 +428,26 @@ test.isPlainObject({})
 * property
   - 短语后置语
   - 比如上面的isPlainObject
+
+#### ExportNamedDeclaration
+**作用**
+
+捕获`export const xxx = xxx`
+
+**参考**
+
+[exportnameddeclaration](https://babeljs.io/docs/en/next/babel-types.html#exportnameddeclaration)
+
+**示例**
+
+```js
+
+```
+
+**常用字段**
+
+* declaration
+* specifiers
 
 #### FunctionDeclaration
 **作用**
