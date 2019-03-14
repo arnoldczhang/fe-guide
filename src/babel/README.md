@@ -278,17 +278,61 @@ types可以在这两个文件里查
 
 ## ast解析
 
+### path
+path是所有hook的第一个入参，结构如下：
+
+path
+- node
+  * 当前ast节点的主体信息
+  * 结构：
+  ```js
+  interface BaseNode {
+    leadingComments: ReadonlyArray<Comment> | null;
+    innerComments: ReadonlyArray<Comment> | null;
+    trailingComments: ReadonlyArray<Comment> | null;
+    start: number | null;
+    end: number | null;
+    loc: SourceLocation | null;
+    type: Node["type"];
+  }
+  ```
+  * 以上是基础字段，不同hook的path.node会有自己的扩展，
+  不过都继承于此
+- scope
+  * 当前词法作用域
+  * 结构：
+  ```js
+  {
+    path: path,
+    block: path.node,
+    parentBlock: path.parent,
+    parent: parentScope,
+    bindings: [...], 
+  }
+  ```
+- type
+
+#### 常用方法
+- path.get(key)
+- path.isXXXX() or path.get(key).isXXXX()
+
 ### 常用hook
 
 #### CallExpression
-[方法调用](https://babeljs.io/docs/en/next/babel-types.html#callexpression)
+**作用**
 
-**常用字段**
+捕获(对象)方法的调用
 
-callee
+**参考**
 
-arguments
+[CallExpression](https://babeljs.io/docs/en/next/babel-types.html#callexpression)
 
+**path.node常用字段**
+
+* callee
+* arguments
+
+**示例**
 ```js
 aa();
 aa.bb();
@@ -301,6 +345,13 @@ aa.bb();
 #### MemberExpression
 
 #### FunctionDeclaration
+
+#### ForInStatement
+
+**常用字段**
+
+* left
+* right
 
 ---
 
