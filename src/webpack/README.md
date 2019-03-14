@@ -53,9 +53,31 @@
 ### 相比webpack3
 * 4多了mode字段，用于切换开发/生成环境
 * 4支持了读取npm依赖的module字段，es6module
-- 2、3的摇树会判断，如果方法有入参，或操纵了window，则不会摇掉，因为这些函数有副作用
+* 2、3的摇树会判断，如果方法有入参，或操纵了window，则不会摇掉，因为这些函数有副作用
   4的摇树默认会摇掉，如果sideEffect置为false，则不摇
- 
+
+### tree shaking
+ [参考](https://zhuanlan.zhihu.com/p/32831172)
+
+上面提到的由于副作用，所以不会摇掉的，可以参考下面例子，
+V6Engine方法没有用到，但是修改了V8Engine的原型，如果摇掉会有问题
+
+ ```js
+ var V8Engine = (function () {
+  function V8Engine () {}
+  V8Engine.prototype.toString = function () { return 'V8' }
+  return V8Engine
+}())
+var V6Engine = (function () {
+  function V6Engine () {}
+  V6Engine.prototype = V8Engine.prototype // <---- side effect
+  V6Engine.prototype.toString = function () { return 'V6' }
+  return V6Engine
+}())
+console.log(new V8Engine().toString())
+ ```
+
+
 ## 注意事项
 - 使用 import()，需要dynamic-import插件 (https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/)
 - ![import](import-polyfill.png)

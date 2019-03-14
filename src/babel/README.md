@@ -7,6 +7,7 @@
 * [`学习指南`](#学习指南)
 * [`babel6解析`](#babel6解析)
 * [`babel7解析`](#babel7解析)
+* [`ast解析`](#ast解析)
 * [`babel-macro`](#babel-macro)
 
 </details>
@@ -241,7 +242,9 @@ types可以在这两个文件里查
   * default
 
 ### options
-参考[options](https://babeljs.io/docs/en/options)
+[参考](https://babeljs.io/docs/en/options)
+
+#### 常用key
 
 **ast**
 
@@ -270,6 +273,34 @@ types可以在这两个文件里查
 **configFile**
 
 默认path.resolve(opts.root, "babel.config.js")
+
+---
+
+## ast解析
+
+### 常用hook
+
+#### CallExpression
+[方法调用](https://babeljs.io/docs/en/next/babel-types.html#callexpression)
+
+**常用字段**
+
+callee
+
+arguments
+
+```js
+aa();
+aa.bb();
+```
+
+#### VariableDeclarator
+
+#### ImportDeclaration
+
+#### MemberExpression
+
+#### FunctionDeclaration
 
 ---
 
