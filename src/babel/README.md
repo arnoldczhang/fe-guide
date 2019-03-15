@@ -343,11 +343,14 @@ aa.bb();
   - path.get('callee').node.name
 * arguments
   - 方法入参
-  - // 基本类型
-  path.get('arguments').map(arg => arg.node.value)
-  - // 引用类型
-  path.get('arguments').map(arg => arg.node.properties)
-
+  - ```js
+    // 基本类型
+    path.get('arguments').map(arg => arg.node.value)
+    ```
+  - ```js
+    // 引用类型
+    path.get('arguments').map(arg => arg.node.properties)
+    ```
 
 #### VariableDeclarator
 **作用**
@@ -371,10 +374,12 @@ var test = require('./test');
 
 * init
   - 赋值语块
-  - path.get('init').get('callee')
-  - path.get('init').get('object')
-  - path.get('init').get('arguments')
-  - path.get('init').get('property')
+  - ```js
+    path.get('init').get('callee')
+    path.get('init').get('object')
+    path.get('init').get('arguments')
+    path.get('init').get('property')
+    ```
 
 
 #### ImportDeclaration
@@ -396,12 +401,16 @@ import { isPlainObject, isAa } from './test';
 
 * source
   - 引用路径
-  - path.get('source').node.value
+  - ```js
+    path.get('source').node.value
+    ```
 * specifiers
   - 静态引入的变量(方法)名
-  - path.get('specifiers').map(specifier => 
+  - ```js
+    path.get('specifiers').map(specifier => 
       specifier.get('imported').node.name
     )
+    ```
 
 #### MemberExpression
 **作用**
@@ -441,13 +450,34 @@ test.isPlainObject({})
 **示例**
 
 ```js
+export const isPlainObject = function isPlainObject() {
+  console.log(1);
+};
 
+export {
+  v1,
+  v1 as streamV1,
+  v2 as streamV2,
+};
 ```
 
 **常用字段**
 
 * declaration
+  - 对应具体的export声明
+  - ```js
+    path.get('declaration').get('declarations').map(
+      declare => declare.get('id').node.name
+    )
+    ```
 * specifiers
+  - 对应export结构体、重命名as
+  - ```js
+    path.node.specifiers.forEach((specifier) => {
+      const key = specifier.local.name;
+      const alias = specifier.exported.name;
+    });
+    ```  
 
 #### FunctionDeclaration
 **作用**
