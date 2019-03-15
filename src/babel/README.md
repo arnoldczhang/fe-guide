@@ -315,9 +315,14 @@ path
   * 词法类型
 
 #### 常用方法
+参考@babel/core/node_modules/@babel/traverse/lib/path/**.js
+
 - path.get(key)
 - path.isXXXX() or path.get(key).isXXXX()
-- path.replaceWith(types.valueToNode(/**/));
+- path.replaceWith(types.valueToNode(/**/))
+- path.remove()
+- path.parentPath.remove()
+- path.get('body').unshiftContainer('body', types.expressionStatement(t.stringLiteral('before')))
 
 ### 常用词法类型hook
 

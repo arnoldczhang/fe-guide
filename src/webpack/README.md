@@ -7,6 +7,7 @@
 
 * [`webpack-3.8.1解析`](#webpack-3.8.1解析)
 * [`webpack 4`](#webpack 4)
+* [`treeshaking`](#treeshaking)
 * [`注意事项`](#注意事项)
 
 </details>
@@ -77,6 +78,62 @@ var V6Engine = (function () {
 console.log(new V8Engine().toString())
  ```
 
+## treeshaking
+[参考](https://juejin.im/post/5a4dc842518825698e7279a9)
+
+### 为什么只针对es6module
+
+**静态分析**
+
+不执行代码，从字面量上对代码进行分析
+
+**ES6 module 特点***
+
+- 依赖关系是确定的
+- 只能作为模块顶层的语句出现
+- import 的模块名只能是字符串常量
+- import binding 是 immutable的
+
+
+### rollup、webpack、google Closure对比
+
+**rollup**
+- unused函数能消除，未触达的代码没消除
+- 配合uglifyjs能消除未触达的代码
+- 只处理函数和顶层的import/export变量，不能把没用到的类的方法消除掉
+
+**webpack**
+- unused函数未消除，未触达的代码没消除
+- 配合uglifyjs能消除未触达的代码
+- 只处理函数和顶层的import/export变量，不能把没用到的类的方法消除掉
+  ```js
+  function Menu() {
+  }
+
+  Menu.prototype.show = function() {
+  }
+
+  var a = 'Arr' + 'ay'
+  var b
+  if(a == 'Array') {
+      b = Array
+  } else {
+      b = Menu
+  }
+
+  b.prototype.unique = function() {
+      // 将 array 中的重复元素去除
+  }
+
+  export default Menu;
+  ```
+
+**google Closure**
+- unused函数、未触达的代码都能消除
+- 对业务代码有侵入性，比如需要加特定的标注
+
+**结论**
+google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 
 ## 注意事项
 - 使用 import()，需要dynamic-import插件 (https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/)
