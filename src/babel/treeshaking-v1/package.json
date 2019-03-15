@@ -1,0 +1,48 @@
+{
+  "name": "tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --inline --hot --content-base --history-api-fallback.",
+    "aaa": "webpack --config ./test1/webpack.config.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-plugin-minify-dead-code-elimination": "^0.5.0",
+    "babel-preset-minify": "^0.5.0",
+    "resolve": "^1.10.0",
+    "rollup": "^1.6.0",
+    "uglify-js": "^3.4.9"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.5",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-function-bind": "^7.0.0",
+    "@babel/plugin-transform-async-to-generator": "^7.1.0",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/preset-env": "^7.1.5",
+    "@babel/runtime": "^7.1.5",
+    "@types/node": "^10.12.18",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "clean-webpack-plugin": "^1.0.1",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.9.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "fs-extra": "^7.0.1",
+    "ts-loader": "^5.3.2",
+    "tslint": "^5.12.0",
+    "tslint-loader": "^3.5.4",
+    "typescript": "^3.3.3",
+    "webpack": "^2.7.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-merge": "^4.2.1"
+  }
+}

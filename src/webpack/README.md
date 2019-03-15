@@ -57,6 +57,9 @@
 * 2、3的摇树会判断，如果方法有入参，或操纵了window，则不会摇掉，因为这些函数有副作用
   4的摇树默认会摇掉，如果sideEffect置为false，则不摇
 
+### sideEffects
+import {a} from xx -> import {a} from xx/a
+
 ### tree shaking
  [参考](https://zhuanlan.zhihu.com/p/32831172)
 

@@ -9,4 +9,6 @@ isPlainObject({
 
 function aaa() {
   aaaa({});
+  isAa();
 };
+aaa();
