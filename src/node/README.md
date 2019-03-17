@@ -318,6 +318,10 @@ module.exports.a = 1;
 
 **js**
 
+uglify-js
+
 **html**
+
+[htmlparser2](../html/html.js)
 
 
