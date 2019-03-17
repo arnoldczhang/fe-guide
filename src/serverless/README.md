@@ -1,6 +1,7 @@
 # serverless
 
 ## 参考
+- [solid](https://learnsolid.cn/)
 
 ## 名词解释
 
@@ -27,3 +28,6 @@
 **SAAS - Software as a Service**
 
 软件即服务，比如 ERP、CRM、邮箱服务等，以软件为粒度提供服务。
+
+## 架构
+![通用serverless架构](通用serverless架构.jpg)
