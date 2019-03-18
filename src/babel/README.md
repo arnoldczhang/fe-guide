@@ -234,12 +234,15 @@ types可以在这两个文件里查
 ## babel7解析
 
 ### 文件<->方法变更
-1. @babel/core
+1. @babel/core（babel6的babel-core）
+  * traverse（babel6的babel-traverse）
   * transform
   * transformSync
   * transformAsync
-2. @babel/generator
+2. @babel/generator（babel6的babel-generator）
   * default
+3. @babel/parser（babel6的babylon）
+  * parse
 
 ### options
 [参考](https://babeljs.io/docs/en/options)
@@ -489,6 +492,40 @@ export {
 **参考**
 **示例**
 **常用字段**
+
+#### ImportSpecifier/ImportDefaultSpecifier
+**作用**
+
+捕获ImportDeclaration里的变量
+
+**参考**
+
+https://babeljs.io/docs/en/next/babel-types.html#importspecifier
+
+**示例**
+
+```js
+// 捕获aa
+import aa from '...';
+
+// 捕获{ bb }
+import { bb } from '...';
+
+// 捕获{ cc as c }
+import { cc as c } from '...';
+```
+
+**常用字段**
+
+* type
+* local
+  - 引用模块的变量名或引用名
+  - type=ImportDefaultSpecifier时，表示模块的默认输出
+  - 比如例子中的aa,bb,c
+* imported
+  - 引用模块的变量名
+  - type=ImportSpecifier时，才有
+  - 比如例子中的bb,cc（aa没有，因为是ImportDefaultSpecifier，默认输出）
 
 #### ForInStatement
 **作用**
