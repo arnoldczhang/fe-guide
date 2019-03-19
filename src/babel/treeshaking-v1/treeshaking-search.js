@@ -1,32 +1,30 @@
-const { traverse, transformSync } = require('@babel/core');
-const { valueToNode } = require('@babel/types');
-const babelGenerator = require('@babel/generator').default;
-const uglifyJS = require('uglify-js');
+const { traverse } = require('@babel/core');
 const fs = require('fs-extra');
 const path = require('path');
 const resolve = require('resolve');
-const say = console.log;
-const strify = (target = []) => target.toString();
+const {
+  say,
+  strify,
+  transSetObjectToArray,
+  projectDir,
+  nodeDir,
+  IMPORT,
+  OUTPORT,
+  DEFAULT,
+  transformSync,
+  MAX,
+} = require('./utils');
+const treeShake = require('./treeshaking-replace');
 
-const MAX = 300;
 let count = 1;
 
 const importMap = {};
 const exportMap = {};
 const visitedSet = new Set;
 
-const projectDir = path.join(__dirname, '../../waimai_wxapp/src');
-const nodeDir = path.join(__dirname, '../../waimai_wxapp/node_modules');
-const IMPORT = './test1/import.json';
-const OUTPORT = './test1/export.json';
 const defaultOutFileCb = (input) => {
   say(`Compile file: ${input} SUCCESS`);
 };
-
-const transSetObjectToArray = (object = {}) =>
-  Object.keys(object).forEach(key =>
-    object[key] = Array.from(object[key])
-  );
 
 const compileFile = (filename, options = {}) => {
   if (count >= MAX - 1) return;
@@ -38,14 +36,7 @@ const compileFile = (filename, options = {}) => {
   visitedSet.add(filePath);
   const fileDir = path.join(filePath, '../');
   const input = fs.readFileSync(filePath, 'utf-8');
-  const { ast } = transformSync(input, {
-    filename,
-    ast: true,
-    code: false,
-    sourceMap: true,
-    babelrc: true,
-    configFile: false,
-  });
+  const { ast } = transformSync(input, filename);
 
   traverse(ast, {
     Program: {
@@ -60,28 +51,36 @@ const compileFile = (filename, options = {}) => {
       }
     },
     ImportDeclaration(path) {
-      const { node } = path;
       const source = path.get('source');
       const specifiers = path.get('specifiers');
       const sourceName = source.node.value;
       const importPath = resolve.sync(sourceName, { basedir: fileDir });
+      // FIXME 需要基于当前目录找node_modules
+      compileFile(sourceName, {
+        basedir: /^\./.test(sourceName) ? fileDir : nodeDir,
+      });
+
       importMap[importPath] = importMap[importPath] || new Set;
       specifiers.forEach((specifier) => {
         const local = specifier.get('local').node;
         const imported = specifier.get('imported');
-        if (imported && imported.node) {
-          importMap[importPath].add(imported.node.name);
-          compileFile(sourceName, {
-            basedir: /^\./.test(sourceName) ? fileDir : nodeDir,
-          });
+        let importedName;
+        if (specifier.isImportDefaultSpecifier()) {
+          importedName = DEFAULT;
+        } else {
+          importedName = imported.node.name;
         }
+        // TODO 暂时只对标准的import {...}做处理，之后考虑更全面的监听变更
+        importMap[importPath].add(importedName);
       });
     },
     ExportDefaultDeclaration(path) {
+      // FIXME 第一次遍历不需要记录exports
       const exportNode = path.get('decleration').node;
-      this.__export.add(strify([exportNode ? exportNode.name : 'default']));
+      this.__export.add(strify([exportNode ? exportNode.name : DEFAULT]));
     },
     ExportNamedDeclaration(path) {
+      // FIXME 第一次遍历不需要记录exports
       const pathDeclaration = path.get('declaration');
       if (pathDeclaration && pathDeclaration.node) {
         if (pathDeclaration.isVariableDeclaration()) {
@@ -124,12 +123,14 @@ const outputToFile = () => {
 const analyzeImportFile = (filename = 'app.json') => {
   const { pages } = JSON.parse(
     fs.readFileSync(
-      path.join(projectDir, filename), 'utf-8'
+      path.join(projectDir, filename),
+      'utf-8'
     )
   );
-  pages.forEach(page => compileFile(`./${page}.js`));
   compileFile('./app.js');
-  outputToFile();
+  pages.forEach(page => compileFile(`./${page}.js`));
+  // outputToFile();
+  treeShake(importMap, exportMap, pages);
 };
 
 analyzeImportFile();

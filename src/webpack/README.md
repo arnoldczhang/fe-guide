@@ -82,7 +82,9 @@ console.log(new V8Engine().toString())
  ```
 
 ## treeshaking
-[参考](https://juejin.im/post/5a4dc842518825698e7279a9)
+- [基本原理](https://juejin.im/post/5a4dc842518825698e7279a9)
+- [拓展](https://diverse.space/2018/05/better-tree-shaking-with-scope-analysis)
+- [escope](https://github.com/estools/escope)
 
 ### 为什么只针对es6module
 
