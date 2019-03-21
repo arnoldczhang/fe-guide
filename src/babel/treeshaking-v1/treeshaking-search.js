@@ -56,8 +56,10 @@ const compileFile = (filename, options = {}) => {
       const sourceName = source.node.value;
       const importPath = resolve.sync(sourceName, { basedir: fileDir });
       // FIXME 需要基于当前目录找node_modules
-      compileFile(sourceName, {
-        basedir: /^\./.test(sourceName) ? fileDir : nodeDir,
+      setImmediate(() => {
+        compileFile(sourceName, {
+          basedir: /^\./.test(sourceName) ? fileDir : nodeDir,
+        });
       });
 
       importMap[importPath] = importMap[importPath] || new Set;
@@ -120,17 +122,34 @@ const outputToFile = () => {
   say('DONE');
 };
 
-const analyzeImportFile = (filename = 'app.json') => {
-  const { pages } = JSON.parse(
-    fs.readFileSync(
-      path.join(projectDir, filename),
-      'utf-8'
-    )
-  );
-  compileFile('./app.js');
-  pages.forEach(page => compileFile(`./${page}.js`));
-  // outputToFile();
+const analyzeImportFile = (filename = 'app.json', debugPages) => {
+  let pages;
+  if (Array.isArray(debugPages)) {
+    pages = debugPages;
+    pages.forEach((page) => {
+      if (Array.isArray(page)) {
+        const [ pageName, basedir ] = page;
+        compileFile(pageName, { basedir });
+      }
+    });
+  } else {
+    pages = JSON.parse(
+      fs.readFileSync(
+        path.join(projectDir, filename),
+        'utf-8'
+      )
+    ).pages;
+    pages.forEach(page => compileFile(`./${page}.js`));
+    compileFile('./app.js');
+  }
   treeShake(importMap, exportMap, pages);
+  // outputToFile();
 };
 
 analyzeImportFile();
+// analyzeImportFile('app.json', [
+//   [
+//     './@wmfe/metrics-wxapp/src/utils/env.js',
+//     nodeDir,
+//   ]
+// ]);

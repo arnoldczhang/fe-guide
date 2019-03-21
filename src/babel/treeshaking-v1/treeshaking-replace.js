@@ -5,7 +5,6 @@ const {
   identifier,
 } = require('@babel/types');
 const babelGenerator = require('@babel/generator').default;
-const uglifyJS = require('uglify-js');
 const fs = require('fs-extra');
 const path = require('path');
 const resolve = require('resolve');
@@ -17,6 +16,8 @@ const {
   transformSync,
   include,
   exclude,
+  getNodeName,
+  getNodeValue,
   MAX,
   DEFAULT,
 } = require('./utils');
@@ -48,45 +49,46 @@ const compileFile = (filename, options = {}) => {
       },
       exit(path) {
         count += 1;
-        return;
-      //   const usedMember = map[filePath] || new Set;
-      //   Object.keys(this.__funcs).forEach((funcKey) => {
-      //     const paths = this.__funcs[funcKey];
-      //     const alias = this.__alias[funcKey];
-      //     if (alias) {
-      //       let used;
-      //       alias.forEach((alia) => {
-      //         if (used) return;
-      //         if (usedMember.has(alia)) {
-      //           used = true;
-      //         }
-      //       });
-
-      //       if (!used) {
-      //         paths.forEach(path => path.remove());
-      //         this.__funcs[funcKey] = null;
-      //       }
-      //     } else if (!usedMember.has(funcKey)) {
-      //       paths.forEach(path => path.remove());
-      //       this.__funcs[funcKey] = null;
-      //     }
-      //   });
-
-      //   this.__exports.forEach((specifiers) => {
-      //     specifiers.forEach((specifier, i) => {
-      //       const key = specifier.local.name;
-      //       if (!this.__funcs[key]) {
-      //         specifiers[i] = null;
-      //       }
-      //     });
-      //   });
       }
     },
     ImportDeclaration(path) {
       const source = path.get('source');
-      const sourceName = source.node.value;
-      compileFile(sourceName, {
-        basedir: /^\./.test(sourceName) ? fileDir : nodeDir,
+      const sourceName = getNodeValue(source);
+      const specifiers = path.get('specifiers');
+      const importQ = [];
+      let isMixedImport = false;
+      if (specifiers.length) {
+        specifiers.forEach((specifier) => {
+          if (
+            specifier.isImportDefaultSpecifier()
+              || specifier.isImportNamespaceSpecifier()
+          ) {
+            const name = getNodeName(specifier.get('local'));
+            path.replaceWith(identifier(`const ${name} = require('${sourceName}')`));
+            isMixedImport = true;
+          } else {
+            const local = getNodeName(specifier.get('local'));
+            const imported = getNodeName(specifier.get('imported'));
+            const isDiff = local !== imported;
+            importQ.push(`${imported}${isDiff && local ? ': ' + local : ''}`);
+          }
+        });
+
+        if (importQ.length) {
+          const replaceNode = identifier(`const { ${importQ.toString()} } = require('${sourceName}')`);
+          if (isMixedImport) {
+            path.insertAfter([replaceNode]);
+          } else {
+            path.replaceWith(replaceNode);
+          }
+        }
+      } else {
+        path.remove();
+      }
+      setImmediate(() => {
+        compileFile(sourceName, {
+          basedir: /^\./.test(sourceName) ? fileDir : nodeDir,
+        });
       });
     },
     ExportDefaultDeclaration(path) {
@@ -100,30 +102,25 @@ const compileFile = (filename, options = {}) => {
         const declarations = pathDeclaration.get('declarations');
         let exportName;
         if (pathDeclaration.isFunctionDeclaration()) {
-          exportName = pathDeclaration.get('id').node.name;
+          exportName = getNodeName(pathDeclaration.get('id'));
         } else if (declarations && declarations.map) {
-          exportName = declarations.map(declare => declare.get('id').node.name)[0];
+          exportName = declarations.map(declare => getNodeName(declare.get('id')))[0];
         }
         if (include(importMap[filePath], exportName)) {
-          try {
-            pathDeclaration.replaceWithMultiple([
-              pathDeclaration.node,
-              identifier(`exports.${exportName} = ${exportName};`),
-              identifier(`\n`),
-            ]);
-          } catch (err) {
-            say(123, exportName, filePath, err);
-          }
+          path.replaceWithMultiple([
+            pathDeclaration.node,
+            identifier(`exports.${exportName} = ${exportName};`),
+            identifier(`\n`),
+          ]);
         } else {
           path.remove();
         }
       } else {
-        // say(123, path.node);
-        // path.replaceWithMultiple(path.node.specifiers.map((specifier) => {
-        //   const key = specifier.local.name;
-        //   const alias = specifier.exported.name;
-        //   return identifier(`exports.${alias} = ${key};`);
-        // }));
+        path.replaceWithMultiple(path.node.specifiers.map((specifier) => {
+          const key = specifier.local.name;
+          const alias = specifier.exported.name;
+          return identifier(`exports.${alias} = ${key};`);
+        }));
       }
     },
     VariableDeclarator(path) {
@@ -139,26 +136,57 @@ const compileFile = (filename, options = {}) => {
     },
   });
 
-  // let { code: babelCode } = babelGenerator(ast, {
-  //   minified: false,
-  // });
+  let { code: babelCode } = babelGenerator(ast, {
+    minified: false,
+  });
+
+  // const destPath = path.join(`${__dirname}/dest`, filename);
+  // fs.copySync(filePath, /\.js$/.test(destPath) ? destPath : `${destPath}.js`);
+  // fs.writeFile(
+  //   destPath,
+  //   babelCode,
+  //   'utf8',
+  //   (err) => {
+  //     if (err) {
+  //       say(err);
+  //     }
+  //   },
+  // );
 
   // if (minified) {
-  //   babelCode = uglify(babelCode).code;
+  // babelCode = uglify(babelCode).code;
   // }
+  say(babelCode);
 };
 
-const analyzeImportFile = () => {
-  compileFile('./app.js');
-  pages.forEach(page => compileFile(`./${page}.js`));
+const analyzeImportFile = (debug) => {
+  pages.forEach((page) => {
+    if (Array.isArray(page)) {
+      const [ pageName, basedir ] = page;
+      compileFile(pageName, { basedir });
+    } else {
+      compileFile(`./${page}.js`);
+    }
+  });
+  if (!debug) {
+    compileFile('./app.js');
+  }
 };
 
 
-module.exports = (iMap, eMap, p) => {
+const treeShaking = (iMap = {}, eMap = {}, p = [
+  [
+    './test-lib.js',
+    __dirname,
+  ]
+]) => {
   importMap = iMap;
   exportMap = eMap;
   pages = p;
   say('=============REPLACE===============');
-  analyzeImportFile();
+  analyzeImportFile(p.length === 1);
 };
 
+treeShaking();
+
+module.exports = treeShaking;
