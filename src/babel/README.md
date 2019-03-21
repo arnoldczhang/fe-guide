@@ -7,7 +7,7 @@
 * [`学习指南`](#学习指南)
 * [`babel6解析`](#babel6解析)
 * [`babel7解析`](#babel7解析)
-* [`ast解析`](#ast解析)
+* [`babel-plugin学习`](#babel-plugin学习)
 * [`babel-macro`](#babel-macro)
 
 </details>
@@ -279,10 +279,12 @@ types可以在这两个文件里查
 
 ---
 
-## ast解析
+## babel-plugin学习
+这里记录下自己学习babel-plugin时碰到的各种情况
+
 
 ### path
-path是所有hook的第一个入参
+path是所有plugin-hook的第一个入参
 
 #### 结构
 path
@@ -324,6 +326,7 @@ path
 - path.isXXXX() or path.get(key).isXXXX()
 - path.replaceWith(types.valueToNode(/**/))
 - path.remove()
+- path.insertAfter(nodes)
 - path.parentPath.remove()
 - path.get('body').unshiftContainer('body', types.expressionStatement(t.stringLiteral('before')))
 
