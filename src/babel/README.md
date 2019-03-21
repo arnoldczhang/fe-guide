@@ -489,11 +489,28 @@ export {
 
 #### FunctionDeclaration
 **作用**
-**参考**
-**示例**
-**常用字段**
 
-#### ImportSpecifier/ImportDefaultSpecifier
+捕获函数声明
+
+**参考**
+
+https://babeljs.io/docs/en/next/babel-types.html#functiondeclaration
+
+**示例**
+
+```js
+function test() {
+  // ...
+}
+``
+
+**常用字段**
+* type
+* id
+  - 函数名
+  - path.get('id').node.name
+
+#### ImportSpecifier/ImportDefaultSpecifier/importNamespaceSpecifier
 **作用**
 
 捕获ImportDeclaration里的变量
@@ -505,7 +522,7 @@ https://babeljs.io/docs/en/next/babel-types.html#importspecifier
 **示例**
 
 ```js
-// 捕获aa
+// ImportDefaultSpecifier，捕获aa
 import aa from '...';
 
 // 捕获{ bb }
@@ -513,19 +530,38 @@ import { bb } from '...';
 
 // 捕获{ cc as c }
 import { cc as c } from '...';
+
+// 捕获空
+import './base';
+
+// 捕获两种：
+// 1. ImportDefaultSpecifier，捕获lodash2；
+// 2. ImportSpecifier，捕获arrayEachRight
+import lodash2, { arrayEachRight } from './base';
+
+// ImportDefaultSpecifier，捕获base
+import * as base from './base';
 ```
 
 **常用字段**
 
 * type
-* local
-  - 引用模块的变量名或引用名
-  - type=ImportDefaultSpecifier时，表示模块的默认输出
-  - 比如例子中的aa,bb,c
-* imported
-  - 引用模块的变量名
-  - type=ImportSpecifier时，才有
-  - 比如例子中的bb,cc（aa没有，因为是ImportDefaultSpecifier，默认输出）
+* source
+  - 引用模块的路径相关信息
+  - path.get('source').node.value
+* specifiers
+  - 引用模块的变量名或替换名信息
+  - path.get('specifiers')
+  - local
+    + 引用模块里的变量名的替换名
+    + path.get('specifiers').node.name
+    + type=ImportDefaultSpecifier时，表示模块的默认输出
+    + 比如例子中的aa,bb,c
+  - imported
+    + 引用模块的变量名
+    + path.get('imported').node.name
+    + type=ImportSpecifier时，才有
+    + 比如例子中的bb,cc（aa没有，因为是ImportDefaultSpecifier，默认输出）
 
 #### ForInStatement
 **作用**
