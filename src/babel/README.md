@@ -497,7 +497,7 @@ export {
 
 **参考**
 
-https://babeljs.io/docs/en/next/babel-types.html#functiondeclaration
+[FunctionDeclaration](https://babeljs.io/docs/en/next/babel-types.html#functiondeclaration)
 
 **示例**
 
@@ -505,7 +505,7 @@ https://babeljs.io/docs/en/next/babel-types.html#functiondeclaration
 function test() {
   // ...
 }
-``
+```
 
 **常用字段**
 * type

@@ -21,9 +21,14 @@ function findQueue(length = 8) {
   };
 
   const updateDiagonal = () => {
+    const tried = [nowCol];
     diagonal = getDiagonal(nowRow, nowCol);
     while (has(diagonalList, diagonal)) {
       updateNowCol();
+      if (has(tried, nowCol)) {
+        return;
+      }
+      tried.push(nowCol);
       diagonal = getDiagonal(nowRow, nowCol);
     }
   };
