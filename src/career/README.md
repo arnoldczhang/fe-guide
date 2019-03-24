@@ -122,6 +122,22 @@
 * 代码容错
 * 组件化分层
 
+### 标准mvc结构
+project
+  - pages
+    - page1
+      - controller
+        - service
+        - log
+        - data-fomatter
+        - ...
+      - view
+        - react
+        - view
+      - model
+        - redux
+        - ...
+
 ## 言谈举止
 
 ### 该避免的言辞
