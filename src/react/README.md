@@ -26,6 +26,7 @@
 * [`更新过程`](#更新过程)
 * [`redux大型项目构建`](#redux大型项目构建)
 * [`React Hooks流程`](#React Hooks流程)
+* [`React进阶`](#React进阶)
 
 </details>
 
@@ -68,7 +69,7 @@
 ## 更新过程
   - shouldComponentUpdate
   - componentWillUpdate
-  - render()
+  - render
   - componentDidUpdate
 
 
@@ -202,5 +203,54 @@ const domainsReducer = combineReducers({
 });
 ```
 
+---
+
 ## React Hooks流程
 ![react hooks](react-hook.jpg)
+
+---
+
+## React进阶
+[参考](https://juejin.im/post/5c92f499f265da612647b754?utm_source=gold_browser_extension)
+
+### Fiber
+- reconciliation
+  * 更新state/prop
+  * life hooks
+  * 生成fiber tree
+  * diff
+- commit
+  * 节点更新（若需）
+
+**结构**
+```js
+class Fiber {
+  constructor() {
+    this.instance = instance;
+    this.return = parent;
+    this.child = child;
+    this.siblings = firstBrotherNode;
+  }
+}
+```
+
+**链表树遍历算法**
+
+- 深度遍历child，到树末尾
+- siblings
+- 返回return节点，重复siblings
+- 直至root
+
+**解决进程阻塞**
+
+- 任务分割
+- 异步调用
+- 缓存策略
+
+### 生命周期
+
+
+
+
+
+

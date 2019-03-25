@@ -93,7 +93,8 @@ function findQueue(length = 8) {
     if (nowRow === length - 1) {
       coords[nowRow] = nowCol;
       push(solution, coords.toString());
-      coords = resetList();
+      nowRow -= 1;
+      nowCol = coords[nowRow];
       solutionCount += 1;
     }
   }
