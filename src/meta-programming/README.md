@@ -30,7 +30,26 @@ for (let val of arr[Symbol.iterator]()) {
 }
 ```
 
-迭代器重写
+**迭代器重写**
+
+```js
+function iterOver() {
+  let age = 23;
+  const iterable = {
+    [Symbol.iterator]() {
+      return this;
+    },
+    next() {
+      return {
+          value: age,
+          done: age++ > 24,
+      };
+    },
+  };
+  return iterable;
+}
+```
+
 ```js
 var mix = {
   [Symbol.iterator]: function* () {

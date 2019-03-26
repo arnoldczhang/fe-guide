@@ -1,5 +1,7 @@
 # node
 
+[git](https://github.com/nodejs/node.git)
+
 ## 参考
 - [源码分析](http://efe.baidu.com/blog/nodejs-module-analyze/)
 - [node问题排查](https://zhuanlan.zhihu.com/p/41178823)
@@ -12,6 +14,8 @@
 * [`好用的库`](#好用的库)
 * [`原理解析`](#原理解析)
 * [`最佳实践`](#最佳实践)
+* [`手动打包指南`](#手动打包指南)
+* [`知识点`](#知识点)
 
 </details>
 
@@ -30,6 +34,7 @@
   - 可以在代码中把全局的 Promise 换为 bluebird 的实现，比如
 - [打包工具ncc](https://zeit.co/blog/ncc)
 - [图片压缩工具sharp](https://github.com/lovell/sharp?utm_source=75weekly&utm_medium=75weekly)
+- [检查库的两个版本间的diff](https://diff.intrinsic.com/)
 
   ```js
   global.Promise = require('bluebird');
@@ -42,6 +47,7 @@
 
 ### require原理
   - ![图解require过程](process1.png)
+  - [How`require()`ActuallyWorks](http://fredkschott.com/post/2014/06/require-and-the-module-system/)
   - 关键
     - 核心 JavaScript 模块源代码是通过 process.binding('natives') 从内存中获取
     - 第三方 JavaScript 模块源代码是通过 fs.readFileSync 方法从文件中读取，根据不同扩展名，做不同读取校验
@@ -223,6 +229,13 @@
 
 ## 最佳实践
 
+### 服务器瓶颈
+* CPU
+* 内存
+* 磁盘
+* I/O
+* 网络
+
 ### 项目结构
 * 组件化
 * 组件内部分层
@@ -245,6 +258,70 @@ CommonError.prototype.__proto__ = Error.prototype;
 throw new CommonError('abc');
 ```
 
+## 知识点
 
+### 循环引用
+
+关键词
+- Module._cache
+- 没有循环引用
+
+**首先理解Module的引用步骤：**
+1. Check Module._cache for the cached module.
+2. Create a new Module instance if cache is empty.
+3. Save it to the cache.
+4. Call module.load() with your the given filename.
+   This will call module.compile() after reading the file contents.
+5. If there was an error loading/parsing the file,
+   delete the bad module from the cache
+6. return module.exports
+
+例
+```js
+// a.js
+var b = require('../test/b');
+module.exports.a = 1;
+console.log('a.js get b:' + b.b);
+
+// b.js
+var a = require('../test/a');
+console.log('b.js get a:' + a.a);
+module.exports.b = 2;
+```
+
+运行 node a.js
+```js
+b.js get a:undefined
+a.js get b:2
+```
+
+真实运行顺序
+```js
+// 由于不存在b实例，所以创建一个{}
+var b = require('../test/b');
+// 由于不存在a实例，所以创建一个{}
+var a = require('../test/a');
+// 此时a实例不存在a属性，所以undefined
+console.log('b.js get a:' + a.a);
+// b实例赋值b属性=2
+module.exports.b = 2;
+// 2
+console.log('a.js get b:' + b.b);
+// a实例赋值a属性=1
+module.exports.a = 1;
+```
+
+## 手动打包指南
+**css/less**
+
+[css](../postcss/postcss.js)
+
+**js**
+
+uglify-js
+
+**html**
+
+[htmlparser2](../html/html.js)
 
 

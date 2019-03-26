@@ -7,6 +7,7 @@
 - [把网站升级到QUIC](https://www.yinchengli.com/2018/06/10/quic/)
 - [https连接的前几毫秒发生了什么](https://fed.renren.com/2017/02/03/https/)
 - [流量劫持](https://zhuanlan.zhihu.com/p/40682772)
+- [http3.0](https://mp.weixin.qq.com/s?__biz=MzA5NzkwNDk3MQ==&mid=2650589264&idx=1&sn=6ff446e3029c40eaabcff373c070e0f7&chksm=8891d874bfe6516261a18cdd029aa5e8730f0e955641ac7468f6bbae27e3b6acf8b4fb3813a3&mpshare=1&scene=1&srcid=&key=cb09f7b1396893c712194eeb7d524d812aaa1d6fd932852583a9a7574e6641a4a96b4f1563570eb1d4082bccaeade398aa998d7795c039cc6f06a1adc02a6e8236aeca8dd63d762fb6ffe09a33f210c1&ascene=1&uin=MjkyNDMwMjUwNg%3D%3D&devicetype=Windows+10&version=62060728&lang=zh_CN&pass_ticket=iFII9Td9YjjFZBzWoNyPFItjPfv26zZMyl%2By%2ByRZ3h5qwAJTlx0MoRSGaGIS%2B2jK)
 
 ## 目录
 <details>
@@ -16,7 +17,8 @@
 * [`http1.0`](#http1.0)
 * [`http1.1`](#http1.1)
 * [`spdy`](#spdy)
-* [`http 2.0`](#http 2.0)
+* [`http2.0`](#http2.0)
+* [`http3.0`](#http3.0)
 * [`quic`](#quic)
 * [`https`](#https)
 
@@ -49,9 +51,17 @@
     - 浏览器阻塞（并行请求）
     - DNS查询（域名发散）
     - tcp
+  - 状态码
+    - 301: 永久重定向
+    - 302: 临时重定向
+      * 只有当服务器发出 Cache-Control 或 Expires（废弃） 头字段进行指示，
+        此响应才能被缓存，否则不能被缓存
+      * 临时URI应该由响应头部中的 Location 字段给出
+      * 在除 GET 或 HEAD 两种请求方法之外的请求时，接收到302状态码，
+        客户端不得自动重定向请求，除非用户可以确认
   - 缓存处理
     - If-Modified-Since：再次请求服务器时，通过此字段通知服务器上次请求时，服务器返回的资源最后修改时间
-    - 缓存头部优先级：Pragma > Cache-Control > Expires > ETag > Last-Modified
+    - 缓存头部优先级：Pragma > Cache-Control > Expires（废弃） > ETag > Last-Modified
 
 ## http1.1
   - 缓存处理扩展
@@ -66,6 +76,8 @@
     - range，请求资源一部分（206），支持断点续传
   - 错误通知
     - 新增状态码
+      - 303：明确表示客户端应当采用get方法获取资源
+      - 307：不会把POST转为GET
   - host处理
     - 一台服务器，多个server，同一个ip
   - 长连接
@@ -80,13 +92,23 @@
 - 首部压缩
 - 服务端推送
 
-## http 2.0
-- 多路复用：同一个tcp连接上并行请求，双向交换消息
+## http2.0
+- 多路复用
+  * 同个域名只需要占用一个 TCP 连接
+  * 同一个tcp连接上并行请求任意数量的双向交换消息
 - ![多路复用](多路复用.png)
-- 二进制分帧：将首部信息和请求体，采用二进制编码封装进HEADER和BODY frame
-- ![二进制分帧](二进制分帧.png)
+- 二进制分帧
+  * 将首部信息和请求体，采用二进制编码封装进HEADER和BODY frame
+  * ![二进制分帧](二进制分帧.png)
 - 首部压缩
+  * 客户端和服务器端使用“首部表”来跟踪和存储之前发送的键－值对
+  * 相同的数据，不再通过每次请求和响应发送
+  * 每个新的首部键－值对要么被追加到当前表的末尾，要么替换表中之前的值
 - 服务端推送
+  * 服务端可以主动把JS和CSS文件推送给客户端，而不需要客户端解析HTML时再发送这些请求
+  * 遵守同源策略
+  * 如果资源已经被浏览器缓存，浏览器可以通过发送RST_STREAM帧来拒收
+  * prefetch
 
 ### spdy与http 2.0区别
 - HTTP2.0 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS
@@ -99,10 +121,25 @@
 - 多路复用，并解决HTTP/2队头阻塞问题，即一个流的TCP包丢失导致所有流都暂停组装。在QUIC里面，一个流的包丢失只会影响当前流，不会影响其它流。
 - 使用FEC（前向纠错）恢复丢失的包，以减少超时重传
 - 使用一个随机数标志一个连接，取代传统IP + 端口号的方式，使得切换网络环境如从4G到wifi仍然能使用之前的连接。
-- ![quic](6.png)
+- ![quic](rtt对比.png)
 
 ### 对比http/https/quic
-- ![tls](p10.png)
+- ![tls](协议层次.png)
+
+## http3.0
+- 基于UDP协议的QUIC
+- 加密认证的报文
+  * TCP 协议头部
+- 无阻塞的多路复用
+- 0RTT
+- 向前纠错机制
+  * 每个数据包中含有部分其他数据包的内容，丢包可能会触发重组，而无需重传
+  * 以上仅限于单个包丢失的情况
+
+### 对比http2.0和http3.0
+- 多路复用
+  * http2.0：单个连接上有多个stream之间会阻塞，stream丢包会影响之后的stream
+  * http3.0：stream之间无影响
 
 ## https
   - http + tls
@@ -114,6 +151,8 @@
   - ![https-2](https-2.jpg)
   - 公钥加密，私钥解密
   - 过程 -> 3RTT
+    - 1次tcp RTT
+    - 2次tls RTT
     - ![https](201208201734403507.png)
 
 ### HTTP、HTTPS、TCP、SSL/TLS

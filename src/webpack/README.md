@@ -1,9 +1,22 @@
 # webpack
 
+
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`webpack-3.8.1解析`](#webpack-3.8.1解析)
+* [`webpack 4`](#webpack 4)
+* [`treeshaking`](#treeshaking)
+* [`注意事项`](#注意事项)
+
+</details>
+
 ## 参考
 - [tapable插件机制解析](https://segmentfault.com/a/1190000017420937)
 - [webpack4js拆包](https://mp.weixin.qq.com/s/a946nG0oNYnDBMMwgtDBpA)
 - [webpack4配置指南](https://mp.weixin.qq.com/s/cX7yuneDxDk8_NnMy3Bc8Q)
+- [webpack4配置指南2](https://mp.weixin.qq.com/s/si4yq-M_JS0DqedAhTlKng)
 
 ## webpack-3.8.1解析
 
@@ -35,13 +48,101 @@
           - entry-option
         - ...
 
+## webpack 4
+[参考](https://juejin.im/entry/5b63eb8bf265da0f98317441)
 
-## webpack 4+参考
-  - https://juejin.im/entry/5b63eb8bf265da0f98317441
-  
+### 相比webpack3
+* 4多了mode字段，用于切换开发/生成环境
+* 4支持了读取npm依赖的module字段，es6module
+* 2、3的摇树会判断，如果方法有入参，或操纵了window，则不会摇掉，因为这些函数有副作用
+  4的摇树默认会摇掉，如果sideEffect置为false，则不摇
+
+### sideEffects
+import {a} from xx -> import {a} from xx/a
+
+### tree shaking
+ [参考](https://zhuanlan.zhihu.com/p/32831172)
+
+上面提到的由于副作用，所以不会摇掉的，可以参考下面例子，
+V6Engine方法没有用到，但是修改了V8Engine的原型，如果摇掉会有问题
+
+ ```js
+ var V8Engine = (function () {
+  function V8Engine () {}
+  V8Engine.prototype.toString = function () { return 'V8' }
+  return V8Engine
+}())
+var V6Engine = (function () {
+  function V6Engine () {}
+  V6Engine.prototype = V8Engine.prototype // <---- side effect
+  V6Engine.prototype.toString = function () { return 'V6' }
+  return V6Engine
+}())
+console.log(new V8Engine().toString())
+ ```
+
+## treeshaking
+- [基本原理](https://juejin.im/post/5a4dc842518825698e7279a9)
+- [拓展](https://diverse.space/2018/05/better-tree-shaking-with-scope-analysis)
+- [escope](https://github.com/estools/escope)
+
+### 为什么只针对es6module
+
+**静态分析**
+
+不执行代码，从字面量上对代码进行分析
+
+**ES6 module 特点***
+
+- 依赖关系是确定的
+- 只能作为模块顶层的语句出现
+- import 的模块名只能是字符串常量
+- import binding 是 immutable的
+
+
+### rollup、webpack、google Closure对比
+
+**rollup**
+- unused函数能消除，未触达的代码没消除
+- 配合uglifyjs能消除未触达的代码
+- 只处理函数和顶层的import/export变量，不能把没用到的类的方法消除掉
+
+**webpack**
+- unused函数未消除，未触达的代码没消除
+- 配合uglifyjs能消除未触达的代码
+- 只处理函数和顶层的import/export变量，不能把没用到的类的方法消除掉
+  ```js
+  function Menu() {
+  }
+
+  Menu.prototype.show = function() {
+  }
+
+  var a = 'Arr' + 'ay'
+  var b
+  if(a == 'Array') {
+      b = Array
+  } else {
+      b = Menu
+  }
+
+  b.prototype.unique = function() {
+      // 将 array 中的重复元素去除
+  }
+
+  export default Menu;
+  ```
+
+**google Closure**
+- unused函数、未触达的代码都能消除
+- 对业务代码有侵入性，比如需要加特定的标注
+
+**结论**
+google Closure Compiler效果最好，不过使用复杂，迁移成本太高
+
 ## 注意事项
-  - 使用 import()，需要dynamic-import插件 (https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/)
-  - ![import](import-polyfill.png)
+- 使用 import()，需要dynamic-import插件 (https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/)
+- ![import](import-polyfill.png)
 
 
 

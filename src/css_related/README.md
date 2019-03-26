@@ -7,6 +7,7 @@
 - [23中垂直方法](https://mp.weixin.qq.com/s/JL-9juZgbpz_Cnp6FnLVAQ)
 - [CSSOM](https://mp.weixin.qq.com/s/xST3cjumPrxdHbcZcYlLvQ)
 - [css与网络性能](https://mp.weixin.qq.com/s/OigM7dPFS3OGEBUE6KjHQA)
+- [前端换肤参考](https://blog.souche.com/untitled-17/)
 
 ## 目录
 <details>
@@ -28,9 +29,13 @@
 - contain
 
 ### 平滑滚动
+[滚动](https://xiaotianxia.github.io/blog/vuepress/js/scroll_behaviors.html)
 html {
   scroll-behavior: smooth;
 }
+
+### 滚动不传播父元素
+overscroll-behavior: contain;
 
 ### width: auto
 width: max-content/min-content
@@ -68,6 +73,14 @@ width: max-content/min-content
 
 ### 虚拟滚动
 https://fusion.design/component/virtual-list?themeid=1
+
+### 换肤
+[rel=>alternate](https://www.zhangxinxu.com/wordpress/2019/02/link-rel-alternate-website-skin/comment-page-1/#comment-391940)
+```js
+document.link.disabled = true;
+document.link.disabled = false;
+```
+
 
 ## 须知
 
@@ -112,6 +125,16 @@ elm.animate([
   { duration: 300, easing: 'ease-in-out', fill: 'both' },
 ]);
 ```
+
+### 换肤
+
+**ElementUI**
+- 对制定的style标签里的样式做正则匹配&替换
+
+**antd**
+- 在html插入<link rel="stylesheet/less" type="text/css" href="styles.less" />
+- 加载less.js(https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js)
+- 解析less
 
 ## 答疑
 

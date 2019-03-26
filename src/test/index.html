@@ -5,6 +5,17 @@
     <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
   </head>
   <body>
+    <!-- 定义好 import map -->
+    <script type="importmap">
+    {
+      "imports": {
+        "/path/to/kv-storage-polyfill.mjs": [
+          "std:kv-storage",
+          "/path/to/kv-storage-polyfill.mjs"
+        ]
+      }
+    }
+    </script>
     <!-- wired-elements start -->
     <wired-input placeholder="Enter name"></wired-input>
     <wired-button>Click Me</wired-button>
