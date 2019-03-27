@@ -1,10 +1,25 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+const { Node } = require('./base');
 
+/**
+ * linkedList
+ *
+ * 空间复杂度
+ * O(n)
+ *
+ * 时间复杂度
+ * Access
+ * O(n)
+ * 
+ * Search
+ * O(n)
+ * 
+ * Insertion
+ * O(1)
+ * 
+ * Deletion
+ * O(1)
+ * 
+ */
 class linkedList {
   constructor() {
     this.head = null;
