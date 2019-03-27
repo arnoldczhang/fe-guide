@@ -150,5 +150,17 @@ elm.animate([
 ### 屏幕完整截图
 - chrome，command + shift + p
 
+### IE6下的双边距bug
+**原因**
+
+- 块元素
+- 浮动
+- 有横向margin
+
+**解决方法**
+
+- display:inline（让块元素变成内联元素）
+- 不要使用浮动
+- 用padding-left代替margin-left
 
 

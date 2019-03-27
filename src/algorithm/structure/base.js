@@ -23,6 +23,26 @@ class HeapNode extends DoubleNode {
   }
 }
 
+class TrieNode extends HeapNode {
+  constructor(value = '') {
+    super(value);
+    this.word = value;
+    this.child = [];
+  }
+}
+
+class BinaryNode {
+  constructor(value = 0) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.parent = null;
+    this.child = null;
+  }
+}
+
 exports.Node = Node;
 exports.DoubleNode = DoubleNode;
 exports.HeapNode = HeapNode;
+exports.BinaryNode = BinaryNode;
+exports.TrieNode = TrieNode;
