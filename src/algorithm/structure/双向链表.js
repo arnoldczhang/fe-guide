@@ -3,7 +3,7 @@ const { DoubleNode } = require('./base');
 /**
  *DoubleLinkedList
  *
- *  * 空间复杂度
+ * 空间复杂度
  * O(n)
  *
  * 时间复杂度
