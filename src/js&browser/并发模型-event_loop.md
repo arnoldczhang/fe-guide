@@ -79,6 +79,7 @@
   9. 返回第一步
 
 ### node
+![node环境-事件循环](node环境-事件循环.png)
 * timers: 执行setTimeout和setInterval中到期的callback。
 * pending callback: 上一轮循环中少数的callback会放在这一阶段执行。
 * idle, prepare: 仅在内部使用。
@@ -86,6 +87,16 @@
 * check: 执行setImmediate(setImmediate()是将事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行setImmediate指定的回调函数)的callback。
 * close callbacks: 执行close事件的callback，例如socket.on('close'[,fn])或者http.server.on('close, fn)。
 
+**执行顺序区别**
+
+node10以前
+
+- 执行完一个阶段的所有任务
+- 执行完nextTick队列里面的内容
+- 然后执行完微任务队列的内容
+
+node11以后
+和浏览器的行为统一了，都是每执行一个宏任务就执行完微任务队列
 
 - - -
 

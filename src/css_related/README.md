@@ -81,6 +81,52 @@ document.link.disabled = true;
 document.link.disabled = false;
 ```
 
+### z-index
+[参考](https://juejin.im/post/5ba4efe36fb9a05cf52ac192?utm_source=gold_browser_extension)
+
+#### 层叠上下文
+根层叠上下文 - <html></html>
+
+- 层叠上下文可以互相包含
+- 与兄弟元素互相独立（处理层叠时）
+- 自包含：当元素内容被层叠后，整个元素在父元素内都会被层叠
+
+**新建层叠上下文**
+
+- position值为absolute|relative，且z-index值不为 auto
+- position 值为 fixed|sticky
+- z-index 值不为 auto 的flex元素，即：父元素display: flex | inline-flex
+- opacity 属性值小于 1 的元素
+- transform 属性值不为 none的元素
+- mix-blend-mode 属性值不为 normal 的元素
+- filter、perspective、clip-path、mask、mask-image、mask-border、motion-path 值不为 none 的元素
+- perspective 值不为 none 的元素
+- isolation 属性被设置为 isolate 的元素
+- will-change 中指定了任意 CSS 属性，即便你没有直接指定这些属性的值
+- -webkit-overflow-scrolling 属性被设置 touch的元素
+
+#### 层叠等级
+同一个层叠，上下文中元素，在z轴上的显示顺序
+
+**如何决定层叠等级**
+
+- 定位元素
+  * z-index
+- 非定位元素
+  * 层叠顺序
+  * HTML中顺序
+  * 父级以上元素层叠等级
+
+#### z-index
+正整数、负整数、0、auto，默认auto
+
+#### 层叠顺序
+![层叠顺序](./层叠顺序.png)
+
+
+
+
+---
 
 ## 须知
 
