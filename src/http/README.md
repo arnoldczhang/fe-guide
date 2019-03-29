@@ -64,27 +64,38 @@
     - 缓存头部优先级：Pragma > Cache-Control > Expires（废弃） > ETag > Last-Modified
 
 ## http1.1
-  - 缓存处理扩展
-    - Entity tag，If-Unmodified-Since, If-Match, If-None-Match
-    - Cach-Control
-      - private：客户端可以缓存
-      - public：客户端和代理服务器都可缓存
-      - max-age=xxx：缓存的内容将在 xxx 秒后失效
-      - no-cache：需要使用对比缓存来验证缓存数据
-      - no-store：所有内容都不会缓存，强制缓存，对比缓存都不会触发
-  - 带宽优化
-    - range，请求资源一部分（206），支持断点续传
-  - 错误通知
-    - 新增状态码
-      - 303：明确表示客户端应当采用get方法获取资源
-      - 307：不会把POST转为GET
-  - host处理
-    - 一台服务器，多个server，同一个ip
-  - 长连接
-    - 一次tcp传多个http请求（keep-alive）
+
+### 缓存处理扩展
+Entity tag，If-Unmodified-Since, If-Match, If-None-Match
+
+Cach-Control
+- private：客户端可以缓存
+- public：客户端和代理服务器都可缓存
+  * 包括中间节点的proxy
+- max-age=xxx：缓存的内容将在 xxx 秒后失效
+- no-cache：需要使用协商缓存来验证缓存数据
+- no-store：所有内容都不会缓存，强缓存、协商缓存都不会触发
+- s-maxage：仅在代理服务器（比如CDN）有效，优先级高于max-age
+- max-stale：能容忍的最大过期时间
+- min-fresh：能够容忍的最小新鲜度
+
+### 带宽优化
+range，请求资源一部分（206），支持断点续传
+
+### 错误通知
+
+新增状态码
+- 303：明确表示客户端应当采用get方法获取资源
+- 307：不会把POST转为GET
+
+### host处理
+一台服务器，多个server，同一个ip
+
+### 长连接
+一次tcp传多个http请求（keep-alive）
 
 ### 缓存字段
-  - ![缓存字段](缓存字段.jpg)
+- ![缓存字段](缓存字段.jpg)
 
 ## spdy
 - 多路复用
