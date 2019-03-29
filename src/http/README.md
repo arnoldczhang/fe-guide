@@ -67,6 +67,7 @@
 
 ### 缓存处理扩展
 Entity tag，If-Unmodified-Since, If-Match, If-None-Match
+这里可以参考[浏览器缓存](../js&browser/页面过程与浏览器缓存.md#缓存分类)
 
 Cach-Control
 - private：客户端可以缓存
