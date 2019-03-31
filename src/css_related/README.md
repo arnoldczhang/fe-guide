@@ -123,6 +123,20 @@ document.link.disabled = false;
 #### 层叠顺序
 ![层叠顺序](./层叠顺序.png)
 
+### :focus-visible
+键盘访问（比如按tab）时，元素边缘会出现选中的蓝框
+
+[参考](https://www.zhangxinxu.com/wordpress/2019/03/css-focus-visible/)
+
+可以通过设置属性去除
+```css
+:focus:not(:focus-visible) {
+    outline: 0;
+}
+```
+
+Chrome浏览器67+支持
+
 ---
 
 ## 须知
