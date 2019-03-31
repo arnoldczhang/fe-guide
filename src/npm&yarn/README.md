@@ -23,6 +23,16 @@
   - dependencies：正式环境要打包的
   - devDependencies：dev环境打包的
   - peerDependencies：依赖框架的插件
+    * 比如一个express中间件
+    ```json
+    {
+      "name": "my-greate-express-middleware",
+      "version": "1.0.0",
+      "peerDependencies": {
+        "express": "^3.0.0"
+      }
+    }
+    ```
   - optionalDependencies：可选，只提供新功能
 - 版本
   - 插入号^：大版本.x.x升级最新版（大版本不升级）
