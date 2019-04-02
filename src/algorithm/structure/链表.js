@@ -1,7 +1,7 @@
 const { Node } = require('./base');
 
 /**
- * linkedList
+ * LinkedList
  *
  * 空间复杂度
  * O(n)
@@ -20,7 +20,7 @@ const { Node } = require('./base');
  * O(1)
  * 
  */
-class linkedList {
+class LinkedList {
   constructor() {
     this.head = null;
     this.tail = null;
@@ -97,4 +97,4 @@ class linkedList {
   }
 };
 
-module.exports = linkedList;
+module.exports = LinkedList;
