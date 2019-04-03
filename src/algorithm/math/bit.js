@@ -134,6 +134,7 @@ const countSetBits = (num) => {
   }
   return count;
 };
+
 // test
 // console.log(countSetBits(5));  // 2
 // console.log(countSetBits(1));  // 1
@@ -160,6 +161,7 @@ const bitLength = (num) => {
   return length;
 };
 
+// test
 // console.log(bitLength(5)); //3
 
 /**
