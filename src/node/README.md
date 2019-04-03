@@ -6,6 +6,7 @@
 - [源码分析](http://efe.baidu.com/blog/nodejs-module-analyze/)
 - [node问题排查](https://zhuanlan.zhihu.com/p/41178823)
 - [node性能提升！！](https://zhuanlan.zhihu.com/p/50055740)
+- [node实际中的应用](https://juejin.im/post/5ca321f76fb9a05e5d09bb8a?utm_source=gold_browser_extension)
 
 ## 目录
 <details>
