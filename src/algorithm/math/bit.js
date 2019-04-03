@@ -80,6 +80,7 @@ const multiply = (num1, num2) => {
   return multiply(multiNum1, divideByTwo(num2 + 1)) - num1;
 };
 
+// test
 // console.log(multiply(2, 18));
 // console.log(multiply(2, -18));
 
@@ -113,7 +114,60 @@ const multiplyUnsigned = (num1, num2) => {
   return result;
 };
 
+// test
 // console.log(multiplyUnsigned(2, 18));
 // console.log(multiplyUnsigned(2, -18));
+
+/**
+ * 计算数字换算成二进制后1的个数
+ * @param  {[type]} num [description]
+ * @return {[type]}     [description]
+ */
+const countSetBits = (num) => {
+  let count = 0;
+  let numCount = num;
+  while (numCount) {
+    if (numCount & 1) {
+      count += 1;
+    }
+    numCount >>= 1;
+  }
+  return count;
+};
+// test
+// console.log(countSetBits(5));  // 2
+// console.log(countSetBits(1));  // 1
+// console.log(countSetBits(36)); // 2
+
+/**
+ * 通过^位异或，求出两数转换所需改动的位数
+ * @param  {[type]} num1 [description]
+ * @param  {[type]} num2 [description]
+ * @return {[type]}      [description]
+ */
+const bitsDiff = (num1, num2) => countSetBits(num1 ^ num2);
+
+/**
+ * 计算有价值位数
+ * @param  {[type]} num [description]
+ * @return {[type]}     [description]
+ */
+const bitLength = (num) => {
+  let length = 0;
+  while ((1 << length) <= num) {
+    length += 1;
+  }
+  return length;
+};
+
+// console.log(bitLength(5)); //3
+
+/**
+ * 判断数是否是2的幂
+ * @param  {[type]} num [description]
+ * @return {[type]}     [description]
+ */
+const isPowerOfTwo = num => !(num & (num - 1));
+
 
 
