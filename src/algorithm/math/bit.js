@@ -7,6 +7,8 @@
  */
 const isEven = num => !(num & 1);
 
+exports.isEven = isEven;
+
 /**
  * 获取数在位移之后的末尾值
  * @param  {[type]} num      [description]
@@ -41,6 +43,8 @@ const multiplyWithByTwo  = num => num << 1;
  * @return {[type]}     [description]
  */
 const divideByTwo = num => num >> 1;
+
+exports.divideByTwo = divideByTwo;
 
 /**
  * 取反（~表示取反减一）
