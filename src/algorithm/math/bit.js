@@ -38,7 +38,7 @@ const isPositive = (num) => {
 const multiplyWithByTwo  = num => num << 1;
 
 /**
- * [description]
+ * 除2
  * @param  {[type]} num [description]
  * @return {[type]}     [description]
  */
