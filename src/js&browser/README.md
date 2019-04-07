@@ -10,6 +10,7 @@
 - [网络安全](./网络安全.md)
 - [页面周期和浏览器缓存](./页面过程与浏览器缓存.md)
 - [内联缓存](./Shapes&InlineCaches.md)
+- [各种渲染方式对比](./前端-各种渲染方式对比.jpg)
 
 ## 参考
 - [long taks](https://mp.weixin.qq.com/s/NUrqeJ6UjWe7CxTGofdtNw)
