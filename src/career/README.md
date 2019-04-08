@@ -22,11 +22,13 @@
 * [`框架对比`](#框架对比)
 * [`依赖管理`](#依赖管理)
 * [`无障碍`](#无障碍)
+* [`快速开发`](#快速开发)
 
 </details>
 
 ## 发展方向
 - ![职业发展方向](职业发展方向.jpeg)
+- [作为过来人，你有什么话想对后辈](https://www.zhihu.com/question/312019918)
 
 ### 专业技能
 [前端团队产能](https://mp.weixin.qq.com/s?__biz=MzU1NjUxNTkxMg==&mid=2247483709&idx=1&sn=0555c95330ddfcd0c266caed7b94f1ce)
@@ -223,3 +225,7 @@ import module1 from 'module1'
 ## 无障碍
 [无障碍](https://mp.weixin.qq.com/s?__biz=MzIwNjkwMTcyOQ==&mid=2247484738&idx=1&sn=c16f3abd28c8df97d534208cf2000e3f&chksm=971bddcca06c54da609dfc13d72ed265ecd51f6ff31ca1fc11fdc3c9452c5f2bfaa78fb15988&scene=27&ascene=0&devicetype=android-28&version=2700033b&nettype=)
 
+---
+
+## 快速开发
+[vue企业级开发](https://mp.weixin.qq.com/s/g6D5b_YilzLeBH3pdjRnww)

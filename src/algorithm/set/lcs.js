@@ -1,5 +1,5 @@
 /**
- * [longestCommonSubsequence description]
+ * 最长公共子序列
  * @param  {[type]} seq1 [description]
  * @param  {[type]} seq2 [description]
  * @return {[type]}      [description]
