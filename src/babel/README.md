@@ -3,7 +3,8 @@
 ## 参考
 - [babel-plugins-repository](https://github.com/babel/minify.git)
 - [babel-handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/plugin-handbook.md)
-- [babel总览](http://www.alloyteam.com/2017/04/analysis-of-babel-babel-overview/)
+- [ast字段参考](https://github.com/babel/babylon/blob/master/ast/spec.md)
+- [alloyTeam出的babel总览](http://www.alloyteam.com/2017/04/analysis-of-babel-babel-overview/)
 - https://github.com/babel/minify/packages/...
 
 ## 目录
