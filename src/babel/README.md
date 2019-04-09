@@ -10,28 +10,56 @@
 <details>
 <summary>展开更多</summary>
 
-* [`起源`](#起源)
-* [`流程`](#流程)
-* [`babel6解析`](#babel6解析)
-* [`babel7解析`](#babel7解析)
+* [`babel起源`](#起源)
+* [`babel流程`](#流程)
+* [`babel组成`](#组成)
+* [`acorn相关`](#acorn相关)
+* [`babel6相关`](#babel6相关)
+* [`babel7相关`](#babel7相关)
 * [`babel-plugin学习`](#babel-plugin学习)
 * [`babel-macro`](#babel-macro)
 
 </details>
 
 ## 起源
-Babel使用的引擎是babylon，babylon并非由babel团队自己开发的，而是fork的acorn项目，
-acorn引擎只提供基本的解析ast的能力，遍历还需要配套的acorn-travesal, 替换节点需要使用acorn-，
-而这些开发，在Babel的插件体系开发下，变得一体化了
+* Babel使用的引擎是babylon
+* babylon是fork的acorn项目，
+* acorn只提供基本的解析ast的能力，遍历还需要配套的acorn-travesal, 替换节点需要使用acorn-
+* Babel统一
 
 ---
 
 ## 流程
 ![流程](./babel流程.png)
 
+babel.transform(code, options) -> babel.traverse(ast, hooks) -> babel.generate(ast)
+
 ---
 
-## babel6解析
+## 组成
+* @babel/core：AST转换的核心
+* @babel/cli：打包工具
+* @babel/plugin*：Babel 插件机制，Babel基础功能不满足的时候,手动添加些
+* @babel/preset-env：把许多 @babel/plugin 综合了下，减少配置
+* @babel/polyfill：把浏览器某些不支持API，兼容性代码全部导入到项目,不管你是不是用到,缺点是代码体积特别大
+* @babel/runtime：把你使用到的浏览器某些不支持API，按需导入,代码少
+
+---
+
+## acorn相关
+
+### acorn流程
+
+![acorn流程](./acorn流程.png)
+
+acorn.parse(code) -> ast-traverse(ast) -> alter(code, replacers)
+
+### acorn对比babel
+[编译](./acorn.js)
+
+---
+
+## babel6相关
 
 ### babel.transform(code, opts)
 
@@ -242,7 +270,7 @@ types可以在这两个文件里查
 
 ---
 
-## babel7解析
+## babel7相关
 
 ### 文件<->方法变更
 1. @babel/core（babel6的babel-core）
@@ -402,7 +430,6 @@ var test = require('./test');
     path.get('init').get('arguments')
     path.get('init').get('property')
     ```
-
 
 #### ImportDeclaration
 **作用**
