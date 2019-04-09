@@ -83,13 +83,21 @@
     "g27": "node ./src/postcss/postcss.js&postcss ./src/postcss/test.css -o ./src/postcss/test.css --config ./src/postcss/postcss.config.js",
     "g28": "node ./src/babel",
     "g29": "webpack --config ./src/webpack/webpack.simple.js",
-    "ava": "ava",
     "gen": "./src/react-cli init",
     "save": "node ./src/test/src/saveImage",
     "lynt": "lynt ./src/lynt/lynt.js",
-    "test": "mocha",
+    "test": "mocha && npm run test-only",
+    "test-only": "ava",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "deploy": "gh-pages -d build"
+  },
+  "ava": {
+    "files": [
+      "test/src/*.js"
+    ],
+    "sources": [
+      "bin/**/*.js"
+    ]
   },
   "author": "arnold",
   "license": "MIT",
@@ -269,7 +277,7 @@
     "ant-design-vue": "^1.1.2",
     "async_hooks": "^1.0.0",
     "autoprefixer": "^9.4.9",
-    "ava": "^1.4.1",
+    "ava": "^0.17.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-console": "^0.2.1",
     "babel-plugin-external-helpers": "^6.22.0",

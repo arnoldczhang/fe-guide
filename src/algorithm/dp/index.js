@@ -1,7 +1,3 @@
-
- // 1. 贪心策略
- // 从面额最大的开始凑
-
 /**
  * 
  * 2. 动态规划
@@ -114,12 +110,55 @@ function getMathTriangle2(triangle) {
 
 /**
  *
- * 例4：
+ * 例4：背包问题（考虑价值）
  * 
  */
+function knapsack(max, items = [1, 2, 4, 12], values = [50, 10, 5, 20]) {
+  const itemLen = items.length;
+  const sum = new Array(itemLen + 1).fill(null);
+  const use = [];
+  // 可选物为纵坐标
+  for (let i = 0; i <= itemLen; i += 1) {
+    sum[i] = [];
+    use[i] = 0;
+    // 0 - max，即可放空间为横坐标
+    for (let j = 0; j <= max; j += 1) {
+      if(i == 0 || j == 0){
+        sum[i][j] = 0;
+      }
+    }
+  }
 
+  items.unshift(0);
+  values.unshift(0);
 
+  for (let i = 1; i <= itemLen; i += 1) {
+    for (let j = 1; j <= max; j += 1) {
+      if (j < items[i]) {
+        sum[i][j] = sum[i - 1][j];
+      } else {
+        // 上个物件在这个档位的重量 对比 上个物件+当前物件的重量，取大值
+        // 如果不考虑价值，这里values改为items即可
+        sum[i][j] = Math.max(sum[i - 1][j], sum[i - 1][j - items[i]] + values[i]);
+      }
+    }
+  }
 
+  let j = max;
+  // 求出哪几个物品被放入
+  for(let i = itemLen; i > 0; i--){
+    if (sum[i][j] > sum[i - 1][j]) {
+      use[i] = 1;
+      j -= items[i];
+    }
+  }
+  use.shift();
+  // return use;
+  return sum;
+};
+
+// test
+console.log(knapsack(15));
 
 
 

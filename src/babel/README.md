@@ -1,10 +1,17 @@
 # babel
 
+## 参考
+- [babel-plugins-repository](https://github.com/babel/minify.git)
+- [babel-handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/plugin-handbook.md)
+- [babel总览](http://www.alloyteam.com/2017/04/analysis-of-babel-babel-overview/)
+- https://github.com/babel/minify/packages/...
+
 ## 目录
 <details>
 <summary>展开更多</summary>
 
-* [`学习指南`](#学习指南)
+* [`起源`](#起源)
+* [`流程`](#流程)
 * [`babel6解析`](#babel6解析)
 * [`babel7解析`](#babel7解析)
 * [`babel-plugin学习`](#babel-plugin学习)
@@ -12,13 +19,17 @@
 
 </details>
 
-## 参考
-- [babel-plugins-repository](https://github.com/babel/minify.git)
-- [babel-handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/plugin-handbook.md)
+## 起源
+Babel使用的引擎是babylon，babylon并非由babel团队自己开发的，而是fork的acorn项目，
+acorn引擎只提供基本的解析ast的能力，遍历还需要配套的acorn-travesal, 替换节点需要使用acorn-，
+而这些开发，在Babel的插件体系开发下，变得一体化了
 
-## 学习指南
-- babel-handbook
-- https://github.com/babel/minify/packages/...
+---
+
+## 流程
+![流程](./babel流程.png)
+
+---
 
 ## babel6解析
 
