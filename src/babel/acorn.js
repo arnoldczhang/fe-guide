@@ -2,6 +2,7 @@ const { parse } = require('acorn');
 const { traverse, transformSync } = require('@babel/core');
 const babelGenerator = require('@babel/generator').default;
 const astTraverse = require("ast-traverse");
+const { parse: babylonParse } = require('babylon');
 const alter = require("alter");
 
 const codeStr = `
@@ -9,8 +10,6 @@ const codeStr = `
   let b, c = 'abc';
   function aa () {};
 `;
-
-
 
 /**
  * acorn编译
@@ -56,7 +55,26 @@ astTraverse(ast, {
     }
   },
 });
-console.log(alter(codeStr, ctx));
+
+// test
+// console.log(alter(codeStr, ctx));
+
+
+/***********************************/
+
+/**
+ * babylon编译
+ * @type {[type]}
+ */
+const babylonAst = babylonParse(codeStr);
+traverse(babylonAst, {});
+
+//test
+// console.log(babelGenerator(babylonAst, {
+//   minified: false,
+// }).code);
+
+/***********************************/
 
 /**
  * babel编译
@@ -76,6 +94,8 @@ traverse(babelAst, {
     // ...
   },
 });
-console.log(babelGenerator(babelAst, {
-  minified: false,
-}).code);
+
+// test
+// console.log(babelGenerator(babelAst, {
+//   minified: false,
+// }).code);

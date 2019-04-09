@@ -23,10 +23,10 @@
 </details>
 
 ## 起源
-* Babel使用的引擎是babylon
+* babel使用的引擎是babylon
 * babylon是fork的acorn项目，
 * acorn只提供基本的解析ast的能力，遍历还需要配套的acorn-travesal, 替换节点需要使用acorn-
-* Babel统一
+* babel做了统一
 
 ---
 
@@ -55,7 +55,7 @@ babel.transform(code, options) -> babel.traverse(ast, hooks) -> babel.generate(a
 
 acorn.parse(code) -> ast-traverse(ast) -> alter(code, replacers)
 
-### acorn对比babel
+### acorn VS babylon VS babel
 [编译](./acorn.js)
 
 ---
@@ -288,46 +288,25 @@ types可以在这两个文件里查
 [参考](https://babeljs.io/docs/en/options)
 
 #### 常用key
-
-**ast**
-
-是否生成ast
-
-默认false，返回null
-
-**code**
-
-是否生成code
-
-默认true
-
-**envName**
-
-环境变量
-
-默认process.env.BABEL_ENV || process.env.NODE_ENV || "development"
-
-**sourceMap**
-
-**babelrc**
-
-默认true
-
-**configFile**
-
-默认path.resolve(opts.root, "babel.config.js")
+* ast：是否生成ast，默认false，返回null
+* code：是否生成code，默认true
+* envName：环境变量，默认process.env.BABEL_ENV || process.env.NODE_ENV || "development"
+* sourceMap：
+* babelrc：默认true
+* configFile：默认path.resolve(opts.root, "babel.config.js")
 
 ---
 
 ## babel-plugin学习
 这里记录下自己学习babel-plugin时碰到的各种情况
 
-
 ### path
 path是所有plugin-hook的第一个入参
 
 #### 结构
-path
+
+**path**
+
 - node
   * 表示当前ast节点的主体信息
   * 结构：
