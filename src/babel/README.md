@@ -665,8 +665,10 @@ transformSync(input, {
 ---
 
 ## babel-macro
-编译阶段预处理js逻辑
-[babel-plugin-macros](https://github.com/kentcdodds/babel-plugin-macros)
+编译阶段预处理js逻辑（目前babel6支持使用）
+
+- [git](https://github.com/kentcdodds/babel-plugin-macros)
+- [参考](./babel-plugin-macro.js)
 
 **注**
 仅针对静态编译的内容
@@ -700,6 +702,32 @@ const ONE_DAY = ms('1 day');
 ```js
 var ONE_DAY = 86400000;
 ```
+
+### 如何在babel7使用
+- options新增参数`filename: 'unknown'`
+  ```js
+  const { transformSync } = require('@babel/core');
+  const { ast } = transformSync(input, {
+    // ...
+    filename: 'unknown',
+    plugins: [
+      'macros',
+    ],
+  });
+  ```
+- @babel/template/lib/populate.js去掉metaData校验
+  ```js
+  function populatePlaceholders(metadata, replacements) {
+    // ...
+    // 这里循环校验去掉
+    Object.keys(replacements).forEach(key => {
+      if (!metadata.placeholderNames.has(key)) {
+        throw new Error(`Unknown substitution "${key}" given`);
+      }
+    });
+    // ...
+  }
+  ```
 
 ---
 
