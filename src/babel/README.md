@@ -3,7 +3,7 @@
 ## 参考
 - [babel-plugins-repository](https://github.com/babel/minify.git)
 - [babel-handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/plugin-handbook.md)
-- [ast字段参考](https://github.com/babel/babylon/blob/master/ast/spec.md)
+- [ast-tree字段参考](https://github.com/babel/babylon/blob/master/ast/spec.md)
 - [alloyTeam出的babel总览](http://www.alloyteam.com/2017/04/analysis-of-babel-babel-overview/)
 - https://github.com/babel/minify/packages/...
 
@@ -19,6 +19,7 @@
 * [`babel7相关`](#babel7相关)
 * [`babel-plugin学习`](#babel-plugin学习)
 * [`babel-macro`](#babel-macro)
+* [`babel-register`](#babel-register)
 
 </details>
 
@@ -300,6 +301,46 @@ types可以在这两个文件里查
 ## babel-plugin学习
 这里记录下自己学习babel-plugin时碰到的各种情况
 
+### 包含
+- babel-preset-xxx
+- babel-plugin-xxx
+
+#### 区别-解析顺序
+preset：倒序
+plugin：正序
+
+```js
+{
+  // ...
+  
+  // react -> es2015 -> ...
+  preset: ['es2015', 'react'],
+
+  // transform-react -> transfrom-async-function -> ...
+  plugins: ['transform-react', 'transfrom-async-function'],
+  // ...
+}
+```
+
+### 常用方法
+
+**babel.template**
+
+```js
+const template = require('@babel/template').default;
+{
+  // ...
+  path.node.body.unshift(template(`var bb = require('./test');`)());
+  // ...
+}
+ template
+```
+
+### hooks入参
+1. path
+2. types
+3. options
+
 ### path
 path是所有plugin-hook的第一个入参
 
@@ -338,8 +379,12 @@ path是所有plugin-hook的第一个入参
 - type
   * 词法类型
 
-#### 常用方法
+#### path常用方法
 参考@babel/core/node_modules/@babel/traverse/lib/path/**.js
+
+或参考
+
+![path属性&方法](./path属性&方法.png)
 
 - path.get(key)
 - path.isXXXX() or path.get(key).isXXXX()
@@ -348,6 +393,7 @@ path是所有plugin-hook的第一个入参
 - path.insertAfter(nodes)
 - path.parentPath.remove()
 - path.get('body').unshiftContainer('body', types.expressionStatement(t.stringLiteral('before')))
+- path.replaceWithSourceString：这个方法少用，会调用babylon.parse解析代码，应该在遍历外解析
 
 ### 常用词法类型hook
 
@@ -593,6 +639,28 @@ import * as base from './base';
 * left
 * right
 
+### types
+即babel-types，提供工具很多方法
+
+### options
+注入plugins是添加的参数，比如
+```js
+const { transformSync } = require('@babel/core');
+transformSync(input, {
+  /* 其他配置参数 */
+  plugins: [
+    ['./src/babel/babel-plugin-inline-env',
+      /**
+       * 这第二个参数就是options
+       */
+      {
+        include: ['NODE_ENV'],
+      }
+    ],
+  ],
+});
+```
+
 ---
 
 ## babel-macro
@@ -631,6 +699,12 @@ const ONE_DAY = ms('1 day');
 ```js
 var ONE_DAY = 86400000;
 ```
+
+---
+
+## babel-register
+
+
 
 
 
