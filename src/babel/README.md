@@ -57,7 +57,7 @@ babel.transform(code, options) -> babel.traverse(ast, hooks) -> babel.generate(a
 acorn.parse(code) -> ast-traverse(ast) -> alter(code, replacers)
 
 ### acorn VS babylon VS babel
-[编译](./acorn.js)
+[对比](./acorn.js)
 
 ---
 
@@ -386,6 +386,7 @@ path是所有plugin-hook的第一个入参
 
 ![path属性&方法](./path属性&方法.png)
 
+#### 用法
 - path.get(key)
 - path.isXXXX() or path.get(key).isXXXX()
 - path.replaceWith(types.valueToNode(/**/))
