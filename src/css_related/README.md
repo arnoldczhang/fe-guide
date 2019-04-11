@@ -13,13 +13,13 @@
 <details>
 <summary>展开更多</summary>
 
-* [`属性`](#属性)
+* [`常见用法`](#常见用法)
 * [`须知`](#须知)
 * [`答疑`](#答疑)
 
 </details>
 
-## 属性
+## 常见用法
 
 ### 伪元素 伪类
 - https://segmentfault.com/a/1190000000484493
@@ -136,6 +136,95 @@ document.link.disabled = false;
 ```
 
 Chrome浏览器67+支持
+
+### flex左右布局
+```css
+<ul class="demo2">
+  <li>首页</li>
+  <li>动态</li>
+  <li>话题</li>
+  <li>活动</li>
+  <!-- 登录注册文案贴右边 -->
+  <li>登录 &nbsp; 注册</li>
+</ul>
+<style>
+.demo2 {
+  display: flex;
+}
+.demo2 > li:last-child {
+  margin-left: auto;
+}
+</style>
+```
+
+### 垂直水平居中
+```css
+<div id="grid">
+  <div id="box">aa</div>
+</div>
+<style>
+#grid {
+  display: flex;
+  height: 500px;
+  width: 500px;
+}
+#box {
+  margin: auto;
+  height: 100px;
+  width: 100px;
+}
+</style>
+```
+
+### 蒙层高亮
+```css
+/*解法一：outline*/
+.clip-shape {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  left: 0;/*可调整*/
+  right: 0;/*可调整*/
+  outline: 999px solid rgba(0,0,0,.5);
+  top: 0;/*可调整*/
+  bottom: 0;/*可调整*/
+  margin: auto;
+}
+/*解法二：box-shadow*/
+.clip-shape {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,.75);
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  cursor: move;
+}
+```
+
+### 加载中
+```html
+<div>加载中<span class="more"></span></div>
+```
+```css
+.more::before {
+  content: '...';
+  position: absolute;
+  animation: dot2 3s infinite step-start both;
+}
+.more::after {
+  content: '...';
+  color: transparent;
+}
+@keyframes dot2 {
+  33% { content: '.'; }
+  66% { content: '..'; }
+}
+```
 
 ---
 

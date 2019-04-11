@@ -733,7 +733,7 @@ var ONE_DAY = 86400000;
 - 待转码的内容单独抽离成文件，在babel-register后面引入
 - presets配置同babel配置
 - 一般用于开发环境
-- 示例参考[ssr](./babel-register.js)
+- 示例参考[ssr](./babel-register.js)，或[完整示例](https://flaviocopes.com/react-server-side-rendering)
 
 ---
 

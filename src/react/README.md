@@ -223,6 +223,7 @@ const domainsReducer = combineReducers({
   * 节点更新（若需）
 
 **结构**
+
 ```js
 class Fiber {
   constructor() {
@@ -241,11 +242,24 @@ class Fiber {
 - 返回return节点，重复siblings
 - 直至root
 
+**伪代码**
+
+```js
+while (当前还有空闲时间 && 下一个节点不为空) {
+  下一个节点 = 子节点 = beginWork(当前节点);
+  if (子节点为空) {
+    下一个节点 = 兄弟节点 = completeUnitOfWork(当前节点);
+  }
+  当前节点 = 下一个节点;
+}
+```
+
 **解决进程阻塞**
 
 - 任务分割
 - 异步调用
 - 缓存策略
+
 
 ### 生命周期
 

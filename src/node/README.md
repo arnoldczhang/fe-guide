@@ -7,6 +7,7 @@
 - [node问题排查](https://zhuanlan.zhihu.com/p/41178823)
 - [node性能提升！！](https://zhuanlan.zhihu.com/p/50055740)
 - [node实际中的应用](https://juejin.im/post/5ca321f76fb9a05e5d09bb8a?utm_source=gold_browser_extension)
+- [NodeJS和命令行程序](https://mp.weixin.qq.com/s/-jxYbmcbdt5IvpJC0BYOjg)
 
 ## 目录
 <details>
@@ -36,6 +37,7 @@
 - [打包工具ncc](https://zeit.co/blog/ncc)
 - [图片压缩工具sharp](https://github.com/lovell/sharp?utm_source=75weekly&utm_medium=75weekly)
 - [检查库的两个版本间的diff](https://diff.intrinsic.com/)
+- nrm/yrm(维护了一个列表，包括npm/yarn主站和其他镜像)
 
   ```js
   global.Promise = require('bluebird');

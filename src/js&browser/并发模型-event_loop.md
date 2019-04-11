@@ -56,6 +56,7 @@
 * 每个线程都有自己的event loop
 * 浏览器可以有多个event loop，browsing contexts和web workers就是相互独立的
 * 简略循环过程（script -> 清空微任务 -> 宏任务 -> 清空微任务 -> render -> 宏任务 -> 清空微任务 -> render ->...）
+  - [示意图](./event_loop.jpeg)
 * 完整循环过程
   1. 从macrotask队列选择一个最老的task，如果没有，则执行microtask
   2. 将上面这个task设置为【正在运行的task】
