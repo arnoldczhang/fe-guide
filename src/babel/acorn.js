@@ -95,6 +95,10 @@ traverse(babelAst, {
   },
 });
 
+module.exports = () => {
+  return 'aaa';
+};
+
 // test
 // console.log(babelGenerator(babelAst, {
 //   minified: false,

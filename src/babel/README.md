@@ -667,10 +667,12 @@ transformSync(input, {
 ## babel-macro
 编译阶段预处理js逻辑（目前babel6支持使用）
 
-- [git](https://github.com/kentcdodds/babel-plugin-macros)
-- [参考](./babel-plugin-macro.js)
+- [官方git](https://github.com/kentcdodds/babel-plugin-macros)
+- [目前支持的macros](https://github.com/jgierer12/awesome-babel-macros)
+- [示例参考](./babel-plugin-macro.js)
 
 **注**
+
 仅针对静态编译的内容
 
 ### babel6使用方法
@@ -722,7 +724,17 @@ var ONE_DAY = 86400000;
 
 ## babel-register
 
+用于改写require命令，为它加上一个钩子。此后，每当使用require加载
+.js、.jsx、.es和.es6后缀名（可自定义）的文件，就会先用Babel进行转码。
 
+- [官网](https://babeljs.io/docs/en/next/babel-register.html)
 
+### 注意
+- 待转码的内容单独抽离成文件，在babel-register后面引入
+- presets配置同babel配置
+- 一般用于开发环境
+- 示例参考[ssr](./babel-register.js)
+
+---
 
 
