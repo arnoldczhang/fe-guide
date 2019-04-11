@@ -41,19 +41,18 @@ const run = () => {
   });
 
 
-  // babel7暂不支持
-  // const { ast } = transformSync(input, {
-  //   ast: true,
-  //   code: false,
-  //   sourceMap: true,
-  //   babelrc: false,
-  //   configFile: false,
-  //   presets: ['@babel/env'],
-  //   filename: 'unknown',
-  //   plugins: [
-  //     'macros',
-  //   ],
-  // });
+  const { ast } = transformSync(input, {
+    ast: true,
+    code: false,
+    sourceMap: true,
+    babelrc: false,
+    configFile: false,
+    presets: ['@babel/env'],
+    filename: 'unknown',
+    plugins: [
+      'macros',
+    ],
+  });
 
   const { code: babelCode } = babelGenerator(ast, {
     minified: false,

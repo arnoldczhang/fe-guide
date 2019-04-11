@@ -673,7 +673,7 @@ transformSync(input, {
 **注**
 仅针对静态编译的内容
 
-### 使用方法
+### babel6使用方法
 1. 安装macros
 ```js
 npm install --save-dev babel-plugin-macros
@@ -703,7 +703,7 @@ const ONE_DAY = ms('1 day');
 var ONE_DAY = 86400000;
 ```
 
-### 如何在babel7使用
+### babel7使用方法
 - options新增参数`filename: 'unknown'`
   ```js
   const { transformSync } = require('@babel/core');
@@ -715,19 +715,8 @@ var ONE_DAY = 86400000;
     ],
   });
   ```
-- @babel/template/lib/populate.js去掉metaData校验
-  ```js
-  function populatePlaceholders(metadata, replacements) {
-    // ...
-    // 这里循环校验去掉
-    Object.keys(replacements).forEach(key => {
-      if (!metadata.placeholderNames.has(key)) {
-        throw new Error(`Unknown substitution "${key}" given`);
-      }
-    });
-    // ...
-  }
-  ```
+
+**scope.macro由于@babel/template兼容性，目前无法使用**
 
 ---
 
