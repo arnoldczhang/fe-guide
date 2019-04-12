@@ -27,6 +27,7 @@
 * [`redux大型项目构建`](#redux大型项目构建)
 * [`React Hooks流程`](#React Hooks流程)
 * [`React进阶`](#React进阶)
+* [`concurrent`](#concurrent)
 
 </details>
 
@@ -214,11 +215,19 @@ const domainsReducer = combineReducers({
 [参考](https://juejin.im/post/5c92f499f265da612647b754?utm_source=gold_browser_extension)
 
 ### Fiber
+
+**更新流程**
+
 - reconciliation
   * 更新state/prop
   * life hooks
   * 生成fiber tree
   * diff
+- render
+  * Fiber节点打上 effectTag
+  * effectTag 代表了 Fiber 节点做了怎样的变更
+  * 具有 effectTag 的 Fiber 会成为 effect
+  * 随completeUnitOfWork过程向上收集
 - commit
   * 节点更新（若需）
 
@@ -242,6 +251,8 @@ class Fiber {
 - 返回return节点，重复siblings
 - 直至root
 
+[Fiber遍历图](./Fiber遍历图)
+
 **伪代码**
 
 ```js
@@ -263,7 +274,20 @@ while (当前还有空闲时间 && 下一个节点不为空) {
 
 ### 生命周期
 
+---
 
+## concurrent
+未来版本react会推出concurrent模式，与当前版本sync区别可[参考](https://zhuanlan.zhihu.com/p/60307571)
+
+
+### 差异图
+[sync VS concurrent](./syncVSconcurrent.jpg)
+
+### 任务优先级
+* expiration time
+  - fiber设置过期时间，防止低优任务被高优任务耽误，导致一直不执行
+  - 高低优任务对应的expiration time有改动，不绝对
+* Sync > InteractiveExpiration（事件中触发比如blur、click） > AsyncExpiration
 
 
 
