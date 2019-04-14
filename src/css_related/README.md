@@ -14,12 +14,16 @@
 <summary>展开更多</summary>
 
 * [`常见用法`](#常见用法)
+* [`属性`](#属性)
 * [`须知`](#须知)
 * [`答疑`](#答疑)
 
 </details>
 
 ## 常见用法
+
+### border玩法
+[border](https://www.w3cplus.com/css/css-tips-0904-1.html)
 
 ### 伪元素 伪类
 - https://segmentfault.com/a/1190000000484493
@@ -225,6 +229,9 @@ Chrome浏览器67+支持
   66% { content: '..'; }
 }
 ```
+
+### outline VS border
+outline不占用盒模型空间
 
 ---
 

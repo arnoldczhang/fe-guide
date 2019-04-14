@@ -7,6 +7,8 @@
 - [程序员成长之路](https://github.com/fouber/blog/blob/master/201805/01.md)
 - [2019面试题](https://juejin.im/post/5c64d15d6fb9a049d37f9c20#heading-14)
 - [JavaScript大型模块化项目如何管理依赖](https://zhuanlan.zhihu.com/p/38040253)
+- [我在阿里云做前端](https://zhuanlan.zhihu.com/p/61127760)
+- [中台微服务](https://www.infoq.cn/article/HNDtDuaIYsWUP-SGOPTK)
 
 ## 目录
 <details>
@@ -20,6 +22,7 @@
 * [`言谈举止`](#言谈举止)
 * [`前端集成解决方案`](#前端集成解决方案)
 * [`框架对比`](#框架对比)
+* [`技术选型`](#技术选型)
 * [`依赖管理`](#依赖管理)
 * [`无障碍`](#无障碍)
 * [`快速开发`](#快速开发)
@@ -51,6 +54,8 @@
   * 技术主管后考虑
 3. 拥有事业。选择一份使命，带领团队实现它
 
+---
+
 ## 开发流程
 1. 评审阶段：产品召集前后端进行需求评审，前后端各自捋清楚自己的业务量以及联调之间工作量，从而进行开发时间评估。
 2. 开发准备阶段：前后端一起商量需求中需要联调的部分，进行接口的口头协议交流。
@@ -65,6 +70,8 @@
 
 ### 各端协调
 - ![流程-看板](流程-看板.jpeg)
+
+---
 
 ## 项目设计
 
@@ -142,6 +149,8 @@ project
         - redux
         - ...
 
+---
+
 ## 言谈举止
 
 ### 该避免的言辞
@@ -165,6 +174,7 @@ project
   - 对比传统和要推销的东西
 5. 提出证据，你能让这一切变成现实
 
+---
 
 ## 前端集成解决方案
 [前端集成解决方案](https://github.com/fouber/blog/issues/1)
@@ -188,6 +198,8 @@ project
 8. 开发工具
   * 构建与优化工具、开发-调试-部署等流程工具，以及组件库获取、提交等相关工具
 
+---
+
 ## 框架对比
 
 **首屏渲染**
@@ -202,6 +214,33 @@ vue1.x >> vdom + 优化 >  angular-1.x > vdom
 
 脏检查 + 优化 >= vue1.x > vdom >> mvvm
 
+---
+
+## 技术选型
+[参考](https://insights.thoughtworks.cn/choosing-technology-guide/)
+* 目标产品
+  - 生命周期（短、长）
+  - 探索型or守成型
+  - 主营产品or边缘产品
+* 目标用户
+  - 浏览器版本（同类产品对比or问卷or百度，分析各版本的价值）
+  - 带宽
+  - 可访问人群（普通人、视障）
+  - 国际化
+  - 访问频率
+* 目标团队
+  - 技术背景
+  - 团队规模
+  - 组织架构
+  - 人员流动
+  - https://insights.thoughtworks.cn/choosing-technology-guide/
+* 目标技术
+  - 明确的定位
+  - 维护团队
+  - 代码质量
+  - 社区
+
+---
 
 ## 依赖管理
 大型前端项目可以使用npm模块的方式进行管理
@@ -221,6 +260,8 @@ npm install ./path/to/module1
 import module1 from 'module1'
 // ...
 ```
+
+---
 
 ## 无障碍
 [无障碍](https://mp.weixin.qq.com/s?__biz=MzIwNjkwMTcyOQ==&mid=2247484738&idx=1&sn=c16f3abd28c8df97d534208cf2000e3f&chksm=971bddcca06c54da609dfc13d72ed265ecd51f6ff31ca1fc11fdc3c9452c5f2bfaa78fb15988&scene=27&ascene=0&devicetype=android-28&version=2700033b&nettype=)
