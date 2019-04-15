@@ -69,7 +69,8 @@
 Entity tag，If-Unmodified-Since, If-Match, If-None-Match
 这里可以参考[浏览器缓存](../js&browser/页面过程与浏览器缓存.md#缓存分类)
 
-Cach-Control
+**Cach-Control**
+
 - private：客户端可以缓存
 - public：客户端和代理服务器都可缓存
   * 包括中间节点的proxy
@@ -79,6 +80,30 @@ Cach-Control
 - s-maxage：仅在代理服务器（比如CDN）有效，优先级高于max-age
 - max-stale：能容忍的最大过期时间
 - min-fresh：能够容忍的最小新鲜度
+
+例：must-revalidate
+```text
+// must-revalidate生效有个前提，前提就是这个缓存必须已经过期，
+// 在浏览器端几乎没有任何作用
+Cache-Control: max-age=86400, must-revalidate
+```
+
+### 资源缓存几种方式
+* HTTP 1.1 风格的Cache-Control 响应头中的 max-age指令
+* HTTP 1.0 风格的 Expires 响应头
+* Last-Modified响应头
+
+例：可缓存时长
+
+可缓存时长1小时（22 - 12） * 0.1
+
+注：浏览器差异导致缓存时长不同
+
+```text
+HTTP/2 200
+Date: Wed, 27 Mar 2019 22:00:00 GMT
+Last-Modified: Wed, 27 Mar 2019 12:00:00 GMT
+```
 
 ### 带宽优化
 range，请求资源一部分（206），支持断点续传
