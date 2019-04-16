@@ -1,5 +1,9 @@
 # TODO
 
+## daily
+- [每日精选博文推荐](https://github.com/kujian/frontendDaily/blob/master/2019/04/09.md)
+- [每日interview](https://github.com/yygmind/blog)
+
 ## marked -DONE
 
 ```js

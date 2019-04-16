@@ -9,6 +9,7 @@
 - [JavaScript大型模块化项目如何管理依赖](https://zhuanlan.zhihu.com/p/38040253)
 - [我在阿里云做前端](https://zhuanlan.zhihu.com/p/61127760)
 - [中台微服务](https://www.infoq.cn/article/HNDtDuaIYsWUP-SGOPTK)
+- [架构师能力模型](https://mp.weixin.qq.com/s?__biz=MzI0MTczNDgyOQ==&mid=2247484195&idx=1&sn=4023a1def4da46509a481b77e297e1f7&chksm=e90646e1de71cff786e0b7a3c6ce12074b1df0502a57a5553554b18fa91ab280160708d06e09&xtrack=1&scene=0&subscene=131&clicktime=1554469736&ascene=7&devicetype=android-28&version=2700033c&nettype=WIFI&abtest_cookie=BAABAAoACwASABMABQAjlx4AVpkeANCZHgDamR4A3JkeAAAA&lang=zh_CN&pass_ticket=AHr/9Slxa9wyQOBtmYsQinKiS+CRt/uP1tbENeGh5nL+qvkco8ifDo8OmS6Y/JS4&wx_header=1&utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 
 ## 目录
 <details>
