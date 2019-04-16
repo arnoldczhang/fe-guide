@@ -13,6 +13,7 @@
 <details>
 <summary>展开更多</summary>
 
+* [`tcp`](#tcp)
 * [`request header`](#request header)
 * [`http1.0`](#http1.0)
 * [`http1.1`](#http1.1)
@@ -23,6 +24,16 @@
 * [`https`](#https)
 
 </details>
+
+## tcp
+
+### 问题
+
+#### 现代浏览器在与服务器建立了一个 TCP 连接后是否会在一个 HTTP 请求完成后断开?什么情况下会断开?
+-默认Connection: keep-alive，不会断开，想断开，可以设置**Connection: close**
+-如果不断开，可以省下**初始化和ssl时间**
+
+---
 
 ## request header
 
@@ -45,6 +56,8 @@
 - "Device-Memory" ":" #memory-value
   - 浏览器可以返回设备内存大小给服务端，Chrome 63+ 和 Opera50+支持
 
+---
+
 ## http1.0
   - 带宽限制
   - 延迟
@@ -62,6 +75,8 @@
   - 缓存处理
     - If-Modified-Since：再次请求服务器时，通过此字段通知服务器上次请求时，服务器返回的资源最后修改时间
     - 缓存头部优先级：Pragma > Cache-Control > Expires（废弃） > ETag > Last-Modified
+
+---
 
 ## http1.1
 
@@ -123,11 +138,15 @@ range，请求资源一部分（206），支持断点续传
 ### 缓存字段
 - ![缓存字段](缓存字段.jpg)
 
+---
+
 ## spdy
 - 多路复用
 - 请求优先级（可设置）
 - 首部压缩
 - 服务端推送
+
+---
 
 ## http2.0
 - 多路复用
@@ -151,6 +170,8 @@ range，请求资源一部分（206），支持断点续传
 - HTTP2.0 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS
 - HTTP2.0 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DEFLATE
 
+---
+
 ## quic
 - 基于UDP
 - 通过减少往返次数，以缩短连接建立时间
@@ -162,6 +183,8 @@ range，请求资源一部分（206），支持断点续传
 
 ### 对比http/https/quic
 - ![tls](协议层次.png)
+
+---
 
 ## http3.0
 - 基于UDP协议的QUIC
@@ -177,6 +200,8 @@ range，请求资源一部分（206），支持断点续传
 - 多路复用
   * http2.0：单个连接上有多个stream之间会阻塞，stream丢包会影响之后的stream
   * http3.0：stream之间无影响
+
+---
 
 ## https
   - http + tls
