@@ -27,11 +27,20 @@
 
 ## tcp
 
-### 问题
+### tcp和http的关系
 
-#### 现代浏览器在与服务器建立了一个 TCP 连接后是否会在一个 HTTP 请求完成后断开?什么情况下会断开?
--默认Connection: keep-alive，不会断开，想断开，可以设置**Connection: close**
--如果不断开，可以省下**初始化和ssl时间**
+#### 一对多
+- 一个tcp连接可以发送多个http请求（原因：Connection: keep-alive）
+- 设置**Connection: close**的话，一个http请求结束就会断掉tcp连接
+- 维持连接的优点是能省下请求的**初始化和ssl连接**时间
+
+#### 并行请求
+- http1.1的单个 TCP 连接在同一时刻只能处理一个请求（生命周期不重叠），
+  但是浏览器内置pipelining结束，支持同时发送多个请求，不过存在问题
+- http2 提供了 Multiplexing 多路传输特性，可以在一个 TCP 连接中同时完成多个 HTTP 请求
+
+#### 连接上限
+- Chrome 最多允许对同一个 Host 建立六个 TCP 连接，不同的浏览器有一些区别
 
 ---
 
@@ -149,9 +158,12 @@ range，请求资源一部分（206），支持断点续传
 ---
 
 ## http2.0
+[HTTP/2.0 相比1.0有哪些重大改进](https://www.zhihu.com/question/34074946)
+
 - 多路复用
   * 同个域名只需要占用一个 TCP 连接
   * 同一个tcp连接上并行请求任意数量的双向交换消息
+  * 减轻服务端负载
 - ![多路复用](多路复用.png)
 - 二进制分帧
   * 将首部信息和请求体，采用二进制编码封装进HEADER和BODY frame
@@ -224,6 +236,7 @@ range，请求资源一部分（206），支持断点续传
 
 ### ssl和tls
 - tls由ssl演变而来，目前ssl已极不安全
+- tls1.0相当于ssl3.1
 - 推荐tls1.2
 - ![ssl-tls](ssl-tls.jpg)
 
