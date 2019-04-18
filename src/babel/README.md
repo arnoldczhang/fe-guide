@@ -13,7 +13,6 @@
 
 * [`babel起源`](#起源)
 * [`babel流程`](#流程)
-* [`babel组成`](#组成)
 * [`acorn相关`](#acorn相关)
 * [`babel6相关`](#babel6相关)
 * [`babel7相关`](#babel7相关)
@@ -35,16 +34,6 @@
 ![流程](./babel流程.png)
 
 babel.transform(code, options) -> babel.traverse(ast, hooks) -> babel.generate(ast)
-
----
-
-## 组成
-* @babel/core：AST转换的核心
-* @babel/cli：打包工具
-* @babel/plugin*：Babel 插件机制，Babel基础功能不满足的时候,手动添加些
-* @babel/preset-env：把许多 @babel/plugin 综合了下，减少配置
-* @babel/polyfill：把浏览器某些不支持API，兼容性代码全部导入到项目,不管你是不是用到,缺点是代码体积特别大
-* @babel/runtime：把你使用到的浏览器某些不支持API，按需导入,代码少
 
 ---
 
@@ -274,7 +263,16 @@ types可以在这两个文件里查
 
 ## babel7相关
 
-### 文件<->方法变更
+### 模块组成
+* @babel/core：AST转换的核心
+* @babel/cli：打包工具
+* @babel/plugin*：Babel 插件机制，Babel基础功能不满足的时候,手动添加些
+* @babel/preset-env：把许多 @babel/plugin 综合了下，减少配置
+* @babel/polyfill：babel默认只转换js句法，不转API和部分全局对象的方法，polyfill把浏览器某些不支持API，兼容性代码全部导入到项目,不管你是不是用到,缺点是代码体积特别大
+* @babel/runtime：把你使用到的浏览器某些不支持API，按需导入,代码少
+* @babel/plugin-transform-runtime：默认所有文件都会注入utils（助手方法），导致重复，runtime的引入，可以复用、节省代码
+
+### 文件/方法变更
 1. @babel/core（babel6的babel-core）
   * traverse（babel6的babel-traverse）
   * transform
@@ -295,6 +293,10 @@ types可以在这两个文件里查
 * sourceMap：
 * babelrc：默认true
 * configFile：默认path.resolve(opts.root, "babel.config.js")
+* presets：预置环境
+  - @babel/env
+    + useBuiltIns：只转译使用到的api
+  - minify
 
 ---
 

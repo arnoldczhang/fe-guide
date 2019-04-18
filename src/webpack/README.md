@@ -1,5 +1,10 @@
 # webpack
 
+## 参考
+- [tapable插件机制解析](https://segmentfault.com/a/1190000017420937)
+- [webpack4js拆包](https://mp.weixin.qq.com/s/a946nG0oNYnDBMMwgtDBpA)
+- [webpack4配置指南](https://mp.weixin.qq.com/s/cX7yuneDxDk8_NnMy3Bc8Q)
+- [webpack4配置指南2](https://mp.weixin.qq.com/s/si4yq-M_JS0DqedAhTlKng)
 
 ## 目录
 <details>
@@ -11,12 +16,6 @@
 * [`注意事项`](#注意事项)
 
 </details>
-
-## 参考
-- [tapable插件机制解析](https://segmentfault.com/a/1190000017420937)
-- [webpack4js拆包](https://mp.weixin.qq.com/s/a946nG0oNYnDBMMwgtDBpA)
-- [webpack4配置指南](https://mp.weixin.qq.com/s/cX7yuneDxDk8_NnMy3Bc8Q)
-- [webpack4配置指南2](https://mp.weixin.qq.com/s/si4yq-M_JS0DqedAhTlKng)
 
 ## webpack-3.8.1解析
 
@@ -48,8 +47,11 @@
           - entry-option
         - ...
 
+---
+
 ## webpack 4
 [参考](https://juejin.im/entry/5b63eb8bf265da0f98317441)
+[webpack4的24个实例](https://juejin.im/post/5cae0f616fb9a068a93f0613?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-1)
 
 ### 相比webpack3
 * 4多了mode字段，用于切换开发/生成环境
@@ -80,6 +82,55 @@ var V6Engine = (function () {
 }())
 console.log(new V8Engine().toString())
  ```
+
+### babel7
+[参考](../babel/README.md)
+
+### browserslist
+[browserslist](https://github.com/browserslist/browserslist)
+
+**用于在不同前端工具之间共享目标浏览器和 Node.js 版本的配置**
+
+#### 使用方法
+- 添加到 package.json
+  ```json
+  {
+    "dependencies": {
+
+    },
+    "browserslist": [
+      "> 1%",
+      "last 2 version",
+      "not ie <= 8"
+    ]
+  }
+  ```
+- 创建 .browserslist
+  ```text
+  # 所支持的浏览器版本
+  > 1% # 全球使用情况统计选择的浏览器版本
+  last 2 version # 每个浏览器的最后两个版本
+  not ie <= 8 # 排除小于 ie8 以下的浏览器
+  ```
+
+### code splitting
+
+**splitChunksPlugins**
+
+```js
+module.exports = {
+  // ...
+  optimization: {
+    splitChunks: {
+      chunks: 'all', // 分割所有代码，包括同步代码和异步代码
+      // chunks: 'async'，// 默认，分割异步代码
+    }
+  },
+};
+```
+
+
+ ---
 
 ## treeshaking
 - [基本原理](https://juejin.im/post/5a4dc842518825698e7279a9)
