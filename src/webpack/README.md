@@ -51,9 +51,46 @@
 ---
 
 ## 开发&调试
+
+### 调试
 ```js
+// webpack.config.js放根目录，或者--config=指定路径
 ndb ./node_modules/webpack/bin/webpack.js --inline --progress
 ```
+
+### plugin开发
+
+#### hook注入
+```js
+class CopyrightWebpackPlugin {
+  // 调用plugin时，默认先执行apply
+  apply(compiler) {
+    const hooks = compiler.hooks;
+
+    // webpack4+的写法
+    if (hooks) {
+      // 在`compile`hook，同步注入回调
+      hooks.compile.tap('CopyrightWebpackPlugin', (compilation, cb) => {
+        this.handleInit();
+      });
+    // webpack1-3的写法
+    } else {
+      compiler.plugin('compile', () => {
+        this.handleInit();
+      });
+    }
+  },
+  handleInit() {
+    // ...
+  },
+  
+}
+
+module.exports = CopyrightWebpackPlugin;
+
+```
+
+### loader开发
 
 ---
 
@@ -136,7 +173,6 @@ module.exports = {
   },
 };
 ```
-
 
  ---
 
