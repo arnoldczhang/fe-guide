@@ -12,6 +12,7 @@
 
 * [`webpack-3.8.1解析`](#webpack-3.8.1解析)
 * [`webpack 4`](#webpack 4)
+* [`开发&调试`](#开发&调试)
 * [`treeshaking`](#treeshaking)
 * [`注意事项`](#注意事项)
 
@@ -46,6 +47,13 @@
         - EntryOptionPlugin
           - entry-option
         - ...
+
+---
+
+## 开发&调试
+```js
+ndb ./node_modules/webpack/bin/webpack.js --inline --progress
+```
 
 ---
 
