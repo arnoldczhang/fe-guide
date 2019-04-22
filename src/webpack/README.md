@@ -12,7 +12,7 @@
 <summary>展开更多</summary>
 
 * [`webpack-3.8.1解析`](#webpack-3.8.1解析)
-* [`webpack 4`](#webpack 4)
+* [`webpack4`](#webpack4)
 * [`开发&调试`](#开发&调试)
 * [`treeshaking`](#treeshaking)
 * [`注意事项`](#注意事项)
@@ -95,9 +95,12 @@ module.exports = CopyrightWebpackPlugin;
 
 ---
 
-## webpack 4
+## webpack4
 [参考](https://juejin.im/entry/5b63eb8bf265da0f98317441)
 [webpack4的24个实例](https://juejin.im/post/5cae0f616fb9a068a93f0613?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-1)
+
+### 基本流程
+![流程](./webpack-4.30.0.基本流程.png)
 
 ### 相比webpack3
 * 4多了mode字段，用于切换开发/生成环境
