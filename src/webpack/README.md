@@ -100,7 +100,7 @@ module.exports = CopyrightWebpackPlugin;
 [webpack4的24个实例](https://juejin.im/post/5cae0f616fb9a068a93f0613?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-1)
 
 ### 基本流程
-![流程](./webpack-4.30.0.基本流程.png)
+![流程](https://www.processon.com/view/5cbd0db6e4b085d0107f438c)
 
 ### 相比webpack3
 * 4多了mode字段，用于切换开发/生成环境
