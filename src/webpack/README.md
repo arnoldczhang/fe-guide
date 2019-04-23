@@ -91,6 +91,32 @@ module.exports = CopyrightWebpackPlugin;
 
 ```
 
+### plugin学习
+
+#### WarnNoModeSetPlugin
+
+**作用**
+
+当mode字段未设值时有提示
+
+```js
+if (typeof options.mode !== "string") {
+  const WarnNoModeSetPlugin = require("./WarnNoModeSetPlugin");
+  new WarnNoModeSetPlugin().apply(compiler);
+}
+```
+
+**调用位置**
+
+/webpack/lib/WebpackOptionsApply.js
+
+**hook**
+
+compiler.hooks.thisCompilation -> tap('WarnNoModeSetPlugin')
+
+compilation.warnings -> .push(new NoModeWarning)
+
+
 ### loader开发
 
 ---
