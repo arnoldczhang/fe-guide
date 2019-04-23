@@ -112,9 +112,49 @@ if (typeof options.mode !== "string") {
 
 **hook**
 
-compiler.hooks.thisCompilation -> tap('WarnNoModeSetPlugin')
+```js
+/*
+compiler.hooks.thisCompilation -> tap('WarnNoModeSetPlugin', () => {
+  compilation.warnings -> .push(new NoModeWarning)
+})
+*/
+```
 
-compilation.warnings -> .push(new NoModeWarning)
+#### SetVarMainTemplatePlugin
+**作用**
+
+
+**调用位置**
+
+/webpack/lib/LibraryTemplatePlugin.js
+
+**hook**
+
+```js
+/*
+chunkTemplate.hooks.renderWithEntry -> tap('SetVarMainTemplatePlugin', onRenderWithEntry)
+
+mainTemplate.hooks.renderWithEntry -> tap('SetVarMainTemplatePlugin', onRenderWithEntry)
+
+mainTemplate.hooks.globalHashPaths -> tap('SetVarMainTemplatePlugin', paths => {
+  paths -> .push(this.varExpression)
+})
+
+mainTemplate.hooks.hash -> tap("SetVarMainTemplatePlugin", hash => {
+  hash.update(/* ... */)
+})
+ */
+```
+
+#### xxx
+**作用**
+**调用位置**
+**hook**
+
+#### xxx
+**作用**
+**调用位置**
+**hook**
 
 
 ### loader开发
