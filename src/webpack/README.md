@@ -115,7 +115,7 @@ if (typeof options.mode !== "string") {
 ```js
 /*
 compiler.hooks.thisCompilation -> tap('WarnNoModeSetPlugin', () => {
-  compilation.warnings -> .push(new NoModeWarning)
+  compilation.warnings.push(new NoModeWarning)
 })
 */
 ```
@@ -137,7 +137,7 @@ chunkTemplate.hooks.renderWithEntry -> tap('SetVarMainTemplatePlugin', onRenderW
 mainTemplate.hooks.renderWithEntry -> tap('SetVarMainTemplatePlugin', onRenderWithEntry)
 
 mainTemplate.hooks.globalHashPaths -> tap('SetVarMainTemplatePlugin', paths => {
-  paths -> .push(this.varExpression)
+  paths.push(this.varExpression)
 })
 
 mainTemplate.hooks.hash -> tap("SetVarMainTemplatePlugin", hash => {

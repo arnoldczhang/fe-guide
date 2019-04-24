@@ -217,16 +217,11 @@ function explode(visitor) {
   // 转换成
   // Identifier(path) { ... }
   // BinaryExpression(path) { ... }
-
   // 2. 校验visitor类型、key是否该ignore，或是否在babel-types.TYPES里
-
   // 3. hook如果是function，转成 hookName: { enter: hookFn }
-
   // 4. 如果hook有enter或exit，但不是数组，转成 visitor[hookName].enter = [visitor[hookName].enter]
-
   // 5. 如果hookName属于virtualTypes（babel-traverse/lib/path/lib/virtual-types.js），将
   // virtualTypes[hookName]加入virtualTypes[hookName].types的hook处理队列中
-
   // 6. deprecratedKey检查
 };
 ```
@@ -253,11 +248,10 @@ function call(key) {
   return fn.call(this.state, this, this.state);
 }
 ```
-4. babel-types/lib/definitions/core.js和babel-types/lib/definitions/flow.js
-hook都可以在这两个文件里查
-5. @babel/core/node_modules/@babel/types/lib/index.d.ts
-和 @babel/core/node_modules/@babel/types/lib/index.js
-types可以在这两个文件里查
+4. **babel-types/lib/definitions/core.js** 和 **babel-types/lib/definitions/flow.js**
+用到的hook都可以在这两个文件里查
+5. **@babel/core/node_modules/@babel/types/lib/index.d.ts** 和 **@babel/core/node_modules/@babel/types/lib/index.js**
+用到的types可以在这两个文件里查
 
 ---
 
@@ -272,7 +266,7 @@ types可以在这两个文件里查
 * @babel/runtime：把你使用到的浏览器某些不支持API，按需导入,代码少
 * @babel/plugin-transform-runtime：默认所有文件都会注入utils（助手方法），导致重复，runtime的引入，可以复用、节省代码
 
-### 文件/方法变更
+### 文件/方法变更（相比babel6）
 1. @babel/core（babel6的babel-core）
   * traverse（babel6的babel-traverse）
   * transform
@@ -284,42 +278,42 @@ types可以在这两个文件里查
   * parse
 
 ### options
-[参考](https://babeljs.io/docs/en/options)
+[官方文档](https://babeljs.io/docs/en/options)
 
 #### 常用key
-* ast：是否生成ast，默认false，返回null
-* code：是否生成code，默认true
-* envName：环境变量，默认process.env.BABEL_ENV || process.env.NODE_ENV || "development"
-* sourceMap：
-* babelrc：默认true
-* configFile：默认path.resolve(opts.root, "babel.config.js")
-* presets：预置环境
+* **ast**：是否生成ast，默认false，返回null
+* **code**：是否生成code，默认true
+* **envName**：环境变量，默认process.env.BABEL_ENV || process.env.NODE_ENV || "development"
+* **sourceMap**：不解释
+* **babelrc**：默认true
+* **configFile**：默认path.resolve(opts.root, "babel.config.js")
+* **presets**：预置环境
   - @babel/env
     + useBuiltIns：只转译使用到的api
   - minify
+    + babel编译出的代码是否压缩
 
 ---
 
 ## babel-plugin学习
 这里记录下自己学习babel-plugin时碰到的各种情况
 
-### 包含
+### 什么是plugin
 - babel-preset-xxx
 - babel-plugin-xxx
+- babel-macro
 
-#### 区别-解析顺序
-preset：倒序
-plugin：正序
+### 解析顺序
+babel-preset：倒序解析
+babel-plugin：顺序解析
+
+**举例**
 
 ```js
 {
   // ...
-  
-  // react -> es2015 -> ...
-  preset: ['es2015', 'react'],
-
-  // transform-react -> transfrom-async-function -> ...
-  plugins: ['transform-react', 'transfrom-async-function'],
+  preset: ['es2015', 'react'], // 解析顺序：react -> es2015
+  plugins: ['transform-react', 'transfrom-async-function'], // 解析顺序：transform-react -> transfrom-async-function
   // ...
 }
 ```
@@ -335,13 +329,14 @@ const template = require('@babel/template').default;
   path.node.body.unshift(template(`var bb = require('./test');`)());
   // ...
 }
- template
 ```
 
 ### hooks入参
 1. path
 2. types
 3. options
+
+---
 
 ### path
 path是所有plugin-hook的第一个入参
@@ -382,13 +377,13 @@ path是所有plugin-hook的第一个入参
   * 词法类型
 
 #### path常用方法
-参考@babel/core/node_modules/@babel/traverse/lib/path/**.js
+参考 **@babel/core/node_modules/@babel/traverse/lib/path/**.js**
 
 或参考
 
 ![path属性&方法](./path属性&方法.png)
 
-#### 用法
+#### 部分用法
 - path.get(key)
 - path.isXXXX() or path.get(key).isXXXX()
 - path.replaceWith(types.valueToNode(/**/))
@@ -642,8 +637,12 @@ import * as base from './base';
 * left
 * right
 
+---
+
 ### types
-即babel-types，提供工具很多方法
+即 **babel-types**，提供工具很多方法
+
+---
 
 ### options
 注入plugins是添加的参数，比如
@@ -708,11 +707,11 @@ var ONE_DAY = 86400000;
 ```
 
 ### babel7使用方法
-- options新增参数`filename: 'unknown'`
+- options需要新增参数`filename: 'xxx'`
   ```js
   const { transformSync } = require('@babel/core');
   const { ast } = transformSync(input, {
-    // ...
+    // 这里unknown只是示例名，可任意取
     filename: 'unknown',
     plugins: [
       'macros',
@@ -720,7 +719,7 @@ var ONE_DAY = 86400000;
   });
   ```
 
-**scope.macro由于@babel/template兼容性，目前无法使用**
+**由于@babel/template兼容性，部分macro目前还无法使用（比如scope.macro）**
 
 ---
 
@@ -729,12 +728,12 @@ var ONE_DAY = 86400000;
 用于改写require命令，为它加上一个钩子。此后，每当使用require加载
 .js、.jsx、.es和.es6后缀名（可自定义）的文件，就会先用Babel进行转码。
 
-- [官网](https://babeljs.io/docs/en/next/babel-register.html)
+[官网](https://babeljs.io/docs/en/next/babel-register.html)
 
 ### 注意
 - 待转码的内容单独抽离成文件，在babel-register后面引入
 - presets配置同babel配置
-- 一般用于开发环境
+- 请用于开发环境
 - 示例参考[ssr](./babel-register.js)，或[完整示例](https://flaviocopes.com/react-server-side-rendering)
 
 ---
