@@ -17,3 +17,5 @@
 - [REST、GraphQL](https://github.com/dt-fe/weekly/blob/master/72.%E7%B2%BE%E8%AF%BB%E3%80%8AREST%2C%20GraphQL%2C%20Webhooks%2C%20%26%20gRPC%20%E5%A6%82%E4%BD%95%E9%80%89%E5%9E%8B%E3%80%8B.md)
 - [cachStorage](https://bitsofco.de/cache-api-101/)
 - [chrome-console技巧合集](https://juejin.im/post/5c09a80151882521c81168a2)
+- [js工作原理](https://segmentfault.com/a/1190000018854431?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
+
