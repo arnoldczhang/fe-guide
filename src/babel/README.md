@@ -737,5 +737,3 @@ var ONE_DAY = 86400000;
 - 示例参考[ssr](./babel-register.js)，或[完整示例](https://flaviocopes.com/react-server-side-rendering)
 
 ---
-
-
