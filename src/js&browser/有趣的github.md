@@ -6,6 +6,7 @@
 
 * [`git-history`](#git-history)
 * [`spy-debugger`](#spy-debugger)
+* [`node-clinic`](#spy-debugger)
 
 </details>
 
@@ -24,6 +25,11 @@
 [参考](https://github.com/wuchangming/spy-debugger)
 
 页面编辑模式：spy-debugger -w true
+
+---
+
+## node-clinic
+[参考](https://clinicjs.org/documentation/)
 
 ---
 

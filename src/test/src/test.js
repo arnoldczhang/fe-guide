@@ -180,6 +180,23 @@
 // //Check
 // printStatus(exampleFunction);
 
-const CryptoJS = require('crypto-js');
-const msg = CryptoJS.SHA256("Message Part 1");
-console.log(msg);
+// const CryptoJS = require('crypto-js');
+// const msg = CryptoJS.SHA256("Message Part 1");
+// console.log(msg);
+
+
+const { SyncHook } = require('tapable');
+debugger;
+const FrontEnd = new SyncHook();
+FrontEnd.tap('webpack',()=>{
+  console.log("get webpack")
+});
+FrontEnd.tap('react',()=>{
+  console.log("get react")
+});
+FrontEnd.learn=()=>{
+  FrontEnd.call()
+};
+FrontEnd.learn();
+
+

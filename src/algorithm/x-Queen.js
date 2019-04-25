@@ -37,7 +37,7 @@ const push = (list = [], value) => {
   return list;
 };
 
-function findQueue(length = 8) {
+function xQueen(length = 8) {
   let coords = resetList();
   let solutionCount = 0;
   const solution = [];
@@ -73,7 +73,6 @@ function findQueue(length = 8) {
     return true;
   };
 
-  debugger;
   while (nowRow < length) {
     if (updateDiagonal() && !has(triedList[nowRow], nowCol)) {
       push(diagonalList, diagonal);
@@ -105,6 +104,4 @@ function findQueue(length = 8) {
   };
 };
 
-findQueue();
-
-module.exports = findQueue;
+module.exports = xQueen;

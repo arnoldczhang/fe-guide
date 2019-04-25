@@ -1,0 +1,50 @@
+/**index.wxss**/
+
+page {
+  background: rgb(242, 242, 242);
+}
+
+.container {
+  background-color: #fff;
+  margin: 30rpx;
+  box-sizing: border-box;
+}
+.title-body,
+.main-body {
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+.title-body {
+  background: #eee;
+}
+.line {
+  display: flex;
+  justify-content: flex-end;
+  line-height:100rpx;
+  height:100rpx;
+  border-bottom: 1rpx solid #999;
+}
+
+.line input {
+  display: inline-block;
+  line-height:100rpx;
+  height:100rpx;
+  font-size: 28rpx;
+}
+.line text {
+  display: inline-block;
+  margin-right: 30rpx;
+  font-size: 32rpx;
+}
+.wavy-line {
+  transform-origin: center left;
+  transform: rotate(360deg);
+  width: 696rpx;
+  height: 20rpx;
+  background-image: radial-gradient(circle, rgb(242, 242, 242), rgb(242, 242, 242) 10rpx, transparent 0, transparent 5rpx, transparent 15rpx, transparent);
+  background-size: 38rpx 38rpx;
+  background-repeat: repeat-x;
+}
+.footer-body {
+  margin: 30rpx;
+}

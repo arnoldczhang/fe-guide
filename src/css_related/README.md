@@ -13,13 +13,17 @@
 <details>
 <summary>展开更多</summary>
 
+* [`常见用法`](#常见用法)
 * [`属性`](#属性)
 * [`须知`](#须知)
 * [`答疑`](#答疑)
 
 </details>
 
-## 属性
+## 常见用法
+
+### border玩法
+[border](https://www.w3cplus.com/css/css-tips-0904-1.html)
 
 ### 伪元素 伪类
 - https://segmentfault.com/a/1190000000484493
@@ -81,6 +85,155 @@ document.link.disabled = true;
 document.link.disabled = false;
 ```
 
+### z-index
+[参考](https://juejin.im/post/5ba4efe36fb9a05cf52ac192?utm_source=gold_browser_extension)
+
+#### 层叠上下文
+根层叠上下文 - <html></html>
+
+- 层叠上下文可以互相包含
+- 与兄弟元素互相独立（处理层叠时）
+- 自包含：当元素内容被层叠后，整个元素在父元素内都会被层叠
+
+**新建层叠上下文**
+
+- position值为absolute|relative，且z-index值不为 auto
+- position 值为 fixed|sticky
+- z-index 值不为 auto 的flex元素，即：父元素display: flex | inline-flex
+- opacity 属性值小于 1 的元素
+- transform 属性值不为 none的元素
+- mix-blend-mode 属性值不为 normal 的元素
+- filter、perspective、clip-path、mask、mask-image、mask-border、motion-path 值不为 none 的元素
+- perspective 值不为 none 的元素
+- isolation 属性被设置为 isolate 的元素
+- will-change 中指定了任意 CSS 属性，即便你没有直接指定这些属性的值
+- -webkit-overflow-scrolling 属性被设置 touch的元素
+
+#### 层叠等级
+同一个层叠，上下文中元素，在z轴上的显示顺序
+
+**如何决定层叠等级**
+
+- 定位元素
+  * z-index
+- 非定位元素
+  * 层叠顺序
+  * HTML中顺序
+  * 父级以上元素层叠等级
+
+#### z-index
+正整数、负整数、0、auto，默认auto
+
+#### 层叠顺序
+![层叠顺序](./层叠顺序.png)
+
+### :focus-visible
+键盘访问（比如按tab）时，元素边缘会出现选中的蓝框
+
+[参考](https://www.zhangxinxu.com/wordpress/2019/03/css-focus-visible/)
+
+可以通过设置属性去除
+```css
+:focus:not(:focus-visible) {
+    outline: 0;
+}
+```
+
+Chrome浏览器67+支持
+
+### flex左右布局
+```css
+<ul class="demo2">
+  <li>首页</li>
+  <li>动态</li>
+  <li>话题</li>
+  <li>活动</li>
+  <!-- 登录注册文案贴右边 -->
+  <li>登录 &nbsp; 注册</li>
+</ul>
+<style>
+.demo2 {
+  display: flex;
+}
+.demo2 > li:last-child {
+  margin-left: auto;
+}
+</style>
+```
+
+### 垂直水平居中
+```css
+<div id="grid">
+  <div id="box">aa</div>
+</div>
+<style>
+#grid {
+  display: flex;
+  height: 500px;
+  width: 500px;
+}
+#box {
+  margin: auto;
+  height: 100px;
+  width: 100px;
+}
+</style>
+```
+
+### 蒙层高亮
+```css
+/*解法一：outline*/
+.clip-shape {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  left: 0;/*可调整*/
+  right: 0;/*可调整*/
+  outline: 999px solid rgba(0,0,0,.5);
+  top: 0;/*可调整*/
+  bottom: 0;/*可调整*/
+  margin: auto;
+}
+/*解法二：box-shadow*/
+.clip-shape {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,.75);
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  cursor: move;
+}
+```
+
+### 加载中
+```html
+<div>加载中<span class="more"></span></div>
+```
+```css
+.more::before {
+  content: '...';
+  position: absolute;
+  animation: dot2 3s infinite step-start both;
+}
+.more::after {
+  content: '...';
+  color: transparent;
+}
+@keyframes dot2 {
+  33% { content: '.'; }
+  66% { content: '..'; }
+}
+```
+
+### outline VS border
+outline不占用盒模型空间
+
+---
 
 ## 须知
 
@@ -150,5 +303,17 @@ elm.animate([
 ### 屏幕完整截图
 - chrome，command + shift + p
 
+### IE6下的双边距bug
+**原因**
+
+- 块元素
+- 浮动
+- 有横向margin
+
+**解决方法**
+
+- display:inline（让块元素变成内联元素）
+- 不要使用浮动
+- 用padding-left代替margin-left
 
 

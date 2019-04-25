@@ -1,26 +1,56 @@
 # babel
 
+## 参考
+- [babel-plugins-repository](https://github.com/babel/minify.git)
+- [babel-handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/plugin-handbook.md)
+- [ast-tree字段参考](https://github.com/babel/babylon/blob/master/ast/spec.md)
+- [alloyTeam出的babel总览](http://www.alloyteam.com/2017/04/analysis-of-babel-babel-overview/)
+- https://github.com/babel/minify/packages/...
+
 ## 目录
 <details>
 <summary>展开更多</summary>
 
-* [`学习指南`](#学习指南)
-* [`babel6解析`](#babel6解析)
-* [`babel7解析`](#babel7解析)
+* [`babel起源`](#起源)
+* [`babel流程`](#流程)
+* [`acorn相关`](#acorn相关)
+* [`babel6相关`](#babel6相关)
+* [`babel7相关`](#babel7相关)
 * [`babel-plugin学习`](#babel-plugin学习)
 * [`babel-macro`](#babel-macro)
+* [`babel-register`](#babel-register)
 
 </details>
 
-## 参考
-- [babel-plugins-repository](https://github.com/babel/minify.git)
-- [babel-handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/plugin-handbook.md)
+## 起源
+* babel使用的引擎是babylon
+* babylon是fork的acorn项目，
+* acorn只提供基本的解析ast的能力，遍历还需要配套的acorn-travesal, 替换节点需要使用acorn-
+* babel做了统一
 
-## 学习指南
-- babel-handbook
-- https://github.com/babel/minify/packages/...
+---
 
-## babel6解析
+## 流程
+![流程](./babel流程.png)
+
+babel.transform(code, options) -> babel.traverse(ast, hooks) -> babel.generate(ast)
+
+---
+
+## acorn相关
+
+### acorn流程
+
+![acorn流程](./acorn流程.png)
+
+acorn.parse(code) -> ast-traverse(ast) -> alter(code, replacers)
+
+### acorn VS babylon VS babel
+[对比](./acorn.js)
+
+---
+
+## babel6相关
 
 ### babel.transform(code, opts)
 
@@ -187,16 +217,11 @@ function explode(visitor) {
   // 转换成
   // Identifier(path) { ... }
   // BinaryExpression(path) { ... }
-
   // 2. 校验visitor类型、key是否该ignore，或是否在babel-types.TYPES里
-
   // 3. hook如果是function，转成 hookName: { enter: hookFn }
-
   // 4. 如果hook有enter或exit，但不是数组，转成 visitor[hookName].enter = [visitor[hookName].enter]
-
   // 5. 如果hookName属于virtualTypes（babel-traverse/lib/path/lib/virtual-types.js），将
   // virtualTypes[hookName]加入virtualTypes[hookName].types的hook处理队列中
-
   // 6. deprecratedKey检查
 };
 ```
@@ -223,17 +248,25 @@ function call(key) {
   return fn.call(this.state, this, this.state);
 }
 ```
-4. babel-types/lib/definitions/core.js和babel-types/lib/definitions/flow.js
-hook都可以在这两个文件里查
-5. @babel/core/node_modules/@babel/types/lib/index.d.ts
-和 @babel/core/node_modules/@babel/types/lib/index.js
-types可以在这两个文件里查
+4. **babel-types/lib/definitions/core.js** 和 **babel-types/lib/definitions/flow.js**
+用到的hook都可以在这两个文件里查
+5. **@babel/core/node_modules/@babel/types/lib/index.d.ts** 和 **@babel/core/node_modules/@babel/types/lib/index.js**
+用到的types可以在这两个文件里查
 
 ---
 
-## babel7解析
+## babel7相关
 
-### 文件<->方法变更
+### 模块组成
+* @babel/core：AST转换的核心
+* @babel/cli：打包工具
+* @babel/plugin*：Babel 插件机制，Babel基础功能不满足的时候,手动添加些
+* @babel/preset-env：把许多 @babel/plugin 综合了下，减少配置
+* @babel/polyfill：babel默认只转换js句法，不转API和部分全局对象的方法，polyfill把浏览器某些不支持API，兼容性代码全部导入到项目,不管你是不是用到,缺点是代码体积特别大
+* @babel/runtime：把你使用到的浏览器某些不支持API，按需导入,代码少
+* @babel/plugin-transform-runtime：默认所有文件都会注入utils（助手方法），导致重复，runtime的引入，可以复用、节省代码
+
+### 文件/方法变更（相比babel6）
 1. @babel/core（babel6的babel-core）
   * traverse（babel6的babel-traverse）
   * transform
@@ -245,49 +278,73 @@ types可以在这两个文件里查
   * parse
 
 ### options
-[参考](https://babeljs.io/docs/en/options)
+[官方文档](https://babeljs.io/docs/en/options)
 
 #### 常用key
-
-**ast**
-
-是否生成ast
-
-默认false，返回null
-
-**code**
-
-是否生成code
-
-默认true
-
-**envName**
-
-环境变量
-
-默认process.env.BABEL_ENV || process.env.NODE_ENV || "development"
-
-**sourceMap**
-
-**babelrc**
-
-默认true
-
-**configFile**
-
-默认path.resolve(opts.root, "babel.config.js")
+* **ast**：是否生成ast，默认false，返回null
+* **code**：是否生成code，默认true
+* **envName**：环境变量，默认process.env.BABEL_ENV || process.env.NODE_ENV || "development"
+* **sourceMap**：不解释
+* **babelrc**：默认true
+* **configFile**：默认path.resolve(opts.root, "babel.config.js")
+* **presets**：预置环境
+  - @babel/env
+    + useBuiltIns：只转译使用到的api
+  - minify
+    + babel编译出的代码是否压缩
 
 ---
 
 ## babel-plugin学习
 这里记录下自己学习babel-plugin时碰到的各种情况
 
+### 什么是plugin
+- babel-preset-xxx
+- babel-plugin-xxx
+- babel-macro
+
+### 解析顺序
+babel-preset：倒序解析
+babel-plugin：顺序解析
+
+**举例**
+
+```js
+{
+  // ...
+  preset: ['es2015', 'react'], // 解析顺序：react -> es2015
+  plugins: ['transform-react', 'transfrom-async-function'], // 解析顺序：transform-react -> transfrom-async-function
+  // ...
+}
+```
+
+### 常用方法
+
+**babel.template**
+
+```js
+const template = require('@babel/template').default;
+{
+  // ...
+  path.node.body.unshift(template(`var bb = require('./test');`)());
+  // ...
+}
+```
+
+### hooks入参
+1. path
+2. types
+3. options
+
+---
 
 ### path
 path是所有plugin-hook的第一个入参
 
 #### 结构
-path
+
+**path**
+
 - node
   * 表示当前ast节点的主体信息
   * 结构：
@@ -319,9 +376,14 @@ path
 - type
   * 词法类型
 
-#### 常用方法
-参考@babel/core/node_modules/@babel/traverse/lib/path/**.js
+#### path常用方法
+参考 **@babel/core/node_modules/@babel/traverse/lib/path/**.js**
 
+或参考
+
+![path属性&方法](./path属性&方法.png)
+
+#### 部分用法
 - path.get(key)
 - path.isXXXX() or path.get(key).isXXXX()
 - path.replaceWith(types.valueToNode(/**/))
@@ -329,6 +391,7 @@ path
 - path.insertAfter(nodes)
 - path.parentPath.remove()
 - path.get('body').unshiftContainer('body', types.expressionStatement(t.stringLiteral('before')))
+- path.replaceWithSourceString：这个方法少用，会调用babylon.parse解析代码，应该在遍历外解析
 
 ### 常用词法类型hook
 
@@ -391,7 +454,6 @@ var test = require('./test');
     path.get('init').get('arguments')
     path.get('init').get('property')
     ```
-
 
 #### ImportDeclaration
 **作用**
@@ -577,14 +639,44 @@ import * as base from './base';
 
 ---
 
+### types
+即 **babel-types**，提供工具很多方法
+
+---
+
+### options
+注入plugins是添加的参数，比如
+```js
+const { transformSync } = require('@babel/core');
+transformSync(input, {
+  /* 其他配置参数 */
+  plugins: [
+    ['./src/babel/babel-plugin-inline-env',
+      /**
+       * 这第二个参数就是options
+       */
+      {
+        include: ['NODE_ENV'],
+      }
+    ],
+  ],
+});
+```
+
+---
+
 ## babel-macro
-编译阶段预处理js逻辑
-[babel-plugin-macros](https://github.com/kentcdodds/babel-plugin-macros)
+编译阶段预处理js逻辑（目前babel6支持使用）
+
+- [官方git](https://github.com/kentcdodds/babel-plugin-macros)
+- [目前支持的macros](https://github.com/jgierer12/awesome-babel-macros)
+- [示例参考](./babel-plugin-macro.js)
 
 **注**
+
 仅针对静态编译的内容
 
-### 使用方法
+### babel6使用方法
 1. 安装macros
 ```js
 npm install --save-dev babel-plugin-macros
@@ -614,5 +706,34 @@ const ONE_DAY = ms('1 day');
 var ONE_DAY = 86400000;
 ```
 
+### babel7使用方法
+- options需要新增参数`filename: 'xxx'`
+  ```js
+  const { transformSync } = require('@babel/core');
+  const { ast } = transformSync(input, {
+    // 这里unknown只是示例名，可任意取
+    filename: 'unknown',
+    plugins: [
+      'macros',
+    ],
+  });
+  ```
 
+**由于@babel/template兼容性，部分macro目前还无法使用（比如scope.macro）**
 
+---
+
+## babel-register
+
+用于改写require命令，为它加上一个钩子。此后，每当使用require加载
+.js、.jsx、.es和.es6后缀名（可自定义）的文件，就会先用Babel进行转码。
+
+[官网](https://babeljs.io/docs/en/next/babel-register.html)
+
+### 注意
+- 待转码的内容单独抽离成文件，在babel-register后面引入
+- presets配置同babel配置
+- 请用于开发环境
+- 示例参考[ssr](./babel-register.js)，或[完整示例](https://flaviocopes.com/react-server-side-rendering)
+
+---

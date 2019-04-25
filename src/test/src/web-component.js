@@ -1,5 +1,5 @@
-
 // https://www.sitepen.com/blog/2018/07/06/web-components-in-2018/
+// https://mp.weixin.qq.com/s/KsPpmBrLsu0HjYWuzyAdgQ
 class CounterElement extends HTMLElement {
   constructor() {
     super();

@@ -1,22 +1,23 @@
 # webpack
 
+## 参考
+- [tapable插件机制解析](https://segmentfault.com/a/1190000017420937)
+- [webpack4js拆包](https://mp.weixin.qq.com/s/a946nG0oNYnDBMMwgtDBpA)
+- [webpack4配置指南](https://mp.weixin.qq.com/s/cX7yuneDxDk8_NnMy3Bc8Q)
+- [webpack4配置指南2](https://mp.weixin.qq.com/s/si4yq-M_JS0DqedAhTlKng)
+- [webpack官方plugin文档](https://webpack.js.org/api/compilation-hooks#shouldgeneratechunkassets)
 
 ## 目录
 <details>
 <summary>展开更多</summary>
 
 * [`webpack-3.8.1解析`](#webpack-3.8.1解析)
-* [`webpack 4`](#webpack 4)
+* [`webpack4`](#webpack4)
+* [`开发调试`](#开发调试)
 * [`treeshaking`](#treeshaking)
 * [`注意事项`](#注意事项)
 
 </details>
-
-## 参考
-- [tapable插件机制解析](https://segmentfault.com/a/1190000017420937)
-- [webpack4js拆包](https://mp.weixin.qq.com/s/a946nG0oNYnDBMMwgtDBpA)
-- [webpack4配置指南](https://mp.weixin.qq.com/s/cX7yuneDxDk8_NnMy3Bc8Q)
-- [webpack4配置指南2](https://mp.weixin.qq.com/s/si4yq-M_JS0DqedAhTlKng)
 
 ## webpack-3.8.1解析
 
@@ -48,8 +49,124 @@
           - entry-option
         - ...
 
-## webpack 4
+---
+
+## 开发调试
+
+### 调试
+```js
+// webpack.config.js放根目录，或者--config=指定路径
+ndb ./node_modules/webpack/bin/webpack.js --inline --progress
+```
+
+### plugin开发
+
+#### hook注入
+```js
+class CopyrightWebpackPlugin {
+  // 调用plugin时，默认先执行apply
+  apply(compiler) {
+    const hooks = compiler.hooks;
+
+    // webpack4+的写法
+    if (hooks) {
+      // 在`compile`hook，同步注入回调
+      hooks.compile.tap('CopyrightWebpackPlugin', (compilation, cb) => {
+        this.handleInit();
+      });
+    // webpack1-3的写法
+    } else {
+      compiler.plugin('compile', () => {
+        this.handleInit();
+      });
+    }
+  },
+  handleInit() {
+    // ...
+  },
+  
+}
+
+module.exports = CopyrightWebpackPlugin;
+
+```
+
+### plugin学习
+
+#### WarnNoModeSetPlugin
+
+**作用**
+
+当mode字段未设值时有提示
+
+```js
+if (typeof options.mode !== "string") {
+  const WarnNoModeSetPlugin = require("./WarnNoModeSetPlugin");
+  new WarnNoModeSetPlugin().apply(compiler);
+}
+```
+
+**调用位置**
+
+/webpack/lib/WebpackOptionsApply.js
+
+**hook**
+
+```js
+/*
+compiler.hooks.thisCompilation -> tap('WarnNoModeSetPlugin', () => {
+  compilation.warnings.push(new NoModeWarning)
+})
+*/
+```
+
+#### SetVarMainTemplatePlugin
+**作用**
+
+
+**调用位置**
+
+/webpack/lib/LibraryTemplatePlugin.js
+
+**hook**
+
+```js
+/*
+chunkTemplate.hooks.renderWithEntry -> tap('SetVarMainTemplatePlugin', onRenderWithEntry)
+
+mainTemplate.hooks.renderWithEntry -> tap('SetVarMainTemplatePlugin', onRenderWithEntry)
+
+mainTemplate.hooks.globalHashPaths -> tap('SetVarMainTemplatePlugin', paths => {
+  paths.push(this.varExpression)
+})
+
+mainTemplate.hooks.hash -> tap("SetVarMainTemplatePlugin", hash => {
+  hash.update(/* ... */)
+})
+ */
+```
+
+#### xxx
+**作用**
+**调用位置**
+**hook**
+
+#### xxx
+**作用**
+**调用位置**
+**hook**
+
+
+### loader开发
+
+---
+
+## webpack4
 [参考](https://juejin.im/entry/5b63eb8bf265da0f98317441)
+[webpack4的24个实例](https://juejin.im/post/5cae0f616fb9a068a93f0613?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-1)
+
+### 基本流程
+![流程](https://www.processon.com/view/5cbd0db6e4b085d0107f438c)
 
 ### 相比webpack3
 * 4多了mode字段，用于切换开发/生成环境
@@ -80,6 +197,54 @@ var V6Engine = (function () {
 }())
 console.log(new V8Engine().toString())
  ```
+
+### babel7
+[参考](../babel/README.md)
+
+### browserslist
+[browserslist](https://github.com/browserslist/browserslist)
+
+**用于在不同前端工具之间共享目标浏览器和 Node.js 版本的配置**
+
+#### 使用方法
+- 添加到 package.json
+  ```json
+  {
+    "dependencies": {
+
+    },
+    "browserslist": [
+      "> 1%",
+      "last 2 version",
+      "not ie <= 8"
+    ]
+  }
+  ```
+- 创建 .browserslist
+  ```text
+  # 所支持的浏览器版本
+  > 1% # 全球使用情况统计选择的浏览器版本
+  last 2 version # 每个浏览器的最后两个版本
+  not ie <= 8 # 排除小于 ie8 以下的浏览器
+  ```
+
+### code splitting
+
+**splitChunksPlugins**
+
+```js
+module.exports = {
+  // ...
+  optimization: {
+    splitChunks: {
+      chunks: 'all', // 分割所有代码，包括同步代码和异步代码
+      // chunks: 'async'，// 默认，分割异步代码
+    }
+  },
+};
+```
+
+ ---
 
 ## treeshaking
 - [基本原理](https://juejin.im/post/5a4dc842518825698e7279a9)

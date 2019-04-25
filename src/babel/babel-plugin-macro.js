@@ -1,9 +1,10 @@
 const babel = require('babel-core');
+const { transform, transformAsync, transformSync } = require('@babel/core');
 const babelGenerator = require('babel-generator').default;
 const fs = require('fs-extra');
 const path = require('path');
 
-module.exports = () => {
+const run = () => {
   const input = `
     import scope from 'scope.macro'
     import ms from 'ms.macro'
@@ -18,8 +19,9 @@ module.exports = () => {
     function add(a, b) {
       return a + b
     }
-    add100(200);
+    add100(20220);
   `;
+
   const { ast } = babel.transform(input, {
     sourceMap: true,
     env: {},
@@ -38,8 +40,26 @@ module.exports = () => {
     ],
   });
 
+
+  const { ast } = transformSync(input, {
+    ast: true,
+    code: false,
+    sourceMap: true,
+    babelrc: false,
+    configFile: false,
+    presets: ['@babel/env'],
+    filename: 'unknown',
+    plugins: [
+      'macros',
+    ],
+  });
+
   const { code: babelCode } = babelGenerator(ast, {
     minified: false,
   });
   fs.writeFileSync(path.join(__dirname, './test.js'), babelCode);
 };
+
+module.exports = run;
+
+run();
