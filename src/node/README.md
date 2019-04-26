@@ -14,8 +14,12 @@
 <summary>展开更多</summary>
 
 * [`好用的库`](#好用的库)
-* [`原理解析`](#原理解析)
+* [`require原理`](#require原理)
+* [`eventLoop`](#eventLoop)
+* [`GC`](#GC)
+* [`循环引用`](#循环引用)
 * [`最佳实践`](#最佳实践)
+* [`异步错误`](#异步错误)
 * [`手动打包指南`](#手动打包指南)
 
 </details>
@@ -243,7 +247,7 @@
       };
         ```
 
-### event loop
+### eventLoop
   - ![event_loop](node-event-loop.jpg)
 
 ### GC
@@ -310,6 +314,79 @@ module.exports.a = 1;
 
 ### exports和module.exports
 [参考](../js&browser/基本常识.md#amd/CommonJS)
+
+
+### 异步错误
+
+unhandledRejection
+
+#### 处理
+```js
+process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at:', p, 'reason:', reason);
+});
+```
+
+#### 触发unhandledRejection
+
+```js
+// 1. 每次 Tick 完成后触发processTicksAndRejections
+setTickCallback(processTicksAndRejections);
+
+// 2. tock queue 运行到空时，调用 processPromiseRejections
+function processTicksAndRejections() {
+  let tock;
+  do {
+    // 运行Tock......
+  } while (!queue.isEmpty() || processPromiseRejections());
+  // ......
+}
+
+// 3. 依次触发unhandledRejection
+function processPromiseRejections() {
+  // ...
+  while (pendingUnhandledRejections.length--) {
+    if (!process.emit('unhandledRejection', reason, pendingUnhandledRejections.shift())) {
+      emitWarning(uid, reason);
+    }
+  }
+  // ...
+};
+```
+
+#### 放入unhandledRejection
+
+```js
+// 1. node启动时，会执行setupTaskQueue
+// 其中会调用listenForRejections方法
+module.exports = {
+  setupTaskQueue() {
+    // Sets the per-isolate promise rejection callback
+    listenForRejections();
+    //.....
+  }
+};
+
+// 2. listenForRejections监听&传入异常promise
+function listenForRejections() {
+  setPromiseRejectCallback(promiseRejectHandler);
+}
+
+// 3. 异常promise入队
+function promiseRejectHandler(type, promise, reason) {
+  switch (type) {
+    case kPromiseRejectWithNoHandler:
+      pendingUnhandledRejections.push(promise);
+      break;
+    // ...
+  }
+  // ...
+}
+```
+
+#### 须知
+- 每次 Tick 完成后，会执行并清空 Tock 队列
+- 之后才会触发unhandledRejection回调
 
 ---
 

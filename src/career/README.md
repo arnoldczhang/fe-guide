@@ -26,6 +26,7 @@
 * [`技术选型`](#技术选型)
 * [`依赖管理`](#依赖管理)
 * [`无障碍`](#无障碍)
+* [`设计模式`](#设计模式)
 * [`快速开发`](#快速开发)
 * [`产品相关`](#产品相关)
 * [`后端相关`](#后端相关)
@@ -275,6 +276,9 @@ import module1 from 'module1'
 [vue企业级开发](https://mp.weixin.qq.com/s/g6D5b_YilzLeBH3pdjRnww)
 
 ---
+
+## 设计模式
+[设计模式](https://segmentfault.com/a/1190000018879929?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
 ## 产品相关
 ![产品相关](./产品相关.jpeg)
