@@ -185,18 +185,22 @@
 // console.log(msg);
 
 
-const { SyncHook } = require('tapable');
-debugger;
-const FrontEnd = new SyncHook();
-FrontEnd.tap('webpack',()=>{
-  console.log("get webpack")
-});
-FrontEnd.tap('react',()=>{
-  console.log("get react")
-});
-FrontEnd.learn=()=>{
-  FrontEnd.call()
-};
-FrontEnd.learn();
+// const { SyncHook } = require('tapable');
+// debugger;
+// const FrontEnd = new SyncHook();
+// FrontEnd.tap('webpack',()=>{
+//   console.log("get webpack")
+// });
+// FrontEnd.tap('react',()=>{
+//   console.log("get react")
+// });
+// FrontEnd.learn=()=>{
+//   FrontEnd.call()
+// };
+// FrontEnd.learn();
 
 
+const glob = require('glob');
+const { resolve } = require('path');
+
+console.log(glob.sync(resolve(__dirname, '../../webpack/*.js')));
