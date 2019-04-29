@@ -15,6 +15,7 @@
 * [`webpack4`](#webpack4)
 * [`开发调试`](#开发调试)
 * [`treeshaking`](#treeshaking)
+* [`tapable`](#tapable)
 * [`注意事项`](#注意事项)
 
 </details>
@@ -264,7 +265,6 @@ module.exports = {
 - import 的模块名只能是字符串常量
 - import binding 是 immutable的
 
-
 ### rollup、webpack、google Closure对比
 
 **rollup**
@@ -304,6 +304,47 @@ module.exports = {
 
 **结论**
 google Closure Compiler效果最好，不过使用复杂，迁移成本太高
+
+---
+
+## tapable
+
+### SyncHook
+- 比较像订阅发布，同步钩子
+- 就像jquery中的add、fire方法，只不过这里是tap、call
+- ```js
+  arr.forEach(handler)
+  ```
+
+### SyncBailHook
+- 主要解决的问题是条件阻塞
+- 有熔断机制，前一个监听`return true`，则停止
+- ```js
+  arr.some(handler)
+  ```
+
+### SyncWaterfallHook
+- 前一个任务的执行结果，传递给后一个
+- 类似redux中的compose
+- ```js
+  arr.reduce((pre, next) => next(pre))
+  ```
+
+### SyncLoopHook
+- 能够执行多次
+- 返回undefined则停止执行，返回非undefined则继续执行当前任务
+- ```js
+  let index = 0;
+  while (index < this.tasks.length) {
+    if (this.tasks[index]() === undefined) {
+      index++;
+    }
+  }
+  ```
+
+### AsyncParralleHook
+
+---
 
 ## 注意事项
 - 使用 import()，需要dynamic-import插件 (https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/)

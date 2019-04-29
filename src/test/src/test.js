@@ -200,7 +200,24 @@
 // FrontEnd.learn();
 
 
-const glob = require('glob');
-const { resolve } = require('path');
+// const glob = require('glob');
+// const { resolve } = require('path');
 
-console.log(glob.sync(resolve(__dirname, '../../webpack/*.js')));
+// console.log(glob.sync(resolve(__dirname, '../../webpack/*.js')));
+
+
+
+const { SyncBailHook } =require('tapable');
+const FrontEnd = new SyncBailHook(['name']);
+FrontEnd.tap('webpack',(name)=>{
+  console.log(name+" get webpack ")
+  return name;
+});
+FrontEnd.tap('react',(name)=>{
+  console.log(name+" get react")
+});
+FrontEnd.start=(...args)=>{
+  FrontEnd.call(...args)
+};
+FrontEnd.start('xiaoming');
+
