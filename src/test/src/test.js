@@ -2,6 +2,7 @@
 // const buffer = process.binding('buffer');
 // const buffer2 = require('buffer');
 
+
 // let a = {x:1, y:2, z:3};
 
 // let b = {};
@@ -19,7 +20,9 @@
 // console.log("d is", d);
 // console.log("c and d have same map:", %HaveSameMap(c, d)); // true
 
+
 // console.log(process.cwd());
+
 
 // const { matches } = require('z');
 
@@ -28,6 +31,7 @@
 //   (x = Date)   => console.log('blaa.. dates are awful!'),
 //   (x = Number) => console.log(`number ${x} is not that good`),
 // );
+
 
 // const babel = require("babel-core");
 // const code = `
@@ -51,6 +55,7 @@
 //   }
 // `;
 // console.log(babel.transform(code).code);
+
 
 // const http = require('http');
 
@@ -136,6 +141,7 @@
 
 // console.log(ast)
 
+
 // const async_hooks = require('async_hooks');
 
 // async_hooks.createHook({
@@ -143,6 +149,7 @@
 //     print({ type: 'init', msg: asyncId });
 //   },
 // }).enable();
+
 
 // function exampleFunction() {
 //     return 3;
@@ -177,6 +184,7 @@
 // const msg = CryptoJS.SHA256("Message Part 1");
 // console.log(msg);
 
+
 // const { SyncHook } = require('tapable');
 // debugger;
 // const FrontEnd = new SyncHook();
@@ -191,21 +199,25 @@
 // };
 // FrontEnd.learn();
 
+
 // const glob = require('glob');
 // const { resolve } = require('path');
 
 // console.log(glob.sync(resolve(__dirname, '../../webpack/*.js')));
 
-const { SyncBailHook } = require("tapable");
-const FrontEnd = new SyncBailHook(["name"]);
-FrontEnd.tap("webpack", name => {
-  console.log(name + " get webpack ");
+
+
+const { SyncBailHook } =require('tapable');
+const FrontEnd = new SyncBailHook(['name']);
+FrontEnd.tap('webpack',(name)=>{
+  console.log(name+" get webpack ")
   return false;
 });
-FrontEnd.tap("react", name => {
-  console.log(name + " get react");
+FrontEnd.tap('react',(name)=>{
+  console.log(name+" get react")
 });
-FrontEnd.start = (...args) => {
-  FrontEnd.call(...args);
+FrontEnd.start=(...args)=>{
+  FrontEnd.call(...args)
 };
-FrontEnd.start("xiaoming");
+FrontEnd.start('xiaoming');
+
