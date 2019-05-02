@@ -1,0 +1,39 @@
+/* miniprogram/pages/result/result.wxss */
+page {
+  padding: 30rpx;
+  box-sizing:border-box;
+}
+.block {
+  background: #fff;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.avatar {
+  height:80rpx;
+  width:80rpx;
+  border-radius:50%;
+}
+.oldman {
+  height: 300rpx;
+  width: 300rpx;
+  margin:0 auto;
+  display: flex;
+}
+.title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.intro {
+  display: flex;
+}
+.myqrcode {
+  display: flex;
+  justify-content:center;
+  align-items:center;
+}
+.qrcode {
+  height: 300rpx;
+  width: 300rpx;
+}

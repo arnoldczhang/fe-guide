@@ -9,7 +9,7 @@
     </view>
     <view class="line">
       <text>职工上年月工资</text>
-      <input type="digit" placeholder="职工上年月工资" value="{{lastAvgSalary}}" data-key="lastAvgSalary" bindinput="onHandleInput"/>
+      <input type="digit" disabled placeholder="职工上年月工资" value="{{lastAvgSalary}}" data-key="lastAvgSalary" bindinput="onHandleInput"/>
       <text>元</text>
     </view>
     <view class="line">
@@ -26,20 +26,26 @@
       <text>帐户累积养老金额</text>
       <input type="digit" placeholder="帐户累积的养老金额" value="{{accumulate}}" data-key="accumulate" bindinput="onHandleInput"/>
       <text>元</text>
+      <view class="question" bindtap='onClickGoWebview'>?</view>
     </view>
     <view class="line">
       <text>个人工资增长率</text>
       <input type="digit" placeholder="个人工资增长率" value="{{rate}}" data-key="rate" bindinput="onHandleInput"/>
       <text>%</text>
     </view>
-    <view class="line">
+    <!-- <view class="line">
       <text>职工工资增长率</text>
       <input type="digit" placeholder="职工工资增长率" value="{{avgRate}}" data-key="avgRate" bindinput="onHandleInput"/>
       <text>%</text>
-    </view>
-    <view class="line">
+    </view> -->
+    <!-- <view class="line">
       <text>我的退休养老金</text>
       <input type="digit" disabled placeholder="" value="{{pension}}" data-key="pension" bindinput="onHandleInput"/>
+      <text>元</text>
+    </view> -->
+    <view class="line">
+      <text>期望退休后的月花销</text>
+      <input type="digit" placeholder="期望退休后的月花销" value="{{expectedPension}}" data-key="expectedPension" bindinput="onHandleInput"/>
       <text>元</text>
     </view>
   </view>
@@ -51,4 +57,4 @@
     open-type="getUserInfo" 
     bindgetuserinfo="onGetUserInfo"
     class="footer-body"
-  >计算我的退休养老金</button>
+  >获取我的退休养老金账单</button>

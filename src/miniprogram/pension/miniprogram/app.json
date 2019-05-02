@@ -1,6 +1,8 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/web-view/web-view",
+    "pages/result/result"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
