@@ -7,11 +7,6 @@
     "pojo": "./src/webpack/pojo-loader/bin/pojo-loader.js",
     "rematch": "/Users/dianping/website/fe-guide/node_modules/rematch-cli/bin/rematch.js"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
-  },
   "scripts": {
     "preinstall": "echo 'preinstall'",
     "install": "echo 'install'",

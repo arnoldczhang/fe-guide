@@ -98,3 +98,14 @@ javascript ASI - DONE
 2. [2018年终回顾](https://juejin.im/post/5bdfb387e51d452c8e0aa902)
 3. [前端日刊](https://github.com/kujian/frontendDaily)
 4. [前端面试题](https://github.com/Advanced-Frontend/Daily-Interview-Question)
+
+### 暂时去掉pretty-quick
+```js
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  }
+}
+```
