@@ -17,7 +17,7 @@
       });
     </script> -->
     <script type="text/javascript">
-      var ws = new WebSocket('ws://localhost:8999/arnold.io');
+      var ws = new ('ws://localhost:8999/arnold.io');
       ws.onopen = function () {
         console.log('ws onopen');
         ws.send('from client: hello');
