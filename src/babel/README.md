@@ -289,7 +289,8 @@ function call(key) {
 * **configFile**：默认path.resolve(opts.root, "babel.config.js")
 * **presets**：预置环境
   - @babel/env
-    + useBuiltIns：只转译使用到的api
+    + useBuiltIns：只转译使用到的api（false不开启polyfill，usage/entry开启）
+    + debug：开启调试（显示使用的plugins、polyfills）
   - minify
     + babel编译出的代码是否压缩
 
