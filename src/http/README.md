@@ -31,6 +31,7 @@
 
 #### 一对多
 - 一个tcp连接可以发送多个http请求（原因：Connection: keep-alive）
+- chrome里可以通过network里的`Connection ID`查看
 - 设置**Connection: close**的话，一个http请求结束就会断掉tcp连接
 - 维持连接的优点是能省下请求的**初始化和ssl连接**时间
 
