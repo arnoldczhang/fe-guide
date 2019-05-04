@@ -98,6 +98,8 @@ javascript ASI - DONE
 2. [2018年终回顾](https://juejin.im/post/5bdfb387e51d452c8e0aa902)
 3. [前端日刊](https://github.com/kujian/frontendDaily)
 4. [前端面试题](https://github.com/Advanced-Frontend/Daily-Interview-Question)
+5. [前端开发碰到的一些问题](https://segmentfault.com/a/1190000019022842?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
+
 
 ### 暂时去掉pretty-quick
 ```js

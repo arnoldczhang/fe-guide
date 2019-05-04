@@ -22,6 +22,7 @@
 * [`http3.0`](#http3.0)
 * [`quic`](#quic)
 * [`https`](#https)
+* [`osl`](#osl)
 
 </details>
 
@@ -31,7 +32,7 @@
 
 #### 一对多
 - 一个tcp连接可以发送多个http请求（原因：Connection: keep-alive）
-- chrome里可以通过network里的`Connection ID`查看
+- chrome里可以通过network里的`Connection ID`查看（http1.1有并发6个上线，h2没有限制)
 - 设置**Connection: close**的话，一个http请求结束就会断掉tcp连接
 - 维持连接的优点是能省下请求的**初始化和ssl连接**时间
 
@@ -241,4 +242,10 @@ range，请求资源一部分（206），支持断点续传
 - 推荐tls1.2
 - ![ssl-tls](ssl-tls.jpg)
 
+---
+
+## osl
+Open System Interconnection 开放式系统互联
+
+![osl](./osl层次.jpg)
 
