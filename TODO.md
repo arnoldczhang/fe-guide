@@ -100,6 +100,7 @@ javascript ASI - DONE
 4. [前端面试题](https://github.com/Advanced-Frontend/Daily-Interview-Question)
 5. [前端开发碰到的一些问题](https://segmentfault.com/a/1190000019022842?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 6. [2019-handbook](https://frontendmasters.com/books/front-end-handbook/2019/#1.1)
+7. [前端月刊](https://segmentfault.com/blog/xcold)
 
 ### 暂时去掉pretty-quick
 ```js

@@ -16,7 +16,7 @@
 * [`开发调试`](#开发调试)
 * [`treeshaking`](#treeshaking)
 * [`tapable`](#tapable)
-* [`注意事项`](#注意事项)
+* [`其他`](#其他)
 
 </details>
 
@@ -392,9 +392,9 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 
 ---
 
-## 注意事项
+## 其他
 - 使用 import()，需要dynamic-import插件 (https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/)
 - ![import](import-polyfill.png)
-
-
+- [据说比babel快几十倍的compiler](https://github.com/swc-project/swc)
+- [prepack-顾名思义代码预编译](https://prepack.io/)
 

@@ -8,6 +8,7 @@ module.exports = {
     filename: '[name]',
     crossOriginLoading: 'anonymous',
     globalObject: 'global',
+    libraryTarget: 'commonjs2',
   },
   optimization: {
     concatenateModules: false,
