@@ -10,6 +10,8 @@ cache:
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s
   - export PATH="$HOME/.yarn/bin:$PATH"
+  - chmod u+x tasks/install.sh
+  - chmod u+x tasks/init.sh
 install: ./tasks/install.sh
 script: ./tasks/init.sh
 deploy:
