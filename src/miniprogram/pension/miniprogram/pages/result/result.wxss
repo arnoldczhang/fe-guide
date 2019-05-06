@@ -2,6 +2,10 @@
 page {
   padding: 30rpx;
   box-sizing:border-box;
+  background: rgb(242, 242, 242);
+}
+.page {
+  background: #fff;
 }
 .block {
   background: #fff;
@@ -10,9 +14,10 @@ page {
 }
 
 .avatar {
-  height:80rpx;
-  width:80rpx;
+  height:100rpx;
+  width:100rpx;
   border-radius:50%;
+  margin-bottom: 20rpx;
 }
 .oldman {
   height: 300rpx;
@@ -24,6 +29,7 @@ page {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 .intro {
   display: flex;
@@ -36,4 +42,13 @@ page {
 .qrcode {
   height: 300rpx;
   width: 300rpx;
+}
+.wavy-line {
+  transform-origin: center left;
+  transform: rotate(360deg);
+  width: 696rpx;
+  height: 20rpx;
+  background-image: radial-gradient(circle, rgb(242, 242, 242), rgb(242, 242, 242) 10rpx, transparent 0, transparent 5rpx, transparent 15rpx, transparent);
+  background-size: 38rpx 38rpx;
+  background-repeat: repeat-x;
 }

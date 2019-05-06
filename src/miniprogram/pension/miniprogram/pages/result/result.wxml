@@ -2,9 +2,11 @@
 <view class="page">
   <view class="block">
     <view class="title">
-      <text class="nick-name">{{nickName}}的养老金报告</text>
       <image class="avatar" src="{{avatarUrl}}" />
+      <text class="nick-name">{{nickName}}的养老金报告</text>
     </view>
+  </view>
+  <view class="block">
     <text>您现在{{age}}岁，打算{{retireAge}}岁退休，退休后的退休工资大致为{{pension}}元</text>
   </view>
   <view class="block">
@@ -19,4 +21,5 @@
     <image class="qrcode" bindlongpress="onHandleSaveImage" src="../../images/qrcode.png" />
     <text style="color:red">长\n按\n保\n存</text>
   </view>
+  <view class="wavy-line"></view>
 </view>

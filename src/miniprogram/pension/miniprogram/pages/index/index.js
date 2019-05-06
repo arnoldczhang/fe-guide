@@ -34,7 +34,7 @@ Page({
   onClickGoWebview() {
     const url = encodeURIComponent("");
     wx.navigateTo({
-      url: `/pages/web-view/web-view?url=${url}`
+      url: `/pages/web-view/web-view?url=${url}`,
     });
   },
 
@@ -46,7 +46,8 @@ Page({
       age,
       salary,
       avgRate,
-      rate
+      rate,
+      expectedPension,
     } = this.data;
     wx.setStorageSync("pension_cach", {
       lastAvgSalary,
@@ -55,7 +56,8 @@ Page({
       age,
       salary,
       avgRate,
-      rate
+      rate,
+      expectedPension,
     });
   },
 
@@ -87,29 +89,22 @@ Page({
     if (salary <= 0) {
       pass = false;
       message = '请输入月工资';
-    }
-
-    if (age <= 0) {
+    } else if (age <= 0) {
       pass = false;
       message = '请输入年龄';
-    }
-
-    if (retireAge <= 0) {
+    } else if (retireAge <= 0) {
       pass = false;
       message = '请输入打算退休时年龄';
-    }
-
-    if (accumulate <= 0) {
+    } else if (retireAge < age) {
+      pass = false;
+      message = '退休时年龄不小于现年龄';
+    } else if (accumulate <= 0) {
       pass = false;
       message = '请输入帐户累积的养老金额';
-    }
-
-    if (rate <= 0) {
+    } else if (rate <= 0) {
       pass = false;
       message = '请输入个人工资增长率';
-    }
-
-    if (expectedPension <= 0) {
+    } else if (expectedPension <= 0) {
       pass = false;
       message = '请输入期望退休后的月花销';
     }

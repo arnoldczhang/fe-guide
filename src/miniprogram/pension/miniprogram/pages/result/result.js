@@ -40,14 +40,20 @@ Page({
   onLoad: function(options) {
     const { age, retireAge, pension, expectedPension } = options;
     const { nickName, avatarUrl } = getApp().userInfo;
+    const matched = +expectedPension <= +pension;
+    let lackPension = 0;
+    if (!matched) {
+      lackPension = ((expectedPension - pension) / (retireAge - age) * 12).toFixed(2);
+    }
     this.setData({
-      matched: expectedPension <= pension,
+      matched,
       age,
       retireAge,
       pension,
       expectedPension,
       nickName,
-      avatarUrl
+      avatarUrl,
+      lackPension,
     });
   },
 
