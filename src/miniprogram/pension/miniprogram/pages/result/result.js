@@ -18,6 +18,22 @@ Page({
     lackPension: 0
   },
 
+  onHandleSaveImage() {
+    wx.saveImageToPhotosAlbum({
+      filePath: 'images/qrcode.png',
+      success(res) {
+        wx.showToast({
+          title: '保存成功',
+          icon: 'success',
+          duration: 2000
+        });
+      },
+      fail(err) {
+        console.warn(err);
+      },
+    });
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */

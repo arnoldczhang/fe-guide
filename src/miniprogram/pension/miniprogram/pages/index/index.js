@@ -67,24 +67,83 @@ Page({
   }) {
     if (key) {
       this.setData({
-        [key]: value
+        [key]: +value
       });
     }
   },
 
+  checkData() {
+    let pass = true;
+    let message = '';
+    const {
+      salary,
+      age,
+      retireAge,
+      accumulate,
+      rate,
+      expectedPension,
+    } = this.data;
+
+    if (salary <= 0) {
+      pass = false;
+      message = '请输入月工资';
+    }
+
+    if (age <= 0) {
+      pass = false;
+      message = '请输入年龄';
+    }
+
+    if (retireAge <= 0) {
+      pass = false;
+      message = '请输入打算退休时年龄';
+    }
+
+    if (accumulate <= 0) {
+      pass = false;
+      message = '请输入帐户累积的养老金额';
+    }
+
+    if (rate <= 0) {
+      pass = false;
+      message = '请输入个人工资增长率';
+    }
+
+    if (expectedPension <= 0) {
+      pass = false;
+      message = '请输入期望退休后的月花销';
+    }
+
+    if (!pass) {
+      wx.showToast({
+        title: message,
+        icon: 'none',
+        duration: 2000,
+      });
+    }
+    return pass;
+  },
+
   calculatePension() {
-    this.storeData();
-    this.setData({
-      pension: calcAll(this.data)
-    });
+    if (this.checkData()) {
+      this.storeData();
+      this.setData({
+        pension: calcAll(this.data)
+      });
+    }
   },
 
   onGetUserInfo({ detail: { userInfo } }) {
     this.calculatePension();
-    userInfo.pension = this.data.pension;
-    this.onGetSaveUser(userInfo);
-    this.goResult();
-    this.updateInfo(userInfo);
+    const {
+      pension,
+    } = this.data;
+    if (pension) {
+      userInfo.pension = pension;
+      this.onGetSaveUser(userInfo);
+      this.goResult();
+      this.updateInfo(userInfo);
+    }
   },
 
   updateInfo(info) {

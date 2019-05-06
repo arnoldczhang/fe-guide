@@ -6,7 +6,7 @@ page {
 .block {
   background: #fff;
   padding: 30rpx;
-  margin-bottom: 30rpx;
+  margin-bottom: 20rpx;
 }
 
 .avatar {
