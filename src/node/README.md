@@ -33,16 +33,32 @@
 
 ## 好用的库
 - [监听文件夹变化](https://github.com/dt-fe/weekly/blob/master/59.%E7%B2%BE%E8%AF%BB%E3%80%8A%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%20Nodejs%20%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E3%80%8B.md)
-- [调试工具ndb](https://zhuanlan.zhihu.com/p/45851471)
-- [JSON.stringify工具fast-json-stringify](https://github.com/fastify/fast-json-stringify)
+- [调试工具-ndb](https://zhuanlan.zhihu.com/p/45851471)
+- [JSON.stringify工具-fast-json-stringify](https://github.com/fastify/fast-json-stringify)
   - 预设字段类型，加速stringify
-- [类promise工具bluebird](https://github.com/petkaantonov/bluebird)
+- [promise工具-bluebird](https://github.com/petkaantonov/bluebird)
   - V8 原生实现的 Promise 比 bluebird 这样第三方实现的 Promise 库要慢很多
   - 可以在代码中把全局的 Promise 换为 bluebird 的实现，比如
-- [打包工具ncc](https://zeit.co/blog/ncc)
-- [图片压缩工具sharp](https://github.com/lovell/sharp?utm_source=75weekly&utm_medium=75weekly)
+- [打包工具-ncc](https://zeit.co/blog/ncc)
+- [图片压缩工具-sharp](https://github.com/lovell/sharp?utm_source=75weekly&utm_medium=75weekly)
 - [检查库的两个版本间的diff](https://diff.intrinsic.com/)
-- nrm/yrm(维护了一个列表，包括npm/yarn主站和其他镜像)
+- [npm源管理工具-nrm/yrm](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+- [搭建私有npm工具-verdaccio](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+  - ```js
+    npm install -g verdaccio
+
+    verdaccio
+    // warn --- http address - http://localhost:4873/ - verdaccio/3.0.0
+
+    nrm add verdaccio http://localhost:4873
+
+    nrm use verdaccio
+
+    npm adduser
+
+    npm publish
+    ```
+- [DOM转canvas工具-html2canvas、dom-to-image](https://segmentfault.com/a/1190000019035021?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
   ```js
   global.Promise = require('bluebird');

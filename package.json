@@ -234,7 +234,7 @@
     "qone": "^1.0.0",
     "ramda": "^0.25.0",
     "raw-loader": "^0.5.1",
-    "react": "^16.8.1",
+    "react": "^16.8.6",
     "react-dom": "^16.8.1",
     "react-hot-keys": "^1.2.0",
     "react-hot-loader": "^3.1.3",

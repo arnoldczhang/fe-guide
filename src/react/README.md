@@ -28,6 +28,7 @@
 * [`React Hooks流程`](#React Hooks流程)
 * [`React进阶`](#React进阶)
 * [`concurrent`](#concurrent)
+* [`interview`](#interview)
 
 </details>
 
@@ -289,6 +290,9 @@ while (当前还有空闲时间 && 下一个节点不为空) {
   - 高低优任务对应的expiration time有改动，不绝对
 * Sync > InteractiveExpiration（事件中触发比如blur、click） > AsyncExpiration
 
+---
 
+## interview
+[react的304道题](https://github.com/semlinker/reactjs-interview-questions)
 
 
