@@ -19,6 +19,7 @@
 * [`v8调试方式`](#v8调试方式-node)
 * [`v8本地安装`](#v8本地安装)
 * [`js引擎`](#js引擎)
+* [`代码缓存`](#代码缓存)
 
 </details>
 
@@ -119,4 +120,34 @@ gm x64.debug benchmarks
 
 ### 对象和数组
 这块可以参考[shape&InlineCaches](../js&browser/Shapes&InlineCaches.md)
+
+---
+
+## 代码缓存
+
+**V8 编译后的代码 Chrome 有两级缓存**
+
+1. Isolate缓存
+  - 尽可能使用已存在的数据（命中率80%）
+  - 编译后，以源码为key存在hashtable（v8堆）中
+  - 编译其他脚本时检测hashtable，是否存在可复用
+2. 完整序列化的硬盘缓存
+
+### 有效措施
+- 不改资源url？
+- 明确代码执行行为路径（一些random操作对缓存查找路径会有影响）
+- 不变&常变代码分离（不变代码长期缓存，也能用于其他tab页面）
+- IIFE 启发式
+  ```js
+  // 编译器扫到function 关键字之前的 (就会做编译
+  // 不过除非必要，否则不推荐用
+  const bar = (function() {
+    // Eagerly compiled
+  });
+  ```
+- 合并小文件
+  * 1kb以下文件不会被缓存
+
+
+
 
