@@ -218,18 +218,21 @@ range，请求资源一部分（206），支持断点续传
 ---
 
 ## https
-  - http + tls
-  - ![加密](24.png)
-    - 服务器选中的密钥交换加密方式为RSA
-    - 数据传输加密方式为AES
-    - 检验数据是否合法的算法为SHA256
-  - ![https](10.png)
-  - ![https-2](https-2.jpg)
-  - 公钥加密，私钥解密
-  - 过程 -> 3RTT
-    - 1次tcp RTT
-    - 2次tls RTT
-    - ![https](201208201734403507.png)
+
+[免费证书申请](https://mp.weixin.qq.com/s/sQLRsW3axiL8XRP0tTyjJA?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+
+- http + tls
+- ![加密](24.png)
+  * 服务器选中的密钥交换加密方式为RSA
+  * 数据传输加密方式为AES
+  * 检验数据是否合法的算法为SHA256
+- ![https](10.png)
+- ![https-2](https-2.jpg)
+- 公钥加密，私钥解密
+- 过程 -> 3RTT
+  * 1次tcp RTT
+  * 2次tls RTT
+  * ![https](201208201734403507.png)
 
 ### HTTP、HTTPS、TCP、SSL/TLS
 - HTTP基于TCP
