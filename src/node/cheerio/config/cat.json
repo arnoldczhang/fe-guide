@@ -1,0 +1,16 @@
+{
+  "interval": 20000,
+  "last": {
+    "day": "2019-05-09",
+    "startTime": "8:30",
+    "endTime": "20:30"
+  },
+  "now": {
+    "day": "2019-05-10",
+    "startTime": "8:30",
+    "endTime": "20:30"
+  },
+  "table": {
+
+  }
+}
