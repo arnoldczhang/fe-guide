@@ -86,7 +86,16 @@ obj.fn1();
 console.log(window.number);
 ```
 
+### 统计数组成员重复个数
+```js
+const arr = [0, 1, 1, 2, 2, 2];
+const count = arr.reduce((t, c) => {
+    t[c] = t[c] ? ++t[c] : 1;
+    return t;
+}, {});
+// count => { 0: 1, 1: 2, 2: 3 }
 
+```
 
 
 
