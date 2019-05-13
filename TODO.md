@@ -94,13 +94,14 @@ javascript ASI - DONE
 5. 代码大全
 
 ## share with other
-1. [zero to frontent](https://juejin.im/post/5bb9aed1e51d451a3f4c3923)
-2. [2018年终回顾](https://juejin.im/post/5bdfb387e51d452c8e0aa902)
-3. [前端日刊](https://github.com/kujian/frontendDaily)
-4. [前端面试题](https://github.com/Advanced-Frontend/Daily-Interview-Question)
-5. [前端开发碰到的一些问题](https://segmentfault.com/a/1190000019022842?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
-6. [2019-handbook](https://frontendmasters.com/books/front-end-handbook/2019/#1.1)
-7. [前端月刊](https://segmentfault.com/blog/xcold)
+- [zero to frontent](https://juejin.im/post/5bb9aed1e51d451a3f4c3923)
+- [2018年终回顾](https://juejin.im/post/5bdfb387e51d452c8e0aa902)
+- [前端日刊](https://github.com/kujian/frontendDaily)
+- [前端周刊](https://github.com/dt-fe/weekly)
+- [前端月刊](https://segmentfault.com/blog/xcold)
+- [前端面试题](https://github.com/Advanced-Frontend/Daily-Interview-Question)
+- [前端开发碰到的一些问题](https://segmentfault.com/a/1190000019022842?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
+- [2019-handbook](https://frontendmasters.com/books/front-end-handbook/2019/#1.1)
 
 ### 暂时去掉pretty-quick
 ```js

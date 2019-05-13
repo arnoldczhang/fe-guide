@@ -97,8 +97,10 @@ const count = arr.reduce((t, c) => {
 
 ```
 
-
-
+### vue和react中key的作用
+- 和性能好坏无关
+- 相同的key可以复用节点（仅做textContent变更），
+  否则只能insert/append，remove，开销大些
 
 
 
