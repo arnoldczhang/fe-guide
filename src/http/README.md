@@ -231,7 +231,7 @@ range，请求资源一部分（206），支持断点续传
 - 公钥加密，私钥解密
 - 过程 -> 3RTT
   * 1次tcp RTT
-  * 2次tls RTT
+  * 2次tls RTT（比http多了2次tls的RTT）
   * ![https](201208201734403507.png)
 
 ### HTTP、HTTPS、TCP、SSL/TLS

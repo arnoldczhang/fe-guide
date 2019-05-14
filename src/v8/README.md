@@ -7,6 +7,7 @@
 - [v8优化骚套路](https://github.com/petkaantonov/bluebird/wiki/Optimization-killers)
 - [对象模式](https://zhuanlan.zhihu.com/p/25069272)
 - [v8全文档](https://v8.js.cn/docs/)
+- [chromium下载地址](https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html)
 
 ## 目录
 <details>
