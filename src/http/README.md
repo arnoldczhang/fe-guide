@@ -106,13 +106,15 @@ Entity tag，If-Unmodified-Since, If-Match, If-None-Match
 - s-maxage：仅在代理服务器（比如CDN）有效，优先级高于max-age
 - max-stale：能容忍的最大过期时间
 - min-fresh：能够容忍的最小新鲜度
-
-例：must-revalidate
-```text
-// must-revalidate生效有个前提，前提就是这个缓存必须已经过期，
-// 在浏览器端几乎没有任何作用
-Cache-Control: max-age=86400, must-revalidate
-```
+- stale-while-revalidate：如果缓存过期了，仍然会使用，并同时在后台请求新鲜的资源，供下次使用（chrome75以上支持）
+  * 可[参考](https://zhuanlan.zhihu.com/p/64694485)
+  * ![stale-while-revalidate](./stale-while-revalidate.jpg)
+- must-revalidate
+  ```text
+  // must-revalidate生效有个前提，前提就是这个缓存必须已经过期，
+  // 在浏览器端几乎没有任何作用
+  Cache-Control: max-age=86400, must-revalidate
+  ```
 
 ### 资源缓存几种方式
 * HTTP 1.1 风格的Cache-Control 响应头中的 max-age指令
