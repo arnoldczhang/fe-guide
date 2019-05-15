@@ -3,6 +3,9 @@
 - https://www.zhihu.com/question/284937208/answer/451868574
 - [interview真题](https://www.nowcoder.com/)
 - [能力考级](https://www.freecodecamp.org/)
+- [interview临场问法](https://mp.weixin.qq.com/s/5H_kjt-MoPsAxa4e_oSnkQ?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+
+## 以前的题
 
 - javascript 相关
     - 原型链与作用域
