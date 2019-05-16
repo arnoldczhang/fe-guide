@@ -31,10 +31,9 @@ Page({
     }
   },
   onShareAppMessage(res) {},
-  onClickGoWebview() {
-    const url = encodeURIComponent("");
+  onClickGoQuestion() {
     wx.navigateTo({
-      url: `/pages/web-view/web-view?url=${url}`,
+      url: '/pages/question/question',
     });
   },
 

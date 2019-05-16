@@ -1,0 +1,5 @@
+/* miniprogram/pages/question/quesiton.wxss */
+.img {
+  height: 100vh;
+  width: 100vw;
+}

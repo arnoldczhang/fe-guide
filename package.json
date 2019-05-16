@@ -317,6 +317,7 @@
     "htmlparser2": "^3.10.1",
     "https": "^1.0.0",
     "husky": "^2.1.0",
+    "imagemin-jpegtran": "^6.0.0",
     "import-jsx": "^2.0.0",
     "ink": "^2.1.1",
     "jsqr": "^1.1.1",
