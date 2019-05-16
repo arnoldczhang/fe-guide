@@ -11,11 +11,13 @@
 <details>
 <summary>展开更多</summary>
 
-* [`webpack-3.8.1解析`](#webpack-3.8.1解析)
+* [`webpack-3.8.1`](#webpack-3.8.1)
+* [`webpack加载流程`](#webpack加载流程)
 * [`webpack4`](#webpack4)
 * [`开发调试`](#开发调试)
 * [`treeshaking`](#treeshaking)
 * [`tapable`](#tapable)
+* [`loader`](#loader)
 * [`其他`](#其他)
 
 </details>
@@ -159,6 +161,44 @@ mainTemplate.hooks.hash -> tap("SetVarMainTemplatePlugin", hash => {
 
 
 ### loader开发
+
+---
+
+## webpack加载流程
+
+[参考](https://segmentfault.com/a/1190000019117897?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
+
+### webpack异步加载
+
+- import(/* ... */).then(() => {/* ... */});
+- ```js
+  // 1. 创建script标签，src根据chunkId从installedChunks取
+  // 2. 挂到head
+  // 3. 12秒超时
+  // 4. script加载结束，更新installedChunks标记
+  __webpack_require__.e = function requireEnsure(chunkId) {
+    // ...
+    new Promise(() => {
+      const script = document.createElement('script');
+      script.src = installedChunks[chunkId];
+      script.onLoad = () => {
+        // ...
+        installedChunks[chunkId] = void 0;
+        // ...
+      };
+      document.head.appendChild(script);
+      setTimeout(function(){
+        onScriptComplete({ type: 'timeout', target: script });
+      }, 120000);
+    });
+    // ...
+  };
+  ```
+- ```js
+  __webpack_require__.e(0).then(/* ... */);
+  ```
+
+![异步加载](./webpack-async.jpeg)
 
 ---
 
@@ -388,6 +428,51 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 
 ### AsyncSeriesWaterfallHook
 - 用法和SyncWaterFallHook的用法一致
+
+---
+
+## loader
+
+### less-loader
+- 使用@functions做px<->rem转换
+  * ```js
+    // webpack.config.js
+    // 设置javascriptEnabled
+    // ...
+    {
+      test: /\.less/,
+      exclude: /node_modules/,
+      use: ['style-loader', 'css-loader', {
+        loader: 'less-loader',
+        options: {
+          javascriptEnabled: true
+        }
+      }],
+    },
+    // ...
+    ```
+  * ```less
+    .remMixin() {
+      @functions: ~`(function() {
+        var clientWidth = '375px';
+        function convert(size) {
+          return typeof size === 'string' ? 
+            +size.replace('px', '') : size;
+        }
+        this.rem = function(size) {
+          return convert(size) / convert(clientWidth) * 10 + 'rem';
+        }
+      })()`;
+    }
+
+    .remMixin();
+
+    .bb {
+      width: ~`rem("300px")`;
+      height: ~`rem(150)`;
+      background: blue;
+    }
+    ```
 
 ---
 
