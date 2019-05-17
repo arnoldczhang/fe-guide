@@ -1,21 +1,20 @@
 # react16+
 
 ## 参考
-1. [16.3升级指南](https://zcfy.cc/article/update-on-async-rendering)
-2. ![react16.3](react16.3.png)
-2. ![react-native](v2-e00f66e71bd03b9d4c60d056c57be2e3_hd.jpg)
-3. 解析过程见 ./src/mobx/react16-*.png
-4. vdom见 https://zhuanlan.zhihu.com/p/35876032
-5. [fiber](https://zhuanlan.zhihu.com/p/37098539)
-6. [ HOC复用和拆分](https://zhuanlan.zhihu.com/p/40245156)
-7. [react-redux](https://segmentfault.com/a/1190000012976767)
-8. [react17](https://zhuanlan.zhihu.com/p/46147401)
-9. [redux大型项目](https://zhuanlan.zhihu.com/p/47396514)
-10. [react16新特性](https://zhuanlan.zhihu.com/p/52016989?utm_source=75weekly&utm_medium=75weekly)
-11. [Dan对react内部的解释](https://overreacted.io/)
-12. [react-christmas](https://react.christmas)
-13. [Vuex、Flux、Redux、Redux-saga、Dva、MobX](https://zhuanlan.zhihu.com/p/53599723)
-14. [ReactFiber在并发模式下的运行机制](https://zhuanlan.zhihu.com/p/54042084)
+- [16.3升级指南](https://zcfy.cc/article/update-on-async-rendering)
+- 解析过程见 ./src/mobx/react16-*.png
+- vdom见 https://zhuanlan.zhihu.com/p/35876032
+- [fiber](https://zhuanlan.zhihu.com/p/37098539)
+- [ HOC复用和拆分](https://zhuanlan.zhihu.com/p/40245156)
+- [react-redux](https://segmentfault.com/a/1190000012976767)
+- [react17](https://zhuanlan.zhihu.com/p/46147401)
+- [redux大型项目](https://zhuanlan.zhihu.com/p/47396514)
+- [react16新特性](https://zhuanlan.zhihu.com/p/52016989?utm_source=75weekly&utm_medium=75weekly)
+- [Dan对react内部的解释](https://overreacted.io/)
+- [react-christmas](https://react.christmas)
+- [Vuex、Flux、Redux、Redux-saga、Dva、MobX](https://zhuanlan.zhihu.com/p/53599723)
+- [ReactFiber在并发模式下的运行机制](https://zhuanlan.zhihu.com/p/54042084)
+- [TypeScript 2.8下的终极React组件模式](https://juejin.im/post/5b07caf16fb9a07aa83f2977)
 
 ## 目录
 <details>
@@ -28,6 +27,7 @@
 * [`React Hooks流程`](#React Hooks流程)
 * [`React进阶`](#React进阶)
 * [`concurrent`](#concurrent)
+* [`rn`](#rn)
 * [`interview`](#interview)
 
 </details>
@@ -37,6 +37,9 @@
 2. react可视化库：https://mp.weixin.qq.com/s/NgaQ4sGI4RDXb23ua2Spbw
 
 ## lifecycle
+
+![react16.3](react16.3.png)
+
   - ```js
   class ExampleComponent extends React.Component {
     // 用于初始化 state
@@ -68,12 +71,15 @@
   }
   ```
 
+---
+
 ## 更新过程
   - shouldComponentUpdate
   - componentWillUpdate
   - render
   - componentDidUpdate
 
+---
 
 ## redux大型项目构建
 
@@ -289,6 +295,11 @@ while (当前还有空闲时间 && 下一个节点不为空) {
   - fiber设置过期时间，防止低优任务被高优任务耽误，导致一直不执行
   - 高低优任务对应的expiration time有改动，不绝对
 * Sync > InteractiveExpiration（事件中触发比如blur、click） > AsyncExpiration
+
+---
+
+## rn
+![react-native](v2-e00f66e71bd03b9d4c60d056c57be2e3_hd.jpg)
 
 ---
 

@@ -8,6 +8,7 @@
 - [CSSOM](https://mp.weixin.qq.com/s/xST3cjumPrxdHbcZcYlLvQ)
 - [css与网络性能](https://mp.weixin.qq.com/s/OigM7dPFS3OGEBUE6KjHQA)
 - [前端换肤参考](https://blog.souche.com/untitled-17/)
+- [clippy属性在线调试](https://bennettfeely.com/clippy/)
 
 ## 目录
 <details>
