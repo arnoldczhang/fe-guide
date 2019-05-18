@@ -109,6 +109,22 @@
 - 详细分层
 - api设计
 
+#### api设计
+- 容许多个实现
+  * 底层实现细节不应该在入参上体现
+- 统一Error code
+- 更新操作指定更新的字段
+  * ```js
+  {
+    // ...
+    foo: {},
+    updateFoo(newFoo, keys) {
+      keys.forEach(key => (foo[key] = newFoo[key]));
+    },
+    // ...
+  }
+    ```
+
 ### 核心思考点
 * 可用性
   - api暴露
