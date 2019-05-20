@@ -1,4 +1,4 @@
-# 职业技术
+# 职业规划
 
 ## 参考
 - [人性的弱点](http://www.cnblogs.com/hzg1981/p/5345495.html)
@@ -10,6 +10,7 @@
 - [我在阿里云做前端](https://zhuanlan.zhihu.com/p/61127760)
 - [中台微服务](https://www.infoq.cn/article/HNDtDuaIYsWUP-SGOPTK)
 - [架构师能力模型](https://mp.weixin.qq.com/s?__biz=MzI0MTczNDgyOQ==&mid=2247484195&idx=1&sn=4023a1def4da46509a481b77e297e1f7&chksm=e90646e1de71cff786e0b7a3c6ce12074b1df0502a57a5553554b18fa91ab280160708d06e09&xtrack=1&scene=0&subscene=131&clicktime=1554469736&ascene=7&devicetype=android-28&version=2700033c&nettype=WIFI&abtest_cookie=BAABAAoACwASABMABQAjlx4AVpkeANCZHgDamR4A3JkeAAAA&lang=zh_CN&pass_ticket=AHr/9Slxa9wyQOBtmYsQinKiS+CRt/uP1tbENeGh5nL+qvkco8ifDo8OmS6Y/JS4&wx_header=1&utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+- [技术主管之路](https://segmentfault.com/a/1190000018894283?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
 ## 目录
 <details>
@@ -21,12 +22,17 @@
 * [`项目设计`](#项目设计)
 * [`团队规范`](#团队规范)
 * [`言谈举止`](#言谈举止)
+* [`表达观点`](#表达观点)
 * [`前端集成解决方案`](#前端集成解决方案)
 * [`框架对比`](#框架对比)
 * [`技术选型`](#技术选型)
 * [`依赖管理`](#依赖管理)
 * [`无障碍`](#无障碍)
+* [`设计模式`](#设计模式)
 * [`快速开发`](#快速开发)
+* [`产品相关`](#产品相关)
+* [`后端相关`](#后端相关)
+* [`ppt`](#ppt)
 
 </details>
 
@@ -103,6 +109,22 @@
 - 详细分层
 - api设计
 
+#### api设计
+- 容许多个实现
+  * 底层实现细节不应该在入参上体现
+- 统一Error code
+- 更新操作指定更新的字段
+  * ```js
+  {
+    // ...
+    foo: {},
+    updateFoo(newFoo, keys) {
+      keys.forEach(key => (foo[key] = newFoo[key]));
+    },
+    // ...
+  }
+    ```
+
 ### 核心思考点
 * 可用性
   - api暴露
@@ -174,6 +196,24 @@ project
 4. 介绍克服困难、到达未来所需要的那个关键步骤
   - 对比传统和要推销的东西
 5. 提出证据，你能让这一切变成现实
+
+---
+
+## 表达观点
+
+### 基本原则
+- 改善的意见及时提出，不用事后诸葛亮
+- 不要轻易打断别人说话
+- 争论时旁观，平息时阐述
+- 先复述对方的观点，再阐述自己的观点
+- 高层的决策不要轻易反驳，只需陈述自己观点
+- 阐述观点遵循PREP
+
+### PREP法则
+- Point: 先说结论，让人家第一时间清楚你的观点
+- Reason: 再讲原因，最多三点
+- Example: 举例子，事例和故事最能打动人
+- Point: 重申自己的结论，突出自己的观点
 
 ---
 
@@ -271,3 +311,26 @@ import module1 from 'module1'
 
 ## 快速开发
 [vue企业级开发](https://mp.weixin.qq.com/s/g6D5b_YilzLeBH3pdjRnww)
+
+---
+
+## 设计模式
+[设计模式](https://segmentfault.com/a/1190000018879929?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
+
+## 产品相关
+![产品相关](./产品相关.jpeg)
+
+---
+
+## 后端相关
+![异地多活](./异地多活.jpeg)
+
+---
+
+## ppt
+
+### SCQA叙事模式
+- S ：Situation(背景) 
+- C ：Complication(冲突)
+- Q ：Question(疑问)
+- A ：Answer(解答)

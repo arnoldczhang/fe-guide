@@ -185,18 +185,41 @@
 // console.log(msg);
 
 
-const { SyncHook } = require('tapable');
-debugger;
-const FrontEnd = new SyncHook();
-FrontEnd.tap('webpack',()=>{
-  console.log("get webpack")
+// const { SyncHook } = require('tapable');
+// debugger;
+// const FrontEnd = new SyncHook();
+// FrontEnd.tap('webpack',()=>{
+//   console.log("get webpack")
+// });
+// FrontEnd.tap('react',()=>{
+//   console.log("get react")
+// });
+// FrontEnd.learn=()=>{
+//   FrontEnd.call()
+// };
+// FrontEnd.learn();
+
+
+// const glob = require('glob');
+// const { resolve } = require('path');
+
+// console.log(glob.sync(resolve(__dirname, '../../webpack/*.js')));
+
+
+
+const { SyncBailHook } =require('tapable');
+const FrontEnd = new SyncBailHook(['name']);
+FrontEnd.tap('webpack',(name)=>{
+  console.log(name+" get webpack ")
+  return false;
 });
-FrontEnd.tap('react',()=>{
-  console.log("get react")
+FrontEnd.tap('react',(name)=>{
+  console.log(name+" get react")
 });
-FrontEnd.learn=()=>{
-  FrontEnd.call()
+FrontEnd.start=(...args)=>{
+  FrontEnd.call(...args)
 };
-FrontEnd.learn();
+FrontEnd.start('xiaoming');
+
 
 

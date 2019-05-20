@@ -4,7 +4,7 @@
 1. [functional-light js](https://github.com/getify/Functional-Light-JS/blob/master/manuscript/ch1.md/#chapter-1-why-functional-programming)
 2. [mostly-adequate-guide](https://mostly-adequate.gitbooks.io/mostly-adequate-guide/)
 3. [30-seconds](https://github.com/30-seconds/30-seconds-of-code/blob/master/README.md)
-
+4. [【译】JavaScript 中的函数式编程原理](https://segmentfault.com/a/1190000019052188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452#articleHeader4)
 ## 思考
 - 业务开发，面向人；库开发，面向v8；
 - 声明式代码（根据函数声明，能大致了解入参内容及可能的处理）

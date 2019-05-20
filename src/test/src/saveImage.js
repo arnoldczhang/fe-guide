@@ -21,14 +21,14 @@ if (filepath) {
       } = res;
       const type = headers['content-type'];
       const suffix = type.replace(/image\/(.+)/, '$1');
-      const buffer = new Buffer(rawData, 'binary').toString('base64');
+      const buffer = Buffer.from(rawData, 'binary').toString('base64');
       const filename = ((headers['content-disposition'] || '').replace(/.+filename="([^'"]+)".+/, '$1') || randomName()) + `.${suffix}`;
 
-      fs.writeFile(`${savepath.replace(/\/+$/, '')}/${filename}`, buffer, 'base64', (err) => {
+      fs.writeFile(`${__dirname.replace(/\/+$/, '')}/${filename}`, buffer, 'base64', (err) => {
         if (err) {
           console.error(err);
         } else {
-          console.log(`${filename} save succes`);
+          console.log(`${filename} save success`);
         }
       });
     });

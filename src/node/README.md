@@ -14,8 +14,12 @@
 <summary>展开更多</summary>
 
 * [`好用的库`](#好用的库)
-* [`原理解析`](#原理解析)
+* [`require原理`](#require原理)
+* [`eventLoop`](#eventLoop)
+* [`GC`](#GC)
+* [`循环引用`](#循环引用)
 * [`最佳实践`](#最佳实践)
+* [`异步错误`](#异步错误)
 * [`手动打包指南`](#手动打包指南)
 
 </details>
@@ -29,16 +33,32 @@
 
 ## 好用的库
 - [监听文件夹变化](https://github.com/dt-fe/weekly/blob/master/59.%E7%B2%BE%E8%AF%BB%E3%80%8A%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%20Nodejs%20%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E3%80%8B.md)
-- [调试工具ndb](https://zhuanlan.zhihu.com/p/45851471)
-- [JSON.stringify工具fast-json-stringify](https://github.com/fastify/fast-json-stringify)
+- [调试工具-ndb](https://zhuanlan.zhihu.com/p/45851471)
+- [JSON.stringify工具-fast-json-stringify](https://github.com/fastify/fast-json-stringify)
   - 预设字段类型，加速stringify
-- [类promise工具bluebird](https://github.com/petkaantonov/bluebird)
+- [promise工具-bluebird](https://github.com/petkaantonov/bluebird)
   - V8 原生实现的 Promise 比 bluebird 这样第三方实现的 Promise 库要慢很多
   - 可以在代码中把全局的 Promise 换为 bluebird 的实现，比如
-- [打包工具ncc](https://zeit.co/blog/ncc)
-- [图片压缩工具sharp](https://github.com/lovell/sharp?utm_source=75weekly&utm_medium=75weekly)
+- [打包工具-ncc](https://zeit.co/blog/ncc)
+- [图片压缩工具-sharp](https://github.com/lovell/sharp?utm_source=75weekly&utm_medium=75weekly)
 - [检查库的两个版本间的diff](https://diff.intrinsic.com/)
-- nrm/yrm(维护了一个列表，包括npm/yarn主站和其他镜像)
+- [npm源管理工具-nrm/yrm](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+- [搭建私有npm工具-verdaccio](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+  - ```js
+    npm install -g verdaccio
+
+    verdaccio
+    // warn --- http address - http://localhost:4873/ - verdaccio/3.0.0
+
+    nrm add verdaccio http://localhost:4873
+
+    nrm use verdaccio
+
+    npm adduser
+
+    npm publish
+    ```
+- [DOM转canvas工具-html2canvas、dom-to-image](https://segmentfault.com/a/1190000019035021?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
   ```js
   global.Promise = require('bluebird');
@@ -46,6 +66,75 @@
 - [pipeline-stream](https://nodejs.org/dist/latest-v10.x/docs/api/stream.html#stream_stream_pipeline_streams_callback)
 - [性能诊断node-clinic](https://github.com/nearform/node-clinic)
 - [压测autocannon](https://github.com/mcollina/autocannon)
+
+### eggjs
+[参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
+
+**进程管理**
+
++---------+           +---------+          +---------+
+|  Master |           |  Agent  |          |  Worker |
++---------+           +----+----+          +----+----+
+     |      fork agent     |                    |
+     +-------------------->|                    |
+     |      agent ready    |                    |
+     |<--------------------+                    |
+     |                     |     fork worker    |
+     +----------------------------------------->|
+     |     worker ready    |                    |
+     |<-----------------------------------------+
+     |      Egg ready      |                    |
+     +-------------------->|                    |
+     |      Egg ready      |                    |
+     +----------------------------------------->|
+
+**进程守护**
+
++---------+                 +---------+
+|  Worker |                 |  Master |
++---------+                 +----+----+
+     | uncaughtException         |
+     +------------+              |
+     |            |              |                   +---------+
+     | <----------+              |                   |  Worker |
+     |                           |                   +----+----+
+     |        disconnect         |   fork a new worker    |
+     +-------------------------> + ---------------------> |
+     |         wait...           |                        |
+     |          exit             |                        |
+     +-------------------------> |                        |
+     |                           |                        |
+    die                          |                        |
+                                 |                        |
+                                 |                        |
+
+**进程间通信（IPC）**
+
+广播消息： agent => all workers
+                  +--------+          +-------+
+                  | Master |<---------| Agent |
+                  +--------+          +-------+
+                 /    |     \
+                /     |      \
+               /      |       \
+              /       |        \
+             v        v         v
+  +----------+   +----------+   +----------+
+  | Worker 1 |   | Worker 2 |   | Worker 3 |
+  +----------+   +----------+   +----------+
+
+指定接收方： one worker => another worker
+                  +--------+          +-------+
+                  | Master |----------| Agent |
+                  +--------+          +-------+
+                 ^    |
+     send to    /     |
+    worker 2   /      |
+              /       |
+             /        v
+  +----------+   +----------+   +----------+
+  | Worker 1 |   | Worker 2 |   | Worker 3 |
+  +----------+   +----------+   +----------+
 
 ---
 
@@ -243,7 +332,7 @@
       };
         ```
 
-### event loop
+### eventLoop
   - ![event_loop](node-event-loop.jpg)
 
 ### GC
@@ -310,6 +399,79 @@ module.exports.a = 1;
 
 ### exports和module.exports
 [参考](../js&browser/基本常识.md#amd/CommonJS)
+
+
+### 异步错误
+
+unhandledRejection
+
+#### 处理
+```js
+process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at:', p, 'reason:', reason);
+});
+```
+
+#### 触发unhandledRejection
+
+```js
+// 1. 每次 Tick 完成后触发processTicksAndRejections
+setTickCallback(processTicksAndRejections);
+
+// 2. tock queue 运行到空时，调用 processPromiseRejections
+function processTicksAndRejections() {
+  let tock;
+  do {
+    // 运行Tock......
+  } while (!queue.isEmpty() || processPromiseRejections());
+  // ......
+}
+
+// 3. 依次触发unhandledRejection
+function processPromiseRejections() {
+  // ...
+  while (pendingUnhandledRejections.length--) {
+    if (!process.emit('unhandledRejection', reason, pendingUnhandledRejections.shift())) {
+      emitWarning(uid, reason);
+    }
+  }
+  // ...
+};
+```
+
+#### 放入unhandledRejection
+
+```js
+// 1. node启动时，会执行setupTaskQueue
+// 其中会调用listenForRejections方法
+module.exports = {
+  setupTaskQueue() {
+    // Sets the per-isolate promise rejection callback
+    listenForRejections();
+    //.....
+  }
+};
+
+// 2. listenForRejections监听&传入异常promise
+function listenForRejections() {
+  setPromiseRejectCallback(promiseRejectHandler);
+}
+
+// 3. 异常promise入队
+function promiseRejectHandler(type, promise, reason) {
+  switch (type) {
+    case kPromiseRejectWithNoHandler:
+      pendingUnhandledRejections.push(promise);
+      break;
+    // ...
+  }
+  // ...
+}
+```
+
+#### 须知
+- 每次 Tick 完成后，会执行并清空 Tock 队列
+- 之后才会触发unhandledRejection回调
 
 ---
 

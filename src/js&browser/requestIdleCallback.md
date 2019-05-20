@@ -10,8 +10,9 @@
 5. layout（重排，计算大小）
 6. paint（重绘，更新样式）
 
-## 线程
+具体操作可[参考](./requestIdleCallback.png)
 
+## 线程
 - JS线程
 - UI渲染线程
 - 事件线程
@@ -19,9 +20,11 @@
 - HTTP请求线程
 - ...
 
-JS线程和渲染线程互斥，长时间JS执行导致页面卡顿
+JS线程和渲染线程互斥，长时间JS执行导致页面卡顿，比如下面这种情况
 
-一帧执行的操作可[参考](./requestIdleCallback.png)
+[渲染线程](./chrome渲染线程.png)
+
+注：**chrome渲染页面涉及两个线程：主线程和合成线程**
 
 ## microTask使用
 ```js

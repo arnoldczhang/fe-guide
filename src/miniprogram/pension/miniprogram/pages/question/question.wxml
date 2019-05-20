@@ -1,0 +1,4 @@
+<!--miniprogram/pages/question/quesiton.wxml-->
+<view>
+  <image class="img" src="../../images/guide.jpg" />
+</view>

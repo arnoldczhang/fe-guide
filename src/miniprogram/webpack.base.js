@@ -33,6 +33,7 @@ const config = {
     chunkFilename: '[name]',
     sourceMapFilename: '[file].map',
     crossOriginLoading: 'anonymous',
+    libraryTarget: 'commonjs2',
     publicPath: '',
   },
   plugins: [

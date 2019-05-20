@@ -6,8 +6,8 @@
   * 首先判断两者类型是否相同，如果相等，判断值是否相等；
   * 如果类型不同，进行类型转换；
   * 判断比较的是否是 null 或者是 undefined, 如果是, 返回 true；
-  * 判断两者类型是否为 string 和 number, 如果是, 将字符串转换成 number；
   * 判断其中一方是否为 boolean, 如果是, 将 boolean 转为 number 再进行判断；
+  * 判断两者类型是否为 string 和 number, 如果是, 将字符串转换成 number；
 判断其中一方是否为 object 且另一方为 string、number 或者 symbol , 如果是, 将 object   * 转为原始类型再进行判断。
 
 ### [] == ![]
@@ -32,6 +32,30 @@ Number([]) === 0
 
     typeof y; // 值是 undefined, 不会报错
     ```
+
+### 函数声明&变量声明
+- 函数会首先被提升，然后才是变量
+- 换言之，无论两者（书面上）的声明顺序如何，优先读取到的是函数声明
+- 原因如下
+
+#### 执行环境
+包括创建 + 执行阶段
+
+**创建过程**
+
+1. 初始化arguments对象，及形参
+2. 扫描函数声明，并进行处理
+  - 如果该函数名在变量对象中已存在，则覆盖已存在的函数引用
+3. 扫描变量声明，并进行处理
+  - 如果该变量名在变量对象中已存在，为防止与函数名冲突，则跳过，不进行任何操作
+
+```js
+executionContextObj = {
+  'variableObject': {...}, //函数的arguments、参数、函数内的变量及函数声明
+  'scopeChian': {...}, //本层变量对象及所有上层执行环境的变量对象
+  'this': {}
+};
+```
 
 ### this
 
@@ -62,10 +86,21 @@ obj.fn1();
 console.log(window.number);
 ```
 
+### 统计数组成员重复个数
+```js
+const arr = [0, 1, 1, 2, 2, 2];
+const count = arr.reduce((t, c) => {
+    t[c] = t[c] ? ++t[c] : 1;
+    return t;
+}, {});
+// count => { 0: 1, 1: 2, 2: 3 }
 
+```
 
-
-
+### vue和react中key的作用
+- 和性能好坏无关
+- 相同的key可以复用节点（仅做textContent变更），
+  否则只能insert/append，remove，开销大些
 
 
 

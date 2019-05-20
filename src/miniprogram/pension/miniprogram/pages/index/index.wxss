@@ -18,13 +18,30 @@ page {
   background: #eee;
 }
 .line {
+  position: relative;
   display: flex;
   justify-content: flex-end;
   line-height:100rpx;
   height:100rpx;
   border-bottom: 1rpx solid #999;
 }
-
+.line text:first-child {
+  width: 350rpx
+}
+.question {
+  position: absolute;
+  right: -20rpx;
+  border-radius: 50%;
+  line-height: 30rpx;
+  text-align: center;
+  color: #999;
+  font-size: 24rpx;
+  height: 30rpx;
+  width: 30rpx;
+  border: 1rpx solid #999;
+  display: block;
+  top: 35rpx;
+}
 .line input {
   display: inline-block;
   line-height:100rpx;

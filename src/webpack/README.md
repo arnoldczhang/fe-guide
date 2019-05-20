@@ -11,11 +11,14 @@
 <details>
 <summary>展开更多</summary>
 
-* [`webpack-3.8.1解析`](#webpack-3.8.1解析)
+* [`webpack-3.8.1`](#webpack-3.8.1)
+* [`webpack加载流程`](#webpack加载流程)
 * [`webpack4`](#webpack4)
 * [`开发调试`](#开发调试)
 * [`treeshaking`](#treeshaking)
-* [`注意事项`](#注意事项)
+* [`tapable`](#tapable)
+* [`loader`](#loader)
+* [`其他`](#其他)
 
 </details>
 
@@ -161,6 +164,44 @@ mainTemplate.hooks.hash -> tap("SetVarMainTemplatePlugin", hash => {
 
 ---
 
+## webpack加载流程
+
+[参考](https://segmentfault.com/a/1190000019117897?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
+
+### webpack异步加载
+
+- import(/* ... */).then(() => {/* ... */});
+- ```js
+  // 1. 创建script标签，src根据chunkId从installedChunks取
+  // 2. 挂到head
+  // 3. 12秒超时
+  // 4. script加载结束，更新installedChunks标记
+  __webpack_require__.e = function requireEnsure(chunkId) {
+    // ...
+    new Promise(() => {
+      const script = document.createElement('script');
+      script.src = installedChunks[chunkId];
+      script.onLoad = () => {
+        // ...
+        installedChunks[chunkId] = void 0;
+        // ...
+      };
+      document.head.appendChild(script);
+      setTimeout(function(){
+        onScriptComplete({ type: 'timeout', target: script });
+      }, 120000);
+    });
+    // ...
+  };
+  ```
+- ```js
+  __webpack_require__.e(0).then(/* ... */);
+  ```
+
+![异步加载](./webpack-async.jpeg)
+
+---
+
 ## webpack4
 [参考](https://juejin.im/entry/5b63eb8bf265da0f98317441)
 [webpack4的24个实例](https://juejin.im/post/5cae0f616fb9a068a93f0613?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-1)
@@ -264,7 +305,6 @@ module.exports = {
 - import 的模块名只能是字符串常量
 - import binding 是 immutable的
 
-
 ### rollup、webpack、google Closure对比
 
 **rollup**
@@ -305,9 +345,140 @@ module.exports = {
 **结论**
 google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 
-## 注意事项
+---
+
+## tapable
+[参考](https://juejin.im/post/5cb43b3e5188251b2b20b7ed?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-18)
+
+### SyncHook
+- 比较像订阅发布，同步
+- 注册事件是tap
+- 事件执行是call
+- 就像jquery中的add、fire方法，只不过这里是tap、call
+- ```js
+  arr.forEach(handler)
+  ```
+
+### SyncBailHook
+- 主要解决的问题是条件阻塞
+- 有熔断机制，前一个监听返回值非undefined，则停止
+- ```js
+  arr.some(handler)
+  ```
+
+### SyncWaterfallHook
+- 前一个任务的执行结果，传递给后一个
+- 类似redux中的compose
+- ```js
+  arr.reduce((pre, next) => next(pre))
+  ```
+
+### SyncLoopHook
+- 能够执行多次
+- 返回undefined则停止执行，返回非undefined则继续执行当前任务
+- ```js
+  let index = 0;
+  while (index < this.tasks.length) {
+    if (this.tasks[index]() === undefined) {
+      index++;
+    }
+  }
+  ```
+
+### AsyncParralleHook
+- 异步并行
+- 注册事件是tapAsync
+- 事件执行是callAsync
+- 类似Promise.all
+- ```js
+  const tasks = this.tasks.map(task=>task(...param));
+  Promise.all(tasks);
+  ```
+
+### AsyncParallelBailHook
+- 只要返回真，都会进catch
+- 无论结果，所有监听都会执行
+- 绑定方式
+  * tap，同SyncBailHook效果
+  * tapSync，则遇到return true最终的callback不会执行
+  * promise，则遇到rejcet(true)，则直接进入catch
+- ```js
+  Promise.all(tasks.map((task) => {
+    return new Promise((resolve, reject) => {
+      task().then((data) => {
+        resolve(data);
+      }, (err) => {
+        err ? reject(err) : resolve();
+      });
+    });
+  }))
+  ```
+
+### AsyncSeriesHook
+- 异步任务，串行处理
+- ```js
+  const [first, ...others] = tasks;
+  others.reduce((pre,next)=>{
+    return pre.then(()=>next(...param))
+  }, first());
+  ```
+
+### AsyncSeriesBailHook
+- 返回值不是undefined，阻塞之后的监听
+
+### AsyncSeriesWaterfallHook
+- 用法和SyncWaterFallHook的用法一致
+
+---
+
+## loader
+
+### less-loader
+- 使用@functions做px<->rem转换
+  * ```js
+    // webpack.config.js
+    // 设置javascriptEnabled
+    // ...
+    {
+      test: /\.less/,
+      exclude: /node_modules/,
+      use: ['style-loader', 'css-loader', {
+        loader: 'less-loader',
+        options: {
+          javascriptEnabled: true
+        }
+      }],
+    },
+    // ...
+    ```
+  * ```less
+    .remMixin() {
+      @functions: ~`(function() {
+        var clientWidth = '375px';
+        function convert(size) {
+          return typeof size === 'string' ? 
+            +size.replace('px', '') : size;
+        }
+        this.rem = function(size) {
+          return convert(size) / convert(clientWidth) * 10 + 'rem';
+        }
+      })()`;
+    }
+
+    .remMixin();
+
+    .bb {
+      width: ~`rem("300px")`;
+      height: ~`rem(150)`;
+      background: blue;
+    }
+    ```
+
+---
+
+## 其他
 - 使用 import()，需要dynamic-import插件 (https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/)
 - ![import](import-polyfill.png)
-
-
+- [据说比babel快几十倍的compiler](https://github.com/swc-project/swc)
+- [prepack-顾名思义代码预编译](https://prepack.io/)
 

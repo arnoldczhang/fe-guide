@@ -22,6 +22,7 @@
 * [`http3.0`](#http3.0)
 * [`quic`](#quic)
 * [`https`](#https)
+* [`osl`](#osl)
 
 </details>
 
@@ -31,6 +32,7 @@
 
 #### 一对多
 - 一个tcp连接可以发送多个http请求（原因：Connection: keep-alive）
+- chrome里可以通过network里的`Connection ID`查看（http1.1有并发6个上线，h2没有限制)
 - 设置**Connection: close**的话，一个http请求结束就会断掉tcp连接
 - 维持连接的优点是能省下请求的**初始化和ssl连接**时间
 
@@ -104,13 +106,15 @@ Entity tag，If-Unmodified-Since, If-Match, If-None-Match
 - s-maxage：仅在代理服务器（比如CDN）有效，优先级高于max-age
 - max-stale：能容忍的最大过期时间
 - min-fresh：能够容忍的最小新鲜度
-
-例：must-revalidate
-```text
-// must-revalidate生效有个前提，前提就是这个缓存必须已经过期，
-// 在浏览器端几乎没有任何作用
-Cache-Control: max-age=86400, must-revalidate
-```
+- stale-while-revalidate：如果缓存过期了，仍然会使用，并同时在后台请求新鲜的资源，供下次使用（chrome75以上支持）
+  * 可[参考](https://zhuanlan.zhihu.com/p/64694485)
+  * ![stale-while-revalidate](./stale-while-revalidate.jpg)
+- must-revalidate
+  ```text
+  // must-revalidate生效有个前提，前提就是这个缓存必须已经过期，
+  // 在浏览器端几乎没有任何作用
+  Cache-Control: max-age=86400, must-revalidate
+  ```
 
 ### 资源缓存几种方式
 * HTTP 1.1 风格的Cache-Control 响应头中的 max-age指令
@@ -216,18 +220,21 @@ range，请求资源一部分（206），支持断点续传
 ---
 
 ## https
-  - http + tls
-  - ![加密](24.png)
-    - 服务器选中的密钥交换加密方式为RSA
-    - 数据传输加密方式为AES
-    - 检验数据是否合法的算法为SHA256
-  - ![https](10.png)
-  - ![https-2](https-2.jpg)
-  - 公钥加密，私钥解密
-  - 过程 -> 3RTT
-    - 1次tcp RTT
-    - 2次tls RTT
-    - ![https](201208201734403507.png)
+
+[免费证书申请](https://mp.weixin.qq.com/s/sQLRsW3axiL8XRP0tTyjJA?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+
+- http + tls
+- ![加密](24.png)
+  * 服务器选中的密钥交换加密方式为RSA
+  * 数据传输加密方式为AES
+  * 检验数据是否合法的算法为SHA256
+- ![https](10.png)
+- ![https-2](https-2.jpg)
+- 公钥加密，私钥解密
+- 过程 -> 3RTT
+  * 1次tcp RTT
+  * 2次tls RTT（比http多了2次tls的RTT）
+  * ![https](201208201734403507.png)
 
 ### HTTP、HTTPS、TCP、SSL/TLS
 - HTTP基于TCP
@@ -240,4 +247,10 @@ range，请求资源一部分（206），支持断点续传
 - 推荐tls1.2
 - ![ssl-tls](ssl-tls.jpg)
 
+---
+
+## osl
+Open System Interconnection 开放式系统互联
+
+![osl](./osl层次.jpg)
 

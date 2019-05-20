@@ -17,6 +17,8 @@ const run = () => {
     configFile: false,
     presets: [
       ['@babel/env', {
+        corejs: 2,
+        debug: true,
         useBuiltIns: "usage",
       }],
       'minify',

@@ -1,0 +1,25 @@
+<!--miniprogram/pages/result/result.wxml-->
+<view class="page">
+  <view class="block">
+    <view class="title">
+      <image class="avatar" src="{{avatarUrl}}" />
+      <text class="nick-name">{{nickName}}的养老金报告</text>
+    </view>
+  </view>
+  <view class="block">
+    <text>您现在{{age}}岁，打算{{retireAge}}岁退休，退休后的退休工资大致为{{pension}}元</text>
+  </view>
+  <view class="block">
+    <text>您的养老规划：</text>
+    <text>按您目前的工资，{{!matched?'不':''}}能満足您期望的退休后生活水平{{lackPension ? '您需要逐步提高你的工资待遇或者每月额外增加养老金' : ''}} {{lackPension ? lackPension + '元。' : ''}}</text>
+  </view>
+  <image class="oldman" src="../../images/oldman.jpg" />
+  <view class="intro block">
+    <text>您身边的家庭财务安全规划专家>>养老规划，高端医疗，保险配置，法律咨询做好每个家庭的守门员</text>
+  </view>
+  <view class="myqrcode">
+    <image class="qrcode" bindlongpress="onHandleSaveImage" src="../../images/qrcode.png" />
+    <text style="color:red">长\n按\n保\n存</text>
+  </view>
+  <view class="wavy-line"></view>
+</view>

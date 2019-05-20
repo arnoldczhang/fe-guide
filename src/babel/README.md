@@ -263,7 +263,7 @@ function call(key) {
 * @babel/plugin*：Babel 插件机制，Babel基础功能不满足的时候,手动添加些
 * @babel/preset-env：把许多 @babel/plugin 综合了下，减少配置
 * @babel/polyfill：babel默认只转换js句法，不转API和部分全局对象的方法，polyfill把浏览器某些不支持API，兼容性代码全部导入到项目,不管你是不是用到,缺点是代码体积特别大
-* @babel/runtime：把你使用到的浏览器某些不支持API，按需导入,代码少
+* @babel/runtime：把你使用到的浏览器某些不支持API，按需导入，避免重复注入，代码少
 * @babel/plugin-transform-runtime：默认所有文件都会注入utils（助手方法），导致重复，runtime的引入，可以复用、节省代码
 
 ### 文件/方法变更（相比babel6）
@@ -289,7 +289,8 @@ function call(key) {
 * **configFile**：默认path.resolve(opts.root, "babel.config.js")
 * **presets**：预置环境
   - @babel/env
-    + useBuiltIns：只转译使用到的api
+    + useBuiltIns：只转译使用到的api（false不开启polyfill，usage/entry开启）
+    + debug：开启调试（显示使用的plugins、polyfills）
   - minify
     + babel编译出的代码是否压缩
 

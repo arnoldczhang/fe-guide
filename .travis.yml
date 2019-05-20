@@ -1,3 +1,4 @@
+dist: trusty
 language: node_js
 node_js:
   - 8
@@ -9,5 +10,12 @@ cache:
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s
   - export PATH="$HOME/.yarn/bin:$PATH"
-install: true
-script: task/test.sh
+  - chmod u+x tasks/*
+install: ./tasks/install.sh
+script: ./tasks/init.sh
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
+  on:
+    branch: master
