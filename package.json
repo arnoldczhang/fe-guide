@@ -156,6 +156,7 @@
     "colors": "^1.1.2",
     "config": "^3.0.1",
     "copy-webpack-plugin": "^4.5.1",
+    "core-decorators": "^0.20.0",
     "core-js": "^2.5.1",
     "criticalcss": "^2.1.0",
     "crypto-js": "^3.1.9-1",
