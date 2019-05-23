@@ -117,6 +117,7 @@ node11以后
 
 ## Web APIs
 前端：浏览器、node环境
+- setTimeout
 
 - - -
 

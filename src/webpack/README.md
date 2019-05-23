@@ -11,6 +11,7 @@
 <details>
 <summary>展开更多</summary>
 
+* [`配置`](#配置)
 * [`webpack-3.8.1`](#webpack-3.8.1)
 * [`webpack加载流程`](#webpack加载流程)
 * [`webpack4`](#webpack4)
@@ -21,6 +22,28 @@
 * [`其他`](#其他)
 
 </details>
+
+## 配置
+
+### resolve
+```js
+{
+  // ...
+  resolve: {
+    // 现在可以写require('file')，代替require('file.jsx')或 require('file.es6')
+    extensions: ['.*', '.js', '.jsx', '.es6'],
+    // 路径替换
+    alias: {
+      'react': 'anujs',
+      'react-dom': 'anujs',
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  // ...
+}
+```
+
+---
 
 ## webpack-3.8.1解析
 
