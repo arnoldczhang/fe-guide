@@ -7,5 +7,7 @@
 
 
 ## 模型
-  - ![执行过程](wasm.webp)
+- ![执行过程](wasm.webp)
 
+## 库
+- [webassembly的npm](https://wapm.io/)
