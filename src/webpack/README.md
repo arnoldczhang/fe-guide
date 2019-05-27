@@ -500,6 +500,7 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 ---
 
 ## 其他
+- a chunk is a group of modules within the webpack process, a bundle is an emitted chunk or set of chunks.
 - 使用 import()，需要dynamic-import插件 (https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/)
 - ![import](import-polyfill.png)
 - [据说比babel快几十倍的compiler](https://github.com/swc-project/swc)

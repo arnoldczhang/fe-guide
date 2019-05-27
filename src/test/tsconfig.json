@@ -14,13 +14,16 @@
         "pretty": true,
         "listFiles": false,
         "declaration": true,
-        "rootDir": "dist",
+        "rootDir": "../react",
         "jsx": "react",
         "target": "es6",
         "lib": ["es5", "es6", "dom"],
         "moduleResolution": "node",
         "strictNullChecks": true
     },
+    "include": [
+        "../react/*.tsx",
+    ],
     "exclude": [
         "node_modules",
         "dist",

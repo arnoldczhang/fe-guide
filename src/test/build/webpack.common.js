@@ -1,19 +1,19 @@
 // webpack基础配置
-const path = require('path');
+// const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const { join, resolve } = require('path');
 
 module.exports = {
   output: {
-    path: path.join(__dirname, '../dist'),
-    filename: '[name].[contenthash].js',
-    // chunkFilename: '[name].js',
+    path: join(__dirname, '../dist'),
+    filename: '[name].[hash].js',
+    chunkFilename: '[name].chunk.[chunkhash].js',
     // sourceMapFilename: '[file].[chunkhash].map',
     crossOriginLoading: 'anonymous',
-    publicPath: '',
+    publicPath: '/',
   },
   plugins: [
     new ExtractTextPlugin({
@@ -42,7 +42,7 @@ module.exports = {
         test: /\.jsx$/,
         enforce: 'pre',
         loader: 'eslint-loader',
-        include: path.resolve(__dirname, "../src"),
+        include: resolve(__dirname, "../src"),
         exclude: /node_modules/,
         options: {
           failOnError: false,
@@ -74,9 +74,16 @@ module.exports = {
       // https://webpack.js.org/configuration/configuration-languages/
       {
         test: /\.(tsx|ts)?$/,
-        include: path.resolve(__dirname, "../src"),
+        // include: path.resolve(__dirname, "../src"),
         exclude: /node_modules/,
-        use: ["ts-loader"],
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              configFile: resolve(__dirname, '../tsconfig.json'),
+            },
+          },
+        ],
       },
       {
         test: /\.(le|c|sa)ss$/,

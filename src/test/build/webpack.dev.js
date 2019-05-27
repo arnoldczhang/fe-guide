@@ -1,6 +1,5 @@
 const path = require('path');
 const internalIP = require('internal-ip');
-const open = require('open');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -11,7 +10,7 @@ const host = 'localhost' || internalIP.v4() || '0.0.0.0';
 const port = 2222;
 
 const config = merge(base, {
-  // devtool: 'source-map',
+  devtool: 'inline-source-map',
   mode: 'development',
   entry: {
     // webdriver: './src/test/src/webdriver.js',
@@ -22,8 +21,9 @@ const config = merge(base, {
     // can: './src/test/src/can.js',
     // tui: './src/test/src/tui.js',
     // asciichart: './src/test/src/asciichart.js',
-    test: './src/test/src/test.js',
+    // test: './src/test/src/test.js',
     // jsx: './src/test/src/jsx.jsx',
+    reactTsx: './src/react/test.tsx',
   },
   optimization: {
     concatenateModules: false,
@@ -51,7 +51,7 @@ const config = merge(base, {
     new HtmlWebpackPlugin({
       title: 'Development',
       hash: true,
-      template: './src/test/index.html',
+      template: './src/react/index.html',
       minify: {
         removeComments: true,
         collapseWhitespace: true,
@@ -65,11 +65,14 @@ const config = merge(base, {
         minifyURLs: true,
       },
     }),
+    new webpack.HotModuleReplacementPlugin(),
   ],
   devServer: {
     port,
     host,
-    contentBase: './dist',
+    contentBase: '../dist',
+    open: true,
+    hot: true,
   },
 });
 
