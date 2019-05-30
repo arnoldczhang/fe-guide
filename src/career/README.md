@@ -218,7 +218,9 @@ project
 ---
 
 ## 前端集成解决方案
-[前端集成解决方案](https://github.com/fouber/blog/issues/1)
+- [大型项目前端架构浅谈](https://juejin.im/post/5cea1f705188250640005472)
+- [前端集成解决方案](https://github.com/fouber/blog/issues/1)
+
 1. 开发规范
   * 开发、部署的目录规范
   * 编码规范
