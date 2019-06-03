@@ -21,6 +21,7 @@
 * [`最佳实践`](#最佳实践)
 * [`异步错误`](#异步错误)
 * [`手动打包指南`](#手动打包指南)
+* [`库源码解析`](#库源码解析)
 
 </details>
 
@@ -520,5 +521,14 @@ uglify-js
 **html**
 
 [htmlparser2](../html/html.js)
+
+---
+
+## 库源码解析
+
+### ws
+[ws](https://github.com/websockets/ws)
+[WebSocket协议以及ws源码分析](https://juejin.im/post/5ce8976151882533441ecc20?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+
 
 

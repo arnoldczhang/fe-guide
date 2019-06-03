@@ -207,19 +207,23 @@
 
 
 
-const { SyncBailHook } =require('tapable');
-const FrontEnd = new SyncBailHook(['name']);
-FrontEnd.tap('webpack',(name)=>{
-  console.log(name+" get webpack ")
-  return false;
-});
-FrontEnd.tap('react',(name)=>{
-  console.log(name+" get react")
-});
-FrontEnd.start=(...args)=>{
-  FrontEnd.call(...args)
-};
-FrontEnd.start('xiaoming');
+// const { SyncBailHook } =require('tapable');
+// const FrontEnd = new SyncBailHook(['name']);
+// FrontEnd.tap('webpack',(name)=>{
+//   console.log(name+" get webpack ")
+//   return false;
+// });
+// FrontEnd.tap('react',(name)=>{
+//   console.log(name+" get react")
+// });
+// FrontEnd.start=(...args)=>{
+//   FrontEnd.call(...args)
+// };
+// FrontEnd.start('xiaoming');
 
 
+
+const list = Array.from({ length: 16 }, (v, index) => ++index)
+const key = Buffer.from(list)
+console.log(key.toString('base64'))
 

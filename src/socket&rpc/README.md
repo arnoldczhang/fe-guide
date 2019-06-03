@@ -1,5 +1,14 @@
 # websocket升级指南
 
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`server搭建`](#server搭建)
+* [`websocket原理`](#websocket原理)
+
+</details>
+
 ## server搭建
 
 ### 步骤
@@ -55,10 +64,18 @@ server.on('upgrade', (req, socket, head) => {
 });
 ```
 
+---
+
 ## websocket原理
+
+[WebSocket协议以及ws源码分析](https://juejin.im/post/5ce8976151882533441ecc20?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 
 ### header升级
 ```js
+const constants = {
+  GUID: '258EAFA5-E914-47DA-95CA-C5AB0DC85B11',  
+};
+
 const key = crypto.createHash('sha1')
   .update(req.headers['sec-websocket-key'] + constants.GUID, 'binary')
   .digest('base64');
