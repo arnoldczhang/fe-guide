@@ -8,6 +8,7 @@ const {
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 const WriteFileWebpackPlugin = require("write-file-webpack-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require("webpack");
 
 const dev = process.env.NODE_ENV !== "production";
@@ -56,14 +57,50 @@ module.exports = {
   },
   module: {
     rules: [{
+      test: /\.(tsx|ts)?$/,
+      include: path.resolve(__dirname, "./src"),
+      exclude: /node_modules/,
+      use: ["ts-loader"],
+    }, {
       test: /\.jsx?$/,
       exclude: /(node_modules|bower_components)/,
       loader: "babel-loader",
       options: {
         cacheDirectory: true,
-        // presets: dev ? ['@babel/preset-react', '@babel/preset-env', 'react-hmre'] : ['react', 'es2015'],
-        // plugins: ['react-hot-loader/babel'],
       },
+    }, {
+      test: /\.(le|c|sa)ss$/,
+      use: ExtractTextPlugin.extract({
+        use:[
+          {
+            loader: 'css-loader',
+            options:{
+              modules:true,
+              importLoaders:1,
+              localIdentName: '[name]__[local]___[hash:base64:5]',
+            },
+          },
+          'less-loader',
+
+          // css module + autoprefixer
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: (loader) => [
+                require('autoprefixer')({
+                  browsers: [
+                    'Android >= 4.0',
+                    'last 3 versions',
+                    'iOS > 6'
+                  ],
+                }),
+              ],
+            },
+          },
+        ],
+        fallback: 'style-loader',
+        publicPath: '/dist',
+      })
     }],
   },
   output: {

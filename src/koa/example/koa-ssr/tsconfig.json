@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": false,
+    "diagnostics": false,
+    "pretty": true,
+    "listFiles": false,
+    "declaration": true,
+    "lib": [
+      "dom",
+      "es2017"
+    ]
+  },
+  "files": [
+    "server.ts"
+  ],
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

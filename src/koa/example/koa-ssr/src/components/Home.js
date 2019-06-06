@@ -3,10 +3,19 @@ import { connect } from "react-redux";
 import { fetchData } from "../store";
 
 class Home extends React.Component {
+  constructor() {
+    super();
+    this.handleClick = this.handleClick.bind(this);
+  }
+
   componentDidMount() {
     if (this.props.circuits.length <= 0) {
       this.props.fetchData();
     }
+  }
+
+  handleClick() {
+    console.log(123);
   }
 
   render() {
@@ -15,6 +24,7 @@ class Home extends React.Component {
     return (
       <div>
         <h2>F1 2018 Season Calendar</h2>
+        <button onClick={this.handleClick}>click</button>
         <ul>
           {circuits.map(({ name }) => (
             <li key={name}>{name}</li>
