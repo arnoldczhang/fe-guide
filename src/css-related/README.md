@@ -286,6 +286,10 @@ filter:blur（数值）
     ```
 - 设置viewport
 
+### 模拟长按
+transitionEnd
+// TODO
+
 ---
 
 ## 须知
