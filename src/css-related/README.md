@@ -287,8 +287,58 @@ filter:blur（数值）
 - 设置viewport
 
 ### 模拟长按
-transitionEnd
-// TODO
+```html
+<button id="btn-1">click</button>
+```
+
+```css
+button:hover:active{
+  opacity:.99;/**随便选取一个不影响页面的可以过渡的样式**/
+  transition:opacity 1s;
+}
+```
+
+```js
+document.getElementById('btn-1').addEventListener('transitionend', () => {
+  console.log(123);
+});
+```
+
+### 单个元素resize
+```css
+div#box{
+  overflow: hidden;/**需要配合overflow才能生效**/
+  resize: both;
+}
+```
+
+### 单个元素resize + 监听宽高
+```css
+div#box{
+  height: 300px;
+  width: 300px;
+  background: rgb(244, 244, 244);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;/**需要配合overflow才能生效**/
+  resize: both;
+}
+#box:active{
+    animation: resize .3s infinite forwards;
+}
+@keyframes resize{
+    to {
+       opacity: .99;/**用一个无关紧要的属性来触发动画**/
+    }
+}
+```
+
+```js
+document.getElementById('box').addEventListener('animationiteration', function(){
+    this.innerHTML = `${this.clientHeight}*${this.clientWidth}`;
+});
+```
 
 ---
 
