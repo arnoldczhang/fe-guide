@@ -223,7 +223,26 @@
 
 
 
-const list = Array.from({ length: 16 }, (v, index) => ++index)
-const key = Buffer.from(list)
-console.log(key.toString('base64'))
+// const list = Array.from({ length: 16 }, (v, index) => ++index)
+// const key = Buffer.from(list)
+// console.log(key.toString('base64'))
+
+
+const vm = require('vm');
+const path = require('path');
+const fs = require('fs');
+const NativeModule = require('module');
+
+const code = fs.readFileSync(path.join(__dirname, './v8n.js'), 'utf8');
+const wrapper = NativeModule.wrap(code);
+const m = { exports: {}};
+const r = file => {
+  return require(file);
+};
+const script = new vm.Script(wrapper, {
+  filename: 'v8n.js',
+  displayErrors: true,
+});
+
+console.log(script.runInThisContext().call(m.exports, m.exports, r, m));
 
