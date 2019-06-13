@@ -1,4 +1,6 @@
 export function htmlTemplate(reactDom, reduxState, helmetData) {
+  const ssr = Math.random() > 0.5;
+  console.log("ssr", ssr);
   return `
         <!DOCTYPE html>
         <html>
@@ -10,7 +12,7 @@ export function htmlTemplate(reactDom, reduxState, helmetData) {
         </head>
         
         <body>
-            <div id="app">${reactDom}</div>
+            <div id="app">${ssr ? reactDom : ""}</div>
             <script>
                 window.REDUX_DATA = ${JSON.stringify(reduxState)}
             </script>

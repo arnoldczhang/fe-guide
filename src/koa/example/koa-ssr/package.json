@@ -17,9 +17,10 @@
     "babel": "babel src -d dist",
     "server:prod": "node ./dist/server.js",
     "build:dev": "cross-env NODE_ENV=development webpack --watch --progress",
-    "server:dev": "cross-env NODE_ENV=development babel-node ./src/server.ts",
-    "dev": "npm-run-all server:dev",
-    "deploy": "npm-run-all --parallel babel build:prod && npm run server:prod",
+    "server:ts": "tsc",
+    "server:dev": "cross-env NODE_ENV=development babel-node ./src/server.js",
+    "dev": "npm-run-all --serial server:ts server:dev",
+    "deploy": "npm-run-all --serial babel build:prod && npm run server:prod",
     "linter": "eslint src",
     "bundlesize": "bundlesize",
     "precommit": "lint-staged"

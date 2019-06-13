@@ -16,10 +16,10 @@ const plugins = [
   new FriendlyErrorsWebpackPlugin(),
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-  }),
+  })
 ];
 
-const filepath = "./client.js";
+const filepath = "./client.tsx";
 
 if (!dev) {
   plugins.push(new BundleAnalyzerPlugin({
@@ -49,16 +49,17 @@ module.exports = {
   resolve: {
     modules: [
       resolve("./src"),
-      "node_modules",
+      "node_modules"
     ],
     alias: {
       // 'react-dom': '@hot-loader/react-dom',
     },
+    extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
   },
   module: {
     rules: [{
       test: /\.(tsx|ts)?$/,
-      include: path.resolve(__dirname, "./src"),
+      include: resolve(__dirname, "./src"),
       exclude: /node_modules/,
       use: ["ts-loader"],
     }, {
@@ -86,17 +87,17 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-              plugins: (loader) => [
+              plugins: () => [
                 require('autoprefixer')({
                   browsers: [
                     'Android >= 4.0',
                     'last 3 versions',
                     'iOS > 6'
                   ],
-                }),
+                })
               ],
             },
-          },
+          }
         ],
         fallback: 'style-loader',
         publicPath: '/dist',

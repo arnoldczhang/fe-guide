@@ -2,7 +2,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es6",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
+    "jsx": "react",
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": false,
@@ -15,11 +16,8 @@
       "es2017"
     ]
   },
-  "files": [
-    "server.ts"
-  ],
   "include": [
-    "src/**/*"
+    "./src/**/*"
   ],
   "exclude": [
     "node_modules"

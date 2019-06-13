@@ -1,10 +1,7 @@
 import * as path from "path";
-import { renderToString } from "react-dom/server";
-import { StaticRouter } from "react-router-dom";
-import { Provider as ReduxProvider } from "react-redux";
-import * as Helmet from "react-helmet";
+import Helmet from "react-helmet";
 import { htmlTemplate }  from "./utils";
-import Layout from "./components/Layout";
+import getRenderDom from './render-dom';
 import createStore, { initializeSession } from "./store";
 
 import * as Koa from "koa";
@@ -15,11 +12,10 @@ import * as Router from "koa-router";
 import * as staticServer from "koa-static";
 
 import * as webpack from "webpack";
-import webpackDevMiddleware from "koa-webpack-dev-middleware";
-import webpackHotMiddleware from "koa-webpack-hot-middleware";
-import webpackConfig from "../webpack.config";
+import * as webpackDevMiddleware from "koa-webpack-dev-middleware";
+import * as webpackHotMiddleware from "koa-webpack-hot-middleware";
+import * as webpackConfig from "../webpack.config";
 
-const { htmlTemplate } = Utils;
 const dev = process.env.NODE_ENV === "development";
 const app = new Koa();
 const router = new Router();
@@ -52,21 +48,14 @@ if (dev) {
   app.use(webpackHotMiddleware(compiler));
 }
 
-router.get("/*", async (ctx, next) => {
+router.get("/*", (ctx: Koa.Context, next) => {
   const context = {};
   const { req } = ctx;
   const store = createStore();
 
   try {
     store.dispatch(initializeSession());
-    const jsx = (
-      <ReduxProvider store={store}>
-        <StaticRouter context={context} location={req.url}>
-          <Layout />
-        </StaticRouter>
-      </ReduxProvider>
-    );
-    const reactDom = renderToString(jsx);
+    const reactDom = getRenderDom(context, req, store);
     const reduxState = store.getState();
     const helmetData = Helmet.renderStatic();
 
@@ -74,6 +63,7 @@ router.get("/*", async (ctx, next) => {
     ctx.set("Content-Type", "text/html");
     ctx.body = htmlTemplate(reactDom, reduxState, helmetData);
   } catch (err) {
+    console.log(err);
     next();
   }
 });
@@ -89,4 +79,4 @@ app
   .use(compress())
   .use(router.routes())
   .use(router.allowedMethods())
-  .listen(port, () => console.log(`development is listening on port ${port}`));
+  .listen(port, () => console.log(`listening on port ${port}`));

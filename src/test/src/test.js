@@ -233,16 +233,18 @@ const path = require('path');
 const fs = require('fs');
 const NativeModule = require('module');
 
-const code = fs.readFileSync(path.join(__dirname, './v8n.js'), 'utf8');
+const code = fs.readFileSync(path.join(__dirname, './server.js'), 'utf-8');
 const wrapper = NativeModule.wrap(code);
-const m = { exports: {}};
+const m = { exports: {} };
 const r = file => {
   return require(file);
 };
 const script = new vm.Script(wrapper, {
-  filename: 'v8n.js',
+  filename: 'server.js',
   displayErrors: true,
 });
 
-console.log(script.runInThisContext().call(m.exports, m.exports, r, m));
+script.runInNewContext().call(m.exports, m.exports, r, m);
+
+m.exports();
 
