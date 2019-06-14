@@ -1,18 +1,19 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
-
-const Header = ( { loggedIn } ) => (
-    <div>
-        <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
-        <Link to="/contact">Contact</Link>
-        { loggedIn && <Link to="/secret">Secret</Link> }
-    </div>
-);
-
-const mapStateToProps = ( state ) => ( {
-    loggedIn: state.loggedIn,
-} );
-
-export default connect( mapStateToProps )( Header );
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = require("react");
+const react_router_dom_1 = require("react-router-dom");
+const react_redux_1 = require("react-redux");
+const Header = ({ loggedIn }) =>
+  React.createElement(
+    "div",
+    null,
+    React.createElement(react_router_dom_1.Link, { to: "/" }, "Home"),
+    React.createElement(react_router_dom_1.Link, { to: "/about" }, "About"),
+    React.createElement(react_router_dom_1.Link, { to: "/contact" }, "Contact"),
+    loggedIn &&
+      React.createElement(react_router_dom_1.Link, { to: "/secret" }, "Secret")
+  );
+const mapStateToProps = state => ({
+  loggedIn: state.loggedIn
+});
+exports.default = react_redux_1.connect(mapStateToProps)(Header);

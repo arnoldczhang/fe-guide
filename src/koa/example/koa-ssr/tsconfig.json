@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es6",
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "jsx": "react",
     "removeComments": true,
     "preserveConstEnums": true,
@@ -17,7 +17,8 @@
     ]
   },
   "include": [
-    "./src/**/*"
+    "./src/**/*",
+    "webpack.config.ts"
   ],
   "exclude": [
     "node_modules"

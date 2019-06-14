@@ -14,16 +14,17 @@ import * as staticServer from "koa-static";
 import * as webpack from "webpack";
 import * as webpackDevMiddleware from "koa-webpack-dev-middleware";
 import * as webpackHotMiddleware from "koa-webpack-hot-middleware";
-import * as webpackConfig from "../webpack.config";
+import webpackConfig from "../webpack.config";
+import { Store } from "redux";
 
 const dev = process.env.NODE_ENV === "development";
 const app = new Koa();
 const router = new Router();
 const port = 2048;
 
-webpackConfig.entry.app = [
+(webpackConfig.entry as any).app = [
   `webpack-hot-middleware/client?path=//localhost:${port}/__webpack_hmr`,
-  webpackConfig.entry.app
+  (webpackConfig.entry as any).app
 ];
 webpackConfig.output.hotUpdateMainFilename = "updates/[hash].hot-update.json";
 webpackConfig.output.hotUpdateChunkFilename =
@@ -51,7 +52,7 @@ if (dev) {
 router.get("/*", (ctx: Koa.Context, next) => {
   const context = {};
   const { req } = ctx;
-  const store = createStore();
+  const store: Store = createStore();
 
   try {
     store.dispatch(initializeSession());

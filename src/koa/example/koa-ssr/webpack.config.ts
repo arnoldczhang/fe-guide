@@ -1,15 +1,17 @@
-const {
+import * as nodeExternals from 'webpack-node-externals';
+import { Configuration } from 'webpack';
+import {
   join,
   resolve,
-} = require("path");
-const {
+} from "path";
+import {
   BundleAnalyzerPlugin,
-} = require("webpack-bundle-analyzer");
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
+} from "webpack-bundle-analyzer";
+import * as FriendlyErrorsWebpackPlugin from "friendly-errors-webpack-plugin";
+import * as ExtractTextPlugin from 'extract-text-webpack-plugin';
+import * as webpack from "webpack";
 const WriteFileWebpackPlugin = require("write-file-webpack-plugin");
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const webpack = require("webpack");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const dev = process.env.NODE_ENV !== "production";
 const plugins = [
@@ -35,10 +37,11 @@ if (!dev) {
   );
 }
 
-module.exports = {
+const config: Configuration = {
   mode: dev ? "development" : "production",
   context: join(__dirname, "src"),
-  devtool: dev ? "none" : "source-map",
+  devtool: "source-map",
+  // externals: [nodeExternals()],
   entry: {
     app: filepath,
   },
@@ -124,3 +127,5 @@ module.exports = {
     version: false,
   },
 };
+
+export default config;

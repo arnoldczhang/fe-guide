@@ -2,17 +2,12 @@ import * as React from "react";
 import { Switch, Route } from "react-router-dom";
 import Header from "./Header";
 import routes from "../routes";
+import {
+    BaseState,
+    BaseProps,
+} from "../types";
 
-export type AppState = Partial<{
-    title: string;
-}>;
-
-export type AppProps = Partial<{
-    children?: React.ReactNode;
-    dispatch?: Function | any;
-}>;
-
-class Layout extends React.Component<AppProps, AppState> {
+class Layout extends React.Component<BaseProps, BaseState> {
     constructor(props = {}) {
         super(props);
         this.state = {

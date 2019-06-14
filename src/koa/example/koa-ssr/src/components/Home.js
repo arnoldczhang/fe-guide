@@ -1,50 +1,45 @@
-import React from "react";
-import { connect } from "react-redux";
-import { fetchData } from "../store";
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = require("react");
+const react_redux_1 = require("react-redux");
+const store_1 = require("../store");
 class Home extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleClick = this.handleClick.bind(this);
   }
-
   componentDidMount() {
     if (this.props.circuits.length <= 0) {
       this.props.fetchData();
     }
   }
-
   handleClick() {
     console.log(123);
   }
-
   render() {
     const { circuits } = this.props;
-
-    return (
-      <div>
-        <h2>F1 2018 Season Calendar</h2>
-        <button onClick={this.handleClick}>click</button>
-        <ul>
-          {circuits.map(({ name }) => (
-            <li key={name}>{name}</li>
-          ))}
-        </ul>
-      </div>
+    return React.createElement(
+      "div",
+      null,
+      React.createElement("h2", null, "F1 2018 Season Calendar"),
+      React.createElement("button", { onClick: this.handleClick }, "click"),
+      React.createElement(
+        "ul",
+        null,
+        circuits.map(({ name }) =>
+          React.createElement("li", { key: name }, name)
+        )
+      )
     );
   }
 }
-Home.serverFetch = fetchData; // static declaration of data requirements
-
+Home.serverFetch = store_1.fetchData;
 const mapStateToProps = state => ({
   circuits: state.data
 });
-
 const mapDispatchToProps = {
-  fetchData
+  fetchData: store_1.fetchData
 };
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Home);
+exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps)(
+  Home
+);

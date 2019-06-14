@@ -1,6 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function htmlTemplate(reactDom, reduxState, helmetData) {
+import { CO } from "./types";
+
+export function htmlTemplate(reactDom: string, reduxState: CO, helmetData: CO) {
   const ssr = Math.random() > 0.5;
   console.log("ssr", ssr);
   return `
@@ -23,4 +23,3 @@ function htmlTemplate(reactDom, reduxState, helmetData) {
         </html>
     `;
 }
-exports.htmlTemplate = htmlTemplate;
