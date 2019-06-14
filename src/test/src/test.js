@@ -228,23 +228,31 @@
 // console.log(key.toString('base64'))
 
 
-const vm = require('vm');
-const path = require('path');
-const fs = require('fs');
-const NativeModule = require('module');
+// const { graphql, buildSchema } = require('graphql');
 
-const code = fs.readFileSync(path.join(__dirname, './server.js'), 'utf-8');
-const wrapper = NativeModule.wrap(code);
-const m = { exports: {} };
-const r = file => {
-  return require(file);
-};
-const script = new vm.Script(wrapper, {
-  filename: 'server.js',
-  displayErrors: true,
-});
+// const schema = buildSchema(`
+//   type Query {
+//     hello: String
+//   }
+// `);
 
-script.runInNewContext().call(m.exports, m.exports, r, m);
+// const root = { hello: () => 'Hello world!' };
 
-m.exports();
+// graphql(schema, '{ hello }', root).then((response) => {
+//   console.log(response);
+// });
+
+const request = require('superagent');
+
+request
+  .get('localhost:2048/graphql?query={hello}')
+  .end((err, resp) => {
+    if (err) {
+      reject(err);
+    }
+
+    if (resp.ok) {
+      console.log(resp.text);
+    }
+  });
 

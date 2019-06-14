@@ -8,7 +8,7 @@ const run = () => {
     res.writeHead(200, {
       'Access-Control-Allow-Origin': '*',
     });
-    res.end(`abc${Math.random().toFixed(2)}`);
+    res.end(`${Math.random().toFixed(2)}`);
   });
 
   server.listen(port, () => {

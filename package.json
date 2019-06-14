@@ -172,6 +172,7 @@
     "esprima": "^4.0.0",
     "evergreen-ui": "^4.11.3",
     "exports-loader": "^0.6.4",
+    "express-graphql": "^0.8.0",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
     "filepond": "^1.7.1",
