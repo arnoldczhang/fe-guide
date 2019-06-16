@@ -340,6 +340,9 @@ document.getElementById('box').addEventListener('animationiteration', function()
 });
 ```
 
+### 镜面反射
+-webkit-box-reflect
+
 ---
 
 ## 须知
