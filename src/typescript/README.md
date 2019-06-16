@@ -11,6 +11,8 @@
 * interface可在子句中重命名，type不行
 * interface可多个合并声明union，type不行
 
+---
+
 ## 常用语法
 
 **让某个接口中的所有属性变为可选**
@@ -34,6 +36,10 @@ type Nullable<T> = {
   [P in keyof T]: T[P] | null;
 };
 ```
+
+---
+
+## SOLID
 
 
 
