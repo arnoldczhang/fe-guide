@@ -15,6 +15,7 @@
 - [Vuex、Flux、Redux、Redux-saga、Dva、MobX](https://zhuanlan.zhihu.com/p/53599723)
 - [ReactFiber在并发模式下的运行机制](https://zhuanlan.zhihu.com/p/54042084)
 - [TypeScript 2.8下的终极React组件模式](https://juejin.im/post/5b07caf16fb9a07aa83f2977)
+- [create-react-app in docker](https://mherman.org/blog/dockerizing-a-react-app/)
 
 ## 目录
 <details>
