@@ -343,6 +343,9 @@ document.getElementById('box').addEventListener('animationiteration', function()
 ### 镜面反射
 -webkit-box-reflect
 
+### flex不压缩空间
+flex-shrink: 0
+
 ---
 
 ## 须知
