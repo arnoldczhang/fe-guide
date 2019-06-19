@@ -102,5 +102,19 @@ const count = arr.reduce((t, c) => {
 - 相同的key可以复用节点（仅做textContent变更），
   否则只能insert/append，remove，开销大些
 
+### flex布局
 
+### 响应式方案
 
+### setTimeout原理
+
+### onload和DOMContentLoaded
+
+#### DOMContentLoaded
+- HTML5事件
+
+#### onload
+- DOM事件
+
+### https原理，如何判断私钥合法
+### 事件触发过程
