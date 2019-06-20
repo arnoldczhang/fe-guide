@@ -103,18 +103,79 @@ const count = arr.reduce((t, c) => {
   否则只能insert/append，remove，开销大些
 
 ### flex布局
+**flex-basis**
+
+- 设置或检索弹性盒伸缩基准值
+- 用法
+  * flex-basis: 120px;
+  * flex-basis: auto;
+  * flex-basis: 10%;
+
+**flex-shrink**
+
+- 元素收缩比
+- 用法
+  * flex-shrink: 0; // 不收缩
+  * flex-shrink: 1; // 默认值
+- 计算方式
+  ```js
+  const 元素总宽度和 = '各元素 flex-basis 之和'
+  const 超出宽度 = 元素总宽度和 - 容器宽度
+  const 当前元素宽度占比 = (当前元素 flex-basis * 当前元素 flex-shrink) / (所有元素各自 flex-basis * flex-shrink 之和)
+  const 当前元素最终宽度 = 当前元素 flex-basis - (超出宽度 * 当前元素宽度占比)
+  ```
+- 实例
+  ```html
+  <div id="content">
+    <!-- 宽度105.72 -->
+    <div class="box">A</div>
+    <div class="box">B</div>
+    <div class="box">C</div>
+    <!-- 宽度91.42 -->
+    <!-- 120 - (120 * 5 - 500) * 120 * 2 / (120 * 3 * 1 + 120 * 2 * 2) -->
+    <div class="box1">D</div>
+    <div class="box1">E</div>
+  </div>
+  <style type="text/css">
+    #content {
+      display: flex;
+      width: 500px;
+    }
+
+    #content div {
+      flex-basis: 120px;
+    }
+
+    .box { 
+      flex-shrink: 1;
+    }
+
+    .box1 { 
+      flex-shrink: 2; 
+    }
+  </style>
+  ```
 
 ### 响应式方案
+TODO
 
 ### setTimeout原理
+[参考](../js&browser/基本常识.md#setTimeout)
 
 ### onload和DOMContentLoaded
 
 #### DOMContentLoaded
 - HTML5事件
+- 初始的HTML文件被完整读取时触发
+- 不理会css、图片、iframe的完成加载
 
 #### onload
 - DOM事件
+- 所有内容加载完，包括js中的js、css、图片、iframe
+- 不包括请求
 
 ### https原理，如何判断私钥合法
+TODO
+
 ### 事件触发过程
+TODO
