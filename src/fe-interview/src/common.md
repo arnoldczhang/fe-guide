@@ -178,4 +178,9 @@ TODO
 TODO
 
 ### 事件触发过程
-TODO
+- attachEvent(event,listener)
+- addEventListener(event, listener, useCapture = false)
+
+onDothing冒泡阶段触发
+
+

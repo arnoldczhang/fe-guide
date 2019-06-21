@@ -12,8 +12,17 @@ const run = () => {
   });
 
   server.listen(port, () => {
+    process.title = '测试进程 Node.js';
     console.log(`server started at ${port}`);
   });
 };
+
+run();
+
+process.on('message', (msg) => {
+  console.log('子进程收到消息', msg);
+});
+
+process.send({ hello: 'hello father'})
 
 module.exports = run;
