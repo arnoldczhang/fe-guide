@@ -79,7 +79,7 @@
   则销毁event loop，中止这些步骤，然后进行 run a worker
   9. 返回第一步
 
-### node
+### nodeVS浏览器
 ![node环境-事件循环](node环境-事件循环.png)
 * timers: 执行setTimeout和setInterval中到期的callback。
 * pending callback: 上一轮循环中少数的callback会放在这一阶段执行。
@@ -117,6 +117,7 @@ node11以后
 
 ## Web APIs
 前端：浏览器、node环境
+- setTimeout
 
 - - -
 

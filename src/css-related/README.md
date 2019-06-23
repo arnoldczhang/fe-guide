@@ -1,6 +1,8 @@
 # css
 
 ## 参考
+- [图片库](https://remixicon.com/)
+- [特效库](https://cssfx.dev/)
 - [现代css性能优化](http://verymuch.site/2018/07/22/CSS%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%848%E4%B8%AA%E6%8A%80%E5%B7%A7/?nsukey=3eczM2FJ0JQ8aS2hEDt1CnIzmS32kXvEkjuE7I0lrEF7M8jW7k7PPZtuVxX%2BT%2FsRQqGQ7YhSV%2FicPVi%2FrRG%2BhGGQQn6y7EuHKuERI93Idzq2ziur8T8dZL3qgDT%2Bw5au3cocxOGnSC7pBI7bve9tigiinrZL8Xaac042IW%2FR%2FxqJp8Fk21Nm7YbVUczUdhD%2F)
 - [5个新css属性](https://zhuanlan.zhihu.com/p/40736286)
 - [flex](https://mp.weixin.qq.com/s/WtGzVMzh1RupixD_4474mg)
@@ -284,6 +286,66 @@ filter:blur（数值）
       border-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' height='2px'%3E%3Crect fill='%2300b1ff' width='100%25' height='50%25'/%3E%3C/svg%3E") 2 2 stretch; }
     ```
 - 设置viewport
+
+### 模拟长按
+```html
+<button id="btn-1">click</button>
+```
+
+```css
+button:hover:active{
+  opacity:.99;/**随便选取一个不影响页面的可以过渡的样式**/
+  transition:opacity 1s;
+}
+```
+
+```js
+document.getElementById('btn-1').addEventListener('transitionend', () => {
+  console.log(123);
+});
+```
+
+### 单个元素resize
+```css
+div#box{
+  overflow: hidden;/**需要配合overflow才能生效**/
+  resize: both;
+}
+```
+
+### 单个元素resize + 监听宽高
+```css
+div#box{
+  height: 300px;
+  width: 300px;
+  background: rgb(244, 244, 244);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;/**需要配合overflow才能生效**/
+  resize: both;
+}
+#box:active{
+    animation: resize .3s infinite forwards;
+}
+@keyframes resize{
+    to {
+       opacity: .99;/**用一个无关紧要的属性来触发动画**/
+    }
+}
+```
+
+```js
+document.getElementById('box').addEventListener('animationiteration', function(){
+    this.innerHTML = `${this.clientHeight}*${this.clientWidth}`;
+});
+```
+
+### 镜面反射
+-webkit-box-reflect
+
+### flex不压缩空间
+flex-shrink: 0
 
 ---
 

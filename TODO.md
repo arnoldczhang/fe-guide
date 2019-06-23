@@ -103,6 +103,7 @@ javascript ASI - DONE
 - [前端开发碰到的一些问题](https://segmentfault.com/a/1190000019022842?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 - [2019-handbook](https://frontendmasters.com/books/front-end-handbook/2019/#1.1)
 - [web-dev](https://web.dev)
+- [全球开放课程](https://www.classcentral.com/)
 
 ### 暂时去掉pretty-quick
 ```js

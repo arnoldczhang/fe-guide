@@ -1,0 +1,42 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+  "plugins": ["react"],
+  "ecmaFeatures": { "jsx": true },
+  "root": true,
+  "rules": {
+    "no-console": "off",
+    "comma-dangle": ["error", {
+      "objects": "ignore"
+    }],
+    "prefer-promise-reject-errors": "off",
+    "no-warning-comments": [2, { "terms": ["todo", "fixme", "xxx"], "location": "start" }],
+    "no-empty": [2, { "allowEmptyCatch": true }],
+    "space-before-function-paren": ["error", {
+        "anonymous": "always",
+        "named": "never",
+        "asyncArrow": "always"
+    }],
+    "react/prop-types": 0
+  },
+  "env": {
+      "browser": true,
+      "node": true,
+      "es6": true
+  },
+  "globals": {
+    "window":true,
+    "document":true,
+    "$":true,
+    "App": true,
+    "Page": true,
+    "getApp": true,
+    "wx": true,
+    "getCurrentPages": true,
+    "Component": true
+  }
+}
+

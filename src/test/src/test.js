@@ -207,19 +207,52 @@
 
 
 
-const { SyncBailHook } =require('tapable');
-const FrontEnd = new SyncBailHook(['name']);
-FrontEnd.tap('webpack',(name)=>{
-  console.log(name+" get webpack ")
-  return false;
-});
-FrontEnd.tap('react',(name)=>{
-  console.log(name+" get react")
-});
-FrontEnd.start=(...args)=>{
-  FrontEnd.call(...args)
-};
-FrontEnd.start('xiaoming');
+// const { SyncBailHook } =require('tapable');
+// const FrontEnd = new SyncBailHook(['name']);
+// FrontEnd.tap('webpack',(name)=>{
+//   console.log(name+" get webpack ")
+//   return false;
+// });
+// FrontEnd.tap('react',(name)=>{
+//   console.log(name+" get react")
+// });
+// FrontEnd.start=(...args)=>{
+//   FrontEnd.call(...args)
+// };
+// FrontEnd.start('xiaoming');
 
 
+
+// const list = Array.from({ length: 16 }, (v, index) => ++index)
+// const key = Buffer.from(list)
+// console.log(key.toString('base64'))
+
+
+// const { graphql, buildSchema } = require('graphql');
+
+// const schema = buildSchema(`
+//   type Query {
+//     hello: String
+//   }
+// `);
+
+// const root = { hello: () => 'Hello world!' };
+
+// graphql(schema, '{ hello }', root).then((response) => {
+//   console.log(response);
+// });
+
+const request = require('superagent');
+
+request
+  .get('localhost:2048/graphql?query={hello}')
+  .end((err, resp) => {
+    if (err) {
+      reject(err);
+    }
+
+    if (resp.ok) {
+      console.log(resp.text);
+    }
+  });
 

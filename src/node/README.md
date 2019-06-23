@@ -20,7 +20,9 @@
 * [`循环引用`](#循环引用)
 * [`最佳实践`](#最佳实践)
 * [`异步错误`](#异步错误)
+* [`进程线程`](#进程线程)
 * [`手动打包指南`](#手动打包指南)
+* [`库源码解析`](#库源码解析)
 
 </details>
 
@@ -508,6 +510,96 @@ throw new CommonError('abc');
 
 ---
 
+## 进程线程
+
+### 概念
+- 多进程的形式，同时执行多个任务
+- 多线程的形式，将单个任务拆分成多个部分执行
+- 进程、线程间可以共享资源
+
+
+### 示例
+
+#### 设置进程信息
+```js
+const http = require('http');
+
+http.createServer().listen(3000, () => {
+  process.title = '测试进程 Node.js'; // 进程进行命名
+  console.log(`process.pid: `, process.pid); // process.pid: 20279
+});
+```
+
+#### 创建父子进程间通信
+[进程通信](https://juejin.im/post/5d06d6ddf265da1b9570562a?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+
+**1. exec **
+
+衍生一个 shell 然后在该 shell 中执行 command，并缓冲任何产生的输出
+
+```js
+const { exec } = require('child_process');
+
+exec('nodemon ./src/test/src/server.js', (err , stdout, stderr) => {
+  console.log(err , stdout, stderr);
+});
+```
+
+**2. fork **
+
+衍生新的 Node.js 进程
+
+```js
+// parent.js
+const { spawn, fork } = require('child_process');
+
+const subprocess = fork('./src/test/src/child.js'); // fork 一个新的子进程
+
+subprocess.on('message', (msg) => {
+  console.log('父进程收到消息', msg);
+});
+
+subprocess.on('close', () => {
+  subprocess.kill();
+});
+
+console.log(subprocess.pid, process.pid);
+
+subprocess.send({hello: 'hello subprocess'});
+```
+
+```js
+// child.js
+process.on('message', (msg) => {
+  console.log('子进程收到消息', msg);
+});
+
+process.send({ hello: 'hello father'});
+```
+
+**3. spawn(command[, args][, options]) **
+
+使用给定的 command 衍生一个新进程，并带上 args 中的命令行参数
+
+```js
+const { spawn } = require('child_process');
+const ls = spawn('ls', ['-lh', '/Users/dianping/website/fe-guide/']);
+
+ls.stderr.on('data', (data) => {
+  console.log(`stderr: ${data}`);
+});
+
+ls.on('close', (code) => {
+  console.log(`子进程退出，退出码 ${code}`);
+});
+
+ls.stdout.pipe(process.stdout);
+process.title = '啊啊啊啊啊';
+console.log(process.pid, ls.pid);
+```
+
+---
+
 ## 手动打包指南
 **css/less**
 
@@ -520,5 +612,14 @@ uglify-js
 **html**
 
 [htmlparser2](../html/html.js)
+
+---
+
+## 库源码解析
+
+### ws
+[ws](https://github.com/websockets/ws)
+[WebSocket协议以及ws源码分析](https://juejin.im/post/5ce8976151882533441ecc20?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+
 
 

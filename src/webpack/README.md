@@ -11,6 +11,7 @@
 <details>
 <summary>展开更多</summary>
 
+* [`配置`](#配置)
 * [`webpack-3.8.1`](#webpack-3.8.1)
 * [`webpack加载流程`](#webpack加载流程)
 * [`webpack4`](#webpack4)
@@ -21,6 +22,28 @@
 * [`其他`](#其他)
 
 </details>
+
+## 配置
+
+### resolve
+```js
+{
+  // ...
+  resolve: {
+    // 现在可以写require('file')，代替require('file.jsx')或 require('file.es6')
+    extensions: ['.*', '.js', '.jsx', '.es6'],
+    // 路径替换
+    alias: {
+      'react': 'anujs',
+      'react-dom': 'anujs',
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  // ...
+}
+```
+
+---
 
 ## webpack-3.8.1解析
 
@@ -477,6 +500,7 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 ---
 
 ## 其他
+- a chunk is a group of modules within the webpack process, a bundle is an emitted chunk or set of chunks.
 - 使用 import()，需要dynamic-import插件 (https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/)
 - ![import](import-polyfill.png)
 - [据说比babel快几十倍的compiler](https://github.com/swc-project/swc)

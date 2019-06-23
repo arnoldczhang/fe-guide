@@ -15,6 +15,7 @@
 - [Vuex、Flux、Redux、Redux-saga、Dva、MobX](https://zhuanlan.zhihu.com/p/53599723)
 - [ReactFiber在并发模式下的运行机制](https://zhuanlan.zhihu.com/p/54042084)
 - [TypeScript 2.8下的终极React组件模式](https://juejin.im/post/5b07caf16fb9a07aa83f2977)
+- [create-react-app in docker](https://mherman.org/blog/dockerizing-a-react-app/)
 
 ## 目录
 <details>
@@ -27,6 +28,7 @@
 * [`React Hooks流程`](#React Hooks流程)
 * [`React进阶`](#React进阶)
 * [`concurrent`](#concurrent)
+* [`contextAPI`](#contextAPI)
 * [`rn`](#rn)
 * [`interview`](#interview)
 
@@ -295,6 +297,13 @@ while (当前还有空闲时间 && 下一个节点不为空) {
   - fiber设置过期时间，防止低优任务被高优任务耽误，导致一直不执行
   - 高低优任务对应的expiration time有改动，不绝对
 * Sync > InteractiveExpiration（事件中触发比如blur、click） > AsyncExpiration
+
+---
+
+## contextAPI
+[Unstated Next](https://github.com/jamiebuilds/unstated-next)
+
+封装react的contextAPI，模拟状态管理
 
 ---
 
