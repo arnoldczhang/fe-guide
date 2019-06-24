@@ -78,6 +78,7 @@
     "g18:node": "npm run g18:build:w & nodemon ./src/reactlike/test/index.js",
     "g18:server": "npm run g18:build:w & webpack-dev-server --progress --config ./src/reactlike/build/webpack.dev.js",
     "g18:server:home": "npm run g18:build:w | webpack-dev-server --progress --config ./src/reactlike/build/webpack.dev.js",
+    "g19": "node ./src/test/src/test.js",
     "g19:native": "nodemon --allow-natives-syntax ./src/test/src/test.js",
     "g20:server": "webpack --config ./src/rematch-typescript/build/webpack.dll.config.js & tsc -w -p ./src/rematch-typescript & webpack-dev-server --progress --config ./src/rematch-typescript/build/webpack.dev.js",
     "g21:mock": "cross-env NODE_ENV=development node ./src/miniprogram/bin.js",

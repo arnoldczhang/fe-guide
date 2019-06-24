@@ -6,8 +6,10 @@
 
 * [`基本操作&相关常识`](#基本操作&相关常识)
 * [`package.json属性`](#package.json属性)
-* [`两者差异`](#两者差异)
+* [`package-lock`](#package-lock.json)
+* [`npm&yarn`](#两者差异)
 * [`npm安装原理`](#npm安装原理)
+* [`npm script`](#npm-script)
 
 </details>
 
@@ -134,8 +136,20 @@
   - 主要用于做依赖分析，或npm包的复用
   - module属性是非标准属性，可参考[pr](https://github.com/browserify/resolve/pull/187)
 
-###package-lock.json
-npm 官网建议：把 package-lock.json 一起提交到代码库中，不要 ignore。但是在执行 npm publish 的时候，它会被忽略而不会发布出去。
+---
+
+## package-lock.json
+npm官网建议：把 package-lock.json 一起提交到代码库中，不要 ignore。
+但是在执行 npm publish 的时候，它会被忽略而不会发布出去。
+
+### 依赖包版本管理
+- 在大版本相同的前提下，模块在package.json中的小版本 > lock.json时，
+  将安装该大版本下最新版本
+- 在大版本相同的前提下，模块在package.json中的小版本 < lock.json时，
+  使用lock.json中的版本
+- 在大版本不同的前提下，将根据package.json中大版本下最新版本进行更新
+- package.json中有记录，lock.json没记录，install后lock.json生成记录
+
 
 ---
 
@@ -178,6 +192,45 @@ yanr：直接输出安装结果，报错日志清晰
 弊端：相同模块部分冗余，如下图：
 ![npm3模块冗余](npm3模块冗余.png)
 
+### npm5
+增加了 package-lock.json
+
 ### npm去重
 npm dedupe
 
+---
+
+## npm-script
+
+### npm run
+- 本地自动新建一个shell
+- 将node_modules/.bin的绝对路径加入PATH，执行
+- 结束后PATH恢复原样
+
+### 参数传递
+```js
+npm run serve --params  // 参数params将转化成process.env.npm_config_params = true
+
+npm run serve --params=123 // 参数params将转化成process.env.npm_config_params = 123
+
+npm run serve -params  // 等同于--params参数
+
+npm run serve params  // 将params参数添加到process.env.argv数组中
+
+npm run serve -- --params  // 将--params参数添加到process.env.argv数组中
+
+npm run serve -- params  // 将params参数添加到process.env.argv数组中
+```
+
+### 多命令运行
+
+#### &&
+- 串行执行
+- 只要一个命令执行失败，则整个脚本终止
+
+#### &
+- 并行执行
+- 第三方管理模块
+  * script-runner
+  * npm-run-all
+  * redrun
