@@ -23,5 +23,5 @@ const html2ast = (rawHtml) => new Promise((resolve, reject) => {
 
 const fileContent = readFileSync(pageWxml[0], 'utf-8');
 html2ast(fileContent).then((res) => {
-  console.log(res);
+  console.log(fileContent, res.length);
 });
