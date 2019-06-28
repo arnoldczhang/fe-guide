@@ -3,6 +3,7 @@ import {
   copyFileSync,
   ensureFile,
   ensureFileSync,
+  existsSync,
   readFile,
   readFileSync,
   writeFile,
@@ -57,4 +58,11 @@ export const ensure = (
     return ensureFile(file, callback);
   }
   return ensureFileSync(file);
+};
+
+export const exists = (file: string, callback?: CF) => {
+  if (isFunc(callback)) {
+    throw new Error('`fs.exists` is already deprecated');
+  }
+  return existsSync(file);
 };

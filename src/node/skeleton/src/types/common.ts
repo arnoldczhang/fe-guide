@@ -1,3 +1,5 @@
+import { PATH } from '../config';
+
 export type Readonly<T> = {
   readonly [P in keyof T]: T[P];
 };
@@ -19,3 +21,7 @@ export interface IAst {
   attr?: ICO;
   child?: IAst[];
 }
+
+export type ICach = ICO & Partial<{
+  [PATH]: ICO;
+}>;

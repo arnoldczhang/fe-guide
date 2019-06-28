@@ -1,7 +1,9 @@
-import * as glob from 'glob';
+import { html2json, json2html } from 'html2json';
 import { DomElement, DomHandler, Parser } from 'htmlparser2';
 import {
-  JSON,
+  COMP_JS,
+  COMP_JSON,
+  COMP_WXSS,
 } from '../config';
 import { IAst, ICO, IPath } from '../types';
 import {
@@ -10,31 +12,17 @@ import {
   read,
   write,
 } from './fs';
-import { resolveAsTreeNode } from './treeNode';
+import { parseAsTreeNode } from './treeNode';
 
-import { html2json, json2html } from 'html2json';
-
-export { html2json, json2html };
-
-const examplePath = '/Users/dianping/website/skeleton-gen/examples/skeleton';
-
-export const getPageWxml = (
-  url: string,
-  reg?: RegExp,
-): string[] => {
-  reg = reg || /pages\/([^\/]+)\/\1\.wxml$/;
-  return glob.sync(url).filter((name) =>
-    reg.test(name),
-  ) || [];
-};
-
-export const getPageDir = (
-  url: string,
-  reg?: RegExp,
-): string => {
-  reg = reg || /\/[^\/]+$/;
-  return url.replace(reg, '');
-};
+import {
+  getDir,
+  getFileName,
+  getPageWxml,
+  getRelativePath,
+  getSplitDir,
+  identity,
+  modifySuffix,
+} from './dir';
 
 export const html2ast = (rawHtml: string): Promise<any> => {
   return new Promise((resolve, reject) => {
@@ -50,50 +38,87 @@ export const html2ast = (rawHtml: string): Promise<any> => {
   });
 };
 
-export const treewalk = (ast: IAst, options: IPath, cach?: ICO): IAst => {
-  cach = cach || {};
+export const treewalk = (
+  ast: IAst,
+  options: IPath,
+): IAst => {
   if (ast) {
     const { child } = ast;
-    ast = resolveAsTreeNode(ast, options);
+    ast = parseAsTreeNode(ast, options);
     if (child && child.length) {
       child.forEach((
         ch: IAst,
         idx: number,
         array: IAst[],
       ) => (
-        array[idx] = treewalk(ch, options, cach)
+        array[idx] = treewalk(ch, options)
       ));
     }
   }
   return ast;
 };
 
-export const modifySuffix = (file: string, suffix: string) => file.replace(/(\.)[^\.]+$/, `$1${suffix}`);
-
-export const getRelativePath = (src: string, dest: string) => {
-  console.log();
+export const parseFile = (
+  src: string,
+  dest: string,
+  options: IPath,
+) => {
+  const { root, srcPath } = options;
+  const content = read(dest);
+  const json = html2json(content);
+  treewalk(json, {
+    root,
+    srcPath,
+    protoPath: getDir(src),
+    mainPath: getDir(dest),
+    mainFilePath: dest,
+  });
 };
 
-export const genNewComponent = (srcWxml: string, options: IPath) => {
-  const { root, srcPath } = options;
+export const genNewComponent = (
+  srcWxml: string,
+  options: IPath,
+) => {
+  const { examplePath, srcPath } = options;
   const relativePath = srcWxml.replace(srcPath, '');
-  const wxml = `${examplePath}${relativePath}`;
-  const json = `${examplePath}${modifySuffix(relativePath, 'json')}`;
-  const wxss = `${examplePath}${modifySuffix(relativePath, 'wxss')}`;
-  // ensure(wxml);
-  // ensure(json);
-  ensure(wxss);
-  // write(json, JSON);
-  // copy(srcWxml, wxml);
-  write(wxss, `
-  @import
+  const srcWxss = modifySuffix(srcWxml, 'wxss');
+
+  // gen wxml
+  const destWxml = `${examplePath}${relativePath}`;
+  ensure(destWxml);
+  copy(srcWxml, destWxml);
+
+  // gen json
+  const destJson = `${examplePath}${modifySuffix(relativePath, 'json')}`;
+  ensure(destJson);
+  write(destJson, COMP_JSON);
+
+  // gen wxss
+  const destWxss = `${examplePath}${modifySuffix(relativePath, 'wxss')}`;
+  ensure(destWxss);
+  write(destWxss, `@import '${getRelativePath(srcWxss, destWxss)}';
+  ${COMP_WXSS}
   `);
-  console.log(srcWxml, wxss);
-  // const content = read(wxml);
-  // const json = html2json(content);
-  // const result = treewalk(json, {
-  //   root,
-  //   mainPath: getPageDir(wxml),
-  //   mainFilePath: wxml,
-  // });
+
+  // gen js
+  const destJs = `${examplePath}${modifySuffix(relativePath, 'js')}`;
+  ensure(destJs);
+  write(destJs, COMP_JS);
+
+  parseFile(srcWxml, destWxml, options);
+};
+
+export {
+  html2json,
+  json2html,
+};
+
+export {
+  getDir,
+  getFileName,
+  getPageWxml,
+  getRelativePath,
+  getSplitDir,
+  identity,
+  modifySuffix,
 };
