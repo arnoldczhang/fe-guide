@@ -169,7 +169,6 @@ function dittoWrapper(inst, schema) {
 defineProperty(ObjectProto, 'beDitto', {
   ...baseProp,
   value(schema) {
-    debugger;
     if (isProto(this, ditto)) {
       return this;
     }
