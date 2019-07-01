@@ -28,6 +28,8 @@ export const getSplitDir = (path: string): string[] => getDir(path).split('/').f
 
 export const modifySuffix = (file: string, suffix: string): string => file.replace(/(\.)[^\.]+$/, `$1${suffix}`);
 
+export const addSuffix = (file: string, suffix: string): string => `${file}.${suffix}`;
+
 export const getRelativePath = (src: string, dest: string) => {
   const fileName = getFileName(src);
   const srcArr: string[] = getSplitDir(src);

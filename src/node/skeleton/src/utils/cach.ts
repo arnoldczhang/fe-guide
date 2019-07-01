@@ -10,7 +10,7 @@ export const setCach = (
   value: any,
   parentKey?: string,
 ): void => {
-  let result: ICO = cache;
+  let result: ICach = cache;
   if (parentKey) {
     result = cache[parentKey] || {};
   }
@@ -21,7 +21,7 @@ export const getCach = (
   key: string | number,
   parentKey?: string,
 ): any => {
-  let result: ICO = cache;
+  let result: ICach = cache;
   if (parentKey) {
     result = result[parentKey];
   }
@@ -32,7 +32,7 @@ export const hasCach = (
   key: string | number,
   parentKey?: string,
 ): boolean => {
-  let result: ICO = cache;
+  let result: ICach = cache;
   if (parentKey) {
     result = result[parentKey];
   }
