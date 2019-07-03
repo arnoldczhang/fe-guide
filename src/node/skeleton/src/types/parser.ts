@@ -7,7 +7,7 @@ export interface IPath {
   srcPath?: string;
   protoPath?: string;
   mainPath?: string;
-  examplePath?: string;
+  outputPath?: string;
   mainFilePath?: string;
   pagePath?: string;
   compPath?: string;

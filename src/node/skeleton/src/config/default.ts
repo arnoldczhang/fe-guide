@@ -3,7 +3,7 @@ export const COMP_JSON = `{
   "usingComponents": {}
 }`;
 
-export const COMP_WXSS = `@import './skeleton.wxss';`;
+export const COMP_WXSS = ``;
 
 export const COMP_JS = `Component({
   options: {

@@ -1,8 +1,8 @@
 import {
-  EXAMPLE_SKELETON_ROOT,
   ROOT,
   SKELETON_COMPS_ROOT,
   SKELETON_PAGES_ROOT,
+  SKELETON_ROOT,
   SRC,
 } from './config';
 import { genNewComponent, getPageWxml } from './utils';
@@ -13,7 +13,7 @@ const run = () => {
   genNewComponent(wxml, {
     root: ROOT,
     srcPath: SRC,
-    examplePath: EXAMPLE_SKELETON_ROOT,
+    outputPath: SKELETON_ROOT,
     pagePath: SKELETON_PAGES_ROOT,
     compPath: SKELETON_COMPS_ROOT,
   });

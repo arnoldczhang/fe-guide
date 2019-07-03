@@ -1,9 +1,10 @@
-import { resolve } from 'path';
+import { join, resolve } from 'path';
 
 import * as pathResolve from 'resolve';
 import {
   COMP_JS,
   COMP_WXSS,
+  IMAGE_TAG,
   IMPORT_TAG,
   INCLUDE_TAG,
   JSON_CONFIG,
@@ -11,7 +12,7 @@ import {
   TPL_TAG,
   WXS_TAG,
 } from '../config';
-import { IAst, ICO, IPath } from '../types';
+import { CF, IAst, ICO, IPath } from '../types';
 import { is } from './assert';
 import {
   hasCach,
@@ -31,6 +32,7 @@ import {
 } from './fs';
 import {
   addSuffix,
+  ensureAndInsertWxss,
   getJsonValue,
   html2json,
   insertInitialWxss,
@@ -40,17 +42,42 @@ import {
   updateUsingInJsonConfig,
 } from './index';
 import Logger from './log';
+import {
+  isBindEvent,
+} from './reg';
 
 const {
-  parse,
-  stringify,
-} = JSON;
+  keys,
+} = Object;
 const logger = Logger.getInstance();
 const emptyNode = {};
 
 export const parseAsTreeNode = (ast: IAst, options: IPath): IAst => {
-  const { node, tag, text, attr } = ast;
-  return parseFromTag(ast, options);
+  return [
+    parseFromTag,
+    parseFromAttr,
+  ].reduce((res: IAst, next) => next(res, options), ast);
+};
+
+export const parseFromAttr = (
+  ast: IAst,
+  options: IPath,
+): IAst => {
+  const { attr } = ast;
+  if (attr) {
+    const result: ICO = {};
+    keys(attr).forEach((key: string): void => {
+      switch (true) {
+        case isBindEvent(key):
+          break;
+        default:
+          result[key] = attr[key];
+          break;
+      }
+    });
+    ast.attr = result;
+  }
+  return ast;
 };
 
 export const parseFromTag = (
@@ -59,26 +86,39 @@ export const parseFromTag = (
 ): IAst => {
   const { tag, attr } = ast;
   const { protoPath, mainPath } = options;
-  if (is(tag, IMPORT_TAG) && attr.src) {
-    const srcWxml = resolve(protoPath, attr.src);
-    const destWxml = resolve(mainPath, attr.src);
-    const srcWxss = modifySuffix(srcWxml, 'wxss');
-    const destWxss = modifySuffix(destWxml, 'wxss');
-    if (!hasCach(destWxml)) {
-      ensure(destWxml);
-      copy(srcWxml, destWxml);
-      setCach(destWxml, true, PATH);
-      parseFile(srcWxml, destWxml, options);
 
-      if (exists(srcWxss)) {
-        ensure(destWxss);
-        write(destWxss, insertInitialWxss(`@import '${getRelativePath(srcWxss, destWxss)}';`));
+  switch (tag) {
+    // <import />
+    case IMPORT_TAG:
+      if (attr && attr.src) {
+        const srcWxml: string = resolve(protoPath, attr.src);
+        const destWxml: string = resolve(mainPath, attr.src);
+        if (!hasCach(destWxml)) {
+          const srcWxss: string = modifySuffix(srcWxml, 'wxss');
+          const destWxss: string = modifySuffix(destWxml, 'wxss');
+          ensure(destWxml);
+          copy(srcWxml, destWxml);
+          setCach(destWxml, true, PATH);
+          parseFile(srcWxml, destWxml, options);
+          ensureAndInsertWxss(srcWxss, destWxss);
+        }
       }
-    }
-  } else if (is(tag, INCLUDE_TAG)) {
-    return emptyNode;
-  } else if (is(tag, WXS_TAG)) {
-    return emptyNode;
+      break;
+
+    // TODO <include /> do nothing now
+    case INCLUDE_TAG:
+      return emptyNode;
+
+    case IMAGE_TAG:
+      if (attr && attr.src && /^\./.test(attr.src)) {
+        attr.src = join(getRelativePath(protoPath, mainPath), attr.src);
+      }
+      break;
+    // remove <wxs />
+    case WXS_TAG:
+      return emptyNode;
+    default:
+      break;
   }
   return ast;
 };
@@ -89,18 +129,18 @@ export const parseFromJSON = (
   json: ICO,
   options: IPath,
 ): ICO => {
-  const src = getDir(srcFile);
-  const dest = getDir(destFile);
+  const src: string = getDir(srcFile);
+  const dest: string = getDir(destFile);
   const { root, compPath } = options;
-  Object.keys(json).forEach((key: string) => {
-    let pathValue = json[key];
+  keys(json).forEach((key: string): void => {
+    let pathValue: string = json[key];
     let [srcJs, destJs, srcWxml, destWxml, srcWxss, destWxss, srcJson, destJson] = Array(10);
     if (isNpmComponent(pathValue)) {
       pathValue = pathValue.slice(1);
       srcJs = pathResolve.sync(pathValue, { basedir: root });
-      const srcJsFileName = getFileName(srcJs);
+      const srcJsFileName: string = getFileName(srcJs);
       const [srcJsName] = srcJsFileName.split('.');
-      const destRoot = resolve(compPath, pathValue);
+      const destRoot: string = resolve(compPath, pathValue);
       srcJson = modifySuffix(srcJs, 'json');
       destJson = `${destRoot}/${modifySuffix(srcJsFileName, 'json')}`;
       destJs = `${destRoot}/${modifySuffix(srcJsFileName, 'js')}`;
@@ -110,8 +150,8 @@ export const parseFromJSON = (
       destWxss = `${destRoot}/${modifySuffix(srcJsFileName, 'wxss')}`;
       json[key] = `${getRelativePath(destRoot, destFile)}/${srcJsName}`;
     } else {
-      const srcPath = resolve(src, pathValue);
-      const destPath = resolve(dest, pathValue);
+      const srcPath: string = resolve(src, pathValue);
+      const destPath: string = resolve(dest, pathValue);
       srcJson = addSuffix(srcPath, 'json');
       destJson = addSuffix(destPath, 'json');
       destJs = addSuffix(destPath, 'js');
@@ -136,11 +176,7 @@ export const parseFromJSON = (
       updateUsingInJsonConfig(srcJson, destJson, options);
 
       // gen component-wxss
-      if (exists(srcWxss)) {
-        ensure(destWxss);
-        write(destWxss, insertInitialWxss(`@import '${getRelativePath(srcWxss, destWxss)}';`));
-        logger.note(destWxss);
-      }
+      ensureAndInsertWxss(srcWxss, destWxss);
 
       // gen component-js
       ensure(destJs);
