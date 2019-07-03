@@ -132,6 +132,7 @@ document.link.disabled = false;
 
 ### :focus-visible
 键盘访问（比如按tab）时，元素边缘会出现选中的蓝框
+Chrome浏览器67+支持
 
 [参考](https://www.zhangxinxu.com/wordpress/2019/03/css-focus-visible/)
 
@@ -141,8 +142,6 @@ document.link.disabled = false;
     outline: 0;
 }
 ```
-
-Chrome浏览器67+支持
 
 ### flex左右布局
 ```css
@@ -346,6 +345,54 @@ document.getElementById('box').addEventListener('animationiteration', function()
 
 ### flex不压缩空间
 flex-shrink: 0
+
+### 垂直居中
+```html
+<div class="margin" style="width: 500px;height: 500px;background-color: aqua">
+    <div class="center" style="width: 200px;height: 200px;background-color: antiquewhite"></div>
+</div>
+```
+
+- 百分比 + transform
+  ```css
+  .center{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  ```
+- flex
+  ```css
+  .margin {
+      display: flex;
+      justify-content: center;
+      align-items: Center;
+  }
+  ```
+- flex + margin
+```css
+.margin{
+  display: flex;
+}
+
+.center{
+  margin: auto;
+}
+```
+- 绝对定位
+ ```css
+ .margin{
+    position: relative;
+  }
+
+  .center{
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+  }
+ ```
 
 ---
 
