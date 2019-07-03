@@ -403,6 +403,23 @@ elm.animate([
 - 加载less.js(https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js)
 - 解析less
 
+---
+
+## 属性
+
+### font-size
+- px
+- rem
+  * [参考](../fe-interview/common.md#响应式方案)
+- em
+  * 相对于父元素，1em = 父元素，2em = 2 * 父元素
+  * 如果父元素没设置，取浏览器默认值（一般是16px）
+- %
+  * 类似em，通常用62.5%（即默认大小16px的62.5%），取到10px
+  * 子元素设置1.2em/1.6em之类的
+
+---
+
 ## 答疑
 
 ### 为什么CSS选择器是从右向左匹配

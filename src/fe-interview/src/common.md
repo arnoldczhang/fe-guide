@@ -1,5 +1,14 @@
 ## 基础面试题
 
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`响应式方案`](#响应式方案)
+
+</details>
+
+
 ### ==和===
 - === 不需要进行类型转换，只有类型相同并且值相等时，才返回 true.
 - == 如果两者类型不同，首先需要进行类型转换。具体流程如下:
@@ -157,7 +166,164 @@ const count = arr.reduce((t, c) => {
   ```
 
 ### 响应式方案
-TODO
+[参考](https://github.com/forthealllight/blog/issues/13)
+
+- 媒体查询
+- 百分比
+- rem
+- vw/vh
+
+#### 媒体查询
+缺点：需要准备多套样式
+
+```css
+@media screen and (max-width: 960px){
+}
+
+@media screen and (max-width: 768px){
+}
+
+@media screen and (max-width: 550px){
+}
+
+@media screen and (max-width: 320px){
+}
+```
+
+#### 百分比
+缺点：
+1. 所有尺寸都要重新换算
+2. 各尺寸参照父元素的宽高标准不一
+
+- width/height: 相对于直接父元素
+- top和bottom 、left和right: 相对于直接非static父元素的高度/宽度
+- padding/margin: 相对于直接父元素的width，与height无关
+- border-radius: 相对于自身宽度
+
+#### rem
+缺点：font-size的设置必须在样式前
+
+- 默认1rem = 16px
+- rem只是制定等比缩放
+- 配合媒体查询才能实现响应式
+
+**步骤**
+
+1. 给根元素设置字体大小，并在body元素校正
+```css
+html{font-size:100px;}
+<!-- 1rem = 10px -->
+html{font-size: 62.5%;}
+body{font-size:14px;}
+```
+2. 绑定监听事件，dom加载后和尺寸变化时改变font-size
+3. px自动转rem =》postcss
+
+**转换工具**
+
+```js
+// 工具1：px2rem-loader
+module.exports = {
+  // ...
+  module: {
+    rules: [{
+      test: /\.css$/,
+      use: [{
+        loader: 'style-loader'
+      }, {
+        loader: 'css-loader'
+      }, {
+        loader: 'px2rem-loader',
+        options: {
+          remUni: 75,
+          remPrecision: 8
+        }
+      }]
+    }]
+  }
+};
+
+// 工具2：postcss-loader
+var px2rem = require('postcss-px2rem');
+
+module.exports = {
+  module: {
+    loaders: [
+      {
+        test: /\.css$/,
+        loader: "style-loader!css-loader!postcss-loader"
+      }
+    ]
+  },
+  postcss: function() {
+    return [px2rem({remUnit: 75})];
+  }
+};
+```
+
+**设置font-size**
+
+```js
+!function(a,b){
+  function c(){
+    var b=f.getBoundingClientRect().width;
+    b/k>540&&(b=540*k);
+    var c=b/10;
+    f.style.fontSize=c+"px",m.rem=a.rem=c
+  }
+var d,e=a.document,f=e.documentElement,
+g=e.querySelector('meta[name="viewport"]'),
+h=e.querySelector('meta[name="flexible"]'),
+i=e.querySelector('meta[name="flexible-in-x5"]'),
+j=!0,k=0,l=0,m=b.flexible||(b.flexible={});
+if(g){
+  console.warn("将根据已有的meta标签来设置缩放比例");
+  var n=g.getAttribute("content").match(/initial\-scale=([\d\.]+)/);
+  n&&(l=parseFloat(n[1]),k=parseInt(1/l))
+} else if(h){
+  var o=h.getAttribute("content");
+  if(o){
+    var p=o.match(/initial\-dpr=([\d\.]+)/),
+    q=o.match(/maximum\-dpr=([\d\.]+)/);
+    p&&(k=parseFloat(p[1]),l=parseFloat((1/k).toFixed(2))),
+    q&&(k=parseFloat(q[1]),l=parseFloat((1/k).toFixed(2)))
+  }
+}if(i&&(j="false"!==i.getAttribute("content")),!k&&!l){
+  var r=(a.navigator.appVersion.match(/android/gi),a.chrome),
+  s=a.navigator.appVersion.match(/iphone/gi),
+  t=a.devicePixelRatio,u=/TBS\/\d+/.test(a.navigator.userAgent),v=!1;
+  try{
+    v="true"===localStorage.getItem("IN_FLEXIBLE_WHITE_LIST")
+  }catch(w){
+    v=!1
+  }
+  k=s||r||u&&j&&v?t>=3&&(!k||k>=3)?3:t>=2&&(!k||k>=2)?2:1:1,l=1/k
+}if(f.setAttribute("data-dpr",k),!g)
+  if(g=e.createElement("meta"),g.setAttribute("name","viewport"),g.setAttribute("content","initial-scale="+l+", maximum-scale="+l+", minimum-scale="+l+", user-scalable=no"),f.firstElementChild)
+    f.firstElementChild.appendChild(g);
+  else{
+    var x=e.createElement("div");
+    x.appendChild(g),e.write(x.innerHTML)
+  }
+  a.addEventListener("resize",function(){
+    clearTimeout(d),d=setTimeout(c,300)
+  },!1),
+  a.addEventListener("pageshow",function(a){
+    // persisted 是否来自缓存
+    a.persisted&&(clearTimeout(d),d=setTimeout(c,300))
+  },!1),
+  "complete"===e.readyState?e.body.style.fontSize=12*k+"px":e.addEventListener("DOMContentLoaded",function(a){
+    e.body.style.fontSize=12*k+"px"
+  },!1),c(),m.dpr=a.dpr=k,m.refreshRem=c,
+  m.rem2px=function(a){
+    var b=parseFloat(a)*this.rem;
+    return"string"==typeof a&&a.match(/rem$/)&&(b+="px"),b
+  },m.px2rem=function(a){
+    var b=parseFloat(a)/this.rem;
+    return"string"==typeof a&&a.match(/px$/)&&(b+="rem"),b
+  }
+}(window,window.lib||(window.lib={}));
+```
 
 ### setTimeout原理
 [参考](../js&browser/基本常识.md#setTimeout)
@@ -181,6 +347,6 @@ TODO
 - attachEvent(event,listener)
 - addEventListener(event, listener, useCapture = false)
 
-onDothing冒泡阶段触发
+onDoingthing冒泡阶段触发
 
 
