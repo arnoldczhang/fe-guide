@@ -350,10 +350,12 @@ if(g){
 [参考](../js&browser/基本常识.md#setTimeout)
 
 ### onload/DOMContentLoaded
+[DOMContentLoaded](https://juejin.im/post/5b2a508ae51d4558de5bd5d1)
 
 #### DOMContentLoaded
 - HTML5事件
 - 初始的HTML文件被完整读取时触发
+- 等待js的下载 + 加载
 - 不理会css、图片、iframe的完成加载
 
 #### onload
