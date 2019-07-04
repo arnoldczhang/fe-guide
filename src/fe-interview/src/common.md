@@ -4,6 +4,9 @@
 <details>
 <summary>展开更多</summary>
 
+* [`flex布局`](#flex布局)
+* [`setTimeout原理`](#setTimeout原理)
+* [`onload/DOMContentLoaded`](#onload/DOMContentLoaded)
 * [`响应式方案`](#响应式方案)
 
 </details>
@@ -200,6 +203,24 @@ const count = arr.reduce((t, c) => {
 - padding/margin: 相对于直接父元素的width，与height无关
 - border-radius: 相对于自身宽度
 
+#### vh/vw
+缺点：
+1. ie9-11不支持vmin和vmax，opera整体不支持
+
+- vh: 相对于视窗的宽度，视窗宽度是100vh
+- vw: 相对于视窗的宽度，视窗宽度是100vw
+- vmax: vw和vh中的较大值
+- vmin: vw和vh中的较小值
+
+**与%的区别**
+
+%大多相对于祖先元素，vh/vw相对于视窗
+
+**px转vw**
+
+- 手动转：1px=(1/375)*100vw（假设在iphone6/7，375*667的分辨率）
+- 插件：postcss-px-to-viewport
+
 #### rem
 缺点：font-size的设置必须在样式前
 
@@ -328,7 +349,7 @@ if(g){
 ### setTimeout原理
 [参考](../js&browser/基本常识.md#setTimeout)
 
-### onload和DOMContentLoaded
+### onload/DOMContentLoaded
 
 #### DOMContentLoaded
 - HTML5事件
