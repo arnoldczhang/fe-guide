@@ -371,6 +371,7 @@ TODO
 - attachEvent(event,listener)
 - addEventListener(event, listener, useCapture = false)
 
+捕获 - 目标状态 - 冒泡
 onDoingthing冒泡阶段触发
 
 
