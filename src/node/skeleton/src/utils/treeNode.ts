@@ -37,6 +37,7 @@ import {
   html2json,
   insertInitialWxss,
   isNpmComponent,
+  isText,
   modifySuffix,
   parseFile,
   updateUsingInJsonConfig,
@@ -44,6 +45,10 @@ import {
 import Logger from './log';
 import {
   isBindEvent,
+  isElse,
+  isHidden,
+  isIf,
+  removeBlank,
 } from './reg';
 
 const {
@@ -56,7 +61,23 @@ export const parseAsTreeNode = (ast: IAst, options: IPath): IAst => {
   return [
     parseFromTag,
     parseFromAttr,
+    parseFromNode,
   ].reduce((res: IAst, next) => next(res, options), ast);
+};
+
+export const parseFromNode = (
+  ast: IAst,
+  options: IPath,
+): IAst => {
+  const { node, text } = ast;
+  if (isText(node)) {
+    console.log(ast);
+    ast.text = removeBlank(text);
+    if (!ast.text) {
+      return emptyNode;
+    }
+  }
+  return ast;
 };
 
 export const parseFromAttr = (
@@ -66,15 +87,25 @@ export const parseFromAttr = (
   const { attr } = ast;
   if (attr) {
     const result: ICO = {};
-    keys(attr).forEach((key: string): void => {
+    const attrKeys = keys(attr);
+    for (let key, i = 0; i < attrKeys.length; i += 1) {
+      key = attrKeys[i];
       switch (true) {
+        // remove all events
         case isBindEvent(key):
+          break;
+        // remove all `wx:else` and `wx:elif`
+        case isElse(key):
+          return emptyNode;
+        case isHidden(key):
+          break;
+        case isIf(key):
           break;
         default:
           result[key] = attr[key];
           break;
       }
-    });
+    }
     ast.attr = result;
   }
   return ast;
@@ -99,7 +130,10 @@ export const parseFromTag = (
           ensure(destWxml);
           copy(srcWxml, destWxml);
           setCach(destWxml, true, PATH);
-          parseFile(srcWxml, destWxml, options);
+          write(
+            destWxml,
+            parseFile(srcWxml, destWxml, options),
+          );
           ensureAndInsertWxss(srcWxss, destWxss);
         }
       }

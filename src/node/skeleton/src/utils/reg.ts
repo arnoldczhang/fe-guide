@@ -1,4 +1,4 @@
-export const removeComment = (file: string) => (
+export const removeComment = (file: string): string => (
   file
     .replace(/(\/\*)((?!\1)[\s\S])*\*\//g, '')
     .replace(/(\/\*)((?!\*\/)[\s\S])*\*\//g, '')
@@ -7,11 +7,28 @@ export const removeComment = (file: string) => (
     .replace(/(\s|^)\/\/.*/g, '$1')
 );
 
-export const isBindEvent = (key: string) => (
+export const removeBlank = (input: string): string => (
+  input.replace(/(?:\{\{[^\{\}]*\}\})/g, '')
+  // input.replace(/(?:\n|\t| |\{\{[^\{\}]*\}\})/g, '')
+);
+
+export const isBindEvent = (key: string): boolean => (
   /^(capture-)?(?:bind|catch)\:?\w+$/.test(key)
 );
 
+export const isElse = (key: string) => (
+  /^wx:(?:else|elif)$/.test(key)
+);
+
+export const isIf = (key: string) => (
+  /^wx:(?:if)$/.test(key)
+);
+
+export const isHidden = (key: string) => (
+  /hidden/.test(key)
+);
+
 // https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html
-export const withoutPageSelector = (selector: string) => (
+export const withoutPageSelector = (selector: string): boolean => (
   !/^(?:[a-zA-Z]|\:\:?|#)/.test(selector)
 );

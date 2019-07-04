@@ -7,6 +7,7 @@ import {
   COMP_JSON,
   COMP_WXSS,
   JSON_CONFIG,
+  TEXT,
 } from '../config';
 import { IAst, ICO, IPath } from '../types';
 import {
@@ -99,6 +100,8 @@ ${wxss}`;
 };
 
 export const isNpmComponent = (path: string): boolean => /^~@/.test(path);
+
+export const isText = (node: string) => node === TEXT;
 
 export const getJsonValue = (path: string, key: string): ICO | false => {
   try {
