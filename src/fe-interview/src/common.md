@@ -357,6 +357,7 @@ if(g){
 - 初始的HTML文件被完整读取时触发
 - 等待js的下载 + 加载
 - 不理会css、图片、iframe的完成加载
+- chrome76测下来css加载会影响DOMContentLoaded
 
 #### onload
 - DOM事件
