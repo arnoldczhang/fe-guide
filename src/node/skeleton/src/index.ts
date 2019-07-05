@@ -5,7 +5,7 @@ import {
   SKELETON_ROOT,
   SRC,
 } from './config';
-import { genNewComponent, getPageWxml } from './utils';
+import { genNewComponent, genResourceFile, getPageWxml } from './utils';
 
 const run = () => {
   const pageWxml = getPageWxml(`${ROOT}/src/pages/*/*.wxml`);
@@ -17,6 +17,7 @@ const run = () => {
     pagePath: SKELETON_PAGES_ROOT,
     compPath: SKELETON_COMPS_ROOT,
   });
+  genResourceFile();
 };
 
 run();

@@ -87,6 +87,20 @@ interface Person {
 }
 ```
 
+### 查找类型 + keyOf
+```ts
+interface API {
+  '/user': { name: string },
+  '/menu': { foods: Food[] },
+}
+const get = <URL extends keyof API>(url: URL): Promise<API[URL]> => {
+  return fetch(url).then(res => res.json())
+}
+```
+
+### deepReadOnly
+
+
 ---
 
 ## SOLID

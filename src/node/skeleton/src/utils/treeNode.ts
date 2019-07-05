@@ -1,15 +1,27 @@
+import { transformSync } from '@babel/core';
 import { join, resolve } from 'path';
-
 import * as pathResolve from 'resolve';
 import {
+  ATTR_BG,
+  ATTR_FOR,
+  ATTR_REMOVE,
+  ATTR_REPEAT,
+  ATTR_SHOW,
   COMP_JS,
   COMP_WXSS,
   IMAGE_TAG,
   IMPORT_TAG,
   INCLUDE_TAG,
   JSON_CONFIG,
+  KLASS,
   PATH,
+  TEXT,
   TPL_TAG,
+  WX_FOR,
+  WX_FOR_INDEX,
+  WX_HIDDEN,
+  WX_IF,
+  WX_KEY,
   WXS_TAG,
 } from '../config';
 import { CF, IAst, ICO, IPath } from '../types';
@@ -37,7 +49,6 @@ import {
   html2json,
   insertInitialWxss,
   isNpmComponent,
-  isText,
   modifySuffix,
   parseFile,
   updateUsingInJsonConfig,
@@ -46,8 +57,6 @@ import Logger from './log';
 import {
   isBindEvent,
   isElse,
-  isHidden,
-  isIf,
   removeBlank,
 } from './reg';
 
@@ -57,60 +66,121 @@ const {
 const logger = Logger.getInstance();
 const emptyNode = {};
 
-export const parseAsTreeNode = (ast: IAst, options: IPath): IAst => {
+/**
+ * parseAsTreeNode
+ * @param ast
+ * @param options
+ */
+export const parseAsTreeNode = (
+  ast: IAst,
+  options: IPath,
+): IAst => {
   return [
+    parseFromSignAttr,
     parseFromTag,
-    parseFromAttr,
     parseFromNode,
+    parseFromAttr,
   ].reduce((res: IAst, next) => next(res, options), ast);
 };
 
+/**
+ * parseFromNode
+ * @param ast
+ * @param options
+ */
 export const parseFromNode = (
   ast: IAst,
   options: IPath,
 ): IAst => {
   const { node, text } = ast;
-  if (isText(node)) {
-    console.log(ast);
-    ast.text = removeBlank(text);
-    if (!ast.text) {
-      return emptyNode;
-    }
+  if (node !== TEXT) { return ast; }
+  ast.text = removeBlank(text);
+  if (!ast.text) {
+    return emptyNode;
   }
   return ast;
 };
 
+/**
+ * parseFromSignAttr
+ * @param ast
+ * @param options
+ */
+export const parseFromSignAttr = (
+  ast: IAst,
+  options: IPath,
+): IAst => {
+  const { attr } = ast;
+  if (!attr) { return ast; }
+  const result: ICO = {};
+  const attrKeys = keys(attr);
+  for (let key, value, i = 0; i < attrKeys.length; i += 1) {
+    key = attrKeys[i];
+    value = attr[key];
+    switch (key) {
+      // repeat
+      case ATTR_FOR:
+      case ATTR_REPEAT:
+        result[WX_FOR] = `{{[${Array(+value).fill(1)}]}}`;
+        result[WX_KEY] = `{{${attr[WX_FOR_INDEX] || 'index'}}}`;
+        break;
+      case ATTR_SHOW:
+        result[WX_HIDDEN] = `{{false}}`;
+        result[WX_IF] = '{{true}}';
+        break;
+      case ATTR_REMOVE:
+        return emptyNode;
+      case ATTR_BG:
+        result[KLASS] = [...attr[KLASS], 'skull-grey'];
+      default:
+        if (!(key in result)) {
+          result[key] = value;
+        }
+        break;
+    }
+  }
+  ast.attr = result;
+  return ast;
+};
+
+/**
+ * parseFromAttr
+ * @param ast
+ * @param options
+ */
 export const parseFromAttr = (
   ast: IAst,
   options: IPath,
 ): IAst => {
   const { attr } = ast;
-  if (attr) {
-    const result: ICO = {};
-    const attrKeys = keys(attr);
-    for (let key, i = 0; i < attrKeys.length; i += 1) {
-      key = attrKeys[i];
-      switch (true) {
-        // remove all events
-        case isBindEvent(key):
-          break;
-        // remove all `wx:else` and `wx:elif`
-        case isElse(key):
-          return emptyNode;
-        case isHidden(key):
-          break;
-        case isIf(key):
-          break;
-        default:
+  if (!attr) { return ast; }
+  const result: ICO = {};
+  const attrKeys = keys(attr);
+  for (let key, i = 0; i < attrKeys.length; i += 1) {
+    key = attrKeys[i];
+    switch (true) {
+      // remove all events
+      case isBindEvent(key):
+        break;
+      // remove all `wx:else` and `wx:elif`
+      case isElse(key):
+        return emptyNode;
+      default:
+        if (!(key in result)) {
           result[key] = attr[key];
-          break;
-      }
+        }
+        break;
     }
-    ast.attr = result;
   }
+  ast.attr = result;
   return ast;
 };
 
+/**
+ * parseFromTag
+ * @param ast
+ * @param options
+ */
 export const parseFromTag = (
   ast: IAst,
   options: IPath,
@@ -118,6 +188,7 @@ export const parseFromTag = (
   const { tag, attr } = ast;
   const { protoPath, mainPath } = options;
 
+  if (!tag) { return ast; }
   switch (tag) {
     // <import />
     case IMPORT_TAG:
@@ -143,9 +214,12 @@ export const parseFromTag = (
     case INCLUDE_TAG:
       return emptyNode;
 
+    // <image />
     case IMAGE_TAG:
       if (attr && attr.src && /^\./.test(attr.src)) {
-        attr.src = join(getRelativePath(protoPath, mainPath), attr.src);
+        const { src } = attr;
+        const [dir, fileName] = [getDir(src), getFileName(src)];
+        attr.src = join(getRelativePath(protoPath, join(mainPath, dir)), fileName);
       }
       break;
     // remove <wxs />
@@ -157,6 +231,13 @@ export const parseFromTag = (
   return ast;
 };
 
+/**
+ * parseFromJSON
+ * @param srcFile
+ * @param destFile
+ * @param json
+ * @param options
+ */
 export const parseFromJSON = (
   srcFile: string,
   destFile: string,
@@ -188,6 +269,7 @@ export const parseFromJSON = (
       const destPath: string = resolve(dest, pathValue);
       srcJson = addSuffix(srcPath, 'json');
       destJson = addSuffix(destPath, 'json');
+      srcJs = addSuffix(srcPath, 'js');
       destJs = addSuffix(destPath, 'js');
       srcWxml = addSuffix(srcPath, 'wxml');
       destWxml = addSuffix(destPath, 'wxml');
@@ -215,6 +297,11 @@ export const parseFromJSON = (
       // gen component-js
       ensure(destJs);
       write(destJs, COMP_JS);
+
+      // FIXME copy Components.properties to destJs with babel
+      // const { ast } = transformSync(String(read(srcJs)), {
+      //   ast: true,
+      // });
       logger.note(destJs);
     }
   });

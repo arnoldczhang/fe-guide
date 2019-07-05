@@ -6,8 +6,9 @@ import {
   COMP_JS,
   COMP_JSON,
   COMP_WXSS,
+  DEFAULT_WXSS,
   JSON_CONFIG,
-  TEXT,
+  SKELETON_DEFAULT_WXSS_ROOT,
 } from '../config';
 import { IAst, ICO, IPath } from '../types';
 import {
@@ -101,8 +102,6 @@ ${wxss}`;
 
 export const isNpmComponent = (path: string): boolean => /^~@/.test(path);
 
-export const isText = (node: string) => node === TEXT;
-
 export const getJsonValue = (path: string, key: string): ICO | false => {
   try {
     const content: string = String(read(path));
@@ -116,6 +115,13 @@ export const getJsonValue = (path: string, key: string): ICO | false => {
   }
 };
 
+/**
+ * updateUsingInJsonConfig
+ * @param src
+ * @param dest
+ * @param options
+ * @param srcContent
+ */
 export const updateUsingInJsonConfig = (
   src: string,
   dest: string,
@@ -141,6 +147,11 @@ export const updateUsingInJsonConfig = (
   logger.note(dest);
 };
 
+/**
+ * ensureAndInsertWxss
+ * @param src
+ * @param dest
+ */
 export const ensureAndInsertWxss = (src: string, dest: string): void => {
   if (exists(src)) {
     ensure(dest);
@@ -149,6 +160,11 @@ export const ensureAndInsertWxss = (src: string, dest: string): void => {
   }
 };
 
+/**
+ * insertPageWxss
+ * @param src
+ * @param dest
+ */
 export const insertPageWxss = (src: string, dest: string): void => {
   ensure(dest);
   const content: string = String(read(src));
@@ -203,6 +219,11 @@ export const insertPageWxss = (src: string, dest: string): void => {
   }
 };
 
+/**
+ * genNewComponent
+ * @param srcWxml
+ * @param options
+ */
 export const genNewComponent = (
   srcWxml: string,
   options: IPath,
@@ -235,6 +256,11 @@ export const genNewComponent = (
   ensure(destJs);
   write(destJs, COMP_JS);
   logger.note(destJs);
+};
+
+export const genResourceFile = (): void => {
+  ensure(SKELETON_DEFAULT_WXSS_ROOT);
+  write(SKELETON_DEFAULT_WXSS_ROOT, DEFAULT_WXSS);
 };
 
 export {

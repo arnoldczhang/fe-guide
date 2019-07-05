@@ -8,7 +8,7 @@ export const removeComment = (file: string): string => (
 );
 
 export const removeBlank = (input: string): string => (
-  input.replace(/(?:\{\{[^\{\}]*\}\})/g, '')
+  input.replace(/(?: |\{\{[^\{\}]*\}\})/g, '')
   // input.replace(/(?:\n|\t| |\{\{[^\{\}]*\}\})/g, '')
 );
 
@@ -17,15 +17,7 @@ export const isBindEvent = (key: string): boolean => (
 );
 
 export const isElse = (key: string) => (
-  /^wx:(?:else|elif)$/.test(key)
-);
-
-export const isIf = (key: string) => (
-  /^wx:(?:if)$/.test(key)
-);
-
-export const isHidden = (key: string) => (
-  /hidden/.test(key)
+  /^wx:(?:elif)$/.test(key)
 );
 
 // https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html
