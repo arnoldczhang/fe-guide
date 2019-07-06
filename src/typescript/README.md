@@ -95,11 +95,29 @@ interface API {
 }
 const get = <URL extends keyof API>(url: URL): Promise<API[URL]> => {
   return fetch(url).then(res => res.json())
-}
+};
 ```
 
 ### deepReadOnly
+```ts
+type DeepReadonly<T> = {
+  readonly [P in keyof T]: DeepReadonly<T[P]>;
+}
 
+const a = { foo: { bar: 22 } };
+const b = a as DeepReadonly<typeof a>;
+
+b.foo = 'xxxxxx'; // wrong
+```
+
+### namespace
+```ts
+function test () {}
+
+namespace test {
+  export const cache: object = {}
+}
+```
 
 ---
 
