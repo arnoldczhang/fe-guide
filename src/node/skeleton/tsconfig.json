@@ -15,6 +15,9 @@
     "listFiles": false,
     "declaration": true,
     "resolveJsonModule": true,
+    "path": {
+      "utils/*": ["src/utils/*"],
+    },
     "lib": [
       "dom",
       "es2017"

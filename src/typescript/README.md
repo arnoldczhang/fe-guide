@@ -119,6 +119,18 @@ namespace test {
 }
 ```
 
+### Record
+类似enum
+```ts
+type AnimalType = 'cat' | 'dog' | 'frog';
+interface AnimalDescription { name: string, icon: string }
+const AnimalMap: Record<AnimalType, AnimalDescription> = {
+  cat: { name: '猫', icon: '🐱'},
+  dog: { name: '狗', icon: '🐶' },
+  forg: { name: '蛙', icon: '🐸' }, // Hey!
+};
+```
+
 ---
 
 ## SOLID
