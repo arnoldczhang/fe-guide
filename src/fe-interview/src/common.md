@@ -454,3 +454,108 @@ arr.join = arr.shift;
 #### 读屏软件隐藏
 - aria-hidden="true"
 
+### 执行上下文和作用域链
+
+#### 执行上下文
+js被解析和执行环境的抽象概念
+
+- 全局执行上下文
+- 函数执行上下文
+  * 创建对象、函数
+  * 作用域链
+  * this
+
+#### 作用域链
+
+作用域的工作模型，分两种
+1. 词法作用域（js是这种）
+2. 动态作用域
+
+
+**作用域**
+
+- 全局作用域
+- 函数作用域
+- 块级作用域
+
+**执行栈**
+
+即调用栈，具有 LIFO (后进先出) 结构
+
+**作用域链**
+
+![作用域链](./作用域链.jpg)
+
+### 节流&防抖
+[防抖参考](./debounce.js)
+[节流参考](./throttle.js)
+
+### Promise.all实现
+```js
+Promise.all2 = function(promises) {
+  return new Promise((resolve, reject) => {
+    if (promises && promises.length) {
+      const result = [];
+      let index = 0;
+      for (let i = 0, promise; i < promises.length; i += 1) {
+        promise = promises[i];
+        Promise.resolve(promise).then((res) => {
+          result[i] = res;
+          if (++index === promises.length) {
+            resolve(result);
+          }
+        }, (err) => {
+          reject(err);
+          return;
+        });
+      }
+    } else {
+      throw new TypeError('undefined is not iterable (cannot read property Symbol(Symbol.iterator))');
+    }
+  });
+};
+
+```
+
+### 数组扁平化flattenArray
+
+#### 方式一
+```js
+const falttenArray = (arr, result = []) => {
+  arr.forEach((item) => {
+    if (Array.isArray(item)) {
+      falttenArray(item, result)
+    } else {
+      result.push(item);
+    }
+  });
+  return result;
+};
+```
+
+#### 方式二
+```js
+var flattenArray = (arr) => {
+  return arr.reduce((res, item) => {
+    if (Array.isArray(item)) {
+      res.push(...flattenArray(item));
+    } else {
+      res.push(item);
+    }
+    return res;
+  }, []);
+};
+```
+
+### 数组去重uniq
+- Set
+  ```js
+  [new Set(...arr)]
+  ```
+- indexOf
+- includes
+- Map
+- indexOf(i, step) === lastIndexOf(i)
+
+
+
