@@ -1,4 +1,7 @@
-## 基础面试题
+# 基础面试题
+
+## 参考
+- [20道](https://mp.weixin.qq.com/s/ViucwxvZg-g_YsHxN1PiAA)
 
 ## 目录
 <details>
@@ -10,7 +13,6 @@
 * [`响应式方案`](#响应式方案)
 
 </details>
-
 
 ### ==和===
 - === 不需要进行类型转换，只有类型相同并且值相等时，才返回 true.
@@ -33,6 +35,13 @@ Number([]) === 0
 ```
 
 ### let、const 以及 var 的区别
+
+| 声明方式 | 变量提升 | 暂时死区 | 重复声明 | 块作用有效 | 
+| -------- | -----: | :----: | :----: | :----: |
+| var | √ | × | √ | × |
+| let | × | √ | × | √ |
+| const | × | √ | × | √ |
+
 - var会变量提升
 - var可重复声明
 - let、const声明在块级作用域，var声明在局部/全局作用域
@@ -425,3 +434,23 @@ var a = {
 var arr = [1, 2, 3];
 arr.join = arr.shift;
 ```
+
+### 隐藏页面元素
+
+#### 完全隐藏
+- display: none
+- hidden
+
+#### 视觉隐藏
+- position: fixed; top:-9999px;
+- transform: scale(0);
+- transform: translateX(-9999px);
+- transform: rotateX(90deg);
+- width: 0;
+- opacity: 0;
+- visibility: hidden;
+- z-index: -999; position: relative;
+
+#### 读屏软件隐藏
+- aria-hidden="true"
+
