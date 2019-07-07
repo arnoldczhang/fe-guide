@@ -476,7 +476,7 @@ elm.animate([
 
 ### css为什么不要用@import
 - 阻塞浏览器的并行下载，强行变成串行
-- 先于除了@charset的其他任何CSS规则，故多个@import导致下载顺序紊乱
+- 先于除了@charset的其他任何CSS规则，多个@import导致下载顺序紊乱
 
 ### 屏幕完整截图
 - chrome，command + shift + p
