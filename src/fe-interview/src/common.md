@@ -374,4 +374,54 @@ TODO
 捕获 - 目标状态 - 冒泡
 onDoingthing冒泡阶段触发
 
+### a == 1 && a == 2 && a == 3
 
+**隐式转换**
+
+=》[Symbol.toPrimitive]/valueOf / toString
+
+#### 方式1
+```js
+// 闭包
+var a = {
+  [Symbol.toPrimitive]: (function(i) {
+    return function() {
+      return i++;
+    }
+  }(1))
+};
+```
+
+#### 方式2
+```js
+// proxy
+var a = new Proxy({}, {
+  value: 1,
+  get() {
+    return () => this.value++;
+  }
+});
+```
+
+#### 方式3
+```js
+// 对象
+var a = {
+	count: 1,
+	toString() {
+		switch (this.count) {
+            case 1:
+            case 2:
+            case 3:
+				return this.count++;
+		}
+	},
+};
+```
+
+#### 方式4
+```js
+// arr.join = arr.shift
+var arr = [1, 2, 3];
+arr.join = arr.shift;
+```
