@@ -11,6 +11,11 @@
 * [`setTimeout原理`](#setTimeout原理)
 * [`onload/DOMContentLoaded`](#onload/DOMContentLoaded)
 * [`响应式方案`](#响应式方案)
+* [`隐藏页面元素`](#隐藏页面元素)
+* [`执行上下文和作用域链`](#执行上下文和作用域链)
+* [`节流&防抖`](#节流&防抖)
+* [`flattenArray`](#flattenArray)
+* [`uniq`](#uniq)
 
 </details>
 
@@ -383,7 +388,7 @@ TODO
 捕获 - 目标状态 - 冒泡
 onDoingthing冒泡阶段触发
 
-### a == 1 && a == 2 && a == 3
+### a==1&&a==2&&a==3
 
 **隐式转换**
 
@@ -557,5 +562,17 @@ var flattenArray = (arr) => {
 - Map
 - indexOf(i, step) === lastIndexOf(i)
 
+### 可迭代对象
+- Array
+- Map
+- Set
+- String
+- TypedArray
+- 函数的 arguments 对象
+- NodeList 对象
 
+#### 特点
+- Symbol.iterator
+- for...of...
+- Array.from
 
