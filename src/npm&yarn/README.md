@@ -14,7 +14,7 @@
 </details>
 
 ## 参考
--  https://github.com/diamont1001/blog/issues/11
+- https://github.com/diamont1001/blog/issues/11
 - [现代化js封装库标准配置](https://github.com/yanhaijing/jslib-base)
 - [node依赖管理](https://mp.weixin.qq.com/s/XdOPPay8fpNBiH2ExW_EyQ)
 - [前端工程](https://juejin.im/post/5d08d3d3f265da1b7e103a4d?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
@@ -150,7 +150,7 @@ npm官网建议：把 package-lock.json 一起提交到代码库中，不要 ign
   使用lock.json中的版本
 - 在大版本不同的前提下，将根据package.json中大版本下最新版本进行更新
 - package.json中有记录，lock.json没记录，install后lock.json生成记录
-
+- package.json中没记录，lock.json有记录，install后移除模块，移除lock.json的记录
 
 ---
 
@@ -166,7 +166,7 @@ yarn：默认支持，即使用本地缓存
 
 ### 控制台信息
 npm：会列出完整依赖树
-yanr：直接输出安装结果，报错日志清晰
+yarn：直接输出安装结果，报错日志清晰
 
 ---
 
@@ -197,6 +197,7 @@ yanr：直接输出安装结果，报错日志清晰
 增加了 package-lock.json
 
 ### npm去重
+// TODO
 npm dedupe
 
 ---

@@ -12,15 +12,6 @@ import {
 } from '../config';
 import { IAst, ICO, IPath } from '../types';
 import {
-  copy,
-  ensure,
-  exists,
-  read,
-  write,
-} from './fs';
-import { parseAsTreeNode, parseFromJSON } from './treeNode';
-
-import {
   addSuffix,
   getDir,
   getFileName,
@@ -31,9 +22,17 @@ import {
   modifySuffix,
 } from './dir';
 import {
+  copy,
+  ensure,
+  exists,
+  read,
+  write,
+} from './fs';
+import {
   removeComment,
   withoutPageSelector,
 } from './reg';
+import { parseAsTreeNode, parseFromJSON } from './treeNode';
 
 import Logger from './log';
 
@@ -156,8 +155,28 @@ export const ensureAndInsertWxss = (src: string, dest: string): void => {
   if (exists(src)) {
     ensure(dest);
     write(dest, insertInitialWxss(`@import '${getRelativePath(src, dest)}';`));
-    logger.note(dest);
+    // logger.note(dest);
   }
+};
+
+/**
+ * ensureAndInsertWxml
+ * @param src
+ * @param dest
+ * @param options
+ */
+export const ensureAndInsertWxml = (
+  src: string,
+  dest: string,
+  options?: IPath,
+): void => {
+  ensure(dest);
+  copy(src, dest);
+  write(
+    dest,
+    parseFile(src, dest, options),
+  );
+  logger.note(dest);
 };
 
 /**
@@ -167,14 +186,13 @@ export const ensureAndInsertWxss = (src: string, dest: string): void => {
  */
 export const insertPageWxss = (src: string, dest: string): void => {
   ensure(dest);
-  const content: string = String(read(src));
+  const content: string = String(exists(src) ? read(src) : '');
   const ast: css.Stylesheet = css.parse(content);
   const { rules } = ast.stylesheet;
   let hasPageStyle: boolean = false;
   rules.forEach((
     rule: css.Rule & css.Import,
     index: number,
-    ruleArray: Array<css.Rule & css.Import>,
   ) => {
     const { type, selectors } = rule;
     /*
@@ -193,24 +211,29 @@ export const insertPageWxss = (src: string, dest: string): void => {
     }
     */
     } else if (type === 'rule') {
+      const newSelectors: string[] = [];
       selectors.forEach((
         selector: string,
         idx: number,
         selectorArray: string[],
-        ) => {
+      ) => {
         const tmpSelectors: string[] = selector.split(/\s/);
         const lastSelector: string = tmpSelectors[tmpSelectors.length - 1];
-        if (!withoutPageSelector(lastSelector)) {
-          selectorArray.splice(idx, 1);
+        if (withoutPageSelector(lastSelector)) {
+          newSelectors.push(selector);
+        } else {
           hasPageStyle = true;
         }
       });
 
-      if (!selectors.length) {
-        ruleArray.splice(index, 1);
+      if (!newSelectors.length) {
+        rules[index] = null;
       }
+      rule.selectors = newSelectors;
     }
   });
+
+  ast.stylesheet.rules = rules.filter((v: any) => v);
 
   if (hasPageStyle) {
     write(dest, insertInitialWxss(`${css.stringify(ast)}`));
@@ -235,13 +258,7 @@ export const genNewComponent = (
 
   // gen wxml
   const destWxml: string = `${outputPath}${relativePath}`;
-  ensure(destWxml);
-  copy(srcWxml, destWxml);
-  write(
-    destWxml,
-    parseFile(srcWxml, destWxml, options),
-  );
-  logger.note(destWxml);
+  ensureAndInsertWxml(srcWxml, destWxml, options);
 
   // gen json
   const destJson: string = `${outputPath}${modifySuffix(relativePath, 'json')}`;
@@ -255,7 +272,7 @@ export const genNewComponent = (
   const destJs: string = `${outputPath}${modifySuffix(relativePath, 'js')}`;
   ensure(destJs);
   write(destJs, COMP_JS);
-  logger.note(destJs);
+  // logger.note(destJs);
 };
 
 export const genResourceFile = (): void => {

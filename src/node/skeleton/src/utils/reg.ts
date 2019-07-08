@@ -24,3 +24,7 @@ export const isElse = (key: string) => (
 export const withoutPageSelector = (selector: string): boolean => (
   !/^(?:[a-zA-Z]|\:\:?|#)/.test(selector)
 );
+
+export const interceptWxVariable = (input: string): string => (
+  input.replace(/\{\{([^\{\}]+)\}\}/, '$1')
+);

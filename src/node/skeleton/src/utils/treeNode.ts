@@ -25,7 +25,7 @@ import {
   WXS_TAG,
 } from '../config';
 import { CF, IAst, ICO, IPath } from '../types';
-import { is } from './assert';
+import { has } from './assert';
 import {
   hasCach,
   setCach,
@@ -40,10 +40,12 @@ import {
   ensure,
   exists,
   read,
+  state,
   write,
 } from './fs';
 import {
   addSuffix,
+  ensureAndInsertWxml,
   ensureAndInsertWxss,
   getJsonValue,
   html2json,
@@ -55,6 +57,7 @@ import {
 } from './index';
 import Logger from './log';
 import {
+  interceptWxVariable,
   isBindEvent,
   isElse,
   removeBlank,
@@ -119,9 +122,13 @@ export const parseFromSignAttr = (
     value = attr[key];
     switch (key) {
       // repeat
+      // support 2 ways:
+      //  1. number / {{number}}
+      //  2. variable which represents an array
       case ATTR_FOR:
       case ATTR_REPEAT:
-        result[WX_FOR] = `{{[${Array(+value).fill(1)}]}}`;
+        value = interceptWxVariable(value);
+        result[WX_FOR] = isNaN(+value) ? `{{${value}}}` : `{{[${Array(+value).fill(1)}]}}`;
         result[WX_KEY] = `{{${attr[WX_FOR_INDEX] || 'index'}}}`;
         break;
       case ATTR_SHOW:
@@ -133,7 +140,7 @@ export const parseFromSignAttr = (
       case ATTR_BG:
         result[KLASS] = [...attr[KLASS], 'skull-grey'];
       default:
-        if (!(key in result)) {
+        if (!has(key, result)) {
           result[key] = value;
         }
         break;
@@ -166,7 +173,7 @@ export const parseFromAttr = (
       case isElse(key):
         return emptyNode;
       default:
-        if (!(key in result)) {
+        if (!has(key, result)) {
           result[key] = attr[key];
         }
         break;
@@ -195,16 +202,11 @@ export const parseFromTag = (
       if (attr && attr.src) {
         const srcWxml: string = resolve(protoPath, attr.src);
         const destWxml: string = resolve(mainPath, attr.src);
-        if (!hasCach(destWxml)) {
+        if (!hasCach(destWxml, PATH)) {
           const srcWxss: string = modifySuffix(srcWxml, 'wxss');
           const destWxss: string = modifySuffix(destWxml, 'wxss');
-          ensure(destWxml);
-          copy(srcWxml, destWxml);
-          setCach(destWxml, true, PATH);
-          write(
-            destWxml,
-            parseFile(srcWxml, destWxml, options),
-          );
+          setCach(destWxml, 1, PATH);
+          ensureAndInsertWxml(srcWxml, destWxml, options);
           ensureAndInsertWxss(srcWxss, destWxss);
         }
       }
@@ -246,7 +248,7 @@ export const parseFromJSON = (
 ): ICO => {
   const src: string = getDir(srcFile);
   const dest: string = getDir(destFile);
-  const { root, compPath } = options;
+  const { root, compPath, srcPath: rootSrcPath, outputPath } = options;
   keys(json).forEach((key: string): void => {
     let pathValue: string = json[key];
     let [srcJs, destJs, srcWxml, destWxml, srcWxss, destWxss, srcJson, destJson] = Array(10);
@@ -265,8 +267,20 @@ export const parseFromJSON = (
       destWxss = `${destRoot}/${modifySuffix(srcJsFileName, 'wxss')}`;
       json[key] = `${getRelativePath(destRoot, destFile)}/${srcJsName}`;
     } else {
-      const srcPath: string = resolve(src, pathValue);
-      const destPath: string = resolve(dest, pathValue);
+      const isRootStyle = /^\//.test(pathValue);
+      if (isRootStyle) {
+        pathValue = pathValue.slice(1);
+      }
+      let srcPath: string = resolve(isRootStyle ? rootSrcPath : src, pathValue);
+      let destPath: string = resolve(isRootStyle ? outputPath : dest, pathValue);
+      try {
+        if (state(srcPath).isDirectory()) {
+          srcPath = `${srcPath}/index`;
+          destPath = `${destPath}/index`;
+        }
+      } catch (err) {
+
+      }
       srcJson = addSuffix(srcPath, 'json');
       destJson = addSuffix(destPath, 'json');
       srcJs = addSuffix(srcPath, 'js');
@@ -277,16 +291,10 @@ export const parseFromJSON = (
       destWxss = addSuffix(destPath, 'wxss');
     }
 
-    if (!hasCach(destWxml)) {
+    if (!hasCach(destWxml, PATH)) {
       // gen component-wxml
-      ensure(destWxml);
-      copy(srcWxml, destWxml);
-      setCach(destWxml, true, PATH);
-      write(
-        destWxml,
-        parseFile(srcWxml, destWxml, options),
-      );
-      logger.note(destWxml);
+      setCach(destWxml, 1, PATH);
+      ensureAndInsertWxml(srcWxml, destWxml, options);
 
       // gen component-json
       updateUsingInJsonConfig(srcJson, destJson, options);
@@ -297,12 +305,12 @@ export const parseFromJSON = (
       // gen component-js
       ensure(destJs);
       write(destJs, COMP_JS);
+      // logger.note(destJs);
 
       // FIXME copy Components.properties to destJs with babel
       // const { ast } = transformSync(String(read(srcJs)), {
       //   ast: true,
       // });
-      logger.note(destJs);
     }
   });
   return json;

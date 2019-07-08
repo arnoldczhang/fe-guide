@@ -6,6 +6,8 @@ import {
   existsSync,
   readFile,
   readFileSync,
+  Stats,
+  statSync,
   writeFile,
   writeFileSync,
 } from 'fs-extra';
@@ -65,4 +67,8 @@ export const exists = (file: string, callback?: CF) => {
     throw new Error('`fs.exists` is already deprecated');
   }
   return existsSync(file);
+};
+
+export const state = (path: string): Stats => {
+  return statSync(path);
 };
