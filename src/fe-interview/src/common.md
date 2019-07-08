@@ -361,7 +361,7 @@ if(g){
 ```
 
 ### setTimeout原理
-[参考](../js&browser/基本常识.md#setTimeout)
+[参考](../../js&browser/基本常识.md#setTimeout)
 
 ### onload/DOMContentLoaded
 [DOMContentLoaded](https://juejin.im/post/5b2a508ae51d4558de5bd5d1)

@@ -27,7 +27,7 @@
 ## javascript并发模型
 - Event Loop - 事件循环
 - Call Stack - 调用栈
-- Call Queue - 回调队列
+- Call/task Queue - 回调（又称任务）队列
 - Render Step - 渲染节奏
 - Web APIs - 宿主环境
 
