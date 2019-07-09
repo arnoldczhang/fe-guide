@@ -1,21 +1,34 @@
 # 基础面试题
 
 ## 参考
-- [20道](https://mp.weixin.qq.com/s/ViucwxvZg-g_YsHxN1PiAA)
+- [基础20题](https://mp.weixin.qq.com/s/ViucwxvZg-g_YsHxN1PiAA)
+- [前端100问](https://juejin.im/post/5d23e750f265da1b855c7bbe?utm_source=gold_browser_extension#heading-2)
 
 ## 目录
 <details>
 <summary>展开更多</summary>
 
+* [`==和===`](#==和===)
+* [`[]==![]`](#[]==![])
+* [`let、const以及var的区别`](#let、const以及var的区别)
 * [`flex布局`](#flex布局)
+* [`this`](#this)
+* [`函数声明&变量声明`](#函数声明&变量声明)
+* [`统计数组成员重复个数`](#统计数组成员重复个数)
+* [`vue/react中key的作用`](#vue/react中key的作用)
 * [`setTimeout原理`](#setTimeout原理)
 * [`onload/DOMContentLoaded`](#onload/DOMContentLoaded)
+* [`事件触发过程`](#事件触发过程)
+* [`flex属性`](#flex属性)
 * [`响应式方案`](#响应式方案)
+* [`a==1&&a==2&&a==3`](#a==1&&a==2&&a==3)
 * [`隐藏页面元素`](#隐藏页面元素)
+* [`Promise.all实现`](#Promise.all实现)
 * [`执行上下文和作用域链`](#执行上下文和作用域链)
 * [`节流&防抖`](#节流&防抖)
 * [`flattenArray`](#flattenArray)
-* [`uniq`](#uniq)
+* [`数组去重uniq`](#数组去重uniq)
+* [`何为可迭代对象`](#何为可迭代对象)
 
 </details>
 
@@ -29,7 +42,9 @@
   * 判断两者类型是否为 string 和 number, 如果是, 将字符串转换成 number；
 判断其中一方是否为 object 且另一方为 string、number 或者 symbol , 如果是, 将 object   * 转为原始类型再进行判断。
 
-### [] == ![]
+---
+
+### []==![]
 
 数组转数字方法
 
@@ -39,7 +54,9 @@ Number(array.toString())
 Number([]) === 0
 ```
 
-### let、const 以及 var 的区别
+---
+
+### let、const以及var的区别
 
 | 声明方式 | 变量提升 | 暂时死区 | 重复声明 | 块作用有效 | 
 | -------- | -----: | :----: | :----: | :----: |
@@ -58,6 +75,8 @@ Number([]) === 0
 
     typeof y; // 值是 undefined, 不会报错
     ```
+
+---
 
 ### 函数声明&变量声明
 - 函数会首先被提升，然后才是变量
@@ -82,6 +101,8 @@ executionContextObj = {
   'this': {}
 };
 ```
+
+---
 
 ### this
 
@@ -112,6 +133,8 @@ obj.fn1();
 console.log(window.number);
 ```
 
+---
+
 ### 统计数组成员重复个数
 ```js
 const arr = [0, 1, 1, 2, 2, 2];
@@ -123,12 +146,23 @@ const count = arr.reduce((t, c) => {
 
 ```
 
-### vue和react中key的作用
-- 和性能好坏无关
-- 相同的key可以复用节点（仅做textContent变更），
-  否则只能insert/append，remove，开销大些
+---
 
-### flex布局
+### vue/react中key的作用
+- 不能单纯的讲和性能好坏有无关联
+  * 节点树简单时，纯innerText改动比节点位置改动快
+- 没有key时，做innerText的改动
+- 有key时，会做节点位置交换
+
+#### 准确性
+对比a.key === b.key，可以避免复用节点，更准确
+
+#### 性能
+利用key生成map的话，查找比单纯找数组快
+
+---
+
+### flex属性
 **flex-basis**
 
 - 设置或检索弹性盒伸缩基准值
@@ -181,6 +215,8 @@ const count = arr.reduce((t, c) => {
     }
   </style>
   ```
+
+---
 
 ### 响应式方案
 [参考](https://github.com/forthealllight/blog/issues/13)
@@ -440,6 +476,8 @@ var arr = [1, 2, 3];
 arr.join = arr.shift;
 ```
 
+---
+
 ### 隐藏页面元素
 
 #### 完全隐藏
@@ -492,8 +530,16 @@ js被解析和执行环境的抽象概念
 ![作用域链](./作用域链.jpg)
 
 ### 节流&防抖
+
+#### 防抖
+n秒内高频事件再次触发，都会重新计时
 [防抖参考](./debounce.js)
+
+#### 节流
+n秒内高频触发，只会执行一次
 [节流参考](./throttle.js)
+
+---
 
 ### Promise.all实现
 ```js
@@ -521,6 +567,8 @@ Promise.all2 = function(promises) {
 };
 
 ```
+
+--
 
 ### 数组扁平化flattenArray
 
@@ -552,6 +600,8 @@ var flattenArray = (arr) => {
 };
 ```
 
+---
+
 ### 数组去重uniq
 - Set
   ```js
@@ -562,7 +612,9 @@ var flattenArray = (arr) => {
 - Map
 - indexOf(i, step) === lastIndexOf(i)
 
-### 可迭代对象
+---
+
+### 何为可迭代对象
 - Array
 - Map
 - Set
@@ -575,4 +627,45 @@ var flattenArray = (arr) => {
 - Symbol.iterator
 - for...of...
 - Array.from
+
+---
+
+### Set、Map、WeakSet和WeakMap的区别
+
+#### Set
+- 成员不能重复
+- 类似数组
+- 可遍历
+- add/delete
+
+#### WeakSet
+- 成员不能重复
+- 成员必须是对象（可存DOM引用）
+- 不可遍历
+- add/delete
+
+#### Map
+- 可遍历
+- set/delete
+
+#### WeakMap
+- 不可遍历
+- 键值是对象
+- set/delete
+
+---
+
+### 深度优先和广度优先
+应用于图
+
+#### 深度优先
+- 类似树的先序遍历
+- 从邻接节点出发，优先遍历子节点
+
+#### 广度优先
+- 优先访问当前节点的邻接节点
+- 当没有邻接节点时，另选一个未被访问的节点，重复上述过程
+
+#### 例子：拷贝
+
 
