@@ -8,8 +8,8 @@ export const removeComment = (file: string): string => (
 );
 
 export const removeBlank = (input: string): string => (
-  input.replace(/(?: |\{\{[^\{\}]*\}\})/g, '')
-  // input.replace(/(?:\n|\t| |\{\{[^\{\}]*\}\})/g, '')
+  // input.replace(/(?: |\{\{[^\{\}]*\}\})/g, '')
+  input.replace(/(?:\n|\t|^ +| +$|\{\{[^\{\}]*\}\})/g, '')
 );
 
 export const isBindEvent = (key: string): boolean => (

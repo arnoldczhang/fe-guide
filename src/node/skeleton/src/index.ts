@@ -1,28 +1,35 @@
-import {
+const { join } = require('path');
+const {
+  DEFAULT_CONFIG_FILE,
   ROOT,
-  SKELETON_COMPS_ROOT,
-  SKELETON_PAGES_ROOT,
+  SKELETON_DEFAULT_WXSS_FILE,
+  SKELETON_RELATIVE,
   SKELETON_ROOT,
   SRC,
-} from './config';
-import { genNewComponent, genResourceFile, getPageWxml } from './utils';
+} = require('./config');
+const { genNewComponent, genResourceFile, getPageWxml } = require('./utils');
 
-const run = () => {
-  const pageWxml = getPageWxml(`${ROOT}/src/pages/*/*.wxml`);
-  // const wxml = pageWxml[2];
-  // console.log(pageWxml);
+const run = (options: any = {}) => {
+  options = options  || {};
+  const { inputDir, outputDir, root } = options;
+  const srcPath = inputDir ? join(root, inputDir) : `${root}/src`;
+  const outputPath = outputDir ? join(root, outputDir) : `${root}/src${SKELETON_RELATIVE}`;
+  const pageWxml = getPageWxml(`${srcPath}/pages/*/*.wxml`);
+  const pagePath = `${outputPath}/pages`;
+  const compPath = `${outputPath}/components`;
+
   pageWxml.forEach((wxml: string): void => {
     genNewComponent(wxml, {
-      root: ROOT,
-      srcPath: SRC,
-      outputPath: SKELETON_ROOT,
-      pagePath: SKELETON_PAGES_ROOT,
-      compPath: SKELETON_COMPS_ROOT,
+      root,
+      srcPath,
+      outputPath,
+      pagePath,
+      compPath,
     });
   });
-  genResourceFile();
+  genResourceFile(`${outputPath}${SKELETON_DEFAULT_WXSS_FILE}`);
 };
 
-run();
+run.defaultConfigName = DEFAULT_CONFIG_FILE;
 
-export default run;
+module.exports = run;

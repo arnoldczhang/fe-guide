@@ -8,7 +8,6 @@ import {
   COMP_WXSS,
   DEFAULT_WXSS,
   JSON_CONFIG,
-  SKELETON_DEFAULT_WXSS_ROOT,
 } from '../config';
 import { IAst, ICO, IPath } from '../types';
 import {
@@ -44,7 +43,10 @@ const logger = Logger.getInstance();
 
 export const html2ast = (rawHtml: string): Promise<any> => {
   return new Promise((resolve, reject) => {
-    const parseHandler: DomHandler = new DomHandler((error: any, dom: DomElement[]): any => {
+    const parseHandler: DomHandler = new DomHandler((
+      error: any,
+      dom: DomElement[],
+    ): any => {
       if (error) {
         reject(error);
       } else {
@@ -82,18 +84,26 @@ export const parseFile = (
   options: IPath,
 ): string => {
   const { root, srcPath } = options;
-  const content: string = removeComment(String(read(dest)));
-  const json: ICO = html2json(content);
-  return json2html(treewalk(json, {
-    root,
-    srcPath,
-    protoPath: getDir(src),
-    mainPath: getDir(dest),
-    mainFilePath: dest,
-  }));
+  try {
+    const content: string = removeComment(String(read(dest)));
+    const json: ICO = html2json(content);
+    return json2html(treewalk(json, {
+      root,
+      srcPath,
+      protoPath: getDir(src),
+      mainPath: getDir(dest),
+      mainFilePath: dest,
+    }));
+  } catch (err) {
+    logger.warn(err);
+    return '';
+  }
 };
 
-export const insertInitialWxss = (template: string, wxss?: string): string => {
+export const insertInitialWxss = (
+  template: string,
+  wxss?: string,
+): string => {
   wxss = wxss || COMP_WXSS;
   return `${template}
 ${wxss}`;
@@ -101,7 +111,10 @@ ${wxss}`;
 
 export const isNpmComponent = (path: string): boolean => /^~@/.test(path);
 
-export const getJsonValue = (path: string, key: string): ICO | false => {
+export const getJsonValue = (
+  path: string,
+  key: string,
+): ICO | false => {
   try {
     const content: string = String(read(path));
     let json = parse(content);
@@ -127,23 +140,27 @@ export const updateUsingInJsonConfig = (
   options: IPath,
   srcContent?: string,
 ): void => {
-  ensure(dest);
-  srcContent = srcContent || String(read(src));
-  let usingComponent: ICO | false = getJsonValue(src, JSON_CONFIG.USING);
-  if (usingComponent) {
-    usingComponent = parseFromJSON(
-      src,
-      dest,
-      usingComponent,
-      options,
-    );
-    const compJson: ICO = parse(srcContent);
-    compJson[JSON_CONFIG.USING] = usingComponent;
-    write(dest, stringify(compJson, null, 2));
-  } else {
-    write(dest, srcContent);
+  try {
+    ensure(dest);
+    srcContent = srcContent || String(read(src));
+    let usingComponent: ICO | false = getJsonValue(src, JSON_CONFIG.USING);
+    if (usingComponent) {
+      usingComponent = parseFromJSON(
+        src,
+        dest,
+        usingComponent,
+        options,
+      );
+      const compJson: ICO = parse(srcContent);
+      compJson[JSON_CONFIG.USING] = usingComponent;
+      write(dest, stringify(compJson, null, 2));
+    } else {
+      write(dest, srcContent);
+    }
+    logger.note(dest);
+  } catch (err) {
+    logger.warn(err);
   }
-  logger.note(dest);
 };
 
 /**
@@ -151,7 +168,10 @@ export const updateUsingInJsonConfig = (
  * @param src
  * @param dest
  */
-export const ensureAndInsertWxss = (src: string, dest: string): void => {
+export const ensureAndInsertWxss = (
+  src: string,
+  dest: string,
+): void => {
   if (exists(src)) {
     ensure(dest);
     write(dest, insertInitialWxss(`@import '${getRelativePath(src, dest)}';`));
@@ -184,7 +204,10 @@ export const ensureAndInsertWxml = (
  * @param src
  * @param dest
  */
-export const insertPageWxss = (src: string, dest: string): void => {
+export const insertPageWxss = (
+  src: string,
+  dest: string,
+): void => {
   ensure(dest);
   const content: string = String(exists(src) ? read(src) : '');
   const ast: css.Stylesheet = css.parse(content);
@@ -275,9 +298,9 @@ export const genNewComponent = (
   // logger.note(destJs);
 };
 
-export const genResourceFile = (): void => {
-  ensure(SKELETON_DEFAULT_WXSS_ROOT);
-  write(SKELETON_DEFAULT_WXSS_ROOT, DEFAULT_WXSS);
+export const genResourceFile = (resourceRoot: string): void => {
+  ensure(resourceRoot);
+  write(resourceRoot, DEFAULT_WXSS);
 };
 
 export {

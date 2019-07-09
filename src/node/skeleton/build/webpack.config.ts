@@ -8,7 +8,6 @@ const dev = process.env.NODE_ENV === 'development';
 const config: webpack.Configuration = {
   mode: dev ? 'development' : 'production',
   name: 'server',
-  target: 'node',
   performance: {
     hints: false,
   },
@@ -23,7 +22,8 @@ const config: webpack.Configuration = {
   output: {
     path: path.resolve(__dirname, '../dist'),
     publicPath: '/dist/',
-    // libraryTarget: 'commonjs2',
+    libraryTarget: 'umd',
+    globalObject: 'global',
   },
   resolve: {
     extensions: ['.js', '.mjs', '.json', '.jsx', '.ts', '.tsx', '.css'],
