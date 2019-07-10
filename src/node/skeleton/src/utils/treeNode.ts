@@ -57,9 +57,14 @@ import {
 } from './index';
 import Logger from './log';
 import {
+  genKlass,
+} from './random';
+import {
+  hasWxVariable,
   interceptWxVariable,
   isBindEvent,
   isElse,
+  isId,
   removeBlank,
 } from './reg';
 
@@ -77,13 +82,30 @@ const emptyNode = {};
 export const parseAsTreeNode = (
   ast: IAst,
   options: IPath,
+): IAst => (
+    [
+      parseFromConfig,
+      parseFromSignAttr,
+      parseFromTag,
+      parseFromNode,
+      parseFromAttr,
+    ].reduce((res: IAst, next) => next(res, options), ast)
+);
+
+/**
+ * parseFromConfig
+ * @param ast
+ * @param options
+ */
+const parseFromConfig = (
+  ast: IAst,
+  options: IPath,
 ): IAst => {
-  return [
-    parseFromSignAttr,
-    parseFromTag,
-    parseFromNode,
-    parseFromAttr,
-  ].reduce((res: IAst, next) => next(res, options), ast);
+  const { ignoreTags } = options;
+  if (ignoreTags && ignoreTags.includes(ast.tag)) {
+    return emptyNode;
+  }
+  return ast;
 };
 
 /**
@@ -160,11 +182,13 @@ export const parseFromAttr = (
   options: IPath,
 ): IAst => {
   const { attr } = ast;
+  const { wxmlKlassInfo } = options;
   if (!attr) { return ast; }
   const result: ICO = {};
   const attrKeys = keys(attr);
-  for (let key, i = 0; i < attrKeys.length; i += 1) {
+  for (let key, value, i = 0; i < attrKeys.length; i += 1) {
     key = attrKeys[i];
+    value = attr[key];
     switch (true) {
       // remove all events
       case isBindEvent(key):
@@ -172,6 +196,14 @@ export const parseFromAttr = (
       // remove all `wx:else` and `wx:elif`
       case isElse(key):
         return emptyNode;
+      // replace id(without wx variable) with a random class
+      case isId(key):
+        if (!hasWxVariable(value)) {
+          const [klassName, klass] = genKlass();
+          (result.class ? result : attr).class += ` ${klassName}`;
+          wxmlKlassInfo[`#${value}`] = klass;
+        }
+        break;
       default:
         if (!has(key, result)) {
           result[key] = attr[key];
@@ -207,15 +239,21 @@ export const parseFromTag = (
           const destWxss: string = modifySuffix(destWxml, 'wxss');
           setCach(destWxml, 1, PATH);
           ensureAndInsertWxml(srcWxml, destWxml, options);
-          ensureAndInsertWxss(srcWxss, destWxss);
+          ensureAndInsertWxss(srcWxss, destWxss, options);
         }
       }
       break;
-
-    // TODO <include /> do nothing now
+    // <include />
     case INCLUDE_TAG:
-      return emptyNode;
-
+      if (attr && attr.src) {
+        const srcWxml: string = resolve(protoPath, attr.src);
+        const destWxml: string = resolve(mainPath, attr.src);
+        if (!hasCach(destWxml, PATH)) {
+          setCach(destWxml, 1, PATH);
+          ensureAndInsertWxml(srcWxml, destWxml, options);
+        }
+      }
+      break;
     // <image />
     case IMAGE_TAG:
       if (attr && attr.src && /^\./.test(attr.src)) {
@@ -300,7 +338,7 @@ export const parseFromJSON = (
       updateUsingInJsonConfig(srcJson, destJson, options);
 
       // gen component-wxss
-      ensureAndInsertWxss(srcWxss, destWxss);
+      ensureAndInsertWxss(srcWxss, destWxss, options);
 
       // gen component-js
       ensure(destJs);

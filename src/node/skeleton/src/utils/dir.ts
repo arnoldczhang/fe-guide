@@ -1,15 +1,22 @@
 import * as glob from 'glob';
+import { isArr } from './assert';
 
 export const identity = (v: any): any => v;
 
 export const getPageWxml = (
   path: string,
-  reg?: RegExp,
+  reg?: string | string[] | RegExp,
 ): string[] => {
   reg = reg || /pages\/([^\/]+)\/\1\.wxml$/;
-  return glob.sync(path).filter((name) =>
-    reg.test(name),
-  ) || [];
+  if (isArr(reg)) {
+    reg = new RegExp(`(?:${reg.join('|')})`);
+  } else if (reg === '*') {
+    reg = /[\s\S]*/;
+  }
+
+  return glob.sync(path).filter((name: string) =>
+    (reg as RegExp).test(name),
+  );
 };
 
 export const getDir = (

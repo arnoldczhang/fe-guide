@@ -28,6 +28,7 @@ import {
   write,
 } from './fs';
 import {
+  matchIdStyle,
   removeComment,
   withoutPageSelector,
 } from './reg';
@@ -83,13 +84,11 @@ export const parseFile = (
   dest: string,
   options: IPath,
 ): string => {
-  const { root, srcPath } = options;
   try {
     const content: string = removeComment(String(read(dest)));
     const json: ICO = html2json(content);
     return json2html(treewalk(json, {
-      root,
-      srcPath,
+      ...options,
       protoPath: getDir(src),
       mainPath: getDir(dest),
       mainFilePath: dest,
@@ -157,7 +156,10 @@ export const updateUsingInJsonConfig = (
     } else {
       write(dest, srcContent);
     }
-    logger.note(dest);
+
+    if (options.verbose) {
+      logger.note(dest);
+    }
   } catch (err) {
     logger.warn(err);
   }
@@ -171,11 +173,14 @@ export const updateUsingInJsonConfig = (
 export const ensureAndInsertWxss = (
   src: string,
   dest: string,
+  options: IPath,
 ): void => {
   if (exists(src)) {
     ensure(dest);
     write(dest, insertInitialWxss(`@import '${getRelativePath(src, dest)}';`));
-    // logger.note(dest);
+    if (options.verbose) {
+      logger.note(dest);
+    }
   }
 };
 
@@ -196,7 +201,9 @@ export const ensureAndInsertWxml = (
     dest,
     parseFile(src, dest, options),
   );
-  logger.note(dest);
+  if (options.verbose) {
+    logger.note(dest);
+  }
 };
 
 /**
@@ -207,8 +214,10 @@ export const ensureAndInsertWxml = (
 export const insertPageWxss = (
   src: string,
   dest: string,
+  options: IPath,
 ): void => {
   ensure(dest);
+  const { wxmlKlassInfo } = options;
   const content: string = String(exists(src) ? read(src) : '');
   const ast: css.Stylesheet = css.parse(content);
   const { rules } = ast.stylesheet;
@@ -235,17 +244,26 @@ export const insertPageWxss = (
     */
     } else if (type === 'rule') {
       const newSelectors: string[] = [];
-      selectors.forEach((
-        selector: string,
-        idx: number,
-        selectorArray: string[],
-      ) => {
+      selectors.forEach((selector: string) => {
         const tmpSelectors: string[] = selector.split(/\s/);
-        const lastSelector: string = tmpSelectors[tmpSelectors.length - 1];
+        const last = tmpSelectors.length - 1;
+        const lastSelector: string = tmpSelectors[last];
         if (withoutPageSelector(lastSelector)) {
           newSelectors.push(selector);
         } else {
-          hasPageStyle = true;
+          // if matching id style, rewrite style if is used in wxml
+          const matchResult = matchIdStyle(lastSelector);
+          if (matchResult) {
+            const id = matchResult[2];
+            if (wxmlKlassInfo[id]) {
+              tmpSelectors[last] = lastSelector.replace(id, wxmlKlassInfo[id]);
+              newSelectors.push(tmpSelectors.join(' '));
+            } else {
+              hasPageStyle = true;
+            }
+          } else {
+            hasPageStyle = true;
+          }
         }
       });
 
@@ -261,8 +279,9 @@ export const insertPageWxss = (
   if (hasPageStyle) {
     write(dest, insertInitialWxss(`${css.stringify(ast)}`));
   } else {
-    ensureAndInsertWxss(src, dest);
+    ensureAndInsertWxss(src, dest, options);
   }
+  // FIXME css-treeshake
 };
 
 /**
@@ -289,13 +308,15 @@ export const genNewComponent = (
 
   // gen wxss
   const destWxss: string = `${outputPath}${modifySuffix(relativePath, 'wxss')}`;
-  insertPageWxss(srcWxss, destWxss);
+  insertPageWxss(srcWxss, destWxss, options);
 
   // gen js
   const destJs: string = `${outputPath}${modifySuffix(relativePath, 'js')}`;
   ensure(destJs);
   write(destJs, COMP_JS);
-  // logger.note(destJs);
+  if (options.verbose) {
+    logger.note(destJs);
+  }
 };
 
 export const genResourceFile = (resourceRoot: string): void => {

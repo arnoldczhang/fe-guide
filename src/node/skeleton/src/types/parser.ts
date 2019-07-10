@@ -1,4 +1,4 @@
-import { IAst } from './common';
+import { IAst, ICO } from './common';
 
 export type ASTFC = (ast: IAst) => any;
 
@@ -11,4 +11,7 @@ export interface IPath {
   mainFilePath?: string;
   pagePath?: string;
   compPath?: string;
+  wxmlKlassInfo?: ICO;
+  verbose?: boolean;
+  ignoreTags?: string[];
 }

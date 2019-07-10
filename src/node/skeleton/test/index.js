@@ -9,7 +9,7 @@ const watchOptions = {
   stats: config.stats,
 };
 
-let startWatch = () => script.watch(path.resolve(__dirname, '../dist/index.cjs.js'));
+let startWatch = () => script.watch(path.resolve(__dirname, '../test/test.js'));
 
 compiler.watch(watchOptions, (error, stats) => {
   if (!error && !stats.hasErrors()) {
