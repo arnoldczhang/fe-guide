@@ -666,6 +666,26 @@ var flattenArray = (arr) => {
 - 优先访问当前节点的邻接节点
 - 当没有邻接节点时，另选一个未被访问的节点，重复上述过程
 
-#### 例子：拷贝
+---
 
+### es5/es6继承的区别
+function vs class
+- function声明提升，class有暂时性死区
+- function内部可引用未声明变量，class内部不行，因为会自动启用严格模式
+- function方法、原型可枚举，class都不可枚举
+- class的静态方法、原型方法都没有prototype，也没[[constructor]]，所以都不能实例化
+- class只能用new调用
+- class内部重写类名无效
+
+---
+
+### setTimeout、Promise、Async/Await区别
+- setTimeout属于宏任务
+- Promise本身是同步的立即执行函数，Promise.then属于微任务
+- async方法执行时，遇到await会立即执行表达式，表达式之后的代码放到微任务执行
+
+---
+
+### 模拟async/await
+参考babel转换后的代码
 
