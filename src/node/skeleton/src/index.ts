@@ -7,10 +7,11 @@ const {
   SKELETON_ROOT,
   SRC,
 } = require('./config');
+const { init: initLogger } = require('./utils/log');
 const { assertOptions } = require('./utils/assert');
 const { genNewComponent, genResourceFile, getPageWxml } = require('./utils');
 
-const run = (options: any = {}) => {
+const run = (options: any = {}): void => {
   options = options  || {};
   assertOptions(options);
   const { inputDir, outputDir, root, ignore, page } = options;
@@ -19,17 +20,20 @@ const run = (options: any = {}) => {
   const pageWxml = getPageWxml(`${srcPath}/pages/*/*.wxml`, page);
   const pagePath = `${outputPath}/pages`;
   const compPath = `${outputPath}/components`;
+  initLogger(pageWxml);
   pageWxml.forEach((wxml: string): void => {
-    genNewComponent(wxml, {
+    const pageOptions: any = {
       root,
       srcPath,
       outputPath,
       pagePath,
       compPath,
       wxmlKlassInfo: {},
+      wxmlStructInfo: {},
       verbose: false,
       ignoreTags: ignore,
-    });
+    };
+    genNewComponent(wxml, pageOptions);
   });
   genResourceFile(`${outputPath}${SKELETON_DEFAULT_WXSS_FILE}`);
 };

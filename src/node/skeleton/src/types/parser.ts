@@ -12,6 +12,7 @@ export interface IPath {
   pagePath?: string;
   compPath?: string;
   wxmlKlassInfo?: ICO;
+  wxmlStructInfo?: ICO;
   verbose?: boolean;
   ignoreTags?: string[];
 }

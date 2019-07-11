@@ -9,11 +9,11 @@ export const getPageWxml = (
 ): string[] => {
   reg = reg || /pages\/([^\/]+)\/\1\.wxml$/;
   if (isArr(reg)) {
-    reg = new RegExp(`(?:${reg.join('|')})`);
+    reg = reg.map((r: string) => /.wxml$/.test(r) ? r : `${r.replace(/\.[^\.\\\/]+$/, '')}.wxml`);
+    reg = new RegExp(`(?:${reg.join('|')})$`);
   } else if (reg === '*') {
     reg = /[\s\S]*/;
   }
-
   return glob.sync(path).filter((name: string) =>
     (reg as RegExp).test(name),
   );

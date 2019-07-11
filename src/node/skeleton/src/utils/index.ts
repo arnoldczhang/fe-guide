@@ -8,8 +8,11 @@ import {
   COMP_WXSS,
   DEFAULT_WXSS,
   JSON_CONFIG,
+  TEXT,
 } from '../config';
+import { COMMENT_TAG, IMPORT_TAG, INCLUDE_TAG, RULE_TAG, TEMPLATE_TAG } from '../config/tag';
 import { IAst, ICO, IPath } from '../types';
+import { is } from './assert';
 import {
   addSuffix,
   getDir,
@@ -35,6 +38,7 @@ import {
 import { parseAsTreeNode, parseFromJSON } from './treeNode';
 
 import Logger from './log';
+import { styleTreeShake } from './treeshake';
 
 const {
   parse,
@@ -42,6 +46,10 @@ const {
 } = JSON;
 const logger = Logger.getInstance();
 
+/**
+ * html2ast
+ * @param rawHtml
+ */
 export const html2ast = (rawHtml: string): Promise<any> => {
   return new Promise((resolve, reject) => {
     const parseHandler: DomHandler = new DomHandler((
@@ -59,6 +67,11 @@ export const html2ast = (rawHtml: string): Promise<any> => {
   });
 };
 
+/**
+ * treewalk
+ * @param ast
+ * @param options
+ */
 export const treewalk = (
   ast: IAst,
   options: IPath,
@@ -79,6 +92,12 @@ export const treewalk = (
   return ast;
 };
 
+/**
+ * parseFile
+ * @param src
+ * @param dest
+ * @param options
+ */
 export const parseFile = (
   src: string,
   dest: string,
@@ -93,12 +112,17 @@ export const parseFile = (
       mainPath: getDir(dest),
       mainFilePath: dest,
     }));
-  } catch (err) {
-    logger.warn(err);
+  } catch ({ message }) {
+    logger.warn(message);
     return '';
   }
 };
 
+/**
+ * insertInitialWxss
+ * @param template
+ * @param wxss
+ */
 export const insertInitialWxss = (
   template: string,
   wxss?: string,
@@ -108,8 +132,11 @@ export const insertInitialWxss = (
 ${wxss}`;
 };
 
-export const isNpmComponent = (path: string): boolean => /^~@/.test(path);
-
+/**
+ * getJsonValue
+ * @param path
+ * @param key
+ */
 export const getJsonValue = (
   path: string,
   key: string,
@@ -156,12 +183,8 @@ export const updateUsingInJsonConfig = (
     } else {
       write(dest, srcContent);
     }
-
-    if (options.verbose) {
-      logger.note(dest);
-    }
-  } catch (err) {
-    logger.warn(err);
+  } catch ({ message }) {
+    logger.warn(message);
   }
 };
 
@@ -178,9 +201,6 @@ export const ensureAndInsertWxss = (
   if (exists(src)) {
     ensure(dest);
     write(dest, insertInitialWxss(`@import '${getRelativePath(src, dest)}';`));
-    if (options.verbose) {
-      logger.note(dest);
-    }
   }
 };
 
@@ -202,7 +222,7 @@ export const ensureAndInsertWxml = (
     parseFile(src, dest, options),
   );
   if (options.verbose) {
-    logger.note(dest);
+    logger.await(dest);
   }
 };
 
@@ -222,32 +242,24 @@ export const insertPageWxss = (
   const ast: css.Stylesheet = css.parse(content);
   const { rules } = ast.stylesheet;
   let hasPageStyle: boolean = false;
+
   rules.forEach((
     rule: css.Rule & css.Import,
     index: number,
   ) => {
     const { type, selectors } = rule;
-    /*
-    {
-      type: 'import',
-      import: '"../../components/xx/xx.wxss"'
-    }
-    */
-    if (type === 'import') {
+    // { type: 'import', import: '"../../components/xx/xx.wxss"'}
+    if (is(type, IMPORT_TAG)) {
       const srcPath: string = join(getDir(src), rule.import.slice(1, -1));
       rule.import = `"${getRelativePath(srcPath, dest)}"`;
-    /*
-    {
-      type: 'rule',
-      selectors: [ '.loading-data', '.no-data' ]
-    }
-    */
-    } else if (type === 'rule') {
+   // { type: 'rule', selectors: [ '.loading-data', '.no-data' ]}
+    } else if (is(type, RULE_TAG)) {
       const newSelectors: string[] = [];
       selectors.forEach((selector: string) => {
-        const tmpSelectors: string[] = selector.split(/\s/);
+        const tmpSelectors: string[] = selector.split(/\s+/);
         const last = tmpSelectors.length - 1;
         const lastSelector: string = tmpSelectors[last];
+
         if (withoutPageSelector(lastSelector)) {
           newSelectors.push(selector);
         } else {
@@ -257,13 +269,10 @@ export const insertPageWxss = (
             const id = matchResult[2];
             if (wxmlKlassInfo[id]) {
               tmpSelectors[last] = lastSelector.replace(id, wxmlKlassInfo[id]);
-              newSelectors.push(tmpSelectors.join(' '));
-            } else {
-              hasPageStyle = true;
+              return newSelectors.push(tmpSelectors.join(' '));
             }
-          } else {
-            hasPageStyle = true;
           }
+          hasPageStyle = true;
         }
       });
 
@@ -273,15 +282,12 @@ export const insertPageWxss = (
       rule.selectors = newSelectors;
     }
   });
-
-  ast.stylesheet.rules = rules.filter((v: any) => v);
-
+  ast.stylesheet.rules = styleTreeShake(rules.filter(identity), options);
   if (hasPageStyle) {
     write(dest, insertInitialWxss(`${css.stringify(ast)}`));
   } else {
     ensureAndInsertWxss(src, dest, options);
   }
-  // FIXME css-treeshake
 };
 
 /**
@@ -315,10 +321,14 @@ export const genNewComponent = (
   ensure(destJs);
   write(destJs, COMP_JS);
   if (options.verbose) {
-    logger.note(destJs);
+    logger.success(getDir(srcWxml));
   }
 };
 
+/**
+ * genResourceFile
+ * @param resourceRoot
+ */
 export const genResourceFile = (resourceRoot: string): void => {
   ensure(resourceRoot);
   write(resourceRoot, DEFAULT_WXSS);

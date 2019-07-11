@@ -23,6 +23,8 @@ export const COMP_JS = `Component({
   },
   data: {
   },
+  attached() {
+  },
   methods: {
   },
 });

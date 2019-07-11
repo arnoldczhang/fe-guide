@@ -18,7 +18,7 @@ export const read = (
   file: string,
   options?: { flag?: string; } | { encoding: string; flag?: string; },
   callback?: CF,
-) => {
+): Promise<any> | string | void | Buffer => {
   options = options || { encoding: 'utf-8' };
   if (isFunc(callback)) {
     return readFile(file, options, callback);
@@ -31,7 +31,7 @@ export const copy = (
   dest: string,
   flag?: number,
   callback?: CF,
-) => {
+): void => {
   flag = flag || 0;
   if (isFunc(callback)) {
     return copyFile(src, dest, flag, callback);
@@ -44,7 +44,7 @@ export const write = (
   data: string,
   options?: { flag?: string; } | { encoding: string; flag?: string; },
   callback?: CF,
-) => {
+): void => {
   options = options || { encoding: 'utf-8' };
   if (isFunc(callback)) {
     return writeFile(file, data, options, callback);
@@ -55,14 +55,17 @@ export const write = (
 export const ensure = (
   file: string,
   callback?: CF,
-) => {
+): void => {
   if (isFunc(callback)) {
     return ensureFile(file, callback);
   }
   return ensureFileSync(file);
 };
 
-export const exists = (file: string, callback?: CF) => {
+export const exists = (
+  file: string,
+  callback?: CF,
+): boolean => {
   if (isFunc(callback)) {
     throw new Error('`fs.exists` is already deprecated');
   }

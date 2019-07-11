@@ -1,4 +1,5 @@
 import { transformSync } from '@babel/core';
+import * as css from 'css';
 import { join, resolve } from 'path';
 import * as pathResolve from 'resolve';
 import {
@@ -15,6 +16,7 @@ import {
   JSON_CONFIG,
   KLASS,
   PATH,
+  TEMPLATE_TAG,
   TEXT,
   TPL_TAG,
   WX_FOR,
@@ -25,7 +27,7 @@ import {
   WXS_TAG,
 } from '../config';
 import { CF, IAst, ICO, IPath } from '../types';
-import { has } from './assert';
+import { has, is } from './assert';
 import {
   hasCach,
   setCach,
@@ -50,7 +52,6 @@ import {
   getJsonValue,
   html2json,
   insertInitialWxss,
-  isNpmComponent,
   modifySuffix,
   parseFile,
   updateUsingInJsonConfig,
@@ -65,13 +66,15 @@ import {
   isBindEvent,
   isElse,
   isId,
+  isKlass,
+  isNpmComponent,
   removeBlank,
 } from './reg';
+import { cachKlassStruct } from './treeshake';
 
 const {
   keys,
 } = Object;
-const logger = Logger.getInstance();
 const emptyNode = {};
 
 /**
@@ -85,10 +88,11 @@ export const parseAsTreeNode = (
 ): IAst => (
     [
       parseFromConfig,
-      parseFromSignAttr,
+      parseFromCustomAttr,
       parseFromTag,
       parseFromNode,
       parseFromAttr,
+      parseFromFinalTag,
     ].reduce((res: IAst, next) => next(res, options), ast)
 );
 
@@ -127,11 +131,11 @@ export const parseFromNode = (
 };
 
 /**
- * parseFromSignAttr
+ * parseFromCustomAttr
  * @param ast
  * @param options
  */
-export const parseFromSignAttr = (
+export const parseFromCustomAttr = (
   ast: IAst,
   options: IPath,
 ): IAst => {
@@ -212,6 +216,34 @@ export const parseFromAttr = (
     }
   }
   ast.attr = result;
+  return ast;
+};
+
+/**
+ * parseFromFinalTag
+ * @param ast
+ * @param options
+ */
+export const parseFromFinalTag = (
+  ast: IAst,
+  options: IPath,
+): IAst => {
+  const { tag, attr } = ast;
+  switch (true) {
+    // <template />
+    // cach template file for wxss treeshake
+    case is(tag, TEMPLATE_TAG):
+      if (attr && attr.name) {
+        cachKlassStruct(`${TEMPLATE_TAG}.${attr.name}`, ast, options);
+      }
+      break;
+    // cach class tag for wxss treeshake
+    case !!(attr && attr.class):
+      cachKlassStruct(attr.class, ast, options);
+      break;
+    default:
+      break;
+  }
   return ast;
 };
 
@@ -343,7 +375,6 @@ export const parseFromJSON = (
       // gen component-js
       ensure(destJs);
       write(destJs, COMP_JS);
-      // logger.note(destJs);
 
       // FIXME copy Components.properties to destJs with babel
       // const { ast } = transformSync(String(read(srcJs)), {

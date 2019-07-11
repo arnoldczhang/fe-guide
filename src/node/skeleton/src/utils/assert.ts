@@ -1,28 +1,41 @@
-import { ICO } from '../types';
+import { CF, ICO } from '../types';
 
-export const is = (val: any, ...args: any[]) => (
+export const is = (val: any, ...args: any[]): boolean => (
   args.every((arg: any) => (arg === val))
 );
 
-export const has = (key: string | number, obj: ICO) => key in obj;
+export const has = (key: string | number, obj: ICO): boolean => key in obj;
 
-export const isType = (val: any, type: string) => typeof val === type;
+export const isType = (val: any, type: string): boolean => typeof val === type;
 
-export const isFunc = (val: any) => isType(val, 'function');
+export const isFunc = (val: any): boolean => isType(val, 'function');
 
-export const isStr = (val: any) => isType(val, 'function');
+export const isStr = (val: any): boolean => isType(val, 'string');
 
 export const isArr = Array.isArray;
 
-export const assertOptions = (options: ICO = {}) => {
-  const { ignore, page } = options;
+export const assert = (
+  pass: boolean,
+  errMsg: string,
+): void => {
+  if (!pass) {
+    throw new Error(errMsg);
+  }
+};
+
+export const assertOptions = (options: ICO = {}): void => {
+  const {
+    ignore,
+    page,
+    inputDir = '',
+    outDir = '',
+  } = options;
   if (isStr(ignore)) {
     options.ignore = [ignore];
-  } else if (!isArr(ignore) && ignore) {
-    throw new TypeError('ignore传值异常');
+  } else {
+    assert(!(!isArr(ignore) && ignore), 'ignore传值异常');
   }
-
-  if (!isArr(page) && page !== '*') {
-    throw new TypeError('page传值异常');
-  }
+  assert(!(!isArr(page) && page !== '*'), 'page传值异常');
+  assert(isStr(inputDir), 'inputDir传值异常');
+  assert(isStr(outDir), 'outDir传值异常');
 };
