@@ -7,3 +7,5 @@ export const genKlass = (num: number = Math.random()): string[] => {
   }
   return [klass, `.${klass}`];
 };
+
+export const getRepeatArr = (times: number, filler: any) => Array(times).fill(filler);

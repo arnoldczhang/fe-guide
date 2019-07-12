@@ -1,4 +1,6 @@
-const PRE = 'skull';
+export const PRE = 'skull';
+
+export const WX_DATA = 'data';
 
 export const WX_IF = 'wx:if';
 

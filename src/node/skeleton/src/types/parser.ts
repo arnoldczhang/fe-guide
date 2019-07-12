@@ -14,5 +14,7 @@ export interface IPath {
   wxmlKlassInfo?: ICO;
   wxmlStructInfo?: ICO;
   verbose?: boolean;
+  treeshake?: boolean;
+  isPage?: boolean;
   ignoreTags?: string[];
 }

@@ -14,7 +14,7 @@ const { genNewComponent, genResourceFile, getPageWxml } = require('./utils');
 const run = (options: any = {}): void => {
   options = options  || {};
   assertOptions(options);
-  const { inputDir, outputDir, root, ignore, page } = options;
+  const { inputDir, outputDir, root, ignore, page, treeshake } = options;
   const srcPath = inputDir ? join(root, inputDir) : `${root}/src`;
   const outputPath = outputDir ? join(root, outputDir) : `${root}/src${SKELETON_RELATIVE}`;
   const pageWxml = getPageWxml(`${srcPath}/pages/*/*.wxml`, page);
@@ -32,6 +32,7 @@ const run = (options: any = {}): void => {
       wxmlStructInfo: {},
       verbose: false,
       ignoreTags: ignore,
+      treeshake,
     };
     genNewComponent(wxml, pageOptions);
   });

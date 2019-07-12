@@ -1,9 +1,16 @@
+import { NodePath } from '@babel/core';
 import * as css from 'css';
-import { COMMENT_TAG, IMPORT_TAG, INCLUDE_TAG, RULE_TAG, TEMPLATE_TAG, TEXT } from "../config";
+import { COMMENT_TAG, IMPORT_TAG, INCLUDE_TAG, RULE_TAG, TEMPLATE_TAG, TEXT, wx, WX_DATA } from "../config";
 import { IAst, ICO, IPath } from "../types";
 import { is, isArr, isStr } from "./assert";
-import { identity } from './dir';
-import { replacePseudo, splitWxAttrs } from "./reg";
+import { transform, traverse } from './babel';
+import { identity, modifySuffix } from './dir';
+import { exists, read } from './fs';
+import Logger from './log';
+import { getRepeatArr } from './random';
+import { hasObjKey, hasUnDefVariable, iterateObjValue, replacePseudo, splitWith, splitWxAttrs } from "./reg";
+
+const logger = Logger.getInstance();
 
 /**
  * getFlattenChild
@@ -72,27 +79,31 @@ export const styleTreeShake = (
     rule: css.Rule & css.Import,
   ) => {
     const { type, selectors } = rule;
-    const newSelectors: string[] = [];
-
     if (is(type, RULE_TAG)) {
+      const newSelectors: string[] = [];
       selectors.forEach((selector: string) => {
-        const selectorArr = replacePseudo(selector).split(/\s+/);
+        const selectorArr = splitWith(replacePseudo(selector));
         if (hasKlassInStruct(selectorArr, wxmlStructInfo)) {
           newSelectors.push(selector);
         }
       });
+      if (!newSelectors.length) {
+        return false;
+      }
+      rule.selectors = newSelectors;
     } else if (is(type, COMMENT_TAG)) {
       return false;
     }
-
-    if (!newSelectors.length) {
-      return false;
-    }
-    rule.selectors = newSelectors;
     return true;
   }).filter(identity);
 };
 
+/**
+ * hasChildWithKlass
+ * @param klass
+ * @param child
+ * @param result
+ */
 export const hasChildWithKlass = (
   klass: string,
   child: IAst[],
@@ -100,9 +111,16 @@ export const hasChildWithKlass = (
 ): IAst[] => {
   return child.reduce((res: IAst[], ch: IAst) => {
     const { attr = {}, tag } = ch;
-    // if (attr.class) {
-
-    // }
+    const { class: aKlass } = attr;
+    if (aKlass) {
+      const matchKlass = (isStr(aKlass) && is(aKlass, klass))
+        || (isArr(aKlass) && aKlass.includes(klass));
+      if (matchKlass) {
+        res.push(ch);
+      } else {
+        hasChildWithKlass(klass, ch.child, res);
+      }
+    }
     return res;
   }, result);
 };
@@ -119,17 +137,103 @@ export const hasKlassInStruct = (
   let nextChildren: ICO[];
   for (let klass of klassList) {
     klass = klass.replace('.', '');
-    if (!is(klass, '>')) {
+    if (!is(klass, '>') && !is(klass, '+')) {
       const children = struct[klass];
       if (!children) { return false; }
       if (nextChildren) {
-        debugger;
         nextChildren = hasChildWithKlass(klass, nextChildren);
         if (!nextChildren) { return false; }
         continue;
       }
       nextChildren = children;
+    } else {
+      // FIXME resolve .a > .b / .a + .c > .b
     }
   }
   return true;
+};
+
+export const getExecWxml = (
+  content: string,
+  wxml: string,
+): string => {
+  const argSet: Set<string> = new Set();
+  const fnBody = `return ${content};`;
+  iterateObjValue(content, (res: string[]) => {
+    if (hasObjKey(res[1])) {
+      argSet.add(RegExp.$1);
+    }
+  });
+  const argArr = [...argSet];
+  const fn = new Function(...argArr.concat(fnBody));
+  const data = fn(...getRepeatArr(argArr.length, wx));
+  const keys = Object.keys(data);
+  wxml = wxml.replace(/\{\{([^\{\}]+)\}\}/g, (m, $1) => {
+    let result;
+    if ($1.includes('...') || $1.includes(',')) {
+      result = `$\{JSON.stringify({${$1}})\}`;
+    } else {
+      result = `$\{${$1}\}`;
+    }
+
+    try {
+      new Function(...keys as string[], `return \`${result}\`;`)();
+    } catch ({ message }) {
+      if (hasUnDefVariable(message)) {
+        data[RegExp.$1] = { toString() { return ''; } };
+      }
+    }
+    return result;
+  });
+  const genVnodeFn = new Function(...Object.keys(data) as string[], `debugger; return \`${wxml}\`;`);
+  try {
+    debugger;
+    genVnodeFn.apply(null, Object.values(data));
+  } catch (err) {
+    console.log(err);
+  }
+  return wxml;
+};
+
+/**
+ * wxmlTreeShake
+ * @param content
+ * @param src
+ * @param options
+ */
+export const wxmlTreeShake = (
+  content: string,
+  src: string,
+  options: IPath,
+): string => {
+  const { isPage } = options;
+  const srcJs: string = modifySuffix(src, 'js');
+  if (isPage) {
+    const jsContent: string | void | Promise<any> | Buffer = exists(srcJs) ? read(srcJs) : '';
+    const result = transform(jsContent as string) || {};
+    const { ast } = result;
+    let maxDiff: number[] = [];
+    traverse(ast, {
+      ObjectProperty(path: NodePath) {
+        const node: ICO = path.node;
+        const { key, value } = node;
+        if (is(key.name, WX_DATA)) {
+          const { start, end } = value;
+          const isEmptyOrMaxDiff = !maxDiff.length
+            || (end - start > maxDiff[1] - maxDiff[0]);
+          if (isEmptyOrMaxDiff) {
+            maxDiff = [start, end];
+          }
+        }
+      },
+    });
+
+    try {
+      const dataString = (jsContent as string).slice(...maxDiff);
+      return getExecWxml(dataString, content);
+    } catch ({ message }) {
+      logger.warn(message);
+    }
+  }
+  return content;
 };

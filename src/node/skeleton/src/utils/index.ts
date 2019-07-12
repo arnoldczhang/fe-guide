@@ -30,15 +30,16 @@ import {
   read,
   write,
 } from './fs';
+import { parseAsTreeNode, parseFromJSON } from './parser';
 import {
   matchIdStyle,
   removeComment,
+  splitWith,
   withoutPageSelector,
 } from './reg';
-import { parseAsTreeNode, parseFromJSON } from './treeNode';
 
 import Logger from './log';
-import { styleTreeShake } from './treeshake';
+import { styleTreeShake, wxmlTreeShake } from './treeshake';
 
 const {
   parse,
@@ -97,15 +98,17 @@ export const treewalk = (
  * @param src
  * @param dest
  * @param options
+ * @param isPage
  */
 export const parseFile = (
   src: string,
   dest: string,
   options: IPath,
+  isPage?: boolean,
 ): string => {
   try {
     const content: string = removeComment(String(read(dest)));
-    const json: ICO = html2json(content);
+    const json: ICO = html2json(wxmlTreeShake(content, src, { ...options, isPage }));
     return json2html(treewalk(json, {
       ...options,
       protoPath: getDir(src),
@@ -171,12 +174,7 @@ export const updateUsingInJsonConfig = (
     srcContent = srcContent || String(read(src));
     let usingComponent: ICO | false = getJsonValue(src, JSON_CONFIG.USING);
     if (usingComponent) {
-      usingComponent = parseFromJSON(
-        src,
-        dest,
-        usingComponent,
-        options,
-      );
+      usingComponent = parseFromJSON(src, dest, usingComponent, options);
       const compJson: ICO = parse(srcContent);
       compJson[JSON_CONFIG.USING] = usingComponent;
       write(dest, stringify(compJson, null, 2));
@@ -209,17 +207,19 @@ export const ensureAndInsertWxss = (
  * @param src
  * @param dest
  * @param options
+ * @param isPage
  */
 export const ensureAndInsertWxml = (
   src: string,
   dest: string,
   options?: IPath,
+  isPage?: boolean,
 ): void => {
   ensure(dest);
   copy(src, dest);
   write(
     dest,
-    parseFile(src, dest, options),
+    parseFile(src, dest, options, isPage),
   );
   if (options.verbose) {
     logger.await(dest);
@@ -237,10 +237,10 @@ export const insertPageWxss = (
   options: IPath,
 ): void => {
   ensure(dest);
-  const { wxmlKlassInfo } = options;
+  const { wxmlKlassInfo, treeshake } = options;
   const content: string = String(exists(src) ? read(src) : '');
   const ast: css.Stylesheet = css.parse(content);
-  const { rules } = ast.stylesheet;
+  let { rules } = ast.stylesheet;
   let hasPageStyle: boolean = false;
 
   rules.forEach((
@@ -256,7 +256,7 @@ export const insertPageWxss = (
     } else if (is(type, RULE_TAG)) {
       const newSelectors: string[] = [];
       selectors.forEach((selector: string) => {
-        const tmpSelectors: string[] = selector.split(/\s+/);
+        const tmpSelectors: string[] = splitWith(selector);
         const last = tmpSelectors.length - 1;
         const lastSelector: string = tmpSelectors[last];
 
@@ -282,7 +282,10 @@ export const insertPageWxss = (
       rule.selectors = newSelectors;
     }
   });
-  ast.stylesheet.rules = styleTreeShake(rules.filter(identity), options);
+  rules = rules.filter(identity);
+  // wxss treeshake
+  ast.stylesheet.rules = treeshake ? styleTreeShake(rules, options) : rules;
+
   if (hasPageStyle) {
     write(dest, insertInitialWxss(`${css.stringify(ast)}`));
   } else {
@@ -306,7 +309,7 @@ export const genNewComponent = (
 
   // gen wxml
   const destWxml: string = `${outputPath}${relativePath}`;
-  ensureAndInsertWxml(srcWxml, destWxml, options);
+  ensureAndInsertWxml(srcWxml, destWxml, options, true);
 
   // gen json
   const destJson: string = `${outputPath}${modifySuffix(relativePath, 'json')}`;

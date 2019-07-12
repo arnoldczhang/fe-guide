@@ -1,4 +1,8 @@
-// test
+import { CF } from "../types";
+
+// =========== //
+// === test === //
+// =========== //
 export const isNpmComponent = (path: string): boolean => (
   /^~@/.test(path)
 );
@@ -28,7 +32,17 @@ export const withoutPageSelector = (selector: string): boolean => (
   !/(?:^[a-zA-Z]|^\:\:?|#|\[)/.test(selector)
 );
 
-// match
+export const hasObjKey = (input: string): boolean => (
+  /^\s*([^\.]+)\./.test(input)
+);
+
+export const hasUnDefVariable = (input: string): boolean => (
+  /^([^\s]+) is not defined/.test(input)
+);
+
+// ============= //
+// === match === //
+// ============= //
 export const splitWxAttrs = (input: string): string[] => (
   input.match(/(\s*[^\{\}\s]+|\s*\{\{[^\{\}]+\}\})+?/g)
     .reduce((res: string[], attr: string) => {
@@ -52,6 +66,9 @@ export const matchIdStyle = (key: string): any[] | null => (
   key.match(/(?:^([\.\w]+)?(#[^#\.\:]+)(\.\w+)?(\:[a-z]+)?$)/)
 );
 
+// ============== //
+// === replace === //
+// ============== //
 export const interceptWxVariable = (
   input: string,
   replacement?: string,
@@ -63,7 +80,7 @@ export const replacePseudo = (
   input: string,
   replacement?: string,
 ): string => (
-  input.replace(/:[a-zA-Z\-]+/g, replacement || '')
+  input.replace(/::?[a-zA-Z\-]+/g, replacement || '')
 );
 
 export const removeComment = (file: string): string => (
@@ -77,4 +94,29 @@ export const removeComment = (file: string): string => (
 
 export const removeBlank = (input: string): string => (
   input.replace(/(?:\n|\t|^ +| +$|\{\{[^\{\}]*\}\})/g, '')
+);
+
+// =========== //
+// === exec === //
+// =========== //
+export const iterateObjValue = (
+  input: string,
+  iteratee: (r: any[] | null) => void,
+) => {
+  const valRE = /\:\s*([^,]+)/g;
+  let res: any[] | null = valRE.exec(input);
+  while (res) {
+    iteratee(res);
+    res = valRE.exec(input);
+  }
+};
+
+// =========== //
+// === split === //
+// =========== //
+export const splitWith = (
+  input: string,
+  reg: RegExp | string = /\s+/,
+) => (
+  input.split(reg)
 );

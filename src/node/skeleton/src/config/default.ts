@@ -31,3 +31,11 @@ export const COMP_JS = `Component({
 `;
 
 export const COMP_WXML = ``;
+
+export const wx = new Proxy({}, {
+  get(key) {
+    const fn = () => wx;
+    fn.__proto__ = wx;
+    return fn;
+  },
+});

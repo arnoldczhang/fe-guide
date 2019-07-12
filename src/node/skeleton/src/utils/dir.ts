@@ -1,8 +1,11 @@
 import * as glob from 'glob';
 import { isArr } from './assert';
 
-export const identity = (v: any): any => v;
-
+/**
+ * getPageWxml
+ * @param path
+ * @param reg
+ */
 export const getPageWxml = (
   path: string,
   reg?: string | string[] | RegExp,
@@ -19,6 +22,12 @@ export const getPageWxml = (
   );
 };
 
+/**
+ * getDir
+ * @param path
+ * @param reg
+ * @param replacer
+ */
 export const getDir = (
   path: string,
   reg?: RegExp,
@@ -29,14 +38,11 @@ export const getDir = (
   return path.replace(reg, replacer);
 };
 
-export const getFileName = (path: string): string => getDir(path, /.*\/([^\/]+)$/, '$1');
-
-export const getSplitDir = (path: string): string[] => getDir(path).split('/').filter(identity);
-
-export const modifySuffix = (file: string, suffix: string): string => file.replace(/(\.)[^\.]+$/, `$1${suffix}`);
-
-export const addSuffix = (file: string, suffix: string): string => `${file}.${suffix}`;
-
+/**
+ * getRelativePath
+ * @param src
+ * @param dest
+ */
 export const getRelativePath = (src: string, dest: string) => {
   const fileName = getFileName(src);
   const srcArr: string[] = getSplitDir(src);
@@ -54,3 +60,13 @@ export const getRelativePath = (src: string, dest: string) => {
   }
   return `${Array(destLen - index).fill('..').join('/')}/${srcArr.slice(index).join('/')}/${fileName}`;
 };
+
+export const identity = (v: any): any => v;
+
+export const getFileName = (path: string): string => getDir(path, /.*\/([^\/]+)$/, '$1');
+
+export const getSplitDir = (path: string): string[] => getDir(path).split('/').filter(identity);
+
+export const modifySuffix = (file: string, suffix: string): string => file.replace(/(\.)[^\.]+$/, `$1${suffix}`);
+
+export const addSuffix = (file: string, suffix: string): string => `${file}.${suffix}`;
