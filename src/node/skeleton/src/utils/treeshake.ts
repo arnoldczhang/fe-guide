@@ -167,13 +167,13 @@ export const getExecWxml = (
   const argArr = [...argSet];
   const fn = new Function(...argArr.concat(fnBody));
   const data = fn(...getRepeatArr(argArr.length, wx));
-  const transWxml = wxml.replace(/\{\{([^\{\}]+)\}\}/g, (m, $1) => {
+  const transWxml = wxml.replace(/(['"]*)\{\{([^\{\}]+)\}\}(\1)/g, (m, $1, $2, $3) => {
     let result;
     let scanning = true;
-    if ($1.includes('...') || $1.includes(',')) {
+    if ($2.includes('...') || $2.includes(',')) {
       result = `$\{JSON.stringify({${$1}})\}`;
     } else {
-      result = `$\{${$1}\}`;
+      result = `${$1}$\{${$2}\}${$3}`;
     }
 
     // register any undef variable with default value `wx`

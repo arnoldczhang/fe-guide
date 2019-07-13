@@ -147,7 +147,25 @@ node11以后
 
 - - -
 
-## 交互事件触发:
+## 交互事件触发
+[参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/7)
+
+### 总结
+- 一次事件循环：同步任务 -> 宏任务 -> 微任务 -> render
+- 即使是立即resolve/reject，then还是微任务
+- 微任务中嵌套的微任务，仍然会在当前事件循环中执行完
+- await是generator + promise的语法糖，类似Promise执行方式，[参考](../fe-interview/src/common.md#模拟async/await)例
+  ```js
+  await console.log(1);
+  console.log(2);
+
+  // 也就是
+  Promise.resolve(console.log(1)).then(() => {
+    console.log(2);
+  });
+  ```
+
+
 例1：
 ```js
 let button = document.querySelector('#button');

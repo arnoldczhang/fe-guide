@@ -29,6 +29,16 @@
 * [`flattenArray`](#flattenArray)
 * [`数组去重uniq`](#数组去重uniq)
 * [`何为可迭代对象`](#何为可迭代对象)
+* [`Set、Map、WeakSet和WeakMap的区别`](#Set、Map、WeakSet和WeakMap的区别)
+* [`深度优先和广度优先`](#深度优先和广度优先)
+* [`es5/es6继承的区别`](#es5/es6继承的区别)
+* [`setTimeout、Promise、Async/Await区别`](#setTimeout、Promise、Async/Await区别)
+* [`模拟async&await`](#模拟async&await)
+* [`同/异任务`](#同/异任务)
+* [`算法题`](#算法题)
+* [`如何实现一个new`](#如何实现一个new)
+* [`http2多路复用`](#http2多路复用)
+* [`三次握手&四次挥手的理解`](#三次握手&四次挥手的理解)
 
 </details>
 
@@ -670,9 +680,13 @@ var flattenArray = (arr) => {
 
 ### es5/es6继承的区别
 function vs class
+
+#### function
 - function声明提升，class有暂时性死区
 - function内部可引用未声明变量，class内部不行，因为会自动启用严格模式
 - function方法、原型可枚举，class都不可枚举
+
+#### class
 - class的静态方法、原型方法都没有prototype，也没[[constructor]]，所以都不能实例化
 - class只能用new调用
 - class内部重写类名无效
@@ -686,6 +700,91 @@ function vs class
 
 ---
 
-### 模拟async/await
+### 模拟async&await
 参考babel转换后的代码
+
+async/await -> Generator -> Promise
+依次执行context.next()，直到context.stop()，触发this.done = true，resolve Promise
+
+---
+
+### 同/异任务
+[参考](../../js&browser/并发模型-event_loop.md#交互事件触发)
+
+---
+
+### 算法题
+```js
+// 例：已知如下数组：
+// var arr = [ [1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14] ] ] ], 10];
+// 编写一个程序将数组扁平化去并除其中重复部分数据，最终得到一个升序且不重复的数组
+
+// 方法一：正道
+function flatten(arr = [], res = []) {
+	return arr.reduce((r, item) => {
+		if (Array.isArray(item)) {
+			flatten(item, r);
+		} else {
+			r.push(item);
+		}
+		return r;
+	}, res);
+};
+
+function diff(arr = []) {
+	return [...new Set(arr)];
+};
+
+function upper(arr = []) {
+	return arr.sort((pre, next) => pre - next);
+};
+
+[
+  flatten,
+  diff,
+  upper,
+].reduce((res, fn) => fn(res), arr);
+
+
+
+// 方式二：邪道
+// Array.prototype.flat才刚到提案（chrome69支持）
+Array.from(new Set(arr.flat(Infinity))).sort((a,b)=>{ return a-b})；
+
+
+
+// 方式三：妖道
+Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
+```
+
+---
+
+### 如何实现一个new
+[参考](./new.js)
+
+---
+
+### http2多路复用
+- 同一域名下所有通信都在单个连接上完成，消除因多个TCP连接带来的延时和内存消耗
+- 单个连接上的请求可以并行交错，互不影响
+
+---
+
+### 三次握手&四次挥手的理解
+
+#### 三次握手
+- 客户端请求服务端【服务端确认客户端有发送能力】
+- 服务端请求客户端【客户端确认服务端有发送能力】
+- 客户端正式请求
+
+#### 四次挥手
+- 客户端发送要求断开的请求
+- 服务端返回正在断开的请求
+- 服务端返回已经关闭的请求
+- 客户端发送正式断开的请求
+
+---
+
+
+
 
