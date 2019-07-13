@@ -180,14 +180,13 @@ export const getExecWxml = (
       new Function(...keys as string[], `return \`${result}\`;`)();
     } catch ({ message }) {
       if (hasUnDefVariable(message)) {
-        data[RegExp.$1] = { toString() { return ''; } };
+        data[RegExp.$1] = wx;
       }
     }
     return result;
   });
-  const genVnodeFn = new Function(...Object.keys(data) as string[], `debugger; return \`${wxml}\`;`);
+  const genVnodeFn = new Function(...Object.keys(data) as string[], `return \`${wxml}\`;`);
   try {
-    debugger;
     genVnodeFn.apply(null, Object.values(data));
   } catch (err) {
     console.log(err);

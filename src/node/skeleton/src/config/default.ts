@@ -32,8 +32,11 @@ export const COMP_JS = `Component({
 
 export const COMP_WXML = ``;
 
-export const wx = new Proxy({}, {
-  get(key) {
+export const wx: any = new Proxy({}, {
+  get(target, key) {
+    if (key === Symbol.toPrimitive) {
+      return () => '';
+    }
     const fn = () => wx;
     fn.__proto__ = wx;
     return fn;
