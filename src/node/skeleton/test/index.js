@@ -11,7 +11,11 @@ const watchOptions = {
   stats: config.stats,
 };
 
-let startWatch = () => script.watch(resolve(__dirname, '../test/test.js'));
+let startWatch = () => {
+  script.watch(resolve(__dirname, '../test/test.js'));
+  chokidar.watch(resolve(__dirname, '../src/pages'), { ignored: /(^|[\/\\])\../ })
+    .on('change', changeListener);
+};
 
 compiler.watch(watchOptions, (error, stats) => {
   if (!error && !stats.hasErrors()) {
@@ -28,8 +32,3 @@ const changeListener = async (path, stat) => {
   const content = readFileSync(pkgJsSrc, 'utf-8');
   writeFileSync(pkgJsSrc, content);
 };
-
-chokidar.watch(resolve(__dirname, '../src/pages'), { ignored: /(^|[\/\\])\../ })
-  .on('change', changeListener);
-
-

@@ -167,27 +167,36 @@ export const getExecWxml = (
   const argArr = [...argSet];
   const fn = new Function(...argArr.concat(fnBody));
   const data = fn(...getRepeatArr(argArr.length, wx));
-  const keys = Object.keys(data);
-  wxml = wxml.replace(/\{\{([^\{\}]+)\}\}/g, (m, $1) => {
+  const transWxml = wxml.replace(/\{\{([^\{\}]+)\}\}/g, (m, $1) => {
     let result;
+    let scanning = true;
     if ($1.includes('...') || $1.includes(',')) {
       result = `$\{JSON.stringify({${$1}})\}`;
     } else {
       result = `$\{${$1}\}`;
     }
 
-    try {
-      new Function(...keys as string[], `return \`${result}\`;`)();
-    } catch ({ message }) {
-      if (hasUnDefVariable(message)) {
-        data[RegExp.$1] = wx;
+    // register any undef variable with default value `wx`
+    while (scanning) {
+      try {
+        new Function(...Object.keys(data) as string[], `return \`${result}\`;`)();
+      } catch ({ message }) {
+        if (hasUnDefVariable(message)) {
+          data[RegExp.$1] = wx;
+        } else {
+          scanning = false;
+        }
+        continue;
       }
+      scanning = false;
     }
     return result;
   });
-  const genVnodeFn = new Function(...Object.keys(data) as string[], `return \`${wxml}\`;`);
+
+  const genVnodeFn = new Function(...Object.keys(data) as string[], `return \`${transWxml}\`;`);
+
   try {
-    genVnodeFn.apply(null, Object.values(data));
+    return genVnodeFn.apply(null, Object.values(data));
   } catch (err) {
     console.log(err);
   }
