@@ -41,6 +41,11 @@
 * [`TCP三次握手&四次挥手的理解`](#TCP三次握手&四次挥手的理解)
 * [`react的setState变更的同/异步`](#react的setState变更的同/异步)
 * [`npm模块安装机制`](#npm模块安装机制)
+* [`判断数组方法的区别`](#判断数组方法的区别)
+* [`重绘和回流`](#重绘和回流)
+* [`发布订阅VS观察者模式`](#发布订阅VS观察者模式)
+* [`redux和vuex`](#redux和vuex)
+* [`浏览器和Node事件循环的区别`](#浏览器和Node事件循环的区别)
 
 </details>
 
@@ -850,6 +855,98 @@ class Example extends React.Component {
 ---
 
 ### npm模块安装机制
+[参考](../../npm&yarn/README.md#npm安装原理)
+
+---
+
+### 判断数组方法的区别
+- Object.prototype.toString.call
+- instanceof
+- Array.isArray()
+
+Object.prototype.toString.call
+- 每一个继承 Object 的对象都有 toString 方法
+- 判断是否是数组 [Object array]
+
+instanceof
+- 判断对象的原型链中是不是能找到类型的prototype
+
+ Array.isArray
+ - 能检测出Iframes，而instanceof不行
+  ```js
+  xArray = window.frames[window.frames.length-1].Array;
+  var arr = new xArray(1,2,3); // [1,2,3]
+
+  Array.isArray(arr);  // true
+  Object.prototype.toString.call(arr); // true
+  arr instanceof Array; // false
+  ```
+
+---
+
+### 重绘和回流
+[参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/24)
+
+#### 原理
+**重绘**
+
+- 几何或样式发生变动，但是不影响布局的
+
+**回流**
+
+- 几何属性变动，页面需要全部或局部更新
+
+回流必定会发生重绘，重绘不一定会引发回流
+
+#### 优化
+- 浏览器多使用队列方式，批量更新布局，至少一个浏览器刷新（16.6ms）才会清空队列
+- 获取全局属性或方法，会强制清空队列，应避免频繁调用
+  + offsetTop、offsetLeft、offsetWidth、offsetHeight
+  + scrollTop、scrollLeft、scrollWidth、scrollHeight
+  + clientTop、clientLeft、clientWidth、clientHeight
+  + width、height
+  + getComputedStyle()
+  + getBoundingClientRect()
+
+#### 如何减少触发
+- transform代替top
+- visibility代替display：none
+- 避免使用tabel（通常要花3倍于同等元素的时间）
+- 避免多次样式嵌套
+- 动画效果尽量加载absolute或fixed元素上
+- 使用GPU加速
+- 频繁重绘或回流的单拉一个图层，例will-change
+
+---
+
+### 发布订阅VS观察者模式
+![观察者和发布订阅模式](./观察者和发布订阅模式.png)
+- 观察者模式中主体和观察者是互相感知的
+- 发布-订阅模式是借助第三方来实现调度的，发布者和订阅者之间互不感知
+
+---
+
+### redux和vuex
+[参考](https://zhuanlan.zhihu.com/p/53599723)
+单向数据流
+
+#### Store
+- 整个应用只有一个store
+- store允许监听，即store.subscribe，变更即dispatch订阅的callback
+- store里的state不会变更，每次只会生成新的state
+
+#### Action
+- action可以由view触发，或由其他操作触发
+- action必须有type，及一些属性，告诉Store State要改变的内容
+
+#### Reducer
+- 即上面说的，每次收到action，生成一个新的state
+- 纯函数
+- reduce是一个函数式编程的概念，所以起这名字
+
+---
+
+### 浏览器和Node事件循环的区别
 
 
 
