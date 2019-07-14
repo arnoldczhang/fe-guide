@@ -38,7 +38,9 @@
 * [`算法题`](#算法题)
 * [`如何实现一个new`](#如何实现一个new)
 * [`http2多路复用`](#http2多路复用)
-* [`三次握手&四次挥手的理解`](#三次握手&四次挥手的理解)
+* [`TCP三次握手&四次挥手的理解`](#TCP三次握手&四次挥手的理解)
+* [`react的setState变更的同/异步`](#react的setState变更的同/异步)
+* [`npm模块安装机制`](#npm模块安装机制)
 
 </details>
 
@@ -770,7 +772,8 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
 
 ---
 
-### 三次握手&四次挥手的理解
+### TCP三次握手&四次挥手的理解
+[网络编程基础](https://crystalwindz.com/unp_note_1/#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E6%9C%AC%E4%B9%A6%E7%AE%80%E4%BB%8B)
 
 #### 三次握手
 - 客户端请求服务端【服务端确认客户端有发送能力】
@@ -783,7 +786,70 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
 - 服务端返回已经关闭的请求
 - 客户端发送正式断开的请求
 
+#### A、B 机器正常连接后，B 机器突然重启，问 A 此时处于 TCP 什么状态
+- 服务器不重启，客户继续工作，就会发现对方没有回应(ETIMEOUT)，目的地不可达(EHOSTUNREACH)。
+- 服务器重启后，客户继续工作，然而服务器已丢失客户信息，收到客户数据后响应RST。
+
 ---
+
+### react的setState变更的同/异步
+[参考](https://github.com/sisterAn/blog/issues/26)
+
+- react自身引发的事件处理（onClick，componentWillMount等），异步执行
+- 此外的调用（addEventLister、setTimeout等），同步执行
+
+#### 原因
+- 同/异步处理受isBatchingUpdates影响，默认isBatchingUpdates=false，也就是同步执行
+- 当调用batchUpdate函数时，isBatchingUpdates=true
+- react的事件处理前，就会调用batchingUpdate
+
+#### 获取异步后的值
+```js
+// 虽然执行还是异步执行的，但是通过props能拿到更新瞬间的props
+this.setState((prevState, props) => ({
+    count: prevState.count + props.increment
+}));
+```
+
+#### 测试题
+```js
+class Example extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      val: 0
+    };
+  }
+  
+  componentDidMount() {
+    this.setState({val: this.state.val + 1});
+    console.log(this.state.val);    // 第 1 次 log
+
+    this.setState({val: this.state.val + 1});
+    console.log(this.state.val);    // 第 2 次 log
+
+    setTimeout(() => {
+      this.setState({val: this.state.val + 1});
+      console.log(this.state.val);  // 第 3 次 log
+
+      this.setState({val: this.state.val + 1});
+      console.log(this.state.val);  // 第 4 次 log
+    }, 0);
+  }
+
+  render() {
+    return null;
+  }
+};
+
+// 答案
+0 0 2 3
+
+```
+
+---
+
+### npm模块安装机制
 
 
 
