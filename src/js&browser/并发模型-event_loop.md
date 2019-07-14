@@ -91,14 +91,18 @@
 
 ### nodeVS浏览器
 ![node环境-事件循环](node环境-事件循环.png)
+
+libuv引擎中的事件循环（宏任务）分为 6 个阶段：
 * timers: 执行setTimeout和setInterval中到期的callback。
-* pending callback: 上一轮循环中少数的callback会放在这一阶段执行。
+* I/O callback: 上一轮循环中少数的callback会放在这一阶段执行。
 * idle, prepare: 仅在内部使用。
 * poll: 最重要的阶段，执行pending callback，在适当的情况下会阻塞在这个阶段。
 * check: 执行setImmediate(setImmediate()是将事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行setImmediate指定的回调函数)的callback。
 * close callbacks: 执行close事件的callback，例如socket.on('close'[,fn])或者http.server.on('close, fn)。
 
-**执行顺序区别**
+#### 执行顺序区别
+
+![浏览器和node的eventLoop](./浏览器和node的eventLoop.png)
 
 node10以前
 - 执行一个阶段的所有任务
@@ -154,6 +158,7 @@ node11以后
 - 一次事件循环：同步任务 -> 宏任务 -> 微任务 -> render
 - 即使是立即resolve/reject，then还是微任务
 - 微任务中嵌套的微任务，仍然会在当前事件循环中执行完
+- 每个宏任务执行完都会判断，是否有微任务，有就执行
 - await是generator + promise的语法糖，类似Promise执行方式，[参考](../fe-interview/src/common.md#模拟async/await)例
   ```js
   await console.log(1);

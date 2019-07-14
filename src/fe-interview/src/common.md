@@ -947,7 +947,43 @@ instanceof
 ---
 
 ### 浏览器和Node事件循环的区别
+[参考](../../js&browser/并发模型-event_loop.md#nodeVS浏览器)
 
+---
 
+### 前端中的模块化开发
+[参考](../../js&browser/基本常识.md#模块化)
+
+#### AMD
+依赖必须提前声明好
+```js
+define('./index.js',function(code){
+	// code 就是index.js 返回的内容
+})
+```
+
+### CMD
+支持动态引入依赖文件
+```js
+define(function(require, exports, module) {  
+  var indexCode = require('./index.js');
+});
+```
+
+### CommonJS
+- require('fs')
+- exports
+- module.exports
+
+### UMD
+兼容AMD，CommonJS 模块化语法
+
+---
+
+### cookie和token都存放在header中，为什么不会劫持token
+[参考](../../js&browser/网络安全.md#CSRF)
+
+- token用于防范csrf攻击
+- csrf只能使用用户自动带上的cookie（浏览器所为），但是浏览器不会自动带上token
 
 
