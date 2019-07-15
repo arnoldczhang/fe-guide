@@ -986,4 +986,52 @@ define(function(require, exports, module) {
 - token用于防范csrf攻击
 - csrf只能使用用户自动带上的cookie（浏览器所为），但是浏览器不会自动带上token
 
+---
+
+### 把两个数组 ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'D1', 'D2'] 和 ['A', 'B', 'C', 'D']，合并为 ['A1', 'A2', 'A', 'B1', 'B2', 'B', 'C1', 'C2', 'C', 'D1', 'D2', 'D']
+- ['A', 'B', 'C', 'D'] => .map(item => item + 3)
+- concat + sort
+- if (item.includes(3)) { ... }
+
+---
+
+### setTimeout输出0-9改法
+```js
+// 1
+for (var i = 0; i< 10; i++){
+    setTimeout(console.log, 1000, i)
+}
+
+// 2
+for (var i = 0; i< 10; i++){
+  ((i) => {
+    setTimeout(() => {
+      console.log(i);
+    }, 1000)
+ })(i)
+}
+
+// 3
+for (let i = 0; i< 10; i++){
+  setTimeout(() => {
+    console.log(i);
+  }, 1000)
+}
+```
+
+---
+
+### VirtualDom对比原生DOM处理
+[参考](../../career/README.md#框架对比)
+
+- diff+部分渲染 和 innerHTML改动的比较
+- 无法得出客观结论，因时制宜
+
+---
+
+### 浏览器缓存读取规则
+[参考](../../js&browser/页面过程与浏览器缓存.md#缓存位置)
+
+
+
 
