@@ -72,14 +72,16 @@ export const html2ast = (rawHtml: string): Promise<any> => {
  * treewalk
  * @param ast
  * @param options
+ * @param isPage
  */
 export const treewalk = (
   ast: IAst,
   options: IPath,
+  isPage?: boolean,
 ): IAst => {
   if (ast) {
     const { child } = ast;
-    ast = parseAsTreeNode(ast, options);
+    ast = parseAsTreeNode(ast, { ...options, isPage });
     if (child && child.length) {
       child.forEach((
         ch: IAst,
@@ -108,15 +110,17 @@ export const parseFile = (
 ): string => {
   try {
     const content: string = removeComment(String(read(dest)));
-    const json: ICO = html2json(wxmlTreeShake(content, src, { ...options, isPage }));
+    // FIXME wxml treeshake
+    // const shakeContent = wxmlTreeShake(content, src, { ...options, isPage });
+    const json: ICO = html2json(content);
     return json2html(treewalk(json, {
       ...options,
       protoPath: getDir(src),
       mainPath: getDir(dest),
       mainFilePath: dest,
-    }));
-  } catch ({ message }) {
-    logger.warn(message);
+    }, isPage));
+  } catch (err) {
+    logger.warn(err);
     return '';
   }
 };
@@ -162,27 +166,29 @@ export const getJsonValue = (
  * @param dest
  * @param options
  * @param srcContent
+ * @param isPage
  */
 export const updateUsingInJsonConfig = (
   src: string,
   dest: string,
   options: IPath,
   srcContent?: string,
+  isPage?: boolean,
 ): void => {
   try {
     ensure(dest);
     srcContent = srcContent || String(read(src));
     let usingComponent: ICO | false = getJsonValue(src, JSON_CONFIG.USING);
     if (usingComponent) {
-      usingComponent = parseFromJSON(src, dest, usingComponent, options);
+      usingComponent = parseFromJSON(src, dest, usingComponent, options, isPage);
       const compJson: ICO = parse(srcContent);
       compJson[JSON_CONFIG.USING] = usingComponent;
       write(dest, stringify(compJson, null, 2));
     } else {
       write(dest, srcContent);
     }
-  } catch ({ message }) {
-    logger.warn(message);
+  } catch (err) {
+    logger.warn(err);
   }
 };
 
@@ -307,13 +313,13 @@ export const genNewComponent = (
   const srcWxss: string = modifySuffix(srcWxml, 'wxss');
   const srcJson: string = modifySuffix(srcWxml, 'json');
 
+  // gen json
+  const destJson: string = `${outputPath}${modifySuffix(relativePath, 'json')}`;
+  updateUsingInJsonConfig(srcJson, destJson, options, COMP_JSON, true);
+
   // gen wxml
   const destWxml: string = `${outputPath}${relativePath}`;
   ensureAndInsertWxml(srcWxml, destWxml, options, true);
-
-  // gen json
-  const destJson: string = `${outputPath}${modifySuffix(relativePath, 'json')}`;
-  updateUsingInJsonConfig(srcJson, destJson, options, COMP_JSON);
 
   // gen wxss
   const destWxss: string = `${outputPath}${modifySuffix(relativePath, 'wxss')}`;

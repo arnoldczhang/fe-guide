@@ -1,4 +1,4 @@
-import { CF, ICO } from '../types';
+import { CF, ICO, INpmOptions } from '../types';
 
 export const is = (val: any, ...args: any[]): boolean => (
   args.every((arg: any) => (arg === val))
@@ -23,7 +23,14 @@ export const assert = (
   }
 };
 
-export const assertOptions = (options: ICO = {}): void => {
+export const assertOptions = (options: INpmOptions = {}): INpmOptions => {
+  const defaultOptions: INpmOptions = {
+    ignore: [],
+    page: '*',
+    inputDir: './src',
+    outDir: './src',
+  };
+  options = { ...defaultOptions, ...options };
   const {
     ignore,
     page,
@@ -31,11 +38,12 @@ export const assertOptions = (options: ICO = {}): void => {
     outDir = '',
   } = options;
   if (isStr(ignore)) {
-    options.ignore = [ignore];
+    options.ignore = [ignore as string];
   } else {
     assert(!(!isArr(ignore) && ignore), 'ignore传值异常');
   }
   assert(!(!isArr(page) && page !== '*'), 'page传值异常');
   assert(isStr(inputDir), 'inputDir传值异常');
   assert(isStr(outDir), 'outDir传值异常');
+  return options;
 };

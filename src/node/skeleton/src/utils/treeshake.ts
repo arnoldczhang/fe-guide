@@ -8,7 +8,15 @@ import { identity, modifySuffix } from './dir';
 import { exists, read } from './fs';
 import Logger from './log';
 import { getRepeatArr } from './random';
-import { hasObjKey, hasUnDefVariable, iterateObjValue, replacePseudo, splitWith, splitWxAttrs } from "./reg";
+import {
+  hasObjKey,
+  hasUnDefVariable,
+  isForRelated,
+  iterateObjValue,
+  replacePseudo,
+  splitWith,
+  splitWxAttrs,
+} from "./reg";
 
 const logger = Logger.getInstance();
 
@@ -167,13 +175,21 @@ export const getExecWxml = (
   const argArr = [...argSet];
   const fn = new Function(...argArr.concat(fnBody));
   const data = fn(...getRepeatArr(argArr.length, wx));
-  const transWxml = wxml.replace(/(['"]*)\{\{([^\{\}]+)\}\}(\1)/g, (m, $1, $2, $3) => {
+  const forItemSet = new Set();
+  const transWxml = wxml.replace(/((?:[^\s]+\=|))(['"]*)\{\{([^\{\}]+)\}\}(\2)/g, (m, $1, $2, $3, $4) => {
     let result;
     let scanning = true;
-    if ($2.includes('...') || $2.includes(',')) {
-      result = `$\{JSON.stringify({${$1}})\}`;
+    const isObjStyle = $1 === `${WX_DATA}=`;
+    const isForStyle = isForRelated($1);
+    if (isObjStyle) {
+      result = `${$1}${$2}$\{JSON.stringify({${$3}})\}${$4}`;
+    } else if (isForStyle) {
+      forItemSet.add($1);
+      return m;
+    } else if (forItemSet.has($3)) {
+      return m;
     } else {
-      result = `${$1}$\{${$2}\}${$3}`;
+      result = `${$1}${$2}$\{${$3}\}${$4}`;
     }
 
     // register any undef variable with default value `wx`

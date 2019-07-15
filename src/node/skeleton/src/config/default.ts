@@ -39,6 +39,7 @@ export const wx: any = new Proxy({}, {
     }
     const fn = () => wx;
     fn.__proto__ = wx;
+    fn.toString = fn.valueOf = () => false;
     return fn;
   },
 });

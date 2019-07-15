@@ -11,7 +11,11 @@ export const isBindEvent = (key: string): boolean => (
   /^(capture-)?(?:bind|catch)\:?\w+$/.test(key)
 );
 
-export const isElse = (key: string): boolean => (
+export const isForRelated = (key: string): boolean => (
+  /^wx\:(?:for|for-index|for-item|key)/.test(key)
+);
+
+export const isElif = (key: string): boolean => (
   /^wx:(?:elif)$/.test(key)
 );
 

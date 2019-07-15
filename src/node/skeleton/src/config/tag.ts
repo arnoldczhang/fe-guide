@@ -15,3 +15,5 @@ export const RULE_TAG = 'rule';
 export const COMMENT_TAG = 'comment';
 
 export const TEXT = 'text';
+
+export const ROOT_TAG = 'root';

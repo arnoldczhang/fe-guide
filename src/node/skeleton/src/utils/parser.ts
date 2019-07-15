@@ -14,6 +14,7 @@ import {
   JSON_CONFIG,
   KLASS,
   PATH,
+  ROOT_TAG,
   TEMPLATE_TAG,
   TEXT,
   TPL_TAG,
@@ -58,7 +59,7 @@ import {
   hasWxVariable,
   interceptWxVariable,
   isBindEvent,
-  isElse,
+  isElif,
   isId,
   isKlass,
   isNpmComponent,
@@ -87,7 +88,7 @@ export const parseAsTreeNode = (
       parseFromTag,
       parseFromNode,
       parseFromAttr,
-      parseFromFinalTag,
+      parseFromStruct,
     ].reduce((res: IAst, next) => next(res, options), ast)
 );
 
@@ -117,7 +118,12 @@ export const parseFromNode = (
   options: IPath,
 ): IAst => {
   const { node, text } = ast;
-  if (node !== TEXT) { return ast; }
+  if (node !== TEXT) {
+    if (node === ROOT_TAG) {
+      setRootShow(ast, options);
+    }
+    return ast;
+  }
   ast.text = removeBlank(text);
   if (!ast.text) {
     return emptyNode;
@@ -192,8 +198,8 @@ export const parseFromAttr = (
       // remove all events
       case isBindEvent(key):
         break;
-      // remove all `wx:else` and `wx:elif`
-      case isElse(key):
+      // remove all `wx:elif`
+      case isElif(key):
         return emptyNode;
       // replace id(without wx variable) with a random class
       case isId(key):
@@ -215,11 +221,11 @@ export const parseFromAttr = (
 };
 
 /**
- * parseFromFinalTag
+ * parseFromStruct
  * @param ast
  * @param options
  */
-export const parseFromFinalTag = (
+export const parseFromStruct = (
   ast: IAst,
   options: IPath,
 ): IAst => {
@@ -252,12 +258,12 @@ export const parseFromTag = (
   options: IPath,
 ): IAst => {
   const { tag, attr } = ast;
-  const { protoPath, mainPath } = options;
-
+  const { protoPath, mainPath, skeletonKeys } = options;
   if (!tag) { return ast; }
-  switch (tag) {
+
+  switch (true) {
     // <import />
-    case IMPORT_TAG:
+    case is(tag, IMPORT_TAG):
       if (attr && attr.src) {
         const srcWxml: string = resolve(protoPath, attr.src);
         const destWxml: string = resolve(mainPath, attr.src);
@@ -271,7 +277,7 @@ export const parseFromTag = (
       }
       break;
     // <include />
-    case INCLUDE_TAG:
+    case is(tag, INCLUDE_TAG):
       if (attr && attr.src) {
         const srcWxml: string = resolve(protoPath, attr.src);
         const destWxml: string = resolve(mainPath, attr.src);
@@ -282,7 +288,7 @@ export const parseFromTag = (
       }
       break;
     // <image />
-    case IMAGE_TAG:
+    case is(tag, IMAGE_TAG):
       if (attr && attr.src && /^\./.test(attr.src)) {
         const { src } = attr;
         const [dir, fileName] = [getDir(src), getFileName(src)];
@@ -290,7 +296,11 @@ export const parseFromTag = (
       }
       break;
     // remove <wxs />
-    case WXS_TAG:
+    case is(tag, WXS_TAG):
+      return emptyNode;
+    // ignore skeleton tag
+    // fix: compiling skeleton to skeleton
+    case skeletonKeys.has(tag):
       return emptyNode;
     default:
       break;
@@ -304,17 +314,23 @@ export const parseFromTag = (
  * @param destFile
  * @param json
  * @param options
+ * @param isPage
  */
 export const parseFromJSON = (
   srcFile: string,
   destFile: string,
   json: ICO,
   options: IPath,
+  isPage?: boolean,
 ): ICO => {
+  const { usingComponentKeys, skeletonKeys } = options;
   const src: string = getDir(srcFile);
   const dest: string = getDir(destFile);
   const { root, compPath, srcPath: rootSrcPath, outputPath } = options;
   keys(json).forEach((key: string): void => {
+    if (isPage) {
+      usingComponentKeys.add(key);
+    }
     let pathValue: string = json[key];
     let [srcJs, destJs, srcWxml, destWxml, srcWxss, destWxss, srcJson, destJson] = Array(10);
     if (isNpmComponent(pathValue)) {
@@ -338,9 +354,11 @@ export const parseFromJSON = (
       }
       let srcPath: string = resolve(isRootStyle ? rootSrcPath : src, pathValue);
       let destPath: string = resolve(isRootStyle ? outputPath : dest, pathValue);
-      // avoid compiling skeleton to skeleton
+      // fix: compiling skeleton to skeleton
       if (srcPath.includes(outputPath)) {
         delete json[key];
+        skeletonKeys.add(key);
+        usingComponentKeys.delete(key);
         return;
       }
 
@@ -384,4 +402,26 @@ export const parseFromJSON = (
     }
   });
   return json;
+};
+
+export const setRootShow = (
+  ast: IAst,
+  options: IPath,
+): void => {
+  const { child } = ast;
+  const { isPage } = options;
+  if (isPage && child && child.length) {
+    child.forEach((
+      ch: IAst,
+      idx: number,
+      array: IAst[],
+    ) => {
+      const { attr, tag } = ch;
+      if (!tag) { return; }
+      if (!attr) {
+        ch.attr = {};
+      }
+      ch.attr[ATTR_SHOW] = '';
+    });
+  }
 };
