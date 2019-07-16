@@ -46,6 +46,12 @@
 * [`发布订阅VS观察者模式`](#发布订阅VS观察者模式)
 * [`redux和vuex`](#redux和vuex)
 * [`浏览器和Node事件循环的区别`](#浏览器和Node事件循环的区别)
+* [`前端中的模块化开发`](#前端中的模块化开发)
+* [`cookie和token都存放在header中，为什么不会劫持token`](#cookie和token都存放在header中，为什么不会劫持token)
+* [`setTimeout输出0-9改法`](#setTimeout输出0-9改法)
+* [`VirtualDom对比原生DOM处理`](#VirtualDom对比原生DOM处理)
+* [`浏览器缓存读取规则`](#浏览器缓存读取规则)
+* [`BFC`](#BFC)
 
 </details>
 
@@ -514,6 +520,8 @@ arr.join = arr.shift;
 #### 读屏软件隐藏
 - aria-hidden="true"
 
+---
+
 ### 执行上下文和作用域链
 
 #### 执行上下文
@@ -526,7 +534,6 @@ js被解析和执行环境的抽象概念
   * this
 
 #### 作用域链
-
 作用域的工作模型，分两种
 1. 词法作用域（js是这种）
 2. 动态作用域
@@ -538,13 +545,19 @@ js被解析和执行环境的抽象概念
 - 函数作用域
 - 块级作用域
 
+**任务队列**
+
+先进先出
+
 **执行栈**
 
-即调用栈，具有 LIFO (后进先出) 结构
+即js调用栈，具有 LIFO (后进先出) 结构
 
 **作用域链**
 
 ![作用域链](./作用域链.jpg)
+
+---
 
 ### 节流&防抖
 
@@ -717,6 +730,21 @@ async/await -> Generator -> Promise
 
 ### 同/异任务
 [参考](../../js&browser/并发模型-event_loop.md#交互事件触发)
+
+- 宏任务自调用不会造成未响应
+- 微任务自调用会导致未响应
+
+```js
+// 正常调用
+function foo() {
+  setTimeout(foo, 0); // 是否存在堆栈溢出错误?
+};
+
+// 会导致未响应
+function foo() {
+  return Promise.resolve().then(foo);
+};
+```
 
 ---
 
@@ -962,7 +990,7 @@ define('./index.js',function(code){
 })
 ```
 
-### CMD
+#### CMD
 支持动态引入依赖文件
 ```js
 define(function(require, exports, module) {  
@@ -970,12 +998,12 @@ define(function(require, exports, module) {
 });
 ```
 
-### CommonJS
+#### CommonJS
 - require('fs')
 - exports
 - module.exports
 
-### UMD
+#### UMD
 兼容AMD，CommonJS 模块化语法
 
 ---
@@ -1030,8 +1058,109 @@ for (let i = 0; i< 10; i++){
 ---
 
 ### 浏览器缓存读取规则
-[参考](../../js&browser/页面过程与浏览器缓存.md#缓存位置)
+[参考](../../js&browser/页面过程与浏览器缓存.md#缓存机制)
+
+---
+
+### BFC
+
+#### 创建BFC
+- html 根元素
+- float 浮动
+- 绝对定位
+- overflow 不为 visiable
+- display 为表格布局或者弹性布局
+- 行内块元素
+- 网格布局
+- contain值为layout、content或 strict的元素
+
+#### 特性
+- 内部box会在垂直方向，一个接一个地放置。
+- Box垂直方向的距离由margin决定，在一个BFC中，两个相邻的块级盒子的垂直外边距会产生折叠。
+- 在BFC中，每一个盒子的左外边缘（margin-left）会触碰到容器的左边缘(border-left)（对于从右到左的格式来说，则触碰到右边缘）
+- 形成了BFC的区域不会与float box重叠
+- 计算BFC高度时，浮动元素也参与计算
+
+#### 解决问题
+- 清除浮动
+- 防止同一 BFC 容器中的相邻元素间的外边距重叠问题
+
+---
+
+### 作用域
+- 局部作用域是爹
+- 不明确window下，且作用域内声明的（无论顺序），都是域内
+- 函数声明比变量声明提前
+
+```js
+var a = 10;
+(function () {
+  console.log(a); // undefined
+  a = 5;
+  console.log(a); // 5
+  console.log(window.a); // 10
+  var a = 20;
+  console.log(a); // 20
+})();
 
 
+// 翻译下
+var a = 10;
+(function () {
+  var a;
+  console.log(a); // undefined
+  a = 5;
+  console.log(a); // 5
+  console.log(window.a); // 10
+  a = 20;
+  console.log(a); // 20
+})();
+```
 
+---
+
+### 实现sleep
+```js
+// Promise
+const sleep = time => {
+  return new Promise(resolve => setTimeout(resolve,time))
+}
+sleep(1000).then(()=>{
+  console.log(1)
+})
+
+//Generator
+function* sleepGenerator(time) {
+  yield new Promise(function(resolve,reject){
+    setTimeout(resolve,time);
+  })
+}
+sleepGenerator(1000).next().value.then(()=>{console.log(1)})
+
+//async
+function sleep(time) {
+  return new Promise(resolve => setTimeout(resolve,time))
+}
+async function output() {
+  let out = await sleep(1000);
+  console.log(1);
+  return out;
+}
+output();
+
+//ES5
+function sleep(callback,time) {
+  if(typeof callback === 'function')
+    setTimeout(callback,time)
+}
+
+function output(){
+  console.log(1);
+}
+sleep(output,1000);
+```
+
+---
+
+### 
 
