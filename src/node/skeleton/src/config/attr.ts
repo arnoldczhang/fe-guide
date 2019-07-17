@@ -27,3 +27,29 @@ export const ATTR_REMOVE = `${PRE}-remove`;
 export const ATTR_SHOW = `${PRE}-show`;
 
 export const ATTR_BG = `${PRE}-bg`;
+
+export const ATTR_WIDTH = `${PRE}-width`;
+
+export const ATTR_CLEAR = `${PRE}-clear`;
+
+export const ATTR_HEIGHT = `${PRE}-height`;
+
+export const ATTR_PADDING = `${PRE}-padding`;
+
+export const ATTR_PADDING_TOP = `${PRE}-padding-top`;
+
+export const ATTR_PADDING_BOTTOM = `${PRE}-padding-bottom`;
+
+export const ATTR_PADDING_LEFT = `${PRE}-padding-left`;
+
+export const ATTR_PADDING_RIGHT = `${PRE}-padding-right`;
+
+export const ATTR_MARGIN = `${PRE}-margin`;
+
+export const ATTR_MARGIN_TOP = `${PRE}-margin-top`;
+
+export const ATTR_MARGIN_BOTTOM = `${PRE}-margin-bottom`;
+
+export const ATTR_MARGIN_LEFT = `${PRE}-margin-left`;
+
+export const ATTR_MARGIN_RIGHT = `${PRE}-margin-right`;

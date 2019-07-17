@@ -2,10 +2,23 @@ import { join, resolve } from 'path';
 import * as pathResolve from 'resolve';
 import {
   ATTR_BG,
+  ATTR_CLEAR,
   ATTR_FOR,
+  ATTR_HEIGHT,
+  ATTR_MARGIN,
+  ATTR_MARGIN_BOTTOM,
+  ATTR_MARGIN_LEFT,
+  ATTR_MARGIN_RIGHT,
+  ATTR_MARGIN_TOP,
+  ATTR_PADDING,
+  ATTR_PADDING_BOTTOM,
+  ATTR_PADDING_LEFT,
+  ATTR_PADDING_RIGHT,
+  ATTR_PADDING_TOP,
   ATTR_REMOVE,
   ATTR_REPEAT,
   ATTR_SHOW,
+  ATTR_WIDTH,
   COMP_JS,
   COMP_WXSS,
   IMAGE_TAG,
@@ -14,6 +27,7 @@ import {
   JSON_CONFIG,
   KLASS,
   PATH,
+  PRE,
   ROOT_TAG,
   TEMPLATE_TAG,
   TEXT,
@@ -24,9 +38,23 @@ import {
   WX_IF,
   WX_KEY,
   WXS_TAG,
+  WXSS_BG_GREY,
 } from '../config';
 import { CF, IAst, ICO, IPath } from '../types';
-import { has, is } from './assert';
+import { triggerHeightAction,
+  triggerMarginAction,
+  triggerMarginBottomAction,
+  triggerMarginLeftAction,
+  triggerMarginRightAction,
+  triggerMarginTopAction,
+  triggerPaddingAction,
+  triggerPaddingBottomAction,
+  triggerPaddingLeftAction,
+  triggerPaddingRightAction,
+  triggerPaddingTopAction,
+  triggerWidthAction,
+} from './action';
+import { has, is, isArr, isStr } from './assert';
 import {
   hasCach,
   setCach,
@@ -64,6 +92,8 @@ import {
   isKlass,
   isNpmComponent,
   removeBlank,
+  replaceColorSymbol,
+  replaceLengthSymbol,
   splitWith,
 } from './reg';
 import { cachKlassStruct } from './treeshake';
@@ -72,6 +102,7 @@ const {
   keys,
 } = Object;
 const emptyNode = {};
+const logger = Logger.getInstance();
 
 /**
  * parseAsTreeNode
@@ -141,12 +172,14 @@ export const parseFromCustomAttr = (
   options: IPath,
 ): IAst => {
   const { attr } = ast;
+  const { wxssInfo } = options;
   if (!attr) { return ast; }
   const result: ICO = {};
   const attrKeys = keys(attr);
-  for (let key, value, i = 0; i < attrKeys.length; i += 1) {
+  for (let key, value, klass, newKlassName, i = 0; i < attrKeys.length; i += 1) {
     key = attrKeys[i];
     value = attr[key];
+    klass = isStr(attr[KLASS]) ? [attr[KLASS]] : attr[KLASS] || [];
     switch (key) {
       // repeat
       // support 2 ways:
@@ -164,8 +197,54 @@ export const parseFromCustomAttr = (
         break;
       case ATTR_REMOVE:
         return emptyNode;
+      case ATTR_CLEAR:
+        ast.child = [];
+        return ast;
+      case ATTR_PADDING:
+        triggerPaddingAction(ast, options, result, value, klass);
+        break;
+      case ATTR_MARGIN:
+        triggerMarginAction(ast, options, result, value, klass);
+        break;
+      case  ATTR_PADDING_TOP:
+        triggerPaddingTopAction(ast, options, result, value, klass);
+        break;
+      case  ATTR_PADDING_BOTTOM:
+        triggerPaddingBottomAction(ast, options, result, value, klass);
+        break;
+      case  ATTR_PADDING_LEFT:
+        triggerPaddingLeftAction(ast, options, result, value, klass);
+        break;
+      case  ATTR_PADDING_RIGHT:
+        triggerPaddingRightAction(ast, options, result, value, klass);
+        break;
+      case  ATTR_MARGIN_TOP:
+        triggerMarginTopAction(ast, options, result, value, klass);
+        break;
+      case  ATTR_MARGIN_BOTTOM:
+        triggerMarginBottomAction(ast, options, result, value, klass);
+        break;
+      case  ATTR_MARGIN_LEFT:
+        triggerMarginLeftAction(ast, options, result, value, klass);
+        break;
+      case  ATTR_MARGIN_RIGHT:
+        triggerMarginRightAction(ast, options, result, value, klass);
+        break;
+      case ATTR_WIDTH:
+        triggerWidthAction(ast, options, result, value, klass);
+        break;
+      case ATTR_HEIGHT:
+        triggerHeightAction(ast, options, result, value, klass);
+        break;
       case ATTR_BG:
-        result[KLASS] = [...attr[KLASS], 'skull-grey'];
+        value = isArr(value) ? value.join('') : value;
+        if (value) {
+          newKlassName = `${PRE}-bg-${replaceColorSymbol(value)}`;
+          wxssInfo.set(newKlassName, ` background: ${value}!important;color: ${value}!important; `);
+        }
+        result[KLASS] = [...klass, newKlassName || WXSS_BG_GREY];
+        ast.attr[KLASS] = result[KLASS];
+        break;
       default:
         if (!has(key, result)) {
           result[key] = value;
@@ -199,8 +278,8 @@ export const parseFromAttr = (
       case isBindEvent(key):
         break;
       // remove all `wx:elif`
-      case isElif(key):
-        return emptyNode;
+      // case isElif(key):
+      //   return emptyNode;
       // replace id(without wx variable) with a random class
       case isId(key):
         if (!hasWxVariable(value)) {
@@ -289,11 +368,20 @@ export const parseFromTag = (
       break;
     // <image />
     case is(tag, IMAGE_TAG):
-      if (attr && attr.src && /^\./.test(attr.src)) {
-        const { src } = attr;
-        const [dir, fileName] = [getDir(src), getFileName(src)];
-        attr.src = join(getRelativePath(protoPath, join(mainPath, dir)), fileName);
+      if (!attr) {
+        ast.attr = {};
       }
+      const klass = isStr(ast.attr[KLASS]) ? [ast.attr[KLASS]] : ast.attr[KLASS] || [];
+      ast.tag = 'view';
+      if (ast.attr.src) {
+        delete ast.attr.src;
+      }
+      ast.attr[KLASS] = [...klass, WXSS_BG_GREY];
+      // if (attr && attr.src && /^\./.test(attr.src)) {
+      //   const { src } = attr;
+      //   const [dir, fileName] = [getDir(src), getFileName(src)];
+      //   attr.src = join(getRelativePath(protoPath, join(mainPath, dir)), fileName);
+      // }
       break;
     // remove <wxs />
     case is(tag, WXS_TAG):
@@ -381,6 +469,7 @@ export const parseFromJSON = (
     }
 
     if (!hasCach(destWxml, PATH)) {
+
       // gen component-wxml
       setCach(destWxml, 1, PATH);
       ensureAndInsertWxml(srcWxml, destWxml, options);
@@ -404,6 +493,11 @@ export const parseFromJSON = (
   return json;
 };
 
+/**
+ * setRootShow
+ * @param ast
+ * @param options
+ */
 export const setRootShow = (
   ast: IAst,
   options: IPath,

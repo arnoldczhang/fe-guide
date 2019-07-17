@@ -29,6 +29,8 @@ export interface IPath {
   usingComponentKeys?: Set<string>;
   // cach key of skeleton files in `usingComponent` used in pages
   skeletonKeys?: Set<string>;
+  // cach global style map
+  wxssInfo?: Map<string, string>;
   verbose?: boolean;
   treeshake?: boolean;
   isPage?: boolean;

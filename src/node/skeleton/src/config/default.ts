@@ -1,4 +1,6 @@
+import { PRE } from './attr';
 import {
+  SKELETON_DEFAULT_JS_FILE,
   SKELETON_DEFAULT_WXSS,
 } from './dir';
 
@@ -9,13 +11,18 @@ export const COMP_JSON = `{
 
 export const COMP_WXSS = `@import '${SKELETON_DEFAULT_WXSS}'`;
 
-export const DEFAULT_WXSS = `
-.skull-grey {
-  background: #f4f4f4!important;
-}
-`;
+export const COMP_JS = `Component({...require('/skeleton${SKELETON_DEFAULT_JS_FILE}')});`;
 
-export const COMP_JS = `Component({
+export const WXSS_BG_GREY = `${PRE}-default-grey`;
+
+export const DEFAULT_WXSS = new Map();
+DEFAULT_WXSS.set(WXSS_BG_GREY, `
+  background: #f4f4f4!important;
+  color: #f4f4f4!important;
+`);
+
+export const DEFAULT_JS = `
+module.exports = {
   options: {
     multipleSlots: false,
   },
@@ -23,11 +30,35 @@ export const COMP_JS = `Component({
   },
   data: {
   },
+  pageLifetimes: {
+    show() {
+      this.triggerEvent('show');
+    },
+    hide() {
+      this.triggerEvent('hide');
+    },
+    resize(size) {
+      this.triggerEvent('resize', size);
+    },
+  },
+  created() {
+    this.triggerEvent('created');
+  },
   attached() {
+    this.triggerEvent('attached');
+  },
+  ready() {
+    this.triggerEvent('ready');
+  },
+  moved() {
+    this.triggerEvent('moved');
+  },
+  detached() {
+    this.triggerEvent('detached');
   },
   methods: {
   },
-});
+};
 `;
 
 export const COMP_WXML = ``;

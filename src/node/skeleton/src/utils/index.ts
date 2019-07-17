@@ -80,8 +80,8 @@ export const treewalk = (
   isPage?: boolean,
 ): IAst => {
   if (ast) {
-    const { child } = ast;
     ast = parseAsTreeNode(ast, { ...options, isPage });
+    const { child } = ast;
     if (child && child.length) {
       child.forEach((
         ch: IAst,
@@ -337,10 +337,24 @@ export const genNewComponent = (
 /**
  * genResourceFile
  * @param resourceRoot
+ * @param content
  */
-export const genResourceFile = (resourceRoot: string): void => {
+export const genResourceFile = (resourceRoot: string, content: string): void => {
   ensure(resourceRoot);
-  write(resourceRoot, DEFAULT_WXSS);
+  write(resourceRoot, content);
+};
+
+export const transMap2Style = (
+  ...maps: Array<Map<string, string>>
+): string => {
+  let result = '';
+  maps.forEach((map: Map<string, string>): void => {
+    const keys: IterableIterator<string> = map.keys();
+    for (const key of keys) {
+      result += `.${key} {${map.get(key)}}\n`;
+    }
+  });
+  return result;
 };
 
 export {

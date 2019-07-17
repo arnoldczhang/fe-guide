@@ -1,15 +1,23 @@
 const { join } = require('path');
 const {
   DEFAULT_CONFIG_FILE,
+  DEFAULT_JS,
+  DEFAULT_WXSS,
   ROOT,
   SKELETON_DEFAULT_WXSS_FILE,
+  SKELETON_DEFAULT_JS_FILE,
   SKELETON_RELATIVE,
   SKELETON_ROOT,
   SRC,
 } = require('./config');
 const { init: initLogger } = require('./utils/log');
 const { assertOptions } = require('./utils/assert');
-const { genNewComponent, genResourceFile, getPageWxml } = require('./utils');
+const {
+  genNewComponent,
+  genResourceFile,
+  getPageWxml,
+  transMap2Style,
+} = require('./utils');
 
 const run = (options: any = {}): void => {
   options = assertOptions(options  || {});
@@ -19,6 +27,7 @@ const run = (options: any = {}): void => {
   const pageWxml = getPageWxml(`${srcPath}/pages/*/*.wxml`, page);
   const pagePath = `${outputPath}/pages`;
   const compPath = `${outputPath}/components`;
+  const globalWxssMap = new Map();
   initLogger(pageWxml);
   pageWxml.forEach((wxml: string): void => {
     const pageOptions: any = {
@@ -29,6 +38,7 @@ const run = (options: any = {}): void => {
       compPath,
       wxmlKlassInfo: {},
       wxmlStructInfo: {},
+      wxssInfo: globalWxssMap,
       usingComponentKeys: new Set(),
       skeletonKeys: new Set(),
       verbose: false,
@@ -37,7 +47,11 @@ const run = (options: any = {}): void => {
     };
     genNewComponent(wxml, pageOptions);
   });
-  genResourceFile(`${outputPath}${SKELETON_DEFAULT_WXSS_FILE}`);
+  genResourceFile(
+    `${outputPath}${SKELETON_DEFAULT_WXSS_FILE}`,
+    transMap2Style(DEFAULT_WXSS, globalWxssMap),
+  );
+  genResourceFile(`${outputPath}${SKELETON_DEFAULT_JS_FILE}`, DEFAULT_JS);
 };
 
 run.defaultConfigName = DEFAULT_CONFIG_FILE;

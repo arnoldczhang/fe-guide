@@ -100,6 +100,26 @@ export const removeBlank = (input: string): string => (
   input.replace(/(?:\n|\t|^ +| +$|\{\{[^\{\}]*\}\})/g, '')
 );
 
+// rgb(0, 0, 0)
+// #f1f1f1
+export const replaceColorSymbol = (input: string): string => (
+  input.replace(/[#,\(\)\s]*/g, '')
+);
+
+// 100%
+// 100rpx
+// 100px
+// 10em
+// 10rem
+export const replaceLengthSymbol = (input: string): string => (
+  input.replace(/%/g, 'pct')
+    .replace(/\s/g, '')
+);
+
+export const trim = (input: string): string => (
+  input.replace(/\s/g, '')
+);
+
 // =========== //
 // === exec === //
 // =========== //
