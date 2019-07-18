@@ -45,6 +45,7 @@ export interface IAst {
   text?: string;
   tag?: string;
   attr?: ICO;
+  sibling?: IAst | void;
   child?: IAst[];
 }
 

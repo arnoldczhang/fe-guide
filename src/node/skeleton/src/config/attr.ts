@@ -53,3 +53,5 @@ export const ATTR_MARGIN_BOTTOM = `${PRE}-margin-bottom`;
 export const ATTR_MARGIN_LEFT = `${PRE}-margin-left`;
 
 export const ATTR_MARGIN_RIGHT = `${PRE}-margin-right`;
+
+export const SHINE_STYLE = 'shine';

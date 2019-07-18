@@ -10,9 +10,13 @@ export const WXS_TAG = 'wxs';
 
 export const IMAGE_TAG = 'image';
 
+export const BUTTON_TAG = 'button';
+
 export const RULE_TAG = 'rule';
 
 export const COMMENT_TAG = 'comment';
+
+export const ELEMENT_TAG = 'element';
 
 export const TEXT = 'text';
 

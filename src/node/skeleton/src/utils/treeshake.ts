@@ -7,7 +7,7 @@ import { transform, traverse } from './babel';
 import { identity, modifySuffix } from './dir';
 import { exists, read } from './fs';
 import Logger from './log';
-import { getRepeatArr } from './random';
+import { fillDefaultValue, getRepeatArr } from './random';
 import {
   hasObjKey,
   hasUnDefVariable,
@@ -161,32 +161,38 @@ export const hasKlassInStruct = (
   return true;
 };
 
+/**
+ * getExecWxml
+ * @param content
+ * @param wxml
+ */
 export const getExecWxml = (
   content: string,
   wxml: string,
 ): string => {
   const argSet: Set<string> = new Set();
-  const fnBody = `return ${content};`;
+  const getContentFnBody = `return ${content};`;
   iterateObjValue(content, (res: string[]) => {
     if (hasObjKey(res[1])) {
       argSet.add(RegExp.$1);
     }
   });
   const argArr = [...argSet];
-  const fn = new Function(...argArr.concat(fnBody));
-  const data = fn(...getRepeatArr(argArr.length, wx));
+  const getContentFn = new Function(...argArr.concat(getContentFnBody));
+  const data = fillDefaultValue(getContentFn(...getRepeatArr(argArr.length, wx)));
   const forItemSet = new Set();
   const transWxml = wxml.replace(/((?:[^\s]+\=|))(['"]*)\{\{([^\{\}]+)\}\}(\2)/g, (m, $1, $2, $3, $4) => {
     let result;
     let scanning = true;
     const isObjStyle = $1 === `${WX_DATA}=`;
     const isForStyle = isForRelated($1);
-    if (isObjStyle) {
-      result = `${$1}${$2}$\{JSON.stringify({${$3}})\}${$4}`;
-    } else if (isForStyle) {
+    // if (isObjStyle) {
+    //   result = `${$1}${$2}$\{JSON.stringify({${$3}})\}${$4}`;
+    // }
+    if (isForStyle) {
       forItemSet.add($1);
       return m;
-    } else if (forItemSet.has($3)) {
+    } else if (isObjStyle || forItemSet.has($3)) {
       return m;
     } else {
       result = `${$1}${$2}$\{${$3}\}${$4}`;
@@ -243,15 +249,13 @@ export const wxmlTreeShake = (
         const { key, value } = node;
         if (is(key.name, WX_DATA)) {
           const { start, end } = value;
-          const isEmptyOrMaxDiff = !maxDiff.length
-            || (end - start > maxDiff[1] - maxDiff[0]);
+          const isEmptyOrMaxDiff = !maxDiff.length || (end - start > maxDiff[1] - maxDiff[0]);
           if (isEmptyOrMaxDiff) {
             maxDiff = [start, end];
           }
         }
       },
     });
-
     try {
       const dataString = (jsContent as string).slice(...maxDiff);
       return getExecWxml(dataString, content);

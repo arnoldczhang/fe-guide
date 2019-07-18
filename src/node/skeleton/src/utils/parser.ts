@@ -19,8 +19,10 @@ import {
   ATTR_REPEAT,
   ATTR_SHOW,
   ATTR_WIDTH,
+  BUTTON_TAG,
   COMP_JS,
   COMP_WXSS,
+  ELEMENT_TAG,
   IMAGE_TAG,
   IMPORT_TAG,
   INCLUDE_TAG,
@@ -54,7 +56,7 @@ import { triggerHeightAction,
   triggerPaddingTopAction,
   triggerWidthAction,
 } from './action';
-import { has, is, isArr, isStr } from './assert';
+import { has, is, isArr, isFalsy, isStr } from './assert';
 import {
   hasCach,
   setCach,
@@ -88,7 +90,9 @@ import {
   interceptWxVariable,
   isBindEvent,
   isElif,
+  isElse,
   isId,
+  isIf,
   isKlass,
   isNpmComponent,
   removeBlank,
@@ -199,7 +203,7 @@ export const parseFromCustomAttr = (
         return emptyNode;
       case ATTR_CLEAR:
         ast.child = [];
-        return ast;
+        break;
       case ATTR_PADDING:
         triggerPaddingAction(ast, options, result, value, klass);
         break;
@@ -265,21 +269,48 @@ export const parseFromAttr = (
   ast: IAst,
   options: IPath,
 ): IAst => {
-  const { attr } = ast;
-  const { wxmlKlassInfo } = options;
+  const { attr, sibling } = ast;
+  const { isPage, wxmlKlassInfo } = options;
   if (!attr) { return ast; }
   const result: ICO = {};
   const attrKeys = keys(attr);
-  for (let key, value, i = 0; i < attrKeys.length; i += 1) {
+  for (let key, value, pureValue, i = 0; i < attrKeys.length; i += 1) {
     key = attrKeys[i];
     value = attr[key];
+    pureValue = interceptWxVariable(value);
     switch (true) {
       // remove all events
       case isBindEvent(key):
         break;
-      // remove all `wx:elif`
-      // case isElif(key):
-      //   return emptyNode;
+      case isIf(key):
+        if (isPage && isFalsy(pureValue)) {
+          return emptyNode;
+        }
+        result[key] = '{{true}}';
+        break;
+      case isElif(key):
+        if (isPage && isFalsy(pureValue)) {
+          return emptyNode;
+        }
+        break;
+      case isElse(key):
+        if (isPage) {
+          let tmpSibling = sibling;
+          while (tmpSibling) {
+            const { node } = tmpSibling;
+            if (node && is(node, ELEMENT_TAG)) {
+              if (tmpSibling.attr
+                && !isFalsy(interceptWxVariable(tmpSibling.attr[WX_IF]))
+              ) {
+                return emptyNode;
+              }
+              result[key] = '';
+              break;
+            }
+            tmpSibling = tmpSibling.sibling;
+          }
+        }
+        break;
       // replace id(without wx variable) with a random class
       case isId(key):
         if (!hasWxVariable(value)) {
@@ -337,7 +368,7 @@ export const parseFromTag = (
   options: IPath,
 ): IAst => {
   const { tag, attr } = ast;
-  const { protoPath, mainPath, skeletonKeys } = options;
+  const { protoPath, mainPath, skeletonKeys, watch } = options;
   if (!tag) { return ast; }
 
   switch (true) {
@@ -346,7 +377,7 @@ export const parseFromTag = (
       if (attr && attr.src) {
         const srcWxml: string = resolve(protoPath, attr.src);
         const destWxml: string = resolve(mainPath, attr.src);
-        if (!hasCach(destWxml, PATH)) {
+        if (watch || !hasCach(destWxml, PATH)) {
           const srcWxss: string = modifySuffix(srcWxml, 'wxss');
           const destWxss: string = modifySuffix(destWxml, 'wxss');
           setCach(destWxml, 1, PATH);
@@ -360,11 +391,15 @@ export const parseFromTag = (
       if (attr && attr.src) {
         const srcWxml: string = resolve(protoPath, attr.src);
         const destWxml: string = resolve(mainPath, attr.src);
-        if (!hasCach(destWxml, PATH)) {
+        if (watch || !hasCach(destWxml, PATH)) {
           setCach(destWxml, 1, PATH);
           ensureAndInsertWxml(srcWxml, destWxml, options);
         }
       }
+      break;
+    // <button />
+    case is(tag, BUTTON_TAG):
+      ast.tag = 'view';
       break;
     // <image />
     case is(tag, IMAGE_TAG):
@@ -411,7 +446,7 @@ export const parseFromJSON = (
   options: IPath,
   isPage?: boolean,
 ): ICO => {
-  const { usingComponentKeys, skeletonKeys } = options;
+  const { usingComponentKeys, skeletonKeys, watch } = options;
   const src: string = getDir(srcFile);
   const dest: string = getDir(destFile);
   const { root, compPath, srcPath: rootSrcPath, outputPath } = options;
@@ -442,7 +477,7 @@ export const parseFromJSON = (
       }
       let srcPath: string = resolve(isRootStyle ? rootSrcPath : src, pathValue);
       let destPath: string = resolve(isRootStyle ? outputPath : dest, pathValue);
-      // fix: compiling skeleton to skeleton
+      // fix: avoid compiling skeleton to skeleton
       if (srcPath.includes(outputPath)) {
         delete json[key];
         skeletonKeys.add(key);
@@ -466,9 +501,10 @@ export const parseFromJSON = (
       destWxml = addSuffix(destPath, 'wxml');
       srcWxss = addSuffix(srcPath, 'wxss');
       destWxss = addSuffix(destPath, 'wxss');
+      json[key] = getRelativePath(destPath, destFile);
     }
 
-    if (!hasCach(destWxml, PATH)) {
+    if (watch || !hasCach(destWxml, PATH)) {
 
       // gen component-wxml
       setCach(destWxml, 1, PATH);

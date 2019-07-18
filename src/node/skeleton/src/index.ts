@@ -9,6 +9,7 @@ const {
   SKELETON_RELATIVE,
   SKELETON_ROOT,
   SRC,
+  updateDefaultWxss,
 } = require('./config');
 const { init: initLogger } = require('./utils/log');
 const { assertOptions } = require('./utils/assert');
@@ -21,7 +22,16 @@ const {
 
 const run = (options: any = {}): void => {
   options = assertOptions(options  || {});
-  const { inputDir, outputDir, root, ignore, page, treeshake } = options;
+  const {
+    inputDir,
+    outputDir,
+    root,
+    ignore,
+    page,
+    treeshake,
+    animation,
+    watch,
+  } = options;
   const srcPath = inputDir ? join(root, inputDir) : `${root}/src`;
   const outputPath = outputDir ? join(root, outputDir) : `${root}/src${SKELETON_RELATIVE}`;
   const pageWxml = getPageWxml(`${srcPath}/pages/*/*.wxml`, page);
@@ -36,6 +46,7 @@ const run = (options: any = {}): void => {
       outputPath,
       pagePath,
       compPath,
+      watch,
       wxmlKlassInfo: {},
       wxmlStructInfo: {},
       wxssInfo: globalWxssMap,
@@ -47,10 +58,16 @@ const run = (options: any = {}): void => {
     };
     genNewComponent(wxml, pageOptions);
   });
+  // global wxss
+  if (animation) {
+    updateDefaultWxss(animation);
+  }
   genResourceFile(
     `${outputPath}${SKELETON_DEFAULT_WXSS_FILE}`,
     transMap2Style(DEFAULT_WXSS, globalWxssMap),
   );
+
+  // global js
   genResourceFile(`${outputPath}${SKELETON_DEFAULT_JS_FILE}`, DEFAULT_JS);
 };
 

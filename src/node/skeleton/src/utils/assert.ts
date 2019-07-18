@@ -10,7 +10,15 @@ export const isType = (val: any, type: string): boolean => typeof val === type;
 
 export const isFunc = (val: any): boolean => isType(val, 'function');
 
-export const isStr = (val: any): boolean => isType(val, 'string');
+export const isObj = (val: any): boolean => isType(val, 'object');
+
+export const isStr = (val: any): boolean => isType(val, 'string') || val instanceof String;
+
+export const isFalsy = (value: any): boolean => (
+  !value || value === 'null' || value === 'false'
+    || value === 'NaN' || value !== value || Number(value) === 0
+    || value === 'undefined' || /void \d+/g.test(value)
+);
 
 export const isArr = Array.isArray;
 

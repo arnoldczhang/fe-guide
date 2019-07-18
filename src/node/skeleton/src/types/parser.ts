@@ -19,6 +19,7 @@ export interface IPath {
   mainFilePath?: string;
   pagePath?: string;
   compPath?: string;
+  watch?: boolean;
   // cach `id` <-> `class` map
   // replace id with random class
   wxmlKlassInfo?: ICO;
@@ -35,4 +36,8 @@ export interface IPath {
   treeshake?: boolean;
   isPage?: boolean;
   ignoreTags?: string[];
+}
+
+export enum animationStyle {
+  shine = 'shine',
 }

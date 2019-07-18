@@ -1,4 +1,5 @@
 import { CF } from "../types";
+import { isStr } from "./assert";
 
 // =========== //
 // === test === //
@@ -19,6 +20,14 @@ export const isElif = (key: string): boolean => (
   /^wx:(?:elif)$/.test(key)
 );
 
+export const isIf = (key: string): boolean => (
+  /^wx:(?:if)$/.test(key)
+);
+
+export const isElse = (key: string): boolean => (
+  /^wx:(?:else)$/.test(key)
+);
+
 export const isId = (key: string): boolean => (
   /^#?id$/.test(key)
 );
@@ -37,7 +46,7 @@ export const withoutPageSelector = (selector: string): boolean => (
 );
 
 export const hasObjKey = (input: string): boolean => (
-  /^\s*([^\.]+)\./.test(input)
+  /^\s*[!~\-\+\/]*([^\.]+)\./.test(input)
 );
 
 export const hasUnDefVariable = (input: string): boolean => (
@@ -74,10 +83,10 @@ export const matchIdStyle = (key: string): any[] | null => (
 // === replace === //
 // ============== //
 export const interceptWxVariable = (
-  input: string,
+  input: any,
   replacement?: string,
 ): string => (
-  input.replace(/\{\{([^\{\}]+)\}\}/, replacement || '$1')
+  isStr(input) ? input.replace(/\{\{([^\{\}]+)\}\}/, replacement || '$1') : input
 );
 
 export const replacePseudo = (
@@ -127,7 +136,7 @@ export const iterateObjValue = (
   input: string,
   iteratee: (r: any[] | null) => void,
 ) => {
-  const valRE = /\:\s*([^,]+)/g;
+  const valRE = /\:\s*(.+),?\s/g;
   let res: any[] | null = valRE.exec(input);
   while (res) {
     iteratee(res);

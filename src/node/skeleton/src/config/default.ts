@@ -1,4 +1,5 @@
-import { PRE } from './attr';
+import { animationStyle } from '../types';
+import { PRE, SHINE_STYLE } from './attr';
 import {
   SKELETON_DEFAULT_JS_FILE,
   SKELETON_DEFAULT_WXSS,
@@ -17,8 +18,13 @@ export const WXSS_BG_GREY = `${PRE}-default-grey`;
 
 export const DEFAULT_WXSS = new Map();
 DEFAULT_WXSS.set(WXSS_BG_GREY, `
+  position: relative;
   background: #f4f4f4!important;
   color: #f4f4f4!important;
+  overflow: hidden;
+  outline: none;
+  border: none;
+  z-index: 1;
 `);
 
 export const DEFAULT_JS = `
@@ -74,3 +80,31 @@ export const wx: any = new Proxy({}, {
     return fn;
   },
 });
+
+export const updateDefaultWxss = (style: animationStyle): void => {
+  switch (style) {
+    case SHINE_STYLE:
+      DEFAULT_WXSS.set(`${WXSS_BG_GREY}::after`, `
+      content: '';
+      outline: none;
+      border: none;
+      z-index: 1;
+      background-color: hsla(0, 0%, 100%, 0.2);
+      position: absolute;
+      top: -50%;
+      bottom: -50%;
+      width: 30rpx;
+      animation: splashAnim 1.8s infinite;
+      -webkit-animation: splashAnim 1.8s infinite;
+      `);
+      DEFAULT_WXSS.set('@keyframes splashAnim', `
+      0% { transform: translate3d(-300%, 0, 0) rotate(35deg); }
+      100% { transform: translate3d(2500%, 0, 0) rotate(35deg); }
+      `);
+      DEFAULT_WXSS.set('@-webkit-keyframes splashAnim', `
+      0% { transform: translate3d(-300%, 0, 0) rotate(35deg); }
+      100% { transform: translate3d(2500%, 0, 0) rotate(35deg); }
+      `);
+      break;
+  }
+};

@@ -86,10 +86,15 @@ export const treewalk = (
       child.forEach((
         ch: IAst,
         idx: number,
-        array: IAst[],
-      ) => (
-        array[idx] = treewalk(ch, options)
-      ));
+        chs: IAst[],
+      ) => {
+        chs[idx] = treewalk(ch, options, isPage);
+        if (ch !== chs[idx]) {
+          chs[idx].sibling = chs[idx - 1];
+        }
+        (chs[idx + 1] || {}).sibling = chs[idx];
+        return ch;
+      });
     }
   }
   return ast;
@@ -109,9 +114,11 @@ export const parseFile = (
   isPage?: boolean,
 ): string => {
   try {
-    const content: string = removeComment(String(read(dest)));
-    // FIXME wxml treeshake
-    // const shakeContent = wxmlTreeShake(content, src, { ...options, isPage });
+    const { treeshake } = options;
+    let content: string = removeComment(String(read(dest)));
+    if (treeshake) {
+      content = wxmlTreeShake(content, src, { ...options, isPage });
+    }
     const json: ICO = html2json(content);
     return json2html(treewalk(json, {
       ...options,
@@ -344,6 +351,10 @@ export const genResourceFile = (resourceRoot: string, content: string): void => 
   write(resourceRoot, content);
 };
 
+/**
+ * transMap2Style
+ * @param maps
+ */
 export const transMap2Style = (
   ...maps: Array<Map<string, string>>
 ): string => {
@@ -351,7 +362,7 @@ export const transMap2Style = (
   maps.forEach((map: Map<string, string>): void => {
     const keys: IterableIterator<string> = map.keys();
     for (const key of keys) {
-      result += `.${key} {${map.get(key)}}\n`;
+      result += `${key.indexOf('@') ? '.' : ''}${key} {${map.get(key)}}\n`;
     }
   });
   return result;
