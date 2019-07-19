@@ -1,4 +1,4 @@
-import { animationStyle } from '../types';
+import { animationStyle, ICO } from '../types';
 import { PRE, SHINE_STYLE } from './attr';
 import {
   SKELETON_DEFAULT_JS_FILE,
@@ -69,7 +69,7 @@ module.exports = {
 
 export const COMP_WXML = ``;
 
-export const wx: any = new Proxy({}, {
+export const wx: ICO = new Proxy({}, {
   get(target, key) {
     if (key === Symbol.toPrimitive) {
       return () => '';
@@ -94,14 +94,14 @@ export const updateDefaultWxss = (style: animationStyle): void => {
       top: -50%;
       bottom: -50%;
       width: 30rpx;
-      animation: splashAnim 1.8s infinite;
-      -webkit-animation: splashAnim 1.8s infinite;
+      animation: shineAnim 1.8s infinite;
+      -webkit-animation: shineAnim 1.8s infinite;
       `);
-      DEFAULT_WXSS.set('@keyframes splashAnim', `
+      DEFAULT_WXSS.set('@keyframes shineAnim', `
       0% { transform: translate3d(-300%, 0, 0) rotate(35deg); }
       100% { transform: translate3d(2500%, 0, 0) rotate(35deg); }
       `);
-      DEFAULT_WXSS.set('@-webkit-keyframes splashAnim', `
+      DEFAULT_WXSS.set('@-webkit-keyframes shineAnim', `
       0% { transform: translate3d(-300%, 0, 0) rotate(35deg); }
       100% { transform: translate3d(2500%, 0, 0) rotate(35deg); }
       `);

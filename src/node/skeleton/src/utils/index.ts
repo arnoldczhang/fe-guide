@@ -87,13 +87,9 @@ export const treewalk = (
         ch: IAst,
         idx: number,
         chs: IAst[],
-      ) => {
+      ): void => {
         chs[idx] = treewalk(ch, options, isPage);
-        if (ch !== chs[idx]) {
-          chs[idx].sibling = chs[idx - 1];
-        }
         (chs[idx + 1] || {}).sibling = chs[idx];
-        return ch;
       });
     }
   }
@@ -115,9 +111,9 @@ export const parseFile = (
 ): string => {
   try {
     const { treeshake } = options;
-    let content: string = removeComment(String(read(dest)));
-    if (treeshake) {
-      content = wxmlTreeShake(content, src, { ...options, isPage });
+    let content: string = removeComment(String(read(src)));
+    if (treeshake && isPage) {
+      content = wxmlTreeShake(content, src, options);
     }
     const json: ICO = html2json(content);
     return json2html(treewalk(json, {
@@ -229,7 +225,7 @@ export const ensureAndInsertWxml = (
   isPage?: boolean,
 ): void => {
   ensure(dest);
-  copy(src, dest);
+  // copy(src, dest);
   write(
     dest,
     parseFile(src, dest, options, isPage),

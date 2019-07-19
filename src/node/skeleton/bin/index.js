@@ -3,18 +3,24 @@
 const program = require('commander');
 const UpdateNotifier = require('update-notifier').UpdateNotifier;
 const semCmp = require('semver-compare');
-const chalk = require('chalk');
+const color = require('chalk');
 const boxen = require('boxen');
+const {
+  resolve,
+} = require('path');
 const {
   join
 } = require('path');
 const {
   readFileSync
 } = require('fs');
+const chokidar = require('chokidar');
 
 const run = require('../dist/index.cjs');
 const cfg = require('../package.json');
-const options = {};
+const options = {
+  root: process.cwd(),
+};
 const thisDir = process.cwd();
 const {
   defaultConfigName,
@@ -24,16 +30,16 @@ const {
 // 更新检查方法
 const notifier = new UpdateNotifier({
   pkg: cfg,
-  callback: function (err, result) {
+  callback(err, result) {
     if (err) return;
     if (semCmp(result.latest, result.current) > 0) {
       const message =
         'Update available ' +
-        chalk.dim(result.current) +
-        chalk.reset(' → ') +
-        chalk.green(result.latest) +
+        color.dim(result.current) +
+        color.reset(' → ') +
+        color.green(result.latest) +
         ' \nRun ' +
-        chalk.cyan('npm i -g ' + json.name) +
+        color.cyan('npm i -g ' + json.name) +
         ' to update';
       const msg =
         '\n' +
@@ -61,8 +67,32 @@ const ifArg = (name, fn, init) => {
 };
 
 const init = () => {
-  options.root = process.cwd();
+  configFn();
   run(options);
+  console.log('compile done');
+};
+
+const configFn = (filePath = defaultConfigName) => {
+  let configFile;
+  filePath = filePath || defaultConfigName;
+  const absPath = join(thisDir, filePath);
+  if (/\.json$/.test(filePath)) {
+    configFile = JSON.parse(readFileSync(absPath, 'utf-8'));
+  } else if (/\.js$/.test(filePath)) {
+    try {
+      configFile = require(absPath);
+    } catch (err) {
+      console.warn('未找到配置文件');
+      configFile = {};
+    }
+  } else {
+    return console.warn('仅支持json或js');
+  }
+
+  if (typeof configFile === 'function') {
+    configFile = configFile();
+  }
+  Object.assign(options, configFile);
 };
 
 program
@@ -72,12 +102,18 @@ program
   .option('-c, --config <dir>', '指定读取配置文件，默认/skeleton.config.js')
   .option('-u, --checkUpdate', '检查更新版本')
   .option('-p, --page <pages>', '仅生成指定页的骨架图，默认*')
+  .option('-t, --treeshake', '启用wxss摇树，默认不启用，注：可能存在样式缺少的风险')
   .option('-i, --inputDir <dir>', '指定输入目录，默认/src')
   .option('-o, --outDir <dir>', '指定输出目录，默认/src/skeleton')
+  .option('-w, --watch', '监听指定输入')
   .parse(process.argv);
 
 ifArg('checkUpdate', () => {
   notifier.check();
+});
+
+ifArg('treeshake', () => {
+  options.treeshake = true;
 });
 
 ifArg('page', (pages) => {
@@ -96,24 +132,14 @@ ifArg('outDir', (dir) => {
   options.outDir = dir;
 });
 
-ifArg('config', (filePath) => {
-  let configFile;
-  const absPath = join(thisDir, filePath || defaultConfigName);
-  if (/\.json$/.test(filePath)) {
-    configFile = JSON.parse(readFileSync(absPath, 'utf-8'));
-  } else if (/\.js$/.test(filePath)) {
-    try {
-      configFile = require(absPath);
-    } catch (err) {
-      console.warn('未找到配置文件');
-      configFile = {};
-    }
-  } else {
-    return console.warn('仅支持json或js');
-  }
 
-  if (typeof configFile === 'function') {
-    configFile = configFile();
-  }
-  Object.assign(options, configFile);
-}, init);
+ifArg('config', configFn, init);
+
+ifArg('watch', () => {
+  console.log('watch skeleton changes...');
+  options.watch = true;
+  chokidar.watch(resolve(options.root, options.inputDir || './src'), {
+      ignored: /\/skeleton\/.*/
+    })
+    .on('change', init);
+});

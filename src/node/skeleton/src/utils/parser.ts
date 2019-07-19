@@ -34,6 +34,8 @@ import {
   TEMPLATE_TAG,
   TEXT,
   TPL_TAG,
+  WX_ELIF,
+  WX_ELSE,
   WX_FOR,
   WX_FOR_INDEX,
   WX_HIDDEN,
@@ -180,6 +182,7 @@ export const parseFromCustomAttr = (
   if (!attr) { return ast; }
   const result: ICO = {};
   const attrKeys = keys(attr);
+  const exceptKeys: string[] = [];
   for (let key, value, klass, newKlassName, i = 0; i < attrKeys.length; i += 1) {
     key = attrKeys[i];
     value = attr[key];
@@ -198,6 +201,9 @@ export const parseFromCustomAttr = (
       case ATTR_SHOW:
         result[WX_HIDDEN] = `{{false}}`;
         result[WX_IF] = '{{true}}';
+        delete result[WX_ELIF];
+        delete result[WX_ELSE];
+        exceptKeys.push(WX_ELIF, WX_ELSE);
         break;
       case ATTR_REMOVE:
         return emptyNode;
@@ -250,7 +256,7 @@ export const parseFromCustomAttr = (
         ast.attr[KLASS] = result[KLASS];
         break;
       default:
-        if (!has(key, result)) {
+        if (!has(key, result) && !exceptKeys.includes(key)) {
           result[key] = value;
         }
         break;
@@ -270,7 +276,7 @@ export const parseFromAttr = (
   options: IPath,
 ): IAst => {
   const { attr, sibling } = ast;
-  const { isPage, wxmlKlassInfo } = options;
+  const { isPage, wxmlKlassInfo, treeshake } = options;
   if (!attr) { return ast; }
   const result: ICO = {};
   const attrKeys = keys(attr);
@@ -282,35 +288,55 @@ export const parseFromAttr = (
       // remove all events
       case isBindEvent(key):
         break;
-      case isIf(key):
-        if (isPage && isFalsy(pureValue)) {
-          return emptyNode;
-        }
-        result[key] = '{{true}}';
-        break;
-      case isElif(key):
-        if (isPage && isFalsy(pureValue)) {
-          return emptyNode;
-        }
-        break;
-      case isElse(key):
+      // wx:if
+      // if this value eq false remove this element
+      case treeshake && isIf(key):
         if (isPage) {
-          let tmpSibling = sibling;
-          while (tmpSibling) {
-            const { node } = tmpSibling;
-            if (node && is(node, ELEMENT_TAG)) {
-              if (tmpSibling.attr
-                && !isFalsy(interceptWxVariable(tmpSibling.attr[WX_IF]))
-              ) {
-                return emptyNode;
-              }
-              result[key] = '';
-              break;
-            }
-            tmpSibling = tmpSibling.sibling;
+          if (isFalsy(pureValue)) {
+            return emptyNode;
           }
+          result[key] = '{{true}}';
+          break;
+        } else {
+          result[key] = value;
+          break;
         }
-        break;
+      // wx:elif
+      // if this value eq false, remove this element
+      // else modify this attribute from `wx:elif` to `wx:if`
+      case treeshake && isElif(key):
+        if (isPage) {
+          if (isFalsy(pureValue)) {
+            return emptyNode;
+          }
+          result[WX_HIDDEN] = '{{false}}';
+          result[WX_IF] = '{{true}}';
+          break;
+        } else {
+          result[key] = value;
+          break;
+        }
+      // wx:else
+      // if pre sibling wx:if="{{true}}" remove this element
+      // else remove this attribute `wx:else`
+      case treeshake && isElse(key):
+        if (isPage) {
+          let tmpSibling = sibling || {};
+          if (!tmpSibling.node || !is(tmpSibling.node, ELEMENT_TAG)) {
+            tmpSibling = tmpSibling.sibling || {};
+          }
+          const { node } = tmpSibling;
+          if (node && tmpSibling.attr
+            && !isFalsy(interceptWxVariable(tmpSibling.attr[WX_IF]))
+          ) {
+            return emptyNode;
+          } else {
+            break;
+          }
+        } else {
+          result[key] = value;
+          break;
+        }
       // replace id(without wx variable) with a random class
       case isId(key):
         if (!hasWxVariable(value)) {
@@ -321,7 +347,7 @@ export const parseFromAttr = (
         break;
       default:
         if (!has(key, result)) {
-          result[key] = attr[key];
+          result[key] = value;
         }
         break;
     }

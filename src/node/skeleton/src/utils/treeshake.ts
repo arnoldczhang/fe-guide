@@ -1,23 +1,43 @@
 import { NodePath } from '@babel/core';
 import * as css from 'css';
-import { COMMENT_TAG, IMPORT_TAG, INCLUDE_TAG, RULE_TAG, TEMPLATE_TAG, TEXT, wx, WX_DATA } from "../config";
+import {
+  COMMENT_TAG,
+  IMPORT_TAG,
+  INCLUDE_TAG,
+  RULE_TAG,
+  TEMPLATE_TAG,
+  TEXT,
+  wx,
+  WX_DATA,
+  WX_HIDDEN,
+  WX_IF,
+} from "../config";
 import { IAst, ICO, IPath } from "../types";
-import { is, isArr, isStr } from "./assert";
+import { is, isArr, isObj, isStr } from "./assert";
 import { transform, traverse } from './babel';
 import { identity, modifySuffix } from './dir';
 import { exists, read } from './fs';
 import Logger from './log';
 import { fillDefaultValue, getRepeatArr } from './random';
 import {
+  getPropTarget,
   hasObjKey,
+  hasUnDefProperty,
   hasUnDefVariable,
   isForRelated,
+  isHidden,
+  isIfAll,
+  isItemVar,
   iterateObjValue,
   replacePseudo,
   splitWith,
   splitWxAttrs,
 } from "./reg";
 
+const {
+  keys,
+  values,
+} = Object;
 const logger = Logger.getInstance();
 
 /**
@@ -162,6 +182,39 @@ export const hasKlassInStruct = (
 };
 
 /**
+ * getPageData
+ * @param input
+ */
+export const getPageData = (input: string): ICO => {
+  let doing: boolean = true;
+  let result: ICO;
+  const argSet: Set<string> = new Set();
+  iterateObjValue(input, (res: string[]) => {
+    if (hasObjKey(res[1])) {
+      argSet.add(RegExp.$1);
+    }
+  });
+  let fnBody: string = `return ${input};`;
+  const argArr = [...argSet];
+  while (doing) {
+    const getContentFn = new Function(...argArr.concat(fnBody));
+    try {
+      result = getContentFn(
+        ...getRepeatArr(argArr.length, wx),
+      );
+      doing = false;
+    } catch ({ message }) {
+      if (hasUnDefVariable(message)) {
+        fnBody = fnBody.replace(RegExp.$1, '""');
+      } else {
+        doing = false;
+      }
+    }
+  }
+  return result;
+};
+
+/**
  * getExecWxml
  * @param content
  * @param wxml
@@ -170,57 +223,61 @@ export const getExecWxml = (
   content: string,
   wxml: string,
 ): string => {
-  const argSet: Set<string> = new Set();
-  const getContentFnBody = `return ${content};`;
-  iterateObjValue(content, (res: string[]) => {
-    if (hasObjKey(res[1])) {
-      argSet.add(RegExp.$1);
-    }
-  });
-  const argArr = [...argSet];
-  const getContentFn = new Function(...argArr.concat(getContentFnBody));
-  const data = fillDefaultValue(getContentFn(...getRepeatArr(argArr.length, wx)));
-  const forItemSet = new Set();
+  let data = getPageData(content);
+  if (!data) { return wxml; }
+  data = data || {};
   const transWxml = wxml.replace(/((?:[^\s]+\=|))(['"]*)\{\{([^\{\}]+)\}\}(\2)/g, (m, $1, $2, $3, $4) => {
     let result;
-    let scanning = true;
-    const isObjStyle = $1 === `${WX_DATA}=`;
-    const isForStyle = isForRelated($1);
-    // if (isObjStyle) {
-    //   result = `${$1}${$2}$\{JSON.stringify({${$3}})\}${$4}`;
-    // }
-    if (isForStyle) {
-      forItemSet.add($1);
-      return m;
-    } else if (isObjStyle || forItemSet.has($3)) {
-      return m;
+    let scanning: boolean = true;
+    const isVisibleStyle: boolean = isIfAll($1) || isHidden($1);
+    // const isForStyle: boolean = isForRelated($1);
+
+    if (isVisibleStyle) {
+      result = `${$1}${$2}\{\{$\{${$3}\}\}\}${$4}`;
     } else {
-      result = `${$1}${$2}$\{${$3}\}${$4}`;
+      return m;
     }
 
-    // register any undef variable with default value `wx`
-    while (scanning) {
+    // if error, just return false
+    if (true) {
       try {
-        new Function(...Object.keys(data) as string[], `return \`${result}\`;`)();
+        new Function(...keys(data) as string[], `return \`${result}\`;`).apply(null, values(data));
       } catch ({ message }) {
-        if (hasUnDefVariable(message)) {
-          data[RegExp.$1] = wx;
-        } else {
-          scanning = false;
-        }
-        continue;
+        return result.replace($3, 'false');
       }
-      scanning = false;
+    // TODO register any undef variable with default value `wx`
+    } else {
+      while (scanning) {
+        try {
+          new Function(...keys(data) as string[], `return \`${result}\`;`).apply(null, values(data));
+        } catch ({ message }) {
+          if (hasUnDefVariable(message)) {
+            data[RegExp.$1] = wx;
+          } else if (hasUnDefProperty(message)) {
+            const parentKeys = getPropTarget(result, RegExp.$1);
+            parentKeys.reduce((res: ICO, key: string): ICO => {
+              if (!res) { res = wx; }
+              if (is(res[key], null) || !isObj(res[key])) {
+                res[key] = wx;
+              }
+              return res[key];
+            }, data);
+          } else {
+            scanning = false;
+          }
+          continue;
+        }
+        scanning = false;
+      }
     }
     return result;
   });
 
-  const genVnodeFn = new Function(...Object.keys(data) as string[], `return \`${transWxml}\`;`);
-
   try {
-    return genVnodeFn.apply(null, Object.values(data));
+    const genVnodeFn = new Function(...keys(data) as string[], `return \`${transWxml}\`;`);
+    return genVnodeFn.apply(null, values(data));
   } catch (err) {
-    console.log(err);
+    logger.warn(err);
   }
   return wxml;
 };
@@ -236,32 +293,29 @@ export const wxmlTreeShake = (
   src: string,
   options: IPath,
 ): string => {
-  const { isPage } = options;
   const srcJs: string = modifySuffix(src, 'js');
-  if (isPage) {
-    const jsContent: string | void | Promise<any> | Buffer = exists(srcJs) ? read(srcJs) : '';
-    const result = transform(jsContent as string) || {};
-    const { ast } = result;
-    let maxDiff: number[] = [];
-    traverse(ast, {
-      ObjectProperty(path: NodePath) {
-        const node: ICO = path.node;
-        const { key, value } = node;
-        if (is(key.name, WX_DATA)) {
-          const { start, end } = value;
-          const isEmptyOrMaxDiff = !maxDiff.length || (end - start > maxDiff[1] - maxDiff[0]);
-          if (isEmptyOrMaxDiff) {
-            maxDiff = [start, end];
-          }
+  const jsContent: string | void | Promise<any> | Buffer = exists(srcJs) ? read(srcJs) : '';
+  const result = transform(jsContent as string) || {};
+  const { ast } = result;
+  let maxDiff: number[] = [];
+  traverse(ast, {
+    ObjectProperty(path: NodePath) {
+      const node: ICO = path.node;
+      const { key, value } = node;
+      if (is(key.name, WX_DATA)) {
+        const { start, end } = value;
+        const isEmptyOrMaxDiff = !maxDiff.length || (end - start > maxDiff[1] - maxDiff[0]);
+        if (isEmptyOrMaxDiff) {
+          maxDiff = [start, end];
         }
-      },
-    });
-    try {
-      const dataString = (jsContent as string).slice(...maxDiff);
-      return getExecWxml(dataString, content);
-    } catch ({ message }) {
-      logger.warn(message);
-    }
+      }
+    },
+  });
+  try {
+    const dataString = (jsContent as string).slice(...maxDiff);
+    return getExecWxml(dataString, content);
+  } catch (err) {
+    logger.warn(err);
   }
   return content;
 };

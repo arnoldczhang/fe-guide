@@ -28,6 +28,14 @@ export const isElse = (key: string): boolean => (
   /^wx:(?:else)$/.test(key)
 );
 
+export const isIfAll = (key: string): boolean => (
+  /^wx:(?:if|elif|else)/.test(key)
+);
+
+export const isHidden = (key: string): boolean => (
+  /^hidden/.test(key)
+);
+
 export const isId = (key: string): boolean => (
   /^#?id$/.test(key)
 );
@@ -51,6 +59,14 @@ export const hasObjKey = (input: string): boolean => (
 
 export const hasUnDefVariable = (input: string): boolean => (
   /^([^\s]+) is not defined/.test(input)
+);
+
+export const hasUnDefProperty = (input: string): boolean => (
+  /^Cannot read property ['"]([^'"]+)['"] of (?:undefined|null)/.test(input)
+);
+
+export const isItemVar = (input: string): boolean => (
+  /item\.?/.test(input)
 );
 
 // ============= //
@@ -142,6 +158,25 @@ export const iterateObjValue = (
     iteratee(res);
     res = valRE.exec(input);
   }
+};
+
+export const getPropTarget = (
+  input: string,
+  prop: string,
+): string[] => {
+  const result = [];
+  const parentRE = new RegExp(`([^\\s\\{]+)${prop}`);
+  const parentRes: any[] = parentRE.exec(input) || [];
+  input = parentRes[1] || prop;
+  const singleParentRE = new RegExp(`(?:(\\w+)\\.?|\\[['"]?(\\w+)['"]?\\])$`, 'g');
+  let temp = singleParentRE.exec(input);
+  while (temp) {
+    input = input.slice(0, temp.index);
+    singleParentRE.lastIndex = 0;
+    result.unshift(temp[1]);
+    temp = singleParentRE.exec(input);
+  }
+  return result;
 };
 
 // =========== //
