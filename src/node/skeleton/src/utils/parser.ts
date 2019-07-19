@@ -1,5 +1,6 @@
 import { join, resolve } from 'path';
 import * as pathResolve from 'resolve';
+import { isString } from 'util';
 import {
   ATTR_BG,
   ATTR_CLEAR,
@@ -45,7 +46,8 @@ import {
   WXSS_BG_GREY,
 } from '../config';
 import { CF, IAst, ICO, IPath } from '../types';
-import { triggerHeightAction,
+import { triggerBgAction,
+  triggerHeightAction,
   triggerMarginAction,
   triggerMarginBottomAction,
   triggerMarginLeftAction,
@@ -81,6 +83,7 @@ import {
   ensureAndInsertWxml,
   ensureAndInsertWxss,
   modifySuffix,
+  updateTemplateInfo,
   updateUsingInJsonConfig,
 } from './index';
 import Logger from './log';
@@ -88,6 +91,7 @@ import {
   genKlass,
 } from './random';
 import {
+  getTemplateName,
   hasWxVariable,
   interceptWxVariable,
   isBindEvent,
@@ -178,12 +182,11 @@ export const parseFromCustomAttr = (
   options: IPath,
 ): IAst => {
   const { attr } = ast;
-  const { wxssInfo } = options;
   if (!attr) { return ast; }
   const result: ICO = {};
   const attrKeys = keys(attr);
   const exceptKeys: string[] = [];
-  for (let key, value, klass, newKlassName, i = 0; i < attrKeys.length; i += 1) {
+  for (let key, value, klass, i = 0; i < attrKeys.length; i += 1) {
     key = attrKeys[i];
     value = attr[key];
     klass = isStr(attr[KLASS]) ? [attr[KLASS]] : attr[KLASS] || [];
@@ -247,13 +250,7 @@ export const parseFromCustomAttr = (
         triggerHeightAction(ast, options, result, value, klass);
         break;
       case ATTR_BG:
-        value = isArr(value) ? value.join('') : value;
-        if (value) {
-          newKlassName = `${PRE}-bg-${replaceColorSymbol(value)}`;
-          wxssInfo.set(newKlassName, ` background: ${value}!important;color: ${value}!important; `);
-        }
-        result[KLASS] = [...klass, newKlassName || WXSS_BG_GREY];
-        ast.attr[KLASS] = result[KLASS];
+        triggerBgAction(ast, options, result, value, klass);
         break;
       default:
         if (!has(key, result) && !exceptKeys.includes(key)) {
@@ -341,9 +338,23 @@ export const parseFromAttr = (
       case isId(key):
         if (!hasWxVariable(value)) {
           const [klassName, klass] = genKlass();
-          (result.class ? result : attr).class += ` ${klassName}`;
+          result.class = result.class || [];
+          if (isArr(result.class)) {
+            result.class.push(klassName);
+          } else {
+            result.class = [result.class, klassName];
+          }
           wxmlKlassInfo[`#${value}`] = klass;
         }
+        break;
+      case isKlass(key):
+        result.class = result.class || [];
+        if (!value) {
+          value = [];
+        } else if (isString(value)) {
+          value = [value];
+        }
+        result.class = value.concat(result.class);
         break;
       default:
         if (!has(key, result)) {
@@ -394,7 +405,13 @@ export const parseFromTag = (
   options: IPath,
 ): IAst => {
   const { tag, attr } = ast;
-  const { protoPath, mainPath, skeletonKeys, watch } = options;
+  const {
+    protoPath,
+    mainPath,
+    skeletonKeys,
+    wxTemplateInfo,
+    watch,
+  } = options;
   if (!tag) { return ast; }
 
   switch (true) {
@@ -409,6 +426,7 @@ export const parseFromTag = (
           setCach(destWxml, 1, PATH);
           ensureAndInsertWxml(srcWxml, destWxml, options);
           ensureAndInsertWxss(srcWxss, destWxss, options);
+          updateTemplateInfo(srcWxml, destWxml, options);
         }
       }
       break;
@@ -472,7 +490,12 @@ export const parseFromJSON = (
   options: IPath,
   isPage?: boolean,
 ): ICO => {
-  const { usingComponentKeys, skeletonKeys, watch } = options;
+  const {
+    usingComponentKeys,
+    skeletonKeys,
+    wxComponentInfo,
+    watch,
+  } = options;
   const src: string = getDir(srcFile);
   const dest: string = getDir(destFile);
   const { root, compPath, srcPath: rootSrcPath, outputPath } = options;
@@ -529,6 +552,8 @@ export const parseFromJSON = (
       destWxss = addSuffix(destPath, 'wxss');
       json[key] = getRelativePath(destPath, destFile);
     }
+
+    wxComponentInfo.add(destWxml);
 
     if (watch || !hasCach(destWxml, PATH)) {
 

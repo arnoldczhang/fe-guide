@@ -20,6 +20,8 @@ export interface IPath {
   pagePath?: string;
   compPath?: string;
   watch?: boolean;
+  wxTemplateInfo?: Map<string, string>;
+  wxComponentInfo?: Set<string>;
   // cach `id` <-> `class` map
   // replace id with random class
   wxmlKlassInfo?: ICO;
@@ -40,4 +42,5 @@ export interface IPath {
 
 export enum animationStyle {
   shine = 'shine',
+  jelly = 'jelly',
 }

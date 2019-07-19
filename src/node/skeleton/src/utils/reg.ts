@@ -1,5 +1,6 @@
 import { CF } from "../types";
 import { isStr } from "./assert";
+import { identity } from "./dir";
 
 // =========== //
 // === test === //
@@ -14,6 +15,10 @@ export const isBindEvent = (key: string): boolean => (
 
 export const isForRelated = (key: string): boolean => (
   /^wx\:(?:for|for-index|for-item|key)/.test(key)
+);
+
+export const isCssSymbol = (input: string): boolean => (
+  /[\+~>]/.test(input)
 );
 
 export const isElif = (key: string): boolean => (
@@ -98,6 +103,14 @@ export const matchIdStyle = (key: string): any[] | null => (
 // ============== //
 // === replace === //
 // ============== //
+export const replaceWith = (
+  input: string,
+  reg: RegExp | string = /\s+/,
+  replacement?: CF,
+) => (
+    input.replace(reg, replacement)
+);
+
 export const interceptWxVariable = (
   input: any,
   replacement?: string,
@@ -148,6 +161,11 @@ export const trim = (input: string): string => (
 // =========== //
 // === exec === //
 // =========== //
+/**
+ * iterateObjValue
+ * @param input
+ * @param iteratee
+ */
 export const iterateObjValue = (
   input: string,
   iteratee: (r: any[] | null) => void,
@@ -159,6 +177,44 @@ export const iterateObjValue = (
     res = valRE.exec(input);
   }
 };
+
+/**
+ * getTemplateName
+ * @param input
+ */
+export const getExecRes = (
+  input: string,
+  reg: RegExp = /<template[^\/\>]*name=(['"])([^'"]+)\1[^\/\>]*\/?>/g,
+  index: number = 2,
+): string[] => {
+  const result: string[] = [];
+  let exRes = reg.exec(input);
+  while (exRes) {
+    result.push(exRes[index]);
+    exRes = reg.exec(input);
+  }
+  return result;
+};
+
+/**
+ * getTemplateName
+ * @param input
+ */
+export const getTemplateName = (
+  input: string,
+): string[] => (
+  getExecRes(input)
+);
+
+/**
+ * getTemplateIs
+ * @param input
+ */
+export const getTemplateIs = (
+  input: string,
+): string[] => (
+    getExecRes(input, /<template[^\/\>]*is=(['"])([^'"]+)\1[^\/\>]*\/?>/g)
+);
 
 export const getPropTarget = (
   input: string,
@@ -185,6 +241,6 @@ export const getPropTarget = (
 export const splitWith = (
   input: string,
   reg: RegExp | string = /\s+/,
-) => (
-  input.split(reg)
+): string[] => (
+  input.split(reg).filter(identity)
 );

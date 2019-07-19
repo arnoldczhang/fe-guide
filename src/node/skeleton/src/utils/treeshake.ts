@@ -18,18 +18,20 @@ import { transform, traverse } from './babel';
 import { identity, modifySuffix } from './dir';
 import { exists, read } from './fs';
 import Logger from './log';
-import { fillDefaultValue, getRepeatArr } from './random';
+import { combine, fillDefaultValue, getRepeatArr } from './random';
 import {
   getPropTarget,
   hasObjKey,
   hasUnDefProperty,
   hasUnDefVariable,
+  isCssSymbol,
   isForRelated,
   isHidden,
   isIfAll,
   isItemVar,
   iterateObjValue,
   replacePseudo,
+  replaceWith,
   splitWith,
   splitWxAttrs,
 } from "./reg";
@@ -102,7 +104,7 @@ export const styleTreeShake = (
   rules: css.Rule[],
   options: IPath,
 ): css.Rule[] => {
-  const { wxmlStructInfo } = options;
+  const { wxmlStructInfo, wxmlKlassInfo } = options;
   return rules.filter((
     rule: css.Rule & css.Import,
   ) => {
@@ -111,7 +113,7 @@ export const styleTreeShake = (
       const newSelectors: string[] = [];
       selectors.forEach((selector: string) => {
         const selectorArr = splitWith(replacePseudo(selector));
-        if (hasKlassInStruct(selectorArr, wxmlStructInfo)) {
+        if (hasKlassInStruct(selectorArr, wxmlStructInfo, wxmlKlassInfo)) {
           newSelectors.push(selector);
         }
       });
@@ -128,54 +130,119 @@ export const styleTreeShake = (
 
 /**
  * hasChildWithKlass
- * @param klass
+ * @param selectorList
  * @param child
+ * @param transMap
  * @param result
  */
 export const hasChildWithKlass = (
-  klass: string,
+  selectorList: string[],
   child: IAst[],
+  transMap: ICO,
   result: IAst[] = [],
 ): IAst[] => {
   return child.reduce((res: IAst[], ch: IAst) => {
     const { attr = {}, tag } = ch;
     const { class: aKlass } = attr;
-    if (aKlass) {
-      const matchKlass = (isStr(aKlass) && is(aKlass, klass))
-        || (isArr(aKlass) && aKlass.includes(klass));
+    if (tag && aKlass) {
+      const matchKlass = selectorList.every((selector: string) => {
+        if (isStr(aKlass) || isArr(aKlass)) {
+          return aKlass.includes(selector);
+        }
+        return false;
+      });
       if (matchKlass) {
         res.push(ch);
       } else {
-        hasChildWithKlass(klass, ch.child, res);
+        hasChildWithKlass(selectorList, ch.child || [], transMap, res);
       }
+    } else {
+      hasChildWithKlass(selectorList, ch.child || [], transMap, res);
     }
     return res;
   }, result);
 };
 
 /**
+ * getInterSectSelectorChild
+ * @param selector
+ * @param klassMap
+ * @param transMap
+ */
+export const getInterSectSelectorChild = (
+  selector: string,
+  klassMap: ICO,
+  transMap: ICO,
+): IAst[][] => {
+  const temp: IAst[][][] = [];
+  const resultSet: Set<IAst[]> = new Set();
+  let result: IAst[][] = [];
+  let tag: string;
+  try {
+    replaceWith(selector, /([#\.]?)([^#\.]+)/g, (m, $1, $2): string => {
+      if (is($1, '.')) {
+        temp.push(klassMap[$2] || []);
+      } else if (is($1, '#')) {
+        temp.push(klassMap[transMap[m].substr(1)] || []);
+      } else {
+        tag = $2;
+      }
+      return m;
+    });
+  } catch (err) {
+    return result;
+  }
+
+  if (temp.length > 1) {
+    for (let i = 0, l = temp.length; i < l; i += 1) {
+      const children = temp[i];
+      for (let j = 0, jl = children.length; j < jl; j += 1) {
+        const child = children[j];
+        if (temp.every((other: IAst[][]): boolean => other.includes(child))) {
+          resultSet.add(child as IAst[]);
+        }
+      }
+    }
+  } else {
+    return temp[0];
+  }
+
+  result = [...resultSet];
+  if (tag) {
+    result = result.filter((child: IAst[]): boolean => (
+      child.some((ch: IAst) => ch && ch.parent && ch.parent.tag === tag)
+    ));
+  }
+  return result;
+};
+
+/**
  * hasKlassInStruct
- * @param klassList
+ * @param selectorList
  * @param struct
+ * @param klassInfo
  */
 export const hasKlassInStruct = (
-  klassList: string[],
+  selectorList: string[],
   struct: ICO,
+  klassInfo: ICO,
 ): boolean => {
-  let nextChildren: ICO[];
-  for (let klass of klassList) {
-    klass = klass.replace('.', '');
-    if (!is(klass, '>') && !is(klass, '+')) {
-      const children = struct[klass];
-      if (!children) { return false; }
+  let nextChildren: IAst[][];
+  for (const selector of selectorList) {
+    if (!isCssSymbol(selector)) {
+      const children = getInterSectSelectorChild(selector, struct, klassInfo);
+      if (!children || !children.length) { return false; }
       if (nextChildren) {
-        nextChildren = hasChildWithKlass(klass, nextChildren);
-        if (!nextChildren) { return false; }
+        nextChildren = nextChildren.map((child: IAst[]) =>
+          hasChildWithKlass(splitWith(selector, /\./), child, klassInfo),
+        );
+        const combChildren = combine(nextChildren);
+        if (!combChildren.length) { return false; }
         continue;
       }
       nextChildren = children;
     } else {
-      // FIXME resolve .a > .b / .a + .c > .b
+      // TODO resolve .a > .b / .a + .c > .b
     }
   }
   return true;

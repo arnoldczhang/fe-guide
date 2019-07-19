@@ -32,6 +32,8 @@ import {
 } from './fs';
 import { parseAsTreeNode, parseFromJSON } from './parser';
 import {
+  getTemplateIs,
+  getTemplateName,
   matchIdStyle,
   removeComment,
   splitWith,
@@ -89,6 +91,7 @@ export const treewalk = (
         chs: IAst[],
       ): void => {
         chs[idx] = treewalk(ch, options, isPage);
+        chs[idx].parent = ast;
         (chs[idx + 1] || {}).sibling = chs[idx];
       });
     }
@@ -362,6 +365,27 @@ export const transMap2Style = (
     }
   });
   return result;
+};
+
+export const updateTemplateInfo = (
+  src: string,
+  dest: string,
+  options: IPath,
+): void => {
+  const { wxTemplateInfo } = options;
+  const content: string = read(src) as string;
+  const names = getTemplateName(content);
+  const iss = getTemplateIs(content);
+  names.filter((name: string): boolean => !iss.includes(name))
+    .forEach((name: string) => {
+      wxTemplateInfo.set(name, dest);
+    });
+};
+
+export const removeUnused = (
+
+): void => {
+  console.log(1);
 };
 
 export {

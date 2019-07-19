@@ -17,6 +17,7 @@ const {
   genNewComponent,
   genResourceFile,
   getPageWxml,
+  removeUnused,
   transMap2Style,
 } = require('./utils');
 
@@ -38,7 +39,12 @@ const run = (options: any = {}): void => {
   const pagePath = `${outputPath}/pages`;
   const compPath = `${outputPath}/components`;
   const globalWxssMap = new Map();
+  const globalTemplateMap: Map<string, string> = new Map();
+  const globalComponentSet: Set<string> = new Set();
+  //
   initLogger(pageWxml);
+
+  // gen page files
   pageWxml.forEach((wxml: string): void => {
     const pageOptions: any = {
       root,
@@ -50,6 +56,8 @@ const run = (options: any = {}): void => {
       wxmlKlassInfo: {},
       wxmlStructInfo: {},
       wxssInfo: globalWxssMap,
+      wxTemplateInfo: globalTemplateMap,
+      wxComponentInfo: globalComponentSet,
       usingComponentKeys: new Set(),
       skeletonKeys: new Set(),
       verbose: false,
@@ -58,6 +66,7 @@ const run = (options: any = {}): void => {
     };
     genNewComponent(wxml, pageOptions);
   });
+
   // global wxss
   if (animation) {
     updateDefaultWxss(animation);
@@ -69,6 +78,9 @@ const run = (options: any = {}): void => {
 
   // global js
   genResourceFile(`${outputPath}${SKELETON_DEFAULT_JS_FILE}`, DEFAULT_JS);
+
+  // remove unused template/component
+  removeUnused();
 };
 
 run.defaultConfigName = DEFAULT_CONFIG_FILE;

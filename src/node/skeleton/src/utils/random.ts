@@ -10,6 +10,10 @@ export const to36 = (num: number = Math.random()): string => num.toString(36).sl
 
 export const getRepeatArr = (times: number, filler: any) => Array(times).fill(filler);
 
+/**
+ * genKlass
+ * @param num
+ */
 export const genKlass = (num: number = Math.random()): string[] => {
   let klass = to36(num);
   if (!isNaN(Number(klass[0]))) {
@@ -30,4 +34,15 @@ export const fillDefaultValue = (obj: ICO = {}): ICO => {
     }
   });
   return obj;
+};
+
+/**
+ * combine
+ * @param arr
+ */
+export const combine = (arr: any[]): any[] => {
+  if (arr.length && arr.concat) {
+    return arr.concat.apply([], arr);
+  }
+  return arr;
 };

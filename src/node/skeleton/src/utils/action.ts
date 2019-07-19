@@ -1,8 +1,8 @@
-import { KLASS, PRE } from "../config";
+import { KLASS, PRE, WXSS_BG_GREY } from "../config";
 import { IAst, ICO, IPath } from "../types";
 import { isArr } from "./assert";
 import Logger from './log';
-import { replaceLengthSymbol, trim } from "./reg";
+import { replaceColorSymbol, replaceLengthSymbol, trim } from "./reg";
 
 const logger = Logger.getInstance();
 
@@ -269,3 +269,21 @@ export const triggerMarginAction = (
       action: replaceLengthSymbol,
     })
 );
+
+export const triggerBgAction = (
+  ast: IAst,
+  options: IPath,
+  result: ICO,
+  value: string,
+  klass: string[],
+): void => {
+  const { wxssInfo } = options;
+  value = isArr(value) ? value.join('') : value;
+  let newKlassName: string;
+  if (value) {
+    newKlassName = `${PRE}-bg-${replaceColorSymbol(value)}`;
+    wxssInfo.set(newKlassName, ` background: ${value}!important;color: ${value}!important; `);
+  }
+  result[KLASS] = [...klass, newKlassName || WXSS_BG_GREY];
+  ast.attr[KLASS] = result[KLASS];
+};

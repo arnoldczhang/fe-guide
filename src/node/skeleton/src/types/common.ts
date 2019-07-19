@@ -34,13 +34,20 @@ export type Purify<T extends string> = { [P in T]: T; }[T];
 
 export type NonNullable<T> = T & {};
 
-export type CF = () => any;
+export type CF = (
+  arg0?: any,
+  arg1?: any,
+  arg2?: any,
+  arg3?: any,
+  arg4?: any,
+) => any | void;
 
 export interface ICO<T = any> {
   [key: string]: T;
 }
 
 export interface IAst {
+  parent?: IAst;
   node?: string;
   text?: string;
   tag?: string;
