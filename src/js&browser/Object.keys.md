@@ -44,7 +44,3 @@ Object | 返回一个新的 直接将Object返回|
   - 如果对象的属性类型是数字，字符与Symbol混合的，那么返回顺序永远是数字在前，然后是字符串，最后是Symbol
   - Symbol类型最终还是会被过滤掉，因为EnumerableOwnPropertyNames不止给Object.keys用
   - 排序规则也适用其他API，见【适用性】
-
-
-
-

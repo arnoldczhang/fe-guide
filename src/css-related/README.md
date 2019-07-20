@@ -11,6 +11,7 @@
 - [css与网络性能](https://mp.weixin.qq.com/s/OigM7dPFS3OGEBUE6KjHQA)
 - [前端换肤参考](https://blog.souche.com/untitled-17/)
 - [clippy属性在线调试](https://bennettfeely.com/clippy/)
+- [提高幸福感的 9 个 CSS 技巧](https://juejin.im/post/5cb45a06f265da03474df54e)
 
 ## 目录
 <details>
@@ -28,18 +29,31 @@
 ### border玩法
 [border](https://www.w3cplus.com/css/css-tips-0904-1.html)
 
-### 伪元素 伪类
+### 伪元素/伪类
 - https://segmentfault.com/a/1190000000484493
 
-### object-fit（img裁剪）
+### img裁剪
+object-fit
 - cover
 - contain
 
 ### 平滑滚动
 [滚动](https://xiaotianxia.github.io/blog/vuepress/js/scroll_behaviors.html)
+```css
 html {
   scroll-behavior: smooth;
 }
+```
+
+### box-sizing
+```css
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+```
 
 ### 滚动不传播父元素
 overscroll-behavior: contain;
@@ -86,6 +100,20 @@ https://fusion.design/component/virtual-list?themeid=1
 ```js
 document.link.disabled = true;
 document.link.disabled = false;
+```
+
+### 超出省略
+```css
+/* optimize-css-assets-webpack-plugin会把-webkit-box-orient删掉，要加注释阻止 */
+.line-camp( @clamp:2 ) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: @clamp;
+  /*! autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /* autoprefixer: on */
+}
 ```
 
 ### z-index
@@ -232,7 +260,7 @@ Chrome浏览器67+支持
 }
 ```
 
-### outline VS border
+### outlineVSborder
 outline不占用盒模型空间
 
 ### 两个球相交的粘粘效果
@@ -285,6 +313,34 @@ filter:blur（数值）
       border-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' height='2px'%3E%3Crect fill='%2300b1ff' width='100%25' height='50%25'/%3E%3C/svg%3E") 2 2 stretch; }
     ```
 - 设置viewport
+- scale + ::after
+  ```css
+  .scale-1px{
+    position: relative;
+    margin-bottom: 20px;
+    border:none;
+  }
+  .scale-1px:after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid #000;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 200%;
+    height: 200%;
+    -webkit-transform: scale(0.5);
+    transform: scale(0.5);
+    -webkit-transform-origin: left top;
+    transform-origin: left top;
+  }
+  ```
+- viewport + rem 实现
+- box-shadow
+- background-image
+- 0.5px
+- transformY:scale(.5)
 
 ### 模拟长按
 ```html
@@ -460,10 +516,14 @@ elm.animate([
   * [参考](../fe-interview/common.md#响应式方案)
 - em
   * 相对于父元素，1em = 父元素，2em = 2 * 父元素
-  * 如果父元素没设置，取浏览器默认值（一般是16px）
+  * 如果父元素没设置，取浏览器默认值（chrome一般是16px）
 - %
   * 类似em，通常用62.5%（即默认大小16px的62.5%），取到10px
   * 子元素设置1.2em/1.6em之类的
+
+### border
+border: none - 边框不会渲染，不占内存
+border: 0 - 边框宽度为0，会渲染，占内存
 
 ---
 

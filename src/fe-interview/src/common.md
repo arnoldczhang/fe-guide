@@ -48,6 +48,7 @@
 * [`浏览器和Node事件循环的区别`](#浏览器和Node事件循环的区别)
 * [`前端中的模块化开发`](#前端中的模块化开发)
 * [`cookie和token都存放在header中，为什么不会劫持token`](#cookie和token都存放在header中，为什么不会劫持token)
+* [`如何实现token加密`](#如何实现token加密)
 * [`setTimeout输出0-9改法`](#setTimeout输出0-9改法)
 * [`VirtualDom对比原生DOM处理`](#VirtualDom对比原生DOM处理)
 * [`浏览器缓存读取规则`](#浏览器缓存读取规则)
@@ -59,6 +60,12 @@
 * [`垂直居中`](#垂直居中)
 * [`排序`](#排序)
 * [`class/function`](#class/function)
+* [`display/opacity/visibility`](#display/opacity/visibility)
+* [`普通函数/箭头函数`](#普通函数/箭头函数)
+* [`求数组交集`](#求数组交集)
+* [`Promise.prototype.finally`](#Promise.prototype.finally)
+* [`es6->es5`](#es6->es5)
+* [`retina屏1px问题`](#retina屏1px问题)
 
 </details>
 
@@ -963,7 +970,10 @@ instanceof
 
 ### redux和vuex
 [参考](https://zhuanlan.zhihu.com/p/53599723)
-单向数据流
+
+- 单向数据流
+- state不可变更
+- 纯函数，无副作用
 
 #### Store
 - 整个应用只有一个store
@@ -1020,6 +1030,16 @@ define(function(require, exports, module) {
 
 - token用于防范csrf攻击
 - csrf只能使用用户自动带上的cookie（浏览器所为），但是浏览器不会自动带上token
+
+---
+
+### 如何实现token加密
+[参考](../../js&browser/网络安全.md#CSRF)
+
+- 后端利用 一个随机数 + 加密算法，对信息（比如账号密码）加密
+- 生成的token返给前端
+- 前端请求时带上token
+- 后端解密token校验
 
 ---
 
@@ -1318,7 +1338,78 @@ LazyMan.prototype = {
 
 ---
 
-### 
+### display/opacity/visibility
 
+#### 结构
+|  | 从渲染树中消失 | 渲染时占空间 | 事件监听 |
+| -------- | -----: | :----: | :----: |
+| display: none | √ | × | × |
+| opacity: 0 | × | √ | √ |
+| visibility: hidden | × | √ | × |
+
+#### 继承性
+- 子元素都会继承
+- display和opacity的子元素无法显示
+- 子元素设为visibility: visible可以显示
+
+#### 性能
+|  | 重绘 | 回流 | 读屏器读取 | 性能消耗 |
+| -------- | -----: | :----: | :----: | :----: |
+| display: none | √ | √ | × | 大 |
+| opacity: 0 | √ | × | × | 小 |
+| visibility: hidden | √ | × | √ | 小 |
+
+---
+
+### 普通函数/箭头函数
+[箭头函数](../../js&browser/基本常识.md#箭头函数)
+
+- 没有prototype，无法完成new
+- 没有arguments，只能用rest方式
+- this指向定义时环境
+- 不支持Generator
+
+---
+
+### 求数组交集
+```js
+function solution(arr1, ...rest) {
+    const temp = new Set(arr1);
+    const res = new Set();
+    arr2.forEach(item => temp.has(item) && res.add(item));
+    return Array.from(res);
+}
+```
+
+---
+
+### Promise.prototype.finally
+[finally](../../js&browser/基本常识.md#Promise.finally)
+
+---
+
+### es6->es5
+[参考](../../babel/README.md#流程)
+
+---
+
+### [2,10,3,4,5,11,10,11,20]转[[2,3,4,5],[10,11],[20]]
+- 生成10个随机数
+- .sort((pre, next) => pre - next)
+- var map = {};
+- .forEach((num) => {
+  map[num % 10].push(num)
+})
+- keys().map(key => value)
+
+---
+
+### retina屏1px问题
+[7种方式](https://www.jianshu.com/p/7e63f5a32636)
+[参考](../../css-related/README.md#1px)
+
+---
+
+### webpack热更新
 
 

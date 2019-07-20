@@ -23,10 +23,11 @@
 </details>
 
 ## 起源
-* babel使用的引擎是babylon
-* babylon是fork的acorn项目，
-* acorn只提供基本的解析ast的能力，遍历还需要配套的acorn-travesal, 替换节点需要使用acorn-
-* babel做了统一
+* acorn只提供基本的解析ast的能力，遍历还需要配套的acorn-travesal
+* babylon fork了acorn项目，做了改造
+* babel使用babylon作为解析ast的工具
+* recast内部的parser可以基于babylon、babel、acorn做选择
+* esprima类似babel，不过支持tokenize将代码转成数组形式
 
 ---
 
