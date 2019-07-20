@@ -52,6 +52,13 @@
 * [`VirtualDom对比原生DOM处理`](#VirtualDom对比原生DOM处理)
 * [`浏览器缓存读取规则`](#浏览器缓存读取规则)
 * [`BFC`](#BFC)
+* [`作用域`](#作用域)
+* [`实现sleep`](#实现sleep)
+* [`https`](#https)
+* [`埋点请求用1x1图片`](#埋点请求用1x1图片)
+* [`垂直居中`](#垂直居中)
+* [`排序`](#排序)
+* [`class/function`](#class/function)
 
 </details>
 
@@ -1231,8 +1238,87 @@ https = http + ssl安全层（比http多了2次tls的RTT）
 
 ---
 
+### class/function
+```js
+// LazyMan('Tony');
+// Hi I am Tony
 
+// LazyMan('Tony').sleep(10).eat('lunch');
+// Hi I am Tony
+// 等待了10秒...
+// I am eating lunch
 
+// LazyMan('Tony').eat('lunch').sleep(10).eat('dinner');
+// Hi I am Tony
+// I am eating lunch
+// 等待了10秒...
+// I am eating diner
+
+// LazyMan('Tony').eat('lunch').eat('dinner').sleepFirst(5).sleep(10).eat('junk food');
+// Hi I am Tony
+// 等待了5秒...
+// I am eating lunch
+// I am eating dinner
+// 等待了10秒...
+// I am eating junk food
+
+function LazyMan (name = '') {
+  if (!(this instanceof LazyMan)) {
+    return new LazyMan(name);
+  }
+  this.name = name;
+  this.queue = [];
+  this.say();
+};
+
+LazyMan.prototype = {
+  say(name = this.name) {
+    console.log(`Hi I\`m ${name}`);
+  },
+
+  sleep(timeout) {
+    this.queue.push(() => new Promise((res) =>
+      setTimeout(() => {
+        res();
+      }, timeout * 1000 || 0))
+    );
+    return this;
+  },
+
+  sleepFirst(timeout) {
+    this.queue.unshift(() => new Promise((res) =>
+      setTimeout(() => {
+        res();
+      }, timeout * 1000 || 0))
+    );
+    return this;
+  },
+
+  clearQueue() {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = null;
+    }
+
+    this.timeout = setTimeout(async () => {
+      while (this.queue.length) {
+        const task = this.queue.shift();
+        await task.call(this);
+      }
+    });
+  },
+
+  eat(word) {
+    this.queue.push(this.say.bind(this, word));
+    this.clearQueue();
+    return this;
+  },
+};
+```
+
+---
+
+### 
 
 
 
