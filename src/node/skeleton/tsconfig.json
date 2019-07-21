@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "declarationDir": "./types",
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "jsx": "react",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": false,
+    "diagnostics": false,
+    "pretty": true,
+    "listFiles": false,
+    "declaration": true,
+    "resolveJsonModule": true,
+    "path": {
+      "utils/*": ["src/utils/*"],
+    },
+    "lib": [
+      "dom",
+      "es2017"
+    ]
+  },
+  "include": [
+    "./src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

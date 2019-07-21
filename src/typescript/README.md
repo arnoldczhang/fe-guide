@@ -1,7 +1,21 @@
+# typescript
+
 ## 参考
 - [d.ts文件](https://mp.weixin.qq.com/s/xWcmE7F_4WKBs2FQlDP6jg)
 - [vue+ts实践](https://zhuanlan.zhihu.com/p/40322215)
 - [TypeScript 2.8下的终极React组件模式](https://juejin.im/post/5b07caf16fb9a07aa83f2977)
+- [巧用ts](https://zhuanlan.zhihu.com/p/39620591)
+
+
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`介绍`](#介绍)
+* [`常用语法`](#常用语法)
+* [`SOLID`](#SOLID)
+
+</details>
 
 ## 介绍
 
@@ -15,9 +29,8 @@
 
 ## 常用语法
 
-**让某个接口中的所有属性变为可选**
-
-```typescript
+### 让某个接口中的所有属性变为可选
+```ts
 interface Person {
     name: string;
     age: number;
@@ -29,11 +42,92 @@ type PartialPerson = { [P in keyof Person]?: Person[P] }
 type PartialPerson = Partial<Person>
 ```
 
-**让某一种接口的子类型都可以为 null**
-
-```typescript
+### 让某一种接口的子类型都可以为 null
+```ts
 type Nullable<T> = {
   [P in keyof T]: T[P] | null;
+};
+```
+
+### 给TS类型做标记（提示副标题展示）
+```ts
+/** A cool guy. */
+interface Person {
+  /** A cool name. */
+  name: string,
+}
+```
+
+### 默认值生成type
+```ts
+const defaultOption = {
+  timeout: 500
+};
+
+type Opt = typeof defaultOption;
+```
+
+### 联合类型（取其一）
+```ts
+type Dinner2 = {
+  fish: number,
+} | {
+  bear: number,
+}
+```
+
+### 查找类型
+```ts
+interface Person {
+  addr: {
+    city: string,
+    street: string,
+    num: number,
+  }
+}
+```
+
+### 查找类型 + keyOf
+```ts
+interface API {
+  '/user': { name: string },
+  '/menu': { foods: Food[] },
+}
+const get = <URL extends keyof API>(url: URL): Promise<API[URL]> => {
+  return fetch(url).then(res => res.json())
+};
+```
+
+### deepReadOnly
+```ts
+type DeepReadonly<T> = {
+  readonly [P in keyof T]: DeepReadonly<T[P]>;
+}
+
+const a = { foo: { bar: 22 } };
+const b = a as DeepReadonly<typeof a>;
+
+b.foo = 'xxxxxx'; // wrong
+```
+
+### namespace
+```ts
+function test () {}
+
+namespace test {
+  export const cache: object = {}
+}
+```
+
+### Record
+类似enum
+```ts
+type AnimalType = 'cat' | 'dog' | 'frog';
+interface AnimalDescription { name: string, icon: string }
+const AnimalMap: Record<AnimalType, AnimalDescription> = {
+  cat: { name: '猫', icon: '🐱'},
+  dog: { name: '狗', icon: '🐶' },
+  forg: { name: '蛙', icon: '🐸' }, // Hey!
 };
 ```
 
@@ -120,6 +214,7 @@ class CreateUserController extends BaseController {
 ```
 
 ### L: Liskov-Substitution Principle
+
 ### I: Interface Segregation Principle
 
 依赖倒置原则告诉我们要面向接口编程

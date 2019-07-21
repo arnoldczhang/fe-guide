@@ -1,6 +1,6 @@
 
 /**
- * [debounce description]
+ * 防抖
  * @param  {Function} fn        [description]
  * @param  {Number}   wait      [description]
  * @param  {Boolean}  immediate [description]

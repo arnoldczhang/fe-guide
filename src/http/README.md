@@ -14,7 +14,7 @@
 <summary>展开更多</summary>
 
 * [`tcp`](#tcp)
-* [`request header`](#request header)
+* [`requestHeader`](#request header)
 * [`http1.0`](#http1.0)
 * [`http1.1`](#http1.1)
 * [`spdy`](#spdy)
@@ -95,7 +95,7 @@
 Entity tag，If-Unmodified-Since, If-Match, If-None-Match
 这里可以参考[浏览器缓存](../js&browser/页面过程与浏览器缓存.md#缓存分类)
 
-**Cach-Control**
+#### Cach-Control
 
 - private：客户端可以缓存
 - public：客户端和代理服务器都可缓存

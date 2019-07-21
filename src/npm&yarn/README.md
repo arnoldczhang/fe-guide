@@ -6,15 +6,18 @@
 
 * [`基本操作&相关常识`](#基本操作&相关常识)
 * [`package.json属性`](#package.json属性)
-* [`两者差异`](#两者差异)
+* [`package-lock`](#package-lock.json)
+* [`npm&yarn`](#两者差异)
 * [`npm安装原理`](#npm安装原理)
+* [`npm script`](#npm-script)
 
 </details>
 
 ## 参考
--  https://github.com/diamont1001/blog/issues/11
+- https://github.com/diamont1001/blog/issues/11
 - [现代化js封装库标准配置](https://github.com/yanhaijing/jslib-base)
 - [node依赖管理](https://mp.weixin.qq.com/s/XdOPPay8fpNBiH2ExW_EyQ)
+- [前端工程](https://juejin.im/post/5d08d3d3f265da1b7e103a4d?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 
 ## 基本操作&相关常识
 
@@ -134,8 +137,20 @@
   - 主要用于做依赖分析，或npm包的复用
   - module属性是非标准属性，可参考[pr](https://github.com/browserify/resolve/pull/187)
 
-###package-lock.json
-npm 官网建议：把 package-lock.json 一起提交到代码库中，不要 ignore。但是在执行 npm publish 的时候，它会被忽略而不会发布出去。
+---
+
+## package-lock.json
+npm官网建议：把 package-lock.json 一起提交到代码库中，不要 ignore。
+但是在执行 npm publish 的时候，它会被忽略而不会发布出去。
+
+### 依赖包版本管理
+- 在大版本相同的前提下，模块在package.json中的小版本 > lock.json时，
+  将安装该大版本下最新版本
+- 在大版本相同的前提下，模块在package.json中的小版本 < lock.json时，
+  使用lock.json中的版本
+- 在大版本不同的前提下，将根据package.json中大版本下最新版本进行更新
+- package.json中有记录，lock.json没记录，install后lock.json生成记录
+- package.json中没记录，lock.json有记录，install后移除模块，移除lock.json的记录
 
 ---
 
@@ -151,23 +166,34 @@ yarn：默认支持，即使用本地缓存
 
 ### 控制台信息
 npm：会列出完整依赖树
-yanr：直接输出安装结果，报错日志清晰
+yarn：直接输出安装结果，报错日志清晰
 
 ---
 
 ## npm安装原理
 1. preinstall
 2. 确定首层依赖模块
+  - dependencies
+  - devDependencies
 3. 获取模块
   - package.json拿version、resolved等字段
   - 根据resolved到本地找缓存，没有再从仓库下载
   - 查找当前模块是否有依赖，有的话回到1
 4. 模块扁平化
   - 所有模块放到根节点（npm3加入的dedupe）
+  - semver兼容，semver对应一段版本允许的范围
   - 当发现有重复模块时，则将其丢弃（由于存在版本兼容范围，所以不一定要版本完全一致）
 6. 执行工程自身生命周期
   - install
-6. postinstall + prepublish + prepare
+7. postinstall + prepublish + prepare
+
+### npm模块安装机制
+查询node_modules是否已存在
+-  存在，不重新安装
+- 不存在
+  + npm向registery查询模块压缩包网址
+  + 下载到根目录的.npm里
+  + 解压到当前目录的node_modules
 
 ### npm2安装机制
 ![npm2](npm2.png)
@@ -178,6 +204,46 @@ yanr：直接输出安装结果，报错日志清晰
 弊端：相同模块部分冗余，如下图：
 ![npm3模块冗余](npm3模块冗余.png)
 
+### npm5
+增加了 package-lock.json
+
 ### npm去重
+// TODO
 npm dedupe
 
+---
+
+## npm-script
+
+### npm run
+- 本地自动新建一个shell
+- 将node_modules/.bin的绝对路径加入PATH，执行
+- 结束后PATH恢复原样
+
+### 参数传递
+```js
+npm run serve --params  // 参数params将转化成process.env.npm_config_params = true
+
+npm run serve --params=123 // 参数params将转化成process.env.npm_config_params = 123
+
+npm run serve -params  // 等同于--params参数
+
+npm run serve params  // 将params参数添加到process.env.argv数组中
+
+npm run serve -- --params  // 将--params参数添加到process.env.argv数组中
+
+npm run serve -- params  // 将params参数添加到process.env.argv数组中
+```
+
+### 多命令运行
+
+#### &&
+- 串行执行
+- 只要一个命令执行失败，则整个脚本终止
+
+#### &
+- 并行执行
+- 第三方管理模块
+  * script-runner
+  * npm-run-all
+  * redrun

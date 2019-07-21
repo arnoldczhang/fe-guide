@@ -46,7 +46,7 @@
 - [检查库的两个版本间的diff](https://diff.intrinsic.com/)
 - [npm源管理工具-nrm/yrm](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 - [搭建私有npm工具-verdaccio](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
-  - ```js
+  * ```js
     npm install -g verdaccio
 
     verdaccio
@@ -61,7 +61,6 @@
     npm publish
     ```
 - [DOM转canvas工具-html2canvas、dom-to-image](https://segmentfault.com/a/1190000019035021?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
-
   ```js
   global.Promise = require('bluebird');
   ```

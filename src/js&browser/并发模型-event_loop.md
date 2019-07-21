@@ -27,6 +27,7 @@
 ## javascript并发模型
 - Event Loop - 事件循环
 - Call Stack - 调用栈
+- Call/task Queue - 回调（又称任务）队列
 - Render Step - 渲染节奏
 - Web APIs - 宿主环境
 
@@ -35,10 +36,10 @@
 ## 调用栈（Call Stack）
 * 函数被调用
 * 创建执行上下文
-    * a) 创建作用域链
-    * b) 创建变量、函数和参数
-    * c) 求this值
-* 开始执行在执行上下文上 执行
+    * a) 作用域链
+    * b) 变量、函数和参数
+    * c) this
+* 开始执行（在执行上下文上）
     * ...
     * a) 遇到同步函数
     * b) 当前执行上下文入栈
@@ -49,10 +50,19 @@
 
 - - -
 
+## 回调队列（Call Queue）
+- 有序的函数队列
+- 异步函数进入调用栈之前，必须通过回调队列
+
+---
+
 ## 事件循环（Event Loop）
+- 检查调用栈是否空闲，如果是且回调队列里有某个函数，
+  则将其从回调队列移入调用栈执行
 
 ### 浏览器环境
 ![任务队列](68747470733a2f2f736661756c742d696d6167652e62302e7570616979756e2e636f6d2f3134392f3930352f313439393035313630392d356138616434376663653736345f61727469636c6578.png)
+
 * 每个线程都有自己的event loop
 * 浏览器可以有多个event loop，browsing contexts和web workers就是相互独立的
 * 简略循环过程（script -> 清空微任务 -> 宏任务 -> 清空微任务 -> render -> 宏任务 -> 清空微任务 -> render ->...）
@@ -81,19 +91,22 @@
 
 ### nodeVS浏览器
 ![node环境-事件循环](node环境-事件循环.png)
+
+libuv引擎中的事件循环（宏任务）分为 6 个阶段：
 * timers: 执行setTimeout和setInterval中到期的callback。
-* pending callback: 上一轮循环中少数的callback会放在这一阶段执行。
+* I/O callback: 上一轮循环中少数的callback会放在这一阶段执行。
 * idle, prepare: 仅在内部使用。
 * poll: 最重要的阶段，执行pending callback，在适当的情况下会阻塞在这个阶段。
 * check: 执行setImmediate(setImmediate()是将事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行setImmediate指定的回调函数)的callback。
 * close callbacks: 执行close事件的callback，例如socket.on('close'[,fn])或者http.server.on('close, fn)。
 
-**执行顺序区别**
+#### 执行顺序区别
+
+![浏览器和node的eventLoop](./浏览器和node的eventLoop.png)
 
 node10以前
-
-- 执行完一个阶段的所有任务
-- 执行完nextTick队列里面的内容
+- 执行一个阶段的所有任务
+- 执行nextTick队列里面的内容
 - 然后执行完微任务队列的内容
 
 node11以后
@@ -102,13 +115,13 @@ node11以后
 - - -
 
 ## 任务队列（task）
-* macrotask(宏任务) `task`，包含：
+- macrotask(宏任务) `task`，包含：
   * 整体代码script
   * setTimeout（标准4ms），setInterval，setImmediate（node）
   * I/O
   * UI交互事件
   * postMessage（MessageChannel）
-* microtask(微任务) `job`，包含：
+- microtask(微任务) `job`，包含：
   * Promise
   * process.nextTick（node）
   * MutaionObserver
@@ -138,7 +151,28 @@ node11以后
 
 - - -
 
-## 交互事件触发:
+## 交互事件触发
+[参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/7)
+
+### 总结
+- 一次事件循环：同步任务 -> 宏任务 -> 微任务 -> render
+- 即使是立即resolve/reject，then还是微任务
+- 微任务中嵌套的微任务，仍然会在当前事件循环中执行完，
+  也即是说，微任务无限嵌套微任务会导致未响应，因为页面一直没有render
+- 每个宏任务执行完都会判断，是否有微任务，有就执行，
+  也即是说，宏任务无限嵌套宏任务，不会导致未响应，因为会检查微任务&触发render
+- await是generator + promise的语法糖，类似Promise执行方式，[参考](../fe-interview/src/common.md#模拟async/await)例
+  ```js
+  await console.log(1);
+  console.log(2);
+
+  // 也就是
+  Promise.resolve(console.log(1)).then(() => {
+    console.log(2);
+  });
+  ```
+
+
 例1：
 ```js
 let button = document.querySelector('#button');

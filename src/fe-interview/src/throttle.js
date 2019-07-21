@@ -1,6 +1,6 @@
 
 /**
- * [throttle description]
+ * 节流
  * @param  {[type]} func [description]
  * @param  {Number} wait [description]
  * @return {[type]}      [description]
