@@ -525,6 +525,17 @@ elm.animate([
 border: none - 边框不会渲染，不占内存
 border: 0 - 边框宽度为0，会渲染，占内存
 
+### position
+- absolute
+  * 绝对定位，相对于第一个position不为static的父元素
+- fixed
+  * 绝对定位，相对于浏览器窗口定位
+- relative
+  * 相对于元素自身位置定位，所以类似`left:20px`有效
+- static
+  * 默认，没有定位，元素处于正常流中，类似`left:20px`无效
+
+
 ---
 
 ## 答疑

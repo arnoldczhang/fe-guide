@@ -66,6 +66,20 @@
 * [`Promise.prototype.finally`](#Promise.prototype.finally)
 * [`es6->es5`](#es6->es5)
 * [`retina屏1px问题`](#retina屏1px问题)
+* [`webpack热更新`](#webpack热更新)
+* [`字符串中查找字符串位置`](#字符串中查找字符串位置)
+* [`forVSforEach`](#forVSforEach)
+* [`proxy`](#proxy)
+* [`JSpring的vnode解析`](#JSpring的vnode解析)
+* [`取arr[0]和arr[100000]区别`](#取arr[0]和arr[100000]区别)
+* [`Vue的父组件和子组件生命周期钩子执行顺序`](#Vue的父组件和子组件生命周期钩子执行顺序)
+* [`中文输入防抖`](#中文输入防抖)
+* [`react里的link和a的区别`](#react里的link和a的区别)
+* [`验证url合法性`](#验证url合法性)
+* [`vue在v-for时给每项元素绑定事件需要用事件代理吗?`](#vue在v-for时给每项元素绑定事件需要用事件代理吗?)
+* [`反爬虫技术`](#反爬虫技术)
+* [`逆序数字（递归实现）`](#逆序数字（递归实现）)
+
 
 </details>
 
@@ -587,6 +601,30 @@ n秒内高频触发，只会执行一次
 
 ### Promise.all实现
 ```js
+Promise.all = function all(arr = {}) {
+  const { length } = arr;
+  const result = [];
+  let step = 0;
+  return new Promise((resolve, reject) => {
+    if (length) {
+      arr.forEach((value) => {
+        const promise = value instanceof Promise ? value : Promise.resolve(value);
+        promise.then(
+          (res) => {
+            result.push(res);
+            if (++step >= length) {
+              resolve(result);
+            }
+          },
+          (err) => reject(err),
+        )
+      });
+    } else {
+       throw new TypeError('undefined is not iterable (cannot read property Symbol(Symbol.iterator))');
+    }
+  });
+};
+
 Promise.all2 = function(promises) {
   return new Promise((resolve, reject) => {
     if (promises && promises.length) {
@@ -609,7 +647,6 @@ Promise.all2 = function(promises) {
     }
   });
 };
-
 ```
 
 --
@@ -1094,7 +1131,7 @@ for (let i = 0; i< 10; i++){
 #### 创建BFC
 - html 根元素
 - float 浮动
-- 绝对定位
+- position不为relative和static
 - overflow 不为 visiable
 - display 为表格布局或者弹性布局
 - 行内块元素
@@ -1111,6 +1148,20 @@ for (let i = 0; i< 10; i++){
 #### 解决问题
 - 清除浮动
 - 防止同一 BFC 容器中的相邻元素间的外边距重叠问题
+
+#### 其他术语
+
+**IFC**
+
+内联格式上下文
+
+**GFC**
+
+display: grid
+
+**FFC**
+
+display: flex
 
 ---
 
@@ -1411,5 +1462,170 @@ function solution(arr1, ...rest) {
 ---
 
 ### webpack热更新
+[参考](../../webpack/README.md)
 
+---
+
+### 字符串中查找字符串位置
+```js
+function findSubstr(s1, s2) {
+  const l1 = s1.length;
+  const l2 = s2.length;
+  if (l2 > l1) return -1;
+  for (let i = 0; i < l1; i += 1) {
+    if (s1.substr(i, l2) === s2) {
+      return i;
+    }
+  }
+  return -1;
+}
+```
+
+---
+
+### forVSforEach
+https://jsperf.com
+
+- forEach需要判断长度、元素值、终止条件等因素
+- chrome高版本下，forEach性能高于for
+- node环境下
+  * 10万次遍历，forEach性能远高于for（10倍）
+  * 100万次，55开
+  * 1000万次，for远高于forEach
+
+---
+
+### proxy
+[参考](../../meta-programming/README.md)
+
+---
+
+### JSpring的vnode解析
+- html -> vobj
+  ```js
+  {
+    tagName : tagName,
+		staticAttrs : staticAttrs,
+		uniqAttrs : uniqAttrs,
+		children : [
+      {
+        isElem : false,
+        isStatic : false,
+        nodeType : 8,
+        data : STRING,
+        textContent : '',
+      }
+    ],
+		isElem : true,
+		isFor : isFor,
+		isComponent : isComponent,
+		isNeedRender : isNeedRender,
+		isStatic : isStatic,
+		nodeType : 1
+  }
+  ```
+- with(data) { vobj } -> vnode
+  ```js
+  with(_j) {
+    _j.cn(tagName, data, [
+      _j.txt(data),
+      // ...
+    ])
+  }
+
+  // ==> vnode
+  {
+    tagName,
+    data,
+    children: []
+  }
+  ```
+
+---
+
+### 取arr[0]和arr[100000]区别
+v8里数组即对象，hashtable方式存储，无差别
+
+---
+
+### Vue的父组件和子组件生命周期钩子执行顺序
+类似执行栈，从外到内，再从内到外
+
+#### 加载渲染过程
+父beforeCreate->父created->父beforeMount->子beforeCreate->子created->子beforeMount->子mounted->父mounted
+
+#### 子组件更新过程
+父beforeUpdate->子beforeUpdate->子updated->父updated
+
+#### 父组件更新过程
+父beforeUpdate->父updated
+
+#### 销毁过程
+父beforeDestroy->子beforeDestroy->子destroyed->父destroyed
+
+---
+
+### 中文输入防抖
+- input
+- compositionstart
+- compositionupdate
+- compositionend
+
+compositionstartHandler设置pending=true
+inputHandler里判断，pending=true则不执行请求，否则，正常字母输入做防抖请求（停止输入时请求）
+
+---
+
+### react里的link和a的区别
+- Link是react-router里实现路由跳转的链接，刷新部分内容，配合<Router>
+  * 顺序：有onclick，执行onclick
+  * 触发onclick，会阻止href
+  * 否则用href，按history方式（pushState、popState、replaceState）跳转，刷新部分内容
+- a会重新加载页面
+
+---
+
+### 验证url合法性
+- new URL(url)
+- ```js
+  function isUrl(url) {
+    const a = document.createElement('a')
+    a.href = url
+    return [
+      /^(http|https):$/.test(a.protocol),
+      a.host,
+      a.pathname !== url,
+      a.pathname !== `/${url}`,
+    ].find(x => !x) === undefined
+  }
+  ```
+
+---
+
+### vue在v-for时给每项元素绑定事件需要用事件代理吗?
+没有
+
+---
+
+### 反爬虫技术
+[参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/150)
+- font-family
+- 数字直接下发加密值
+- 汉字做凯撒加密（转unicode，偏移量可以设为一个常量，比如1，2,3）
+
+---
+
+### 逆序数字（递归实现）
+```js
+function fun(num){
+    let num1 = num / 10;
+    let num2 = num % 10;
+    if(num1<1){
+        return num;
+    }else{
+        num1 = Math.floor(num1)
+        return `${num2}${fun(num1)}`
+    }
+}
+```
 

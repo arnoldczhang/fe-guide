@@ -19,6 +19,7 @@
 * [`treeshaking`](#treeshaking)
 * [`tapable`](#tapable)
 * [`loader`](#loader)
+* [`热更新`](#热更新)
 * [`其他`](#其他)
 
 </details>
@@ -505,4 +506,15 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 - ![import](import-polyfill.png)
 - [据说比babel快几十倍的compiler](https://github.com/swc-project/swc)
 - [prepack-顾名思义代码预编译](https://prepack.io/)
+
+---
+
+## 热更新
+- 利用webpack-dev-server（express），建立HMR server
+- 页面和HMR server建立websocket通信
+- webpack编译生成的新代码，通过HMR server发送给页面
+- 页面根据socket获取的chunk头进行比较，获知需要更新的模块
+- 模块根据module.hot.accpet，判断能否更新，若无法更新，强刷页面
+
+
 
