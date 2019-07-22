@@ -1629,3 +1629,23 @@ function fun(num){
 }
 ```
 
+---
+
+### 正则
+
+#### 正则引擎
+- NFA：非确定性有限状态自动机
+- DFA：确定性有限状态自动机
+
+---
+
+### node异步错误捕获
+- uncaughtException
+  ```js
+  process.on('uncaughtException', (e)=>{
+    console.error('process error is:', e.message);
+  });
+  ```
+- domain
+
+
