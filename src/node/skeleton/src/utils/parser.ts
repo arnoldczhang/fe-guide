@@ -80,12 +80,15 @@ import {
 } from './fs';
 import {
   addSuffix,
+  clearUsedComp,
+  clearUsedTpl,
   ensureAndInsertWxml,
   ensureAndInsertWxss,
   modifySuffix,
   updateTemplateInfo,
   updateUsingInJsonConfig,
 } from './index';
+import { Comp } from './klass';
 import Logger from './log';
 import {
   genKlass,
@@ -123,14 +126,14 @@ export const parseAsTreeNode = (
   ast: IAst,
   options: IPath,
 ): IAst => (
-    [
-      parseFromConfig,
-      parseFromCustomAttr,
-      parseFromTag,
-      parseFromNode,
-      parseFromAttr,
-      parseFromStruct,
-    ].reduce((res: IAst, next) => next(res, options), ast)
+  [
+    parseFromConfig,
+    parseFromCustomAttr,
+    parseFromAttr,
+    parseFromTag,
+    parseFromNode,
+    parseFromStruct,
+  ].reduce((res: IAst, next) => next(res, options), ast)
 );
 
 /**
@@ -409,7 +412,7 @@ export const parseFromTag = (
     protoPath,
     mainPath,
     skeletonKeys,
-    wxTemplateInfo,
+    usingComponentKeys,
     watch,
   } = options;
   if (!tag) { return ast; }
@@ -424,10 +427,16 @@ export const parseFromTag = (
           const srcWxss: string = modifySuffix(srcWxml, 'wxss');
           const destWxss: string = modifySuffix(destWxml, 'wxss');
           setCach(destWxml, 1, PATH);
+          updateTemplateInfo(srcWxml, [attr.src, destWxml], options);
           ensureAndInsertWxml(srcWxml, destWxml, options);
           ensureAndInsertWxss(srcWxss, destWxss, options);
-          updateTemplateInfo(srcWxml, destWxml, options);
         }
+      }
+      break;
+    // <template />
+    case is(tag, TEMPLATE_TAG):
+      if (attr.is) {
+        clearUsedTpl(attr.is, options);
       }
       break;
     // <include />
@@ -456,6 +465,7 @@ export const parseFromTag = (
         delete ast.attr.src;
       }
       ast.attr[KLASS] = [...klass, WXSS_BG_GREY];
+      // remove parsing <image> src
       // if (attr && attr.src && /^\./.test(attr.src)) {
       //   const { src } = attr;
       //   const [dir, fileName] = [getDir(src), getFileName(src)];
@@ -469,6 +479,10 @@ export const parseFromTag = (
     // fix: compiling skeleton to skeleton
     case skeletonKeys.has(tag):
       return emptyNode;
+    // if comp is used in pages, keep it
+    case usingComponentKeys.has(tag):
+      clearUsedComp(tag, options);
+      break;
     default:
       break;
   }
@@ -491,6 +505,7 @@ export const parseFromJSON = (
   isPage?: boolean,
 ): ICO => {
   const {
+    parentComp,
     usingComponentKeys,
     skeletonKeys,
     wxComponentInfo,
@@ -500,9 +515,6 @@ export const parseFromJSON = (
   const dest: string = getDir(destFile);
   const { root, compPath, srcPath: rootSrcPath, outputPath } = options;
   keys(json).forEach((key: string): void => {
-    if (isPage) {
-      usingComponentKeys.add(key);
-    }
     let pathValue: string = json[key];
     let [srcJs, destJs, srcWxml, destWxml, srcWxss, destWxss, srcJson, destJson] = Array(10);
     if (isNpmComponent(pathValue)) {
@@ -530,7 +542,6 @@ export const parseFromJSON = (
       if (srcPath.includes(outputPath)) {
         delete json[key];
         skeletonKeys.add(key);
-        usingComponentKeys.delete(key);
         return;
       }
 
@@ -539,9 +550,7 @@ export const parseFromJSON = (
           srcPath = `${srcPath}/index`;
           destPath = `${destPath}/index`;
         }
-      } catch (err) {
-
-      }
+      } catch (err) {}
       srcJson = addSuffix(srcPath, 'json');
       destJson = addSuffix(destPath, 'json');
       srcJs = addSuffix(srcPath, 'js');
@@ -553,7 +562,13 @@ export const parseFromJSON = (
       json[key] = getRelativePath(destPath, destFile);
     }
 
+    const thisComp: Comp = new Comp(key, destWxml);
+    usingComponentKeys.set(key, thisComp);
     wxComponentInfo.add(destWxml);
+
+    if (parentComp) {
+      parentComp.addChild(thisComp);
+    }
 
     if (watch || !hasCach(destWxml, PATH)) {
 
@@ -562,7 +577,7 @@ export const parseFromJSON = (
       ensureAndInsertWxml(srcWxml, destWxml, options);
 
       // gen component-json
-      updateUsingInJsonConfig(srcJson, destJson, options);
+      updateUsingInJsonConfig(srcJson, destJson, { ...options, parentComp: thisComp });
 
       // gen component-wxss
       ensureAndInsertWxss(srcWxss, destWxss, options);
@@ -572,9 +587,6 @@ export const parseFromJSON = (
       write(destJs, COMP_JS);
 
       // TODO copy Components.properties to destJs with babel
-      // const { ast } = transformSync(String(read(srcJs)), {
-      //   ast: true,
-      // });
     }
   });
   return json;

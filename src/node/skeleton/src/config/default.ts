@@ -94,7 +94,7 @@ export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): vo
         outline: none;
         border: none;
         z-index: 1;
-        background-color: hsla(0, 0%, 100%, 0.2);
+        background-color: hsla(0, 0%, 100%, 0.3);
         position: absolute;
         top: -50%;
         bottom: -50%;

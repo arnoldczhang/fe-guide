@@ -31,6 +31,7 @@ const run = (options: any = {}): void => {
     page,
     treeshake,
     animation,
+    deleteUnused,
     watch,
   } = options;
   const srcPath = inputDir ? join(root, inputDir) : `${root}/src`;
@@ -52,13 +53,15 @@ const run = (options: any = {}): void => {
       outputPath,
       pagePath,
       compPath,
+      deleteUnused,
       watch,
       wxmlKlassInfo: {},
       wxmlStructInfo: {},
       wxssInfo: globalWxssMap,
       wxTemplateInfo: globalTemplateMap,
       wxComponentInfo: globalComponentSet,
-      usingComponentKeys: new Set(),
+      usingTemplateKeys: new Map(),
+      usingComponentKeys: new Map(),
       skeletonKeys: new Set(),
       verbose: false,
       ignoreTags: ignore,
@@ -80,7 +83,12 @@ const run = (options: any = {}): void => {
   genResourceFile(`${outputPath}${SKELETON_DEFAULT_JS_FILE}`, DEFAULT_JS);
 
   // remove unused template/component
-  removeUnused();
+  if (!watch && deleteUnused) {
+    removeUnused({
+      template: globalTemplateMap,
+      component: globalComponentSet,
+    });
+  }
 };
 
 run.defaultConfigName = DEFAULT_CONFIG_FILE;

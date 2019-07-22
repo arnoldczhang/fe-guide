@@ -6,11 +6,13 @@ import {
   existsSync,
   readFile,
   readFileSync,
+  rmdir,
   Stats,
   statSync,
   writeFile,
   writeFileSync,
 } from 'fs-extra';
+import * as rimraf from 'rimraf';
 import { CF, ICO } from '../types';
 import { isFunc } from './assert';
 
@@ -74,4 +76,16 @@ export const exists = (
 
 export const state = (path: string): Stats => {
   return statSync(path);
+};
+
+export const remove = (
+  dir: string,
+  options?: rimraf.Options,
+  callback?: (error: Error) => void,
+): void => {
+  if (options && callback) {
+    rimraf(dir, options, callback);
+  } else {
+    rimraf.sync(dir);
+  }
 };

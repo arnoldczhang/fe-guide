@@ -1,3 +1,4 @@
+import { Comp } from '../utils/klass';
 import { IAst, ICO } from './common';
 
 export type ASTFC = (ast: IAst) => any;
@@ -20,7 +21,10 @@ export interface IPath {
   pagePath?: string;
   compPath?: string;
   watch?: boolean;
-  wxTemplateInfo?: Map<string, string>;
+  parentComp?: Comp;
+  parentTpl?: Comp;
+  deleteUnused?: boolean;
+  // cach componet dest path
   wxComponentInfo?: Set<string>;
   // cach `id` <-> `class` map
   // replace id with random class
@@ -29,7 +33,11 @@ export interface IPath {
   // search ast path in treeshaking
   wxmlStructInfo?: ICO;
   // cach key of `usingComponent` used in pages
-  usingComponentKeys?: Set<string>;
+  usingComponentKeys?: Map<string, Comp>;
+  // cach template info used in pages
+  wxTemplateInfo?: Map<string, Comp>;
+  // cach template used in current page
+  usingTemplateKeys?: Map<string, string[]>;
   // cach key of skeleton files in `usingComponent` used in pages
   skeletonKeys?: Set<string>;
   // cach global style map
@@ -43,4 +51,9 @@ export interface IPath {
 export enum animationStyle {
   shine = 'shine',
   jelly = 'jelly',
+}
+
+export interface IUnused {
+  template: Map<string, Comp>;
+  component: Set<string>;
 }
