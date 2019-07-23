@@ -20,6 +20,10 @@ export const isFalsy = (value: any): boolean => (
     || value === 'undefined' || /void \d+/g.test(value)
 );
 
+export const isTrue = (value: any): boolean => (
+  value || value === 'true' || value === '1'
+);
+
 export const isArr = Array.isArray;
 
 export const assert = (

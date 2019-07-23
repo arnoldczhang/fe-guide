@@ -201,6 +201,11 @@ export const updateUsingInJsonConfig = (
   }
 };
 
+/**
+ * updateUnusedJsonConfig
+ * @param dest
+ * @param map
+ */
 export const updateUnusedJsonConfig = (
   dest: string,
   map: Map<string, Comp>,
@@ -218,6 +223,11 @@ export const updateUnusedJsonConfig = (
   }
 };
 
+/**
+ * iterateUpdateUnusedWxmlConfig
+ * @param ast
+ * @param imports
+ */
 export const iterateUpdateUnusedWxmlConfig = (
   ast: IAst,
   imports: string[],
@@ -235,6 +245,11 @@ export const iterateUpdateUnusedWxmlConfig = (
   return ast;
 };
 
+/**
+ * updateUnusedWxmlConfig
+ * @param dest
+ * @param map
+ */
 export const updateUnusedWxmlConfig = (
   dest: string,
   map: Map<string, string[]>,
@@ -276,7 +291,6 @@ export const ensureAndInsertWxml = (
   isPage?: boolean,
 ): void => {
   ensure(dest);
-  // copy(src, dest);
   write(
     dest,
     parseFile(src, dest, options, isPage),
@@ -366,7 +380,6 @@ export const genNewComponent = (
   const relativePath: string = srcWxml.replace(srcPath, '');
   const srcWxss: string = modifySuffix(srcWxml, 'wxss');
   const srcJson: string = modifySuffix(srcWxml, 'json');
-
   // gen json
   const destJson: string = `${outputPath}${modifySuffix(relativePath, 'json')}`;
   updateUsingInJsonConfig(srcJson, destJson, options, COMP_JSON, true);
@@ -389,6 +402,8 @@ export const genNewComponent = (
     updateUnusedJsonConfig(destJson, usingComponentKeys);
     updateUnusedWxmlConfig(destWxml, usingTemplateKeys);
   }
+
+  // show log
   if (options.verbose) {
     logger.success(getDir(srcWxml));
   }
@@ -399,7 +414,10 @@ export const genNewComponent = (
  * @param resourceRoot
  * @param content
  */
-export const genResourceFile = (resourceRoot: string, content: string): void => {
+export const genResourceFile = (
+  resourceRoot: string,
+  content: string,
+): void => {
   ensure(resourceRoot);
   write(resourceRoot, content);
 };
@@ -452,6 +470,10 @@ export const updateTemplateInfo = (
   options.parentTpl = tpl;
 };
 
+/**
+ * removeUnused
+ * @param param0
+ */
 export const removeUnused = ({
   template,
   component,
@@ -484,15 +506,22 @@ export const clearUsedComp = (
 ): void => {
   const { usingComponentKeys, wxComponentInfo } = options;
   const thisComp = usingComponentKeys.get(tag);
-  const { path } = thisComp;
-  wxComponentInfo.delete(path);
-  usingComponentKeys.delete(tag);
-  thisComp.iterateChild((ch: Comp) => {
-    wxComponentInfo.delete(ch.path);
-    usingComponentKeys.delete(ch.tag);
-  });
+  if (thisComp) {
+    const { path } = thisComp;
+    wxComponentInfo.delete(path);
+    usingComponentKeys.delete(tag);
+    thisComp.iterateChild((ch: Comp) => {
+      wxComponentInfo.delete(ch.path);
+      usingComponentKeys.delete(ch.tag);
+    });
+  }
 };
 
+/**
+ * clearUsedTpl
+ * @param key
+ * @param options
+ */
 export const clearUsedTpl = (
   key: string,
   options: IPath,
@@ -506,12 +535,30 @@ export const clearUsedTpl = (
       const tplKey = getTplKey(key, destValue);
       const thisTpl = wxTemplateInfo.get(tplKey);
       wxTemplateInfo.delete(tplKey);
-      thisTpl.iterateChild((ch: Comp) => {
-        usingTemplateKeys.delete(ch.tag);
-        wxTemplateInfo.delete(getTplKey(ch.tag, ch.path));
-      });
+      if (thisTpl) {
+        thisTpl.iterateChild((ch: Comp) => {
+          usingTemplateKeys.delete(ch.tag);
+          wxTemplateInfo.delete(getTplKey(ch.tag, ch.path));
+        });
+      }
     }
   }
+};
+
+/**
+ * hasOnlyTextChild
+ * @param ast
+ */
+export const hasOnlyTextChild = (
+  ast: IAst,
+): boolean => {
+  const { child } = ast;
+  let result = false;
+  if (child && child.length === 1) {
+    const { node, tag } = child[0];
+    result = !tag && is(node, TEXT);
+  }
+  return result;
 };
 
 export {

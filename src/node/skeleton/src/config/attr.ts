@@ -32,6 +32,8 @@ export const ATTR_WIDTH = `${PRE}-width`;
 
 export const ATTR_CLEAR = `${PRE}-clear`;
 
+export const ATTR_REPLACE = `${PRE}-replace`;
+
 export const ATTR_HEIGHT = `${PRE}-height`;
 
 export const ATTR_PADDING = `${PRE}-padding`;

@@ -287,3 +287,11 @@ export const triggerBgAction = (
   result[KLASS] = [...klass, newKlassName || WXSS_BG_GREY];
   ast.attr[KLASS] = result[KLASS];
 };
+
+export const triggerReplaceAction = (
+  ast: IAst,
+  value: string,
+): void => {
+  ast.tag = value;
+  ast.attr = {};
+};

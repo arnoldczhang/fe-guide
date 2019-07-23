@@ -134,7 +134,7 @@ export const removeComment = (file: string): string => (
     .replace(/(\s|^)\/\/.*/g, '$1')
 );
 
-export const removeBlank = (input: string): string => (
+export const removeBlankAndWxVariable = (input: string): string => (
   input.replace(/(?:\n|\t|^ +| +$|\{\{[^\{\}]*\}\})/g, '')
 );
 

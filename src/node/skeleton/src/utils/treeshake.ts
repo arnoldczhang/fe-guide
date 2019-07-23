@@ -196,11 +196,10 @@ export const getInterSectSelectorChild = (
   if (temp.length > 1) {
     for (let i = 0, l = temp.length; i < l; i += 1) {
       const children = temp[i];
-      for (let j = 0, jl = children.length; j < jl; j += 1) {
-        const child = children[j];
-        if (temp.every((other: IAst[][]): boolean => other.includes(child))) {
-          resultSet.add(child as IAst[]);
-        }
+      // find the intersection of all selectors` children
+      const child = children[0];
+      if (temp.slice(1).every((other: IAst[][]): boolean => other.includes(child))) {
+        resultSet.add(child as IAst[]);
       }
     }
   } else {
@@ -293,7 +292,7 @@ export const getExecWxml = (
   let data = getPageData(content);
   if (!data) { return wxml; }
   data = data || {};
-  const transWxml = wxml.replace(/((?:[^\s]+\=|))(['"]*)\{\{([^\{\}]+)\}\}(\2)/g, (m, $1, $2, $3, $4) => {
+  const transWxml = replaceWith(wxml, /((?:[^\s]+\=|))(['"]*)\{\{([^\{\}]+)\}\}(\2)/g, (m, $1, $2, $3, $4) => {
     let result;
     let scanning: boolean = true;
     const isVisibleStyle: boolean = isIfAll($1) || isHidden($1);

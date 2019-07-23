@@ -18,6 +18,7 @@ import {
   ATTR_PADDING_TOP,
   ATTR_REMOVE,
   ATTR_REPEAT,
+  ATTR_REPLACE,
   ATTR_SHOW,
   ATTR_WIDTH,
   BUTTON_TAG,
@@ -58,9 +59,10 @@ import { triggerBgAction,
   triggerPaddingLeftAction,
   triggerPaddingRightAction,
   triggerPaddingTopAction,
+  triggerReplaceAction,
   triggerWidthAction,
 } from './action';
-import { has, is, isArr, isFalsy, isStr } from './assert';
+import { has, is, isArr, isFalsy, isStr, isTrue } from './assert';
 import {
   hasCach,
   setCach,
@@ -84,6 +86,7 @@ import {
   clearUsedTpl,
   ensureAndInsertWxml,
   ensureAndInsertWxss,
+  hasOnlyTextChild,
   modifySuffix,
   updateTemplateInfo,
   updateUsingInJsonConfig,
@@ -100,11 +103,12 @@ import {
   isBindEvent,
   isElif,
   isElse,
+  isHidden,
   isId,
   isIf,
   isKlass,
   isNpmComponent,
-  removeBlank,
+  removeBlankAndWxVariable,
   replaceColorSymbol,
   replaceLengthSymbol,
   splitWith,
@@ -168,7 +172,7 @@ export const parseFromNode = (
     }
     return ast;
   }
-  ast.text = removeBlank(text);
+  ast.text = removeBlankAndWxVariable(text);
   if (!ast.text) {
     return emptyNode;
   }
@@ -195,7 +199,7 @@ export const parseFromCustomAttr = (
     klass = isStr(attr[KLASS]) ? [attr[KLASS]] : attr[KLASS] || [];
     switch (key) {
       // repeat
-      // support 2 ways:
+      // support 2 datatype:
       //  1. number / {{number}}
       //  2. variable which represents an array
       case ATTR_FOR:
@@ -216,6 +220,9 @@ export const parseFromCustomAttr = (
       case ATTR_CLEAR:
         ast.child = [];
         break;
+      case ATTR_REPLACE:
+        triggerReplaceAction(ast, value);
+        return ast;
       case ATTR_PADDING:
         triggerPaddingAction(ast, options, result, value, klass);
         break;
@@ -288,6 +295,18 @@ export const parseFromAttr = (
       // remove all events
       case isBindEvent(key):
         break;
+      // hidden
+      case treeshake && isHidden(key):
+        if (isPage) {
+          if (!isFalsy(pureValue)) {
+            return emptyNode;
+          }
+          result[key] = '{{false}}';
+          break;
+        } else {
+          result[key] = value;
+          break;
+        }
       // wx:if
       // if this value eq false remove this element
       case treeshake && isIf(key):
@@ -305,10 +324,9 @@ export const parseFromAttr = (
       // if this value eq false, remove this element
       // else modify this attribute from `wx:elif` to `wx:if`
       case treeshake && isElif(key):
-        if (isPage) {
-          if (isFalsy(pureValue)) {
-            return emptyNode;
-          }
+        if (isFalsy(pureValue)) {
+          return emptyNode;
+        } else if (isTrue(pureValue)) {
           result[WX_HIDDEN] = '{{false}}';
           result[WX_IF] = '{{true}}';
           break;
@@ -320,19 +338,16 @@ export const parseFromAttr = (
       // if pre sibling wx:if="{{true}}" remove this element
       // else remove this attribute `wx:else`
       case treeshake && isElse(key):
-        if (isPage) {
-          let tmpSibling = sibling || {};
-          if (!tmpSibling.node || !is(tmpSibling.node, ELEMENT_TAG)) {
-            tmpSibling = tmpSibling.sibling || {};
-          }
-          const { node } = tmpSibling;
-          if (node && tmpSibling.attr
-            && !isFalsy(interceptWxVariable(tmpSibling.attr[WX_IF]))
-          ) {
-            return emptyNode;
-          } else {
-            break;
-          }
+        let tmpSibling = sibling || {};
+        if (!tmpSibling.node || !is(tmpSibling.node, ELEMENT_TAG)) {
+          tmpSibling = tmpSibling.sibling || {};
+        }
+        const { node } = tmpSibling;
+        const interceptValue = tmpSibling.attr && interceptWxVariable(tmpSibling.attr[WX_IF]);
+        if (node && tmpSibling.attr && !isFalsy(interceptValue)) {
+          return emptyNode;
+        } else if (is(interceptValue, void 0)) {
+          break;
         } else {
           result[key] = value;
           break;
@@ -350,6 +365,7 @@ export const parseFromAttr = (
           wxmlKlassInfo[`#${value}`] = klass;
         }
         break;
+      // class
       case isKlass(key):
         result.class = result.class || [];
         if (!value) {
@@ -409,6 +425,7 @@ export const parseFromTag = (
 ): IAst => {
   const { tag, attr } = ast;
   const {
+    defaultBg,
     protoPath,
     mainPath,
     skeletonKeys,
@@ -416,7 +433,7 @@ export const parseFromTag = (
     watch,
   } = options;
   if (!tag) { return ast; }
-
+  const klass = attr && isStr(attr[KLASS]) ? [attr[KLASS]] : attr && attr[KLASS] || [];
   switch (true) {
     // <import />
     case is(tag, IMPORT_TAG):
@@ -453,24 +470,24 @@ export const parseFromTag = (
     // <button />
     case is(tag, BUTTON_TAG):
       ast.tag = 'view';
+      if (!attr) {
+        ast.attr = {};
+      }
+      ast.attr[KLASS] = [...klass, WXSS_BG_GREY];
       break;
     // <image />
     case is(tag, IMAGE_TAG):
       if (!attr) {
         ast.attr = {};
       }
-      const klass = isStr(ast.attr[KLASS]) ? [ast.attr[KLASS]] : ast.attr[KLASS] || [];
       ast.tag = 'view';
       if (ast.attr.src) {
         delete ast.attr.src;
       }
+      if (ast.attr.mode) {
+        delete ast.attr.mode;
+      }
       ast.attr[KLASS] = [...klass, WXSS_BG_GREY];
-      // remove parsing <image> src
-      // if (attr && attr.src && /^\./.test(attr.src)) {
-      //   const { src } = attr;
-      //   const [dir, fileName] = [getDir(src), getFileName(src)];
-      //   attr.src = join(getRelativePath(protoPath, join(mainPath, dir)), fileName);
-      // }
       break;
     // remove <wxs />
     case is(tag, WXS_TAG):
@@ -484,6 +501,12 @@ export const parseFromTag = (
       clearUsedComp(tag, options);
       break;
     default:
+      if (defaultBg && hasOnlyTextChild(ast)) {
+        if (!attr) {
+          ast.attr = {};
+        }
+        ast.attr[KLASS] = [...klass, WXSS_BG_GREY];
+      }
       break;
   }
   return ast;
@@ -513,7 +536,8 @@ export const parseFromJSON = (
   } = options;
   const src: string = getDir(srcFile);
   const dest: string = getDir(destFile);
-  const { root, compPath, srcPath: rootSrcPath, outputPath } = options;
+  const { root, compPath, subPageRoot, outputPath } = options;
+  const rootSrcPath = subPageRoot || options.srcPath;
   keys(json).forEach((key: string): void => {
     let pathValue: string = json[key];
     let [srcJs, destJs, srcWxml, destWxml, srcWxss, destWxss, srcJson, destJson] = Array(10);
@@ -571,7 +595,6 @@ export const parseFromJSON = (
     }
 
     if (watch || !hasCach(destWxml, PATH)) {
-
       // gen component-wxml
       setCach(destWxml, 1, PATH);
       ensureAndInsertWxml(srcWxml, destWxml, options);

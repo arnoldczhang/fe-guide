@@ -25,7 +25,7 @@ const run = (options: any = {}): void => {
   options = assertOptions(options  || {});
   const {
     inputDir,
-    outputDir,
+    outDir,
     root,
     ignore,
     page,
@@ -33,47 +33,79 @@ const run = (options: any = {}): void => {
     animation,
     deleteUnused,
     watch,
+    defaultBg,
+    subPackage,
   } = options;
   const srcPath = inputDir ? join(root, inputDir) : `${root}/src`;
-  const outputPath = outputDir ? join(root, outputDir) : `${root}/src${SKELETON_RELATIVE}`;
+  const outputPath = outDir ? `${join(root, outDir)}${SKELETON_RELATIVE}` : `${srcPath}${SKELETON_RELATIVE}`;
   const pageWxml = getPageWxml(`${srcPath}/pages/*/*.wxml`, page);
   const pagePath = `${outputPath}/pages`;
   const compPath = `${outputPath}/components`;
   const globalWxssMap = new Map();
   const globalTemplateMap: Map<string, string> = new Map();
   const globalComponentSet: Set<string> = new Set();
+
+  const getPageOptions = (
+    s: string = srcPath,
+    o: string = outputPath,
+    p: string = pagePath,
+    c: string = compPath,
+    subPageRoot?: string,
+  ): any => ({
+    root,
+    srcPath: s,
+    outputPath: o,
+    pagePath: p,
+    compPath: c,
+    deleteUnused,
+    watch,
+    defaultBg,
+    wxmlKlassInfo: {},
+    wxmlStructInfo: {},
+    wxssInfo: globalWxssMap,
+    wxTemplateInfo: globalTemplateMap,
+    wxComponentInfo: globalComponentSet,
+    usingTemplateKeys: new Map(),
+    usingComponentKeys: new Map(),
+    skeletonKeys: new Set(),
+    verbose: true,
+    ignoreTags: ignore,
+    treeshake,
+    subPageRoot,
+  });
   //
   initLogger(pageWxml);
 
-  // gen page files
-  pageWxml.forEach((wxml: string): void => {
-    const pageOptions: any = {
-      root,
-      srcPath,
-      outputPath,
-      pagePath,
-      compPath,
-      deleteUnused,
-      watch,
-      wxmlKlassInfo: {},
-      wxmlStructInfo: {},
-      wxssInfo: globalWxssMap,
-      wxTemplateInfo: globalTemplateMap,
-      wxComponentInfo: globalComponentSet,
-      usingTemplateKeys: new Map(),
-      usingComponentKeys: new Map(),
-      skeletonKeys: new Set(),
-      verbose: false,
-      ignoreTags: ignore,
-      treeshake,
-    };
-    genNewComponent(wxml, pageOptions);
-  });
+  // gen main page files
+  // pageWxml.forEach((wxml: string): void => {
+  //   const pageOptions: any = getPageOptions();
+  //   genNewComponent(wxml, pageOptions);
+  // });
 
-  // global wxss
+  // gen sub page files
+  if (Array.isArray(subPackage)) {
+    subPackage.forEach((sub: any) => {
+      const { root: subRoot, page: subPage } = sub;
+      const subSrc = join(srcPath, subRoot);
+      const subOut = outDir
+        ? `${join(root, outDir, subRoot)}${SKELETON_RELATIVE}`
+        : `${join(subSrc, subRoot)}${SKELETON_RELATIVE}`;
+      const subPagePath = `${subOut}/pages`;
+      const subCompPath = `${subOut}/components`;
+      const subPageWxml = getPageWxml(`${subSrc}/*/*.wxml`, subPage);
+      subPageWxml.forEach((wxml: string): void => {
+        const pageOptions: any = getPageOptions(subSrc, subOut, subPagePath, subCompPath, srcPath);
+        genNewComponent(wxml, pageOptions);
+      });
+    });
+  }
+
+  // insert animation
   if (animation) {
     updateDefaultWxss(animation);
   }
+
+  // global wxss
   genResourceFile(
     `${outputPath}${SKELETON_DEFAULT_WXSS_FILE}`,
     transMap2Style(DEFAULT_WXSS, globalWxssMap),
