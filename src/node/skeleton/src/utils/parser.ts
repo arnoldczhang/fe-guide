@@ -94,6 +94,7 @@ import {
 import { Comp } from './klass';
 import Logger from './log';
 import {
+  appendUniq,
   genKlass,
 } from './random';
 import {
@@ -297,29 +298,19 @@ export const parseFromAttr = (
         break;
       // hidden
       case treeshake && isHidden(key):
-        if (isPage) {
-          if (!isFalsy(pureValue)) {
-            return emptyNode;
-          }
-          result[key] = '{{false}}';
-          break;
-        } else {
-          result[key] = value;
-          break;
+        if (!isFalsy(pureValue)) {
+          return emptyNode;
         }
+        result[key] = value;
+        break;
       // wx:if
       // if this value eq false remove this element
       case treeshake && isIf(key):
-        if (isPage) {
-          if (isFalsy(pureValue)) {
-            return emptyNode;
-          }
-          result[key] = '{{true}}';
-          break;
-        } else {
-          result[key] = value;
-          break;
+        if (isFalsy(pureValue)) {
+          return emptyNode;
         }
+        result[key] = value;
+        break;
       // wx:elif
       // if this value eq false, remove this element
       // else modify this attribute from `wx:elif` to `wx:if`
@@ -473,7 +464,7 @@ export const parseFromTag = (
       if (!attr) {
         ast.attr = {};
       }
-      ast.attr[KLASS] = [...klass, WXSS_BG_GREY];
+      ast.attr[KLASS] = appendUniq(klass, WXSS_BG_GREY);
       break;
     // <image />
     case is(tag, IMAGE_TAG):
@@ -487,7 +478,7 @@ export const parseFromTag = (
       if (ast.attr.mode) {
         delete ast.attr.mode;
       }
-      ast.attr[KLASS] = [...klass, WXSS_BG_GREY];
+      ast.attr[KLASS] = appendUniq(klass, WXSS_BG_GREY);
       break;
     // remove <wxs />
     case is(tag, WXS_TAG):
@@ -505,7 +496,7 @@ export const parseFromTag = (
         if (!attr) {
           ast.attr = {};
         }
-        ast.attr[KLASS] = [...klass, WXSS_BG_GREY];
+        ast.attr[KLASS] = appendUniq(klass, WXSS_BG_GREY);
       }
       break;
   }
@@ -541,49 +532,53 @@ export const parseFromJSON = (
   keys(json).forEach((key: string): void => {
     let pathValue: string = json[key];
     let [srcJs, destJs, srcWxml, destWxml, srcWxss, destWxss, srcJson, destJson] = Array(10);
-    if (isNpmComponent(pathValue)) {
-      pathValue = pathValue.slice(1);
-      srcJs = pathResolve.sync(pathValue, { basedir: root });
-      const srcJsFileName: string = getFileName(srcJs);
-      const [srcJsName] = splitWith(srcJsFileName, '.');
-      const destRoot: string = resolve(compPath, pathValue);
-      srcJson = modifySuffix(srcJs, 'json');
-      destJson = `${destRoot}/${modifySuffix(srcJsFileName, 'json')}`;
-      destJs = `${destRoot}/${modifySuffix(srcJsFileName, 'js')}`;
-      srcWxml = modifySuffix(srcJs, 'wxml');
-      destWxml = `${destRoot}/${modifySuffix(srcJsFileName, 'wxml')}`;
-      srcWxss = modifySuffix(srcJs, 'wxss');
-      destWxss = `${destRoot}/${modifySuffix(srcJsFileName, 'wxss')}`;
-      json[key] = `${getRelativePath(destRoot, destFile)}/${srcJsName}`;
-    } else {
-      const isRootStyle = /^\//.test(pathValue);
-      if (isRootStyle) {
+    try {
+      if (isNpmComponent(pathValue)) {
         pathValue = pathValue.slice(1);
-      }
-      let srcPath: string = resolve(isRootStyle ? rootSrcPath : src, pathValue);
-      let destPath: string = resolve(isRootStyle ? outputPath : dest, pathValue);
-      // fix: avoid compiling skeleton to skeleton
-      if (srcPath.includes(outputPath)) {
-        delete json[key];
-        skeletonKeys.add(key);
-        return;
-      }
-
-      try {
-        if (state(srcPath).isDirectory()) {
-          srcPath = `${srcPath}/index`;
-          destPath = `${destPath}/index`;
+        srcJs = pathResolve.sync(pathValue, { basedir: root });
+        const srcJsFileName: string = getFileName(srcJs);
+        const [srcJsName] = splitWith(srcJsFileName, '.');
+        const destRoot: string = resolve(compPath, pathValue);
+        srcJson = modifySuffix(srcJs, 'json');
+        destJson = `${destRoot}/${modifySuffix(srcJsFileName, 'json')}`;
+        destJs = `${destRoot}/${modifySuffix(srcJsFileName, 'js')}`;
+        srcWxml = modifySuffix(srcJs, 'wxml');
+        destWxml = `${destRoot}/${modifySuffix(srcJsFileName, 'wxml')}`;
+        srcWxss = modifySuffix(srcJs, 'wxss');
+        destWxss = `${destRoot}/${modifySuffix(srcJsFileName, 'wxss')}`;
+        json[key] = `${getRelativePath(destRoot, destFile)}/${srcJsName}`;
+      } else {
+        const isRootStyle = /^\//.test(pathValue);
+        if (isRootStyle) {
+          pathValue = pathValue.slice(1);
         }
-      } catch (err) {}
-      srcJson = addSuffix(srcPath, 'json');
-      destJson = addSuffix(destPath, 'json');
-      srcJs = addSuffix(srcPath, 'js');
-      destJs = addSuffix(destPath, 'js');
-      srcWxml = addSuffix(srcPath, 'wxml');
-      destWxml = addSuffix(destPath, 'wxml');
-      srcWxss = addSuffix(srcPath, 'wxss');
-      destWxss = addSuffix(destPath, 'wxss');
-      json[key] = getRelativePath(destPath, destFile);
+        let srcPath: string = resolve(isRootStyle ? rootSrcPath : src, pathValue);
+        let destPath: string = resolve(isRootStyle ? outputPath : dest, pathValue);
+        // fix: avoid compiling skeleton to skeleton
+        if (srcPath.includes(outputPath)) {
+          delete json[key];
+          skeletonKeys.add(key);
+          return;
+        }
+
+        try {
+          if (state(srcPath).isDirectory()) {
+            srcPath = `${srcPath}/index`;
+            destPath = `${destPath}/index`;
+          }
+        } catch (err) {}
+        srcJson = addSuffix(srcPath, 'json');
+        destJson = addSuffix(destPath, 'json');
+        srcJs = addSuffix(srcPath, 'js');
+        destJs = addSuffix(destPath, 'js');
+        srcWxml = addSuffix(srcPath, 'wxml');
+        destWxml = addSuffix(destPath, 'wxml');
+        srcWxss = addSuffix(srcPath, 'wxss');
+        destWxss = addSuffix(destPath, 'wxss');
+        json[key] = getRelativePath(destPath, destFile);
+      }
+    } catch (err) {
+      return;
     }
 
     const thisComp: Comp = new Comp(key, destWxml);
@@ -629,8 +624,6 @@ export const setRootShow = (
   if (isPage && child && child.length) {
     child.forEach((
       ch: IAst,
-      idx: number,
-      array: IAst[],
     ) => {
       const { attr, tag } = ch;
       if (!tag) { return; }

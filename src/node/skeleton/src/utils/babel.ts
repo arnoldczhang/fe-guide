@@ -35,6 +35,7 @@ export const transform = (
           }],
         ],
         plugins: [
+          "@babel/plugin-proposal-class-properties",
         ],
       });
     } catch ({ message }) {

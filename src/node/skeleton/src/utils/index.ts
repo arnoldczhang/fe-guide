@@ -117,9 +117,9 @@ export const parseFile = (
 ): string => {
   try {
     const { treeshake } = options;
-    let content: string = removeComment(String(read(src)));
-    if (treeshake && isPage) {
-      content = wxmlTreeShake(content, src, options);
+    let content: string = removeComment(read(src) as string);
+    if (treeshake) {
+      content = wxmlTreeShake(content, src, { ...options, isPage });
     }
     const json: ICO = html2json(content);
     return json2html(treewalk(json, {
@@ -301,6 +301,33 @@ export const ensureAndInsertWxml = (
 };
 
 /**
+ * checkImportWxssUsage
+ * @param src
+ */
+export const checkImportWxssUsage = (
+  src: string,
+): void => {
+  const content: string = String(exists(src) ? read(src) : '');
+  const ast: css.Stylesheet = css.parse(content);
+  const { rules } = ast.stylesheet;
+  rules.some((rule: css.Rule & css.Import) => {
+    const { type, selectors } = rule;
+    if (is(type, RULE_TAG)) {
+      return selectors.some((selector: string) => {
+        const tmpSelectors: string[] = splitWith(selector);
+        const lastSelector: string = tmpSelectors[tmpSelectors.length - 1];
+        if (!withoutPageSelector(lastSelector)) {
+          logger.warn(`wxss: [${src}] has invalid components style [${selector}], pls remove`);
+          return true;
+        }
+        return false;
+      });
+    }
+    return false;
+  });
+};
+
+/**
  * insertPageWxss
  * @param src
  * @param dest
@@ -326,7 +353,9 @@ export const insertPageWxss = (
     if (is(type, IMPORT_TAG)) {
       const srcPath: string = join(getDir(src), rule.import.slice(1, -1));
       rule.import = `"${getRelativePath(srcPath, dest)}"`;
-   // { type: 'rule', selectors: [ '.loading-data', '.no-data' ]}
+      // check template/components wxss is valid or not
+      checkImportWxssUsage(srcPath);
+      // { type: 'rule', selectors: [ '.loading-data', '.no-data' ]}
     } else if (is(type, RULE_TAG)) {
       const newSelectors: string[] = [];
       selectors.forEach((selector: string) => {

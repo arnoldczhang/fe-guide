@@ -59,7 +59,7 @@ export const withoutPageSelector = (selector: string): boolean => (
 );
 
 export const hasObjKey = (input: string): boolean => (
-  /^\s*[!~\-\+\/]*([^\.]+)\./.test(input)
+  /^\s*[!~\-\+\/]*\(?([^'"\.\s]+)\./.test(input)
 );
 
 export const hasUnDefVariable = (input: string): boolean => (
@@ -115,7 +115,7 @@ export const interceptWxVariable = (
   input: any,
   replacement?: string,
 ): string => (
-  isStr(input) ? input.replace(/\{\{([^\{\}]+)\}\}/, replacement || '$1') : input
+  isStr(input) ? input.replace(/\{\{([^\{\}]*)\}\}/, replacement || '$1') : input
 );
 
 export const replacePseudo = (

@@ -11,7 +11,7 @@ const {
   SRC,
   updateDefaultWxss,
 } = require('./config');
-const { init: initLogger } = require('./utils/log');
+const { init: updateLogger } = require('./utils/log');
 const { assertOptions } = require('./utils/assert');
 const {
   genNewComponent,
@@ -39,6 +39,7 @@ const run = (options: any = {}): void => {
   const srcPath = inputDir ? join(root, inputDir) : `${root}/src`;
   const outputPath = outDir ? `${join(root, outDir)}${SKELETON_RELATIVE}` : `${srcPath}${SKELETON_RELATIVE}`;
   const pageWxml = getPageWxml(`${srcPath}/pages/*/*.wxml`, page);
+  const pageCollection = [...pageWxml];
   const pagePath = `${outputPath}/pages`;
   const compPath = `${outputPath}/components`;
   const globalWxssMap = new Map();
@@ -73,14 +74,15 @@ const run = (options: any = {}): void => {
     treeshake,
     subPageRoot,
   });
-  //
-  initLogger(pageWxml);
+
+  // update main page logger
+  updateLogger(pageCollection);
 
   // gen main page files
-  // pageWxml.forEach((wxml: string): void => {
-  //   const pageOptions: any = getPageOptions();
-  //   genNewComponent(wxml, pageOptions);
-  // });
+  pageWxml.forEach((wxml: string): void => {
+    const pageOptions: any = getPageOptions();
+    genNewComponent(wxml, pageOptions);
+  });
 
   // gen sub page files
   if (Array.isArray(subPackage)) {
@@ -93,10 +95,13 @@ const run = (options: any = {}): void => {
       const subPagePath = `${subOut}/pages`;
       const subCompPath = `${subOut}/components`;
       const subPageWxml = getPageWxml(`${subSrc}/*/*.wxml`, subPage);
+      // update sub page logger
+      updateLogger(pageCollection);
       subPageWxml.forEach((wxml: string): void => {
         const pageOptions: any = getPageOptions(subSrc, subOut, subPagePath, subCompPath, srcPath);
         genNewComponent(wxml, pageOptions);
       });
+      pageCollection.push(...subPageWxml);
     });
   }
 
