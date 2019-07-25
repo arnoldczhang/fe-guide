@@ -79,6 +79,8 @@
 * [`vue在v-for时给每项元素绑定事件需要用事件代理吗?`](#vue在v-for时给每项元素绑定事件需要用事件代理吗?)
 * [`反爬虫技术`](#反爬虫技术)
 * [`逆序数字（递归实现）`](#逆序数字（递归实现）)
+* [`正则引擎`](#正则引擎)
+* [`node异步错误捕获`](#node异步错误捕获)
 
 
 </details>
@@ -974,6 +976,7 @@ instanceof
 **回流**
 
 - 几何属性变动，页面需要全部或局部更新
+- [触发浏览器回流的属性方法一览表](https://mp.weixin.qq.com/s/EL40dbdMWKh9BSfHKtZf2Q)
 
 回流必定会发生重绘，重绘不一定会引发回流
 
@@ -1644,8 +1647,83 @@ function fun(num){
   ```js
   process.on('uncaughtException', (e)=>{
     console.error('process error is:', e.message);
+    // 显式的手动杀掉进程
+    process.exit(1);
+    restartServer(); // 重启服务
   });
   ```
 - domain
+  * 把处理多个不同的IO的操作作为一个组。注册事件和回调到domain，当发生一个错误事件或抛出一个错误时，domain对象会被通知，不会丢失上下文环境，也不导致程序错误立即退出
+  ```js
+  const domain = require('domain');
+  const d = domain.create();
+
+  d.on('error', (err) => {
+    console.log('err', err.message);
+    console.log(needSend.message);
+  });
+
+  const needSend = { message: '需要传递给错误处理的一些信息' };
+  d.add(needSend);
+  d.run(() => {
+    setTimeout(() => {
+      throw new Error('aaaa');
+    }, 1);  
+  });
+  ```
+
+#### 多进程使用domain例子
+```js
+const cluster = require('cluster');
+const os = require('os');
+const http = require('http');
+const domain = require('domain');
+
+const d = domain.create();
+
+if (cluster.isMaster) {
+  const cpuNum = os.cpus().length;
+  for (let i = 0; i < cpuNum; ++i) {
+    cluster.fork()
+  };
+  // fork work log
+  cluster.on('fork', worker=>{
+    console.info(`${new Date()} worker${worker.process.pid}进程启动成功`);
+  });
+  // 监听异常退出进程，并重新fork
+  cluster.on('exit',(worker,code,signal)=>{
+    console.info(`${new Date()} worker${worker.process.pid}进程启动异常退出`);
+    cluster.fork();
+  })
+} else {
+  http.createServer((req, res)=>{
+    d.add(res);
+    d.on('error', (err) => {
+      console.log('记录的err信息', err.message);
+      console.log('出错的 work id:', process.pid);
+      // uploadError(err)  // 上报错误信息至监控
+      res.end('服务器异常, 请稍后再试');
+      // 将异常子进程杀死
+      cluster.worker.kill(process.pid);
+    });
+    d.run(handle.bind(null, req, res));
+  }).listen(8080);
+}
+
+function handle(req, res) {
+  if (process.pid % 2 === 0) {
+    throw new Error(`出错了`);
+  }
+  res.end(`response by worker: ${process.pid}`);
+};
+```
+
+---
+
+### css影响页面加载
+[参考](../../js&browser/页面过程与浏览器缓存.md#知识点)
+
+
+
 
 
