@@ -28,6 +28,10 @@ export const ATTR_SHOW = `${PRE}-show`;
 
 export const ATTR_BG = `${PRE}-bg`;
 
+export const ATTR_LIGHT_BG = `${PRE}-light-bg`;
+
+export const ATTR_DARK_BG = `${PRE}-dark-bg`;
+
 export const ATTR_WIDTH = `${PRE}-width`;
 
 export const ATTR_CLEAR = `${PRE}-clear`;

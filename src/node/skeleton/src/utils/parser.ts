@@ -4,8 +4,10 @@ import { isString } from 'util';
 import {
   ATTR_BG,
   ATTR_CLEAR,
+  ATTR_DARK_BG,
   ATTR_FOR,
   ATTR_HEIGHT,
+  ATTR_LIGHT_BG,
   ATTR_MARGIN,
   ATTR_MARGIN_BOTTOM,
   ATTR_MARGIN_LEFT,
@@ -47,8 +49,11 @@ import {
   WXSS_BG_GREY,
 } from '../config';
 import { CF, IAst, ICO, IPath } from '../types';
-import { triggerBgAction,
+import {
+  triggerBgAction,
+  triggerDarkBgAction,
   triggerHeightAction,
+  triggerLightBgAction,
   triggerMarginAction,
   triggerMarginBottomAction,
   triggerMarginLeftAction,
@@ -262,6 +267,12 @@ export const parseFromCustomAttr = (
         break;
       case ATTR_BG:
         triggerBgAction(ast, options, result, value, klass);
+        break;
+      case ATTR_DARK_BG:
+        triggerDarkBgAction(ast, options, result, value, klass);
+        break;
+      case ATTR_LIGHT_BG:
+        triggerLightBgAction(ast, options, result, value, klass);
         break;
       default:
         if (!has(key, result) && !exceptKeys.includes(key)) {

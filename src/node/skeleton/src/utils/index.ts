@@ -12,7 +12,7 @@ import {
 } from '../config';
 import { COMMENT_TAG, IMPORT_TAG, INCLUDE_TAG, RULE_TAG, TEMPLATE_TAG } from '../config/tag';
 import { IAst, ICO, IComp, IPath, IUnused } from '../types';
-import { is } from './assert';
+import { is, isArr } from './assert';
 import {
   addSuffix,
   getDir,
@@ -349,6 +349,7 @@ export const insertPageWxss = (
     index: number,
   ) => {
     const { type, selectors } = rule;
+
     // { type: 'import', import: '"../../components/xx/xx.wxss"'}
     if (is(type, IMPORT_TAG)) {
       const srcPath: string = join(getDir(src), rule.import.slice(1, -1));
@@ -462,7 +463,11 @@ export const transMap2Style = (
   maps.forEach((map: Map<string, string>): void => {
     const keys: IterableIterator<string> = map.keys();
     for (const key of keys) {
-      result += `${key.indexOf('@') ? '.' : ''}${key} {${map.get(key)}}\n`;
+      if (isArr(key)) {
+        result += `${key.map((k: string) => `${k.indexOf('@') ? '.' : ''}${k}`).join()} { ${map.get(key)} }\n`;
+      } else {
+        result += `${key.indexOf('@') ? '.' : ''}${key} {${map.get(key)}}\n`;
+      }
     }
   });
   return result;

@@ -11,22 +11,7 @@ export const COMP_JSON = `{
   "usingComponents": {}
 }`;
 
-export const COMP_WXSS = `@import '${SKELETON_DEFAULT_WXSS}'`;
-
 export const COMP_JS = `Component({...require('/skeleton${SKELETON_DEFAULT_JS_FILE}')});`;
-
-export const WXSS_BG_GREY = `${PRE}-default-grey`;
-
-export const DEFAULT_WXSS = new Map();
-DEFAULT_WXSS.set(WXSS_BG_GREY, `
-  position: relative;
-  background: #f4f4f4!important;
-  color: #f4f4f4!important;
-  overflow: hidden;
-  outline: none;
-  border: none;
-  z-index: 1;
-`);
 
 export const DEFAULT_JS = `
 module.exports = {
@@ -82,6 +67,41 @@ export const wx: ICO = new Proxy({}, {
   },
 });
 
+// wxss
+export const COMP_WXSS = `@import '${SKELETON_DEFAULT_WXSS}'`;
+
+export const WXSS_BG_GREY = `${PRE}-default-grey`;
+
+export const WXSS_BG_DARK_GREY = `${PRE}-default-dark-grey`;
+
+export const WXSS_BG_LIGHT_GREY = `${PRE}-default-light-grey`;
+
+export const DEFAULT_WXSS = new Map();
+
+DEFAULT_WXSS.set([
+  WXSS_BG_GREY,
+  WXSS_BG_DARK_GREY,
+  WXSS_BG_LIGHT_GREY,
+], `
+  position: relative;
+  background: #f4f4f4!important;
+  color: #f4f4f4!important;
+  overflow: hidden;
+  outline: none;
+  border: none;
+  z-index: 1;
+`);
+
+DEFAULT_WXSS.set(WXSS_BG_DARK_GREY, `
+  background: #c4c4c4!important;
+  color: #c4c4c4!important;
+`);
+
+DEFAULT_WXSS.set(WXSS_BG_LIGHT_GREY, `
+  background: #fdfdfd!important;
+  color: #fdfdfd!important;
+`);
+
 export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): void => {
   if (isStr(styles)) {
     styles = [styles as animationStyle];
@@ -133,7 +153,7 @@ export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): vo
         `);
         DEFAULT_WXSS.set('@-webkit-keyframes jelly', `
         0%,68%,
-        68% { transform: scale(1, 1);  }
+        68% { transform: scale(1, 1); }
         76% { transform: scale(0.9, 1.1); }
         84% { transform: scale(1.1, 0.9); }
         92% { transform: scale(0.95, 1.05); }

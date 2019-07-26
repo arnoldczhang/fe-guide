@@ -1,4 +1,4 @@
-import { KLASS, PRE, WXSS_BG_GREY } from "../config";
+import { KLASS, PRE, WXSS_BG_DARK_GREY, WXSS_BG_GREY, WXSS_BG_LIGHT_GREY } from "../config";
 import { IAst, ICO, IPath } from "../types";
 import { isArr } from "./assert";
 import Logger from './log';
@@ -277,16 +277,37 @@ export const triggerBgAction = (
   result: ICO,
   value: string,
   klass: string[],
+  otherBg?: string,
 ): void => {
   const { wxssInfo } = options;
   value = isArr(value) ? value.join('') : value;
   let newKlassName: string;
-  if (value) {
+  if (!otherBg && value) {
     newKlassName = `${PRE}-bg-${replaceColorSymbol(value)}`;
     wxssInfo.set(newKlassName, ` background: ${value}!important;color: ${value}!important; `);
   }
-  result[KLASS] = appendUniq(klass, newKlassName || WXSS_BG_GREY);
+  result[KLASS] = appendUniq(klass, otherBg || newKlassName || WXSS_BG_GREY);
   ast.attr[KLASS] = result[KLASS];
+};
+
+export const triggerDarkBgAction = (
+  ast: IAst,
+  options: IPath,
+  result: ICO,
+  value: string,
+  klass: string[],
+): void => {
+  triggerBgAction(ast, options, result, value, klass, WXSS_BG_DARK_GREY);
+};
+
+export const triggerLightBgAction = (
+  ast: IAst,
+  options: IPath,
+  result: ICO,
+  value: string,
+  klass: string[],
+): void => {
+  triggerBgAction(ast, options, result, value, klass, WXSS_BG_LIGHT_GREY);
 };
 
 export const triggerReplaceAction = (
