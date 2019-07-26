@@ -1247,7 +1247,7 @@ sleep(output,1000);
 [http](../../http/README.md)
 [参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/74)
 
-https = http + ssl安全层（比http多了2次tls的RTT）
+https = http + tls安全层（比http多了2次tls的RTT）
 
 #### 加密方式
 

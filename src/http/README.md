@@ -14,7 +14,7 @@
 <summary>展开更多</summary>
 
 * [`tcp`](#tcp)
-* [`requestHeader`](#request header)
+* [`requestHeader`](#requestHeader)
 * [`http1.0`](#http1.0)
 * [`http1.1`](#http1.1)
 * [`spdy`](#spdy)
@@ -46,7 +46,7 @@
 
 ---
 
-## request header
+## requestHeader
 
 ### 请求无用头部（新版）
 - server
@@ -72,20 +72,21 @@
 ## http1.0
   - 带宽限制
   - 延迟
-    - 浏览器阻塞（并行请求）
-    - DNS查询（域名发散）
-    - tcp
+    + 浏览器阻塞（并行请求）
+    + DNS查询（域名发散）
+    + tcp
   - 状态码
-    - 301: 永久重定向
-    - 302: 临时重定向
+    + 301: 永久重定向
+    + 302: 临时重定向
       * 只有当服务器发出 Cache-Control 或 Expires（废弃） 头字段进行指示，
         此响应才能被缓存，否则不能被缓存
       * 临时URI应该由响应头部中的 Location 字段给出
       * 在除 GET 或 HEAD 两种请求方法之外的请求时，接收到302状态码，
         客户端不得自动重定向请求，除非用户可以确认
+    + 304: [协商缓存](../js&browser/页面过程与浏览器缓存.md#协商缓存)
   - 缓存处理
-    - If-Modified-Since：再次请求服务器时，通过此字段通知服务器上次请求时，服务器返回的资源最后修改时间
-    - 缓存头部优先级：Pragma > Cache-Control > Expires（废弃） > ETag > Last-Modified
+    + If-Modified-Since：再次请求服务器时，通过此字段通知服务器上次请求时，服务器返回的资源最后修改时间
+    + 缓存头部优先级：Pragma > Cache-Control > Expires（废弃） > ETag > Last-Modified
 
 ---
 
@@ -93,7 +94,7 @@
 
 ### 缓存处理扩展
 Entity tag，If-Unmodified-Since, If-Match, If-None-Match
-这里可以参考[浏览器缓存](../js&browser/页面过程与浏览器缓存.md#缓存分类)
+参考[浏览器缓存](../js&browser/页面过程与浏览器缓存.md#缓存分类)
 
 #### Cach-Control
 
@@ -162,20 +163,20 @@ range，请求资源一部分（206），支持断点续传
 ---
 
 ## http2.0
-[HTTP/2.0 相比1.0有哪些重大改进](https://www.zhihu.com/question/34074946)
+[HTTP/2.0相比1.0有哪些重大改进](https://www.zhihu.com/question/34074946)
 
 - 多路复用
   * 同个域名只需要占用一个 TCP 连接
   * 同一个tcp连接上并行请求任意数量的双向交换消息
   * 减轻服务端负载
-- ![多路复用](多路复用.png)
+  * ![多路复用](多路复用.png)
 - 二进制分帧
   * 将首部信息和请求体，采用二进制编码封装进HEADER和BODY frame
   * ![二进制分帧](二进制分帧.png)
 - 首部压缩
-  * 客户端和服务器端使用“首部表”来跟踪和存储之前发送的键－值对
+  * 客户端和服务器端使用“首部表”来跟踪和存储之前发送的键-值对
   * 相同的数据，不再通过每次请求和响应发送
-  * 每个新的首部键－值对要么被追加到当前表的末尾，要么替换表中之前的值
+  * 每个新的首部键-值对要么被追加到当前表的末尾，要么替换表中之前的值
 - 服务端推送
   * 服务端可以主动把JS和CSS文件推送给客户端，而不需要客户端解析HTML时再发送这些请求
   * 遵守同源策略
@@ -242,6 +243,7 @@ range，请求资源一部分（206），支持断点续传
 - HTTPS基于SSL/TLS
 
 ### ssl和tls
+- 位于传输层
 - tls由ssl演变而来，目前ssl已极不安全
 - tls1.0相当于ssl3.1
 - 推荐tls1.2
