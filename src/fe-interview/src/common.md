@@ -452,23 +452,39 @@ if(g){
 ### setTimeout原理
 [参考](../../js&browser/基本常识.md#setTimeout)
 
+---
+
 ### onload/DOMContentLoaded
 [DOMContentLoaded](https://juejin.im/post/5b2a508ae51d4558de5bd5d1)
 
 #### DOMContentLoaded
 - HTML5事件
 - 初始的HTML文件被完整读取时触发
+
+**几种说法**
+
+说法一：js高程
+- 形成完整dom树后触发
+- 不理会js、css、图片等资源文件
+
+说法二：普遍观点
 - 等待js的下载 + 加载
-- 不理会css、图片、iframe的完成加载
-- chrome76测下来css加载会影响DOMContentLoaded
+- 不理会css、图片、iframe等的加载
+
+说法三：较权威的观点
+[css加载](https://segmentfault.com/a/1190000018130499)
+- 只存在css 或 js加载在css之前，DOMContentLoaded不需要等css加载完才触发
+- 存在css和js 或 js加载在css后面，DOMContentLoaded需要等css和js都加载完才触发
+
+我的实验：chrome76
+- 无论js是否存在，或js和css位置关系如何，都会影响DOMContentLoaded触发
 
 #### onload
 - DOM事件
 - 所有内容加载完，包括js中的js、css、图片、iframe
 - 不包括请求
 
-### https原理，如何判断私钥合法
-TODO
+---
 
 ### 事件触发过程
 - attachEvent(event,listener)
@@ -476,6 +492,8 @@ TODO
 
 捕获 - 目标状态 - 冒泡
 onDoingthing冒泡阶段触发
+
+---
 
 ### a==1&&a==2&&a==3
 
@@ -1723,7 +1741,7 @@ function handle(req, res) {
 ### css影响页面加载
 [参考](../../js&browser/页面过程与浏览器缓存.md#知识点)
 
-
+---
 
 
 
