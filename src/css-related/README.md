@@ -403,13 +403,19 @@ document.getElementById('box').addEventListener('animationiteration', function()
 flex-shrink: 0
 
 ### 垂直居中
+
+- PC端有兼容性要求，宽高固定，推荐absolute + 负margin
+- PC端有兼容要求，宽高不固定，推荐css-table
+- PC端无兼容性要求，推荐flex
+- 移动端推荐使用flex
+
 ```html
 <div class="margin" style="width: 500px;height: 500px;background-color: aqua">
     <div class="center" style="width: 200px;height: 200px;background-color: antiquewhite"></div>
 </div>
 ```
 
-- 百分比 + transform
+- absolute + transform
   ```css
   .center{
       position: absolute;
@@ -418,12 +424,22 @@ flex-shrink: 0
       transform: translate(-50%, -50%);
     }
   ```
+- grid
+  ```css
+  .margin {
+      display: grid;
+  }
+  .center {
+      align-self: center;
+      justify-self: center;
+  }
+  ```
 - flex
   ```css
   .margin {
       display: flex;
       justify-content: center;
-      align-items: Center;
+      align-items: center;
   }
   ```
 - flex + margin
@@ -436,7 +452,7 @@ flex-shrink: 0
   margin: auto;
 }
 ```
-- 绝对定位
+- absolute + margin auto
  ```css
  .margin{
     position: relative;
@@ -449,6 +465,41 @@ flex-shrink: 0
     top: 0; left: 0; bottom: 0; right: 0;
   }
  ```
+- absolute + calc
+  ```css
+  .margin {
+      position: relative;
+  }
+  .center {
+      position: absolute;;
+      top: calc(50% - 50px);
+      left: calc(50% - 50px);
+  }
+  ```
+- writing-mode
+  * 文字显示方向
+  ```css
+  .margin {
+    writing-mode: vertical-lr;
+  }
+  ```
+- table
+  ```css
+  .margin {
+    display: table-cell;
+      text-align: center;
+      vertical-align: middle;
+  }
+  .center {
+      display: inline-block;
+  }
+  ```
+
+
+
+
+
+
 
 ---
 

@@ -38,6 +38,7 @@
 * [`算法题`](#算法题)
 * [`如何实现一个new`](#如何实现一个new)
 * [`http2多路复用`](#http2多路复用)
+* [`描述网页从输入url到渲染的过程`](#描述网页从输入url到渲染的过程)
 * [`TCP三次握手&四次挥手的理解`](#TCP三次握手&四次挥手的理解)
 * [`react的setState变更的同/异步`](#react的setState变更的同/异步)
 * [`npm模块安装机制`](#npm模块安装机制)
@@ -81,6 +82,8 @@
 * [`逆序数字（递归实现）`](#逆序数字（递归实现）)
 * [`正则引擎`](#正则引擎)
 * [`node异步错误捕获`](#node异步错误捕获)
+* [`css影响页面加载`](#css影响页面加载)
+* [`BOMvsDOMvsHTML5`](#BOMvsDOMvsHTML5)
 
 
 </details>
@@ -218,15 +221,24 @@ const count = arr.reduce((t, c) => {
 ### flex属性
 **flex-basis**
 
-- 设置或检索弹性盒伸缩基准值
+- 设置或检索弹性盒伸缩基准值，不设置，默认使用元素的width，
+  如果width是auto，宽度由文本内容决定
 - 用法
   * flex-basis: 120px;
   * flex-basis: auto;
   * flex-basis: 10%;
 
+**flex-grow**
+
+- 设置弹性盒对象扩展比
+- 如果子元素的宽度和小于父容器，则剩余空间根据flex-grow瓜分
+- 默认0，即剩余空间宽度瓜分到0，到当前子元素
+- 
+
+
 **flex-shrink**
 
-- 元素收缩比
+- 设置弹性盒对象收缩比
 - 用法
   * flex-shrink: 0; // 不收缩
   * flex-shrink: 1; // 默认值
@@ -876,6 +888,11 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
 
 ---
 
+### 描述网页从输入url到渲染的过程
+[过程](../../js&browser/页面过程与浏览器缓存.md#过程简述)
+
+---
+
 ### TCP三次握手&四次挥手的理解
 [网络编程基础](https://crystalwindz.com/unp_note_1/#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E6%9C%AC%E4%B9%A6%E7%AE%80%E4%BB%8B)
 
@@ -886,7 +903,7 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
 
 #### 四次挥手
 - 客户端发送要求断开的请求
-- 服务端返回正在断开的请求
+- 服务端返回正在断开的请求【服务端可能并不会立即关闭SOCKET，所以先返回ACK】
 - 服务端返回已经关闭的请求
 - 客户端发送正式断开的请求
 
@@ -1267,13 +1284,19 @@ sleep(output,1000);
 
 https = http + tls安全层（比http多了2次tls的RTT）
 
+#### 与http的区别
+- https需要证书
+- http是明文传输，https会用tls加密传输
+- http80端口，https443端口
+
 #### 加密方式
 
 **非对称加密**
 
-- A发起请求B，带自己公钥
-- B将信息用公钥加密，返给A
-- A用自己私钥解密B返的信息
+- 服务端A，将公钥发送给客户端B
+- 客户端B产生一个秘钥，用服务端A的公钥加密，返给服务端A
+- 服务端A用自己私钥解密B返的信息，获取客户端B的秘钥
+- 以后A和B的数据通信都通过这个秘钥加密
 
 #### 风险
 
@@ -1742,6 +1765,31 @@ function handle(req, res) {
 [参考](../../js&browser/页面过程与浏览器缓存.md#知识点)
 
 ---
+
+### BOMvsDOMvsHTML5
+
+#### BOM
+浏览器对象模型
+
+- window
+- location
+- navigator
+
+### DOM
+文档对象模型
+
+- nodeType
+- querySelectorAll
+- treewalker
+- onload
+
+### HTML5
+各浏览器自定义的模型
+
+- DOMContentLoaded
+
+---
+
 
 
 
