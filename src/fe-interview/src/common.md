@@ -84,6 +84,7 @@
 * [`node异步错误捕获`](#node异步错误捕获)
 * [`css影响页面加载`](#css影响页面加载)
 * [`BOMvsDOMvsHTML5`](#BOMvsDOMvsHTML5)
+* [`white-space/word-break/word-wrap`](#white-space/word-break/word-wrap)
 
 
 </details>
@@ -1775,7 +1776,7 @@ function handle(req, res) {
 - location
 - navigator
 
-### DOM
+#### DOM
 文档对象模型
 
 - nodeType
@@ -1783,12 +1784,40 @@ function handle(req, res) {
 - treewalker
 - onload
 
-### HTML5
+#### HTML5
 各浏览器自定义的模型
 
 - DOMContentLoaded
 
 ---
+
+### white-space/word-break/word-wrap
+[参考](https://juejin.im/post/5b8905456fb9a01a105966b4)
+
+#### white-space
+控制空白字符的显示
+
+- normal: 空格和换行符无效，自动换行
+- nowrap: 永不换行
+- pre: 即preserve，空格和换行符保留，无自动换行
+- pre-wrap: 即preserve + wrap，空格和换行符保留，自动换行
+- pre-line: 即preserve new line +wrap，空格无效，换行符保留，自动换行
+
+#### word-break
+控制单词如何被拆分换行
+
+- keep-all: 一律不换行，除了空格
+- break-all: 一律换行
+
+#### word-wrap
+控制单词如何被拆分换行
+
+- break-word: 当一个单词一行显示不下时，才会换行
+
+---
+
+
+
 
 
 
