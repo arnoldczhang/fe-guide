@@ -3,6 +3,7 @@
 ## 参考
 - [基础20题](https://mp.weixin.qq.com/s/ViucwxvZg-g_YsHxN1PiAA)
 - [前端100问](https://juejin.im/post/5d23e750f265da1b855c7bbe?utm_source=gold_browser_extension#heading-2)
+- [前端必学](https://juejin.im/post/5d387f696fb9a07eeb13ea60?utm_source=gold_browser_extension)
 
 ## 目录
 <details>
@@ -85,6 +86,8 @@
 * [`css影响页面加载`](#css影响页面加载)
 * [`BOMvsDOMvsHTML5`](#BOMvsDOMvsHTML5)
 * [`white-space/word-break/word-wrap`](#white-space/word-break/word-wrap)
+* [`z-index`](#z-index)
+* [`CSS性能优化`](#CSS性能优化)
 
 
 </details>
@@ -1820,5 +1823,57 @@ function handle(req, res) {
 [参考](../../css-related/README.md#z-index)
 
 ---
+
+### CSS性能优化
+- 内联首屏关键css
+  * 【<14.6kb，[tcp连接](https://tylercipriani.com/blog/2016/09/25/the-14kb-in-the-tcp-initial-window/)单次往返最大数据量】
+- 文件压缩
+- 去除无用css
+- 有效使用选择器
+  * css选择器从右向左解析
+  * 现代浏览器对不同选择器的解析已做了优化，差别很小
+  * 避免嵌套过深
+  * 避免标签+id混用
+  * 避免通配符
+  * 维持可读性
+- 异步加载css
+  * js动态建link
+  * link的media设为不匹配的媒体类型，加载完后改回正确类型
+    ```html
+    <link rel="stylesheet" href="mystyles.css" media="noexist" onload="this.media='all'">
+    ```
+  * link的ref设为alternate可选样式表
+    ```html
+    <link rel="alternate stylesheet" href="mystyles.css" onload="this.rel='stylesheet'">
+    ```
+  * link的ref设为preload，as设为style
+    + html标准规范，目前尚有兼容性问题
+    + 相比上两种方式，能更早加载css
+    ```html
+    <link rel="preload" href="mystyles.css" as="style" onload="this.rel='stylesheet'">
+    ```
+- 避免昂贵属性
+  * box-shadow
+  * border-radius
+  * filter
+  * opacity
+  * :nth-child
+- 优化重绘重排
+- 避免@import
+  * 破坏了浏览器并行下载
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

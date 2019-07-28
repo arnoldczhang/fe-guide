@@ -12,6 +12,8 @@
 - [前端换肤参考](https://blog.souche.com/untitled-17/)
 - [clippy属性在线调试](https://bennettfeely.com/clippy/)
 - [提高幸福感的 9 个 CSS 技巧](https://juejin.im/post/5cb45a06f265da03474df54e)
+- [Web开发者需要知道的CSS Tricks](https://juejin.im/post/5aab4f985188255582521c57)
+- [CSS 常用技巧](https://juejin.im/post/5b1f41246fb9a01e725131fb)
 
 ## 目录
 <details>
