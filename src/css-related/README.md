@@ -32,6 +32,29 @@
 ### 伪元素/伪类
 - https://segmentfault.com/a/1190000000484493
 
+**伪类**
+
+:Pseudo-classes
+行为能力的增强
+
+- :hover
+- :active
+- :visited
+- :focus
+- :link
+- :first-child
+
+
+**伪元素**
+
+::Pseudo-elements
+元素内容的丰富
+
+- ::before
+- ::after
+- ::first-letter
+- ::first-line
+
 ### img裁剪
 object-fit
 - cover
@@ -116,6 +139,8 @@ document.link.disabled = false;
 }
 ```
 
+---
+
 ### z-index
 [参考](https://juejin.im/post/5ba4efe36fb9a05cf52ac192?utm_source=gold_browser_extension)
 [参考2](https://juejin.im/post/5b876f86518825431079ddd6)
@@ -123,11 +148,13 @@ document.link.disabled = false;
 #### 层叠上下文
 根层叠上下文 - <html></html>
 
+- 元素产生层叠上下文后，各元素内子元素的层叠关系由父元素决定，
+  如果父元素z-index一致，由html先后顺序决定
 - 层叠上下文可以互相包含
 - 与兄弟元素互相独立（处理层叠时）
 - 自包含：当元素内容被层叠后，整个元素在父元素内都会被层叠
 
-**新建层叠上下文**
+**如何产生层叠上下文**
 
 - position值为absolute|relative，且z-index值不为 auto
 - position 值为 fixed|sticky
@@ -149,15 +176,17 @@ document.link.disabled = false;
 - 定位元素
   * z-index
 - 非定位元素
-  * 层叠顺序
-  * HTML中顺序
   * 父级以上元素层叠等级
+  * HTML中顺序
+  * 层叠顺序
 
 #### z-index
 正整数、负整数、0、auto，默认auto
 
 #### 层叠顺序
 ![层叠顺序](./层叠顺序.png)
+
+---
 
 ### :focus-visible
 键盘访问（比如按tab）时，元素边缘会出现选中的蓝框
