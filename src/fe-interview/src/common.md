@@ -88,6 +88,8 @@
 * [`white-space/word-break/word-wrap`](#white-space/word-break/word-wrap)
 * [`z-index`](#z-index)
 * [`CSS性能优化`](#CSS性能优化)
+* [`jsonp`](#jsonp)
+* [`浏览器页面资源加载过程与优化`](#浏览器页面资源加载过程与优化)
 
 
 </details>
@@ -1551,7 +1553,7 @@ https://jsperf.com
 
 ### JSpring的vnode解析
 - html -> vobj
-  ```js
+  ```json
   {
     tagName : tagName,
 		staticAttrs : staticAttrs,
@@ -1863,18 +1865,63 @@ function handle(req, res) {
 - 避免@import
   * 破坏了浏览器并行下载
 
+---
 
+### jsonp
+[沙箱技术](https://github.com/aui/jsonp-sandbox/issues/13)
 
+---
 
+### 浏览器页面资源加载过程与优化
 
+#### 加载过程
+- 资源分类
+- 安全策略检查
+- 计算资源优先级
+- 按优先级加载
 
+**安全策略检查**
 
+[安全策略检查](../../js&browser/网络安全.md#CSP)
 
+**计算资源优先级**
 
+![资源优先级](./资源优先级.png)
+- 网络请求
+- 浏览器内核
+  * html,css,font
+  * <link rel="preload" />,script,xhr
+  * image,audio,语音
+  * prefetch
+- 用户控制台
 
+**preload**
 
+【提升资源请求优先级】告知浏览器哪些资源将被使用，可以预加载
 
+**prefetch**
 
+【降低请求加载优先级】在浏览器空闲时才预加载
+
+- 资源预加载：<link rel="prefetch" href="test.css">
+- DNS预解析：<link rel="dns-prefetch" href="//haitao.nos.netease.com">
+- http预连接：<link rel="prefetch" href="//www.kaola.com">
+- 页面预渲染：<link rel="prerender" href="//m.kaola.com">
+
+#### localStorage的使用
+- 微信
+  * js都放在localStorage里
+  * 页面请求会带一个资源map，和localStorage对比
+- 天猫
+  * 缓存关键xhr
+- 京东
+  * 非关键（首屏）资源放在localStorage
+  * 页面滚动到可视区之后，再拉取localStorage，动态append到页面
+
+---
+
+### 懒加载
+intersectionObserver
 
 
 
