@@ -44,6 +44,11 @@
 }
 ```
 
+### hash
+- hash：跟整个项目的构建相关，构建生成的文件hash值都是一样的，只要项目里有文件更改，整个项目构建的hash值都会更改。
+- chunkhash：根据不同的入口文件(Entry)进行依赖文件解析、构建对应的chunk，生成对应的hash值。
+- contenthash：由文件内容产生的hash值，内容不同产生的contenthash值也不一样。
+
 ---
 
 ## webpack-3.8.1解析

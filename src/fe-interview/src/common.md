@@ -476,6 +476,7 @@ if(g){
 #### DOMContentLoaded
 - HTML5事件
 - 初始的HTML文件被完整读取时触发
+- 异步加载的css，不会影响DOMContentLoaded
 
 **几种说法**
 
