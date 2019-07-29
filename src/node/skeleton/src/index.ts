@@ -19,6 +19,7 @@ const {
   getPageWxml,
   removeUnused,
   transMap2Style,
+  filterUsableSelectors,
 } = require('./utils');
 
 const run = (options: any = {}): void => {
@@ -129,5 +130,9 @@ const run = (options: any = {}): void => {
 };
 
 run.defaultConfigName = DEFAULT_CONFIG_FILE;
+
+run.test = {
+  filterUsableSelectors,
+};
 
 module.exports = run;
