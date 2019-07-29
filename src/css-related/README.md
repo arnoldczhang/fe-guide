@@ -223,25 +223,6 @@ Chrome浏览器67+支持
 </style>
 ```
 
-### 垂直水平居中
-```css
-<div id="grid">
-  <div id="box">aa</div>
-</div>
-<style>
-#grid {
-  display: flex;
-  height: 500px;
-  width: 500px;
-}
-#box {
-  margin: auto;
-  height: 100px;
-  width: 100px;
-}
-</style>
-```
-
 ### 蒙层高亮
 ```css
 /*解法一：outline*/
@@ -519,19 +500,24 @@ flex-shrink: 0
   ```css
   .margin {
     display: table-cell;
-      text-align: center;
-      vertical-align: middle;
+    text-align: center;
+    vertical-align: middle;
   }
   .center {
-      display: inline-block;
+    display: inline-block;
   }
   ```
-
-
-
-
-
-
+- vertical-align + font-size 0
+  ```css
+  #parent{
+    height: 150px;
+    line-height: 150px;
+    font-size: 0;
+  }
+  img#son{
+    vertical-align: middle;
+  }
+  ```
 
 ---
 

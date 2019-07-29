@@ -60,6 +60,8 @@
 * [`https`](#https)
 * [`埋点请求用1x1图片`](#埋点请求用1x1图片)
 * [`垂直居中`](#垂直居中)
+* [`水平居中`](#水平居中)
+* [`水平垂直居中`](#水平垂直居中)
 * [`排序`](#排序)
 * [`class/function`](#class/function)
 * [`display/opacity/visibility`](#display/opacity/visibility)
@@ -323,6 +325,7 @@ const count = arr.reduce((t, c) => {
 - top和bottom 、left和right: 相对于直接非static父元素的高度/宽度
 - padding/margin: 相对于直接父元素的width，与height无关
 - border-radius: 相对于自身宽度
+- vertical-align: 百分比相对于自身line-height计算
 
 #### vh/vw
 缺点：
@@ -1350,11 +1353,6 @@ https = http + tls安全层（比http多了2次tls的RTT）
 
 ---
 
-### 垂直居中
-[参考](../../css-related/README.md#垂直居中)
-
----
-
 ### 排序
 ![排序算法复杂度](./排序算法复杂度.png)
 
@@ -1897,7 +1895,7 @@ function handle(req, res) {
 
 **preload**
 
-【提升资源请求优先级】告知浏览器哪些资源将被使用，可以预加载
+【提前加载资源，优先级不提升】告知浏览器哪些资源将被使用，可以预加载
 
 **prefetch**
 
@@ -1923,5 +1921,68 @@ function handle(req, res) {
 ### 懒加载
 intersectionObserver
 
+---
+
+### 垂直居中
+[参考](../../css-related/README.md#垂直居中)
+
+- 优先line-height
+- [vertical-align](https://www.zhangxinxu.com/wordpress/2015/08/css-deep-understand-vertical-align-and-line-height/)
+- absolute
+- flex
+
+---
+
+### 水平居中
+[各种布局](https://juejin.im/post/5aa252ac518825558001d5de#heading-8)
+- 纯文本
+  ```css
+  .center {
+    text-align: center;
+    display: inline; // 或inline-block
+  }
+  ```
+- 非移动端
+  ```css
+  .center {
+    margin: 0 auto;
+  }
+  ```
+- 移动端-flex
+
+---
+
+### 水平垂直居中
+- button做父元素（IE下，点击会有外边框）
+  ```css
+  button#parent{  /*改掉button默认样式就好了,不需要居中处理*/
+    height: 150px;
+    width: 200px;
+    outline: none;  
+    border: none;
+  }
+  ```
+- table-cell
+  ```css
+  #parent{
+    height: 150px;
+    width: 200px;
+    display: table-cell;
+    vertical-align: middle;
+    /*text-align: center;*/   /*如果是行内元素就添加这个*/
+  }
+  #son{
+      /*margin: 0 auto;*/    /*如果是块级元素就添加这个*/
+      width: 100px;
+      height: 50px;
+  }
+  ```
+- absolute + top/bottom/left/right:0 + margin: auto
+- flex
+
+---
+
+### 两列布局
+- float:left + margin-left
 
 
