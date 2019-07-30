@@ -355,13 +355,27 @@ flex: 1
 缺点：font-size的设置必须在样式前
 
 - 默认1rem = 16px
-- rem只是制定等比缩放
 - 配合媒体查询才能实现响应式
+- 当html的字体大小恒等于屏幕宽度 / 100，则1rem = 1vw
+- 在dom ready、resize、屏幕rotate时重新计算html的font-size
+
+**举例**
+
+```js
+// 1. 计算font-size
+document.documentElement.style.fontSize = document.documentElement.clientWidth / 100 + 'px';
+
+// 2. 计算元素宽度
+// 比如设计稿尺寸是640px，元素宽度100px
+// 公式：元素宽度 / 640 * 100
+// 元素宽度 = 100 / 640 * 100 = 15.625rem
+```
 
 **步骤**
 
 1. 给根元素设置字体大小，并在body元素校正
 ```css
+<!-- 1rem = 100px -->
 html{font-size:100px;}
 <!-- 1rem = 10px -->
 html{font-size: 62.5%;}
@@ -475,6 +489,8 @@ if(g){
   }
 }(window,window.lib||(window.lib={}));
 ```
+
+---
 
 ### setTimeout原理
 [参考](../../js&browser/基本常识.md#setTimeout)
