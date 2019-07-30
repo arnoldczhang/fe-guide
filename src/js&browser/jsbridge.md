@@ -10,16 +10,39 @@
 - 拦截url schema
 
 #### 注入api
-```js
+```java
 // Android
-window.nativeBridge.postMessage(message);
-// iOS 的 WKWebView
-window.webkit.messageHandlers.nativeBridge.postMessage(message);
+class JSInterface {
+    @JavascriptInterface //注意这个代码一定要加上
+    public String getUserData() {
+        return "UserData";
+    }
+}
+webView.addJavascriptInterface(new JSInterface(), "AndroidJS");
+```
+
+在js里可以直接调用方法
+```js
+AndroidJS.getUserData();
 ```
 
 #### 拦截url schema
 - iframe.src发送url schema请求（比如baidu://bd/url?url=bdfe.tech）
-- native拦截schema请求，根据所带参数执行相应操作
+- location.href
+
+```js
+// iframe方式
+var url = 'jsbridge://doAction?title=分享标题&desc=分享描述&link=http%3A%2F%2Fwww.baidu.com';
+var iframe = document.createElement('iframe');
+iframe.style.width = '1px';
+iframe.style.height = '1px';
+iframe.style.display = 'none';
+iframe.src = url;
+document.body.appendChild(iframe);
+setTimeout(function() {
+    iframe.remove();
+}, 100);
+```
 
 **优点**
 
@@ -33,7 +56,7 @@ window.webkit.messageHandlers.nativeBridge.postMessage(message);
 
 **为什么不用location.href**
 
-location.href连续调用native，会造成部分调用丢失
+location.href连续调用native，会造成部分调用丢失，只有最后一个生效
 
 ### native调用js
 - ios
@@ -112,6 +135,47 @@ location.href连续调用native，会造成部分调用丢失
 
 ---
 
-## 引用
-- native端注入
-- js端引用
+## 具体流程
+
+### native处理
+- 在UIWebview里发起任意网络请求，比如jsbridge://methodName?param1=value1&param2=value2
+- UIWebview通过delegate函数获取网络请求的通知
+- delegate内对约定的网络请求进行捕获处理（而非直接跳转）
+
+```java
+func webView(
+    webView: UIWebView,
+    shouldStartLoadWithRequest request: NSURLRequest,
+    navigationType: UIWebViewNavigationType
+) -> Bool {
+    let url = request.URL
+    let scheme = url?.scheme
+    let method = url?.host
+    let query = url?.query
+    
+    if url != nil && scheme == "jsbridge" {
+        print("scheme == \(scheme)")
+        print("method == \(method)")
+        print("query == \(query)")
+
+        switch method! {
+            case "getData":
+                self.getData()
+            case "putData":
+                self.putData()
+            default:
+                print("default")
+        }
+        return false
+    } else {
+        return true
+    }
+}
+```
+
+### 对动作的处理
+### 对callback的处理
+
+
+
+

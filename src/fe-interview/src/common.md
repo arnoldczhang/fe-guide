@@ -350,6 +350,8 @@ flex: 1
 - 插件：postcss-px-to-viewport
 
 #### rem
+本质是等比缩放
+
 缺点：font-size的设置必须在样式前
 
 - 默认1rem = 16px
@@ -1973,6 +1975,10 @@ intersectionObserver
 
 ---
 
+### 小程序的意义
 
+---
+
+### jsbridge
 
 
