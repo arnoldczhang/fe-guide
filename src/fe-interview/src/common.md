@@ -59,9 +59,7 @@
 * [`实现sleep`](#实现sleep)
 * [`https`](#https)
 * [`埋点请求用1x1图片`](#埋点请求用1x1图片)
-* [`垂直居中`](#垂直居中)
-* [`水平居中`](#水平居中)
-* [`水平垂直居中`](#水平垂直居中)
+* [`css布局`](#css布局)
 * [`排序`](#排序)
 * [`class/function`](#class/function)
 * [`display/opacity/visibility`](#display/opacity/visibility)
@@ -91,6 +89,7 @@
 * [`z-index`](#z-index)
 * [`CSS性能优化`](#CSS性能优化)
 * [`jsonp`](#jsonp)
+* [`文档流`](#文档流)
 * [`浏览器页面资源加载过程与优化`](#浏览器页面资源加载过程与优化)
 
 
@@ -243,6 +242,11 @@ const count = arr.reduce((t, c) => {
 - 默认0，即剩余空间宽度瓜分到0，到当前子元素
 - 
 
+**flex**
+
+flex: 1
+
+- 均分父元素剩余宽度达到自适应
 
 **flex-shrink**
 
@@ -1923,66 +1927,52 @@ intersectionObserver
 
 ---
 
-### 垂直居中
-[参考](../../css-related/README.md#垂直居中)
-
-- 优先line-height
-- [vertical-align](https://www.zhangxinxu.com/wordpress/2015/08/css-deep-understand-vertical-align-and-line-height/)
-- absolute
-- flex
+### css布局
+[css布局](../../css-related/README.md#布局)
 
 ---
 
-### 水平居中
-[各种布局](https://juejin.im/post/5aa252ac518825558001d5de#heading-8)
-- 纯文本
-  ```css
-  .center {
-    text-align: center;
-    display: inline; // 或inline-block
-  }
-  ```
-- 非移动端
-  ```css
-  .center {
-    margin: 0 auto;
-  }
-  ```
-- 移动端-flex
+### 文档流
+将窗体自上而下分成一行一行，并在每行中按从左至右依次排放元素，
+称为文档流
+
+**脱离文档流**
+
+- float
+- position: absolute
+- position: fixed
 
 ---
 
-### 水平垂直居中
-- button做父元素（IE下，点击会有外边框）
+### 清除浮动
+- 新增子标签 + clear:both【不推荐，语义化差】
+- 父标签 + overflow:hidden【不推荐，内容多时无法显示溢出内容】
+- 父标签 + 伪元素clear:both【推荐】
   ```css
-  button#parent{  /*改掉button默认样式就好了,不需要居中处理*/
-    height: 150px;
-    width: 200px;
-    outline: none;  
-    border: none;
+  .clearfix::after {
+    content: "";
+    display: block;
+    height: 0;
+    clear:both;
+    visibility: hidden;
   }
   ```
-- table-cell
+- 父标签 + 双伪元素【推荐】
   ```css
-  #parent{
-    height: 150px;
-    width: 200px;
-    display: table-cell;
-    vertical-align: middle;
-    /*text-align: center;*/   /*如果是行内元素就添加这个*/
+  .clearfix:after,.clearfix:before{
+    content: "";
+    display: table;
   }
-  #son{
-      /*margin: 0 auto;*/    /*如果是块级元素就添加这个*/
-      width: 100px;
-      height: 50px;
+  .clearfix:after{
+    clear: both;
+  }
+  .clearfix{
+    *zoom: 1;
   }
   ```
-- absolute + top/bottom/left/right:0 + margin: auto
-- flex
 
 ---
 
-### 两列布局
-- float:left + margin-left
+
 
 

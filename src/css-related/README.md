@@ -21,6 +21,7 @@
 
 * [`常见用法`](#常见用法)
 * [`属性`](#属性)
+* [`布局`](#布局)
 * [`须知`](#须知)
 * [`答疑`](#答疑)
 
@@ -604,6 +605,189 @@ border: 0 - 边框宽度为0，会渲染，占内存
 - static
   * 默认，没有定位，元素处于正常流中，类似`left:20px`无效
 
+---
+
+## 布局
+
+### 垂直居中
+[参考](../../css-related/README.md#垂直居中)
+
+- 优先line-height
+- [vertical-align](https://www.zhangxinxu.com/wordpress/2015/08/css-deep-understand-vertical-align-and-line-height/)
+- absolute
+- flex
+
+### 水平居中
+[各种布局](https://juejin.im/post/5aa252ac518825558001d5de#heading-8)
+- 纯文本
+  ```css
+  .center {
+    text-align: center;
+    display: inline; // 或inline-block
+  }
+  ```
+- 非移动端
+  ```css
+  .center {
+    margin: 0 auto;
+  }
+  ```
+- 移动端-flex
+
+### 水平垂直居中
+- button做父元素（IE下，点击会有外边框）
+  ```css
+  button#parent{  /*改掉button默认样式就好了,不需要居中处理*/
+    height: 150px;
+    width: 200px;
+    outline: none;  
+    border: none;
+  }
+  ```
+- table-cell
+  ```css
+  #parent{
+    height: 150px;
+    width: 200px;
+    display: table-cell;
+    vertical-align: middle;
+    /*text-align: center;*/   /*如果是行内元素就添加这个*/
+  }
+  #son{
+      /*margin: 0 auto;*/    /*如果是块级元素就添加这个*/
+      width: 100px;
+      height: 50px;
+  }
+  ```
+- absolute + top/bottom/left/right:0 + margin: auto
+- flex
+
+### 两列布局
+- float:left + margin-left
+- float:left + overflow:hidden
+- table(margin失效)
+- flex
+- grid
+
+### 三列布局
+- 中间flex: 1 + 左右定宽
+- 双飞翼
+- 圣杯
+
+#### 双飞翼
+左列和右列宽度恒定，中间列的宽度根据浏览器窗口的大小自适应
+
+**中间内容放最前面**
+
+```html
+<div class="container">
+  <!-- 放最前面 -->
+  <div class="column" id="center_panel">
+    <div class="box"></div>
+  </div>
+  <div class="column" id="right_panel"></div>
+  <div class="column" id="left_panel"></div>
+</div>
+```
+
+**三栏都脱离文档流**
+
+```css
+.column {
+  float:left;
+}
+```
+
+**中间栏宽度自适应**
+
+```css
+#center_panel {
+  width: 100%;
+}
+```
+
+**左边栏通过margin-left置左**
+
+```css
+#left_panel {
+  width: 100px;
+  margin-left: -100%; // margin相对父元素宽度
+}
+```
+
+**右边栏通过margin-left置右**
+
+```css
+#right_panel {
+  width: 100px;
+  margin-left: -100px; // 本身会换行，-自身宽度会移回上一行
+}
+```
+
+**中间栏主体内容设margin**
+
+```css
+.box {
+  margin: 0 100px 0 100px;
+}
+```
+
+**容器清除浮动**
+
+```css
+.container::after {
+  content: '';
+  display: block;
+  height: 0;
+  clear:both;
+  visibility: hidden;  
+}
+```
+
+#### 圣杯
+和双飞翼类似
+
+**文档结构不变**
+
+**容器加padding**
+
+```css
+.container {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 100px 0 100px; // 左右padding是左右边栏宽度
+}
+```
+
+**三栏加position:relative**
+
+```css
+.column {
+  float:left;
+  height: 300px;
+  position: relative; // left相对于自身定位，所以要加relative
+}
+```
+
+**左边栏置左**
+
+```css
+#right_panel {
+  width: 100px;
+  margin-left: -100%;
+  left: -100px; // 加了relative所以有效
+}
+```
+
+**右边栏置右**
+
+```css
+#left_panel {
+  width: 100px;
+  margin-left: -100px;
+  right: -100px;
+}
+```
 
 ---
 
