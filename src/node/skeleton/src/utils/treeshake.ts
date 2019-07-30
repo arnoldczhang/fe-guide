@@ -195,17 +195,20 @@ export const getInterSectSelectorChild = (
     return result;
   }
 
-  if (temp.length > 1) {
-    for (let i = 0, l = temp.length; i < l; i += 1) {
-      const children = temp[i];
-      // find the intersection of all selectors` children
-      const child = children[0];
-      if (temp.slice(1).every((other: IAst[][]): boolean => other.includes(child))) {
-        resultSet.add(child as IAst[]);
+  const tmpLen = temp.length;
+  if (tmpLen) {
+    if (tmpLen > 1) {
+      for (let i = 0, l = tmpLen; i < l; i += 1) {
+        const children = temp[i];
+        // find the intersection of all selectors` children
+        const child = children[0];
+        if (temp.slice(1).every((other: IAst[][]): boolean => other.includes(child))) {
+          resultSet.add(child as IAst[]);
+        }
       }
+    } else {
+      return temp[0];
     }
-  } else {
-    return temp[0];
   }
 
   result = [...resultSet];

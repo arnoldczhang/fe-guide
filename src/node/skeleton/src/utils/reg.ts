@@ -97,7 +97,7 @@ export const splitWxAttrs = (input: string): string[] => (
 // #aa.bb:focus
 // page#aa.bb:focus
 export const matchIdStyle = (key: string): any[] | null => (
-  key.match(/(?:^([\.\w]+)?(#[^#\.\:]+)(\.\w+)?(\:[a-z]+)?$)/)
+  key.match(/(?:^([\.\-\w]+)*(#[^#\.\:]+)([\.\-\w]+)*(\:\:?[a-z]+)?$)/)
 );
 
 // ============== //

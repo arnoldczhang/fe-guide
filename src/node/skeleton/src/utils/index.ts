@@ -37,6 +37,7 @@ import {
   getTemplateName,
   matchIdStyle,
   removeComment,
+  replacePseudo,
   splitWith,
   withoutPageSelector,
 } from './reg';
@@ -328,9 +329,60 @@ export const checkImportWxssUsage = (
 };
 
 /**
+ * filterUsableSelectors
+ * @param selectors
+ * @param options
+ */
+export const filterUsableSelectors = (
+  selectors: string[],
+  options: IPath,
+): [boolean, string[]] => {
+  let filtered = false;
+  const { wxmlKlassInfo = {} } = options;
+  const newSelectors: string[] = [];
+  // selectors: [ '.loading-data', '.no-data' ]
+  selectors.forEach((selector: string): void => {
+    // .a .b #c
+    const tmpSelectors: string[] = splitWith(selector);
+    const tmpLen = tmpSelectors.length;
+    tmpSelectors.forEach((tmp: string, idx: number): void => {
+      const last = tmpLen === idx + 1;
+      // no id/tag/pseudo style
+      if (withoutPageSelector(tmp)) {
+        if (last) {
+          newSelectors.push(tmpSelectors.join(' '));
+        }
+        return;
+      } else {
+        filtered = true;
+        tmp = replacePseudo(tmp);
+        // last selector contain pseudo style
+        if (last && !tmp) {
+          return;
+        }
+        const idMatchResult = matchIdStyle(tmp);
+        // if matching id style, rewrite style if is used in wxml
+        if (idMatchResult) {
+          const id = idMatchResult[2];
+          if (wxmlKlassInfo[id]) {
+            tmpSelectors[idx] = tmp.replace(id, wxmlKlassInfo[id]);
+          }
+
+          if (last) {
+            newSelectors.push(tmpSelectors.join(' '));
+          }
+        }
+      }
+    });
+  });
+  return [filtered, newSelectors];
+};
+
+/**
  * insertPageWxss
  * @param src
  * @param dest
+ * @param options
  */
 export const insertPageWxss = (
   src: string,
@@ -338,7 +390,7 @@ export const insertPageWxss = (
   options: IPath,
 ): void => {
   ensure(dest);
-  const { wxmlKlassInfo, treeshake } = options;
+  const { treeshake } = options;
   const content: string = String(exists(src) ? read(src) : '');
   const ast: css.Stylesheet = css.parse(content);
   let { rules } = ast.stylesheet;
@@ -347,9 +399,8 @@ export const insertPageWxss = (
   rules.forEach((
     rule: css.Rule & css.Import,
     index: number,
-  ) => {
+  ): void => {
     const { type, selectors } = rule;
-
     // { type: 'import', import: '"../../components/xx/xx.wxss"'}
     if (is(type, IMPORT_TAG)) {
       const srcPath: string = join(getDir(src), rule.import.slice(1, -1));
@@ -358,28 +409,8 @@ export const insertPageWxss = (
       checkImportWxssUsage(srcPath);
       // { type: 'rule', selectors: [ '.loading-data', '.no-data' ]}
     } else if (is(type, RULE_TAG)) {
-      const newSelectors: string[] = [];
-      selectors.forEach((selector: string) => {
-        const tmpSelectors: string[] = splitWith(selector);
-        const last = tmpSelectors.length - 1;
-        const lastSelector: string = tmpSelectors[last];
-
-        if (withoutPageSelector(lastSelector)) {
-          newSelectors.push(selector);
-        } else {
-          // if matching id style, rewrite style if is used in wxml
-          const matchResult = matchIdStyle(lastSelector);
-          if (matchResult) {
-            const id = matchResult[2];
-            if (wxmlKlassInfo[id]) {
-              tmpSelectors[last] = lastSelector.replace(id, wxmlKlassInfo[id]);
-              return newSelectors.push(tmpSelectors.join(' '));
-            }
-          }
-          hasPageStyle = true;
-        }
-      });
-
+      const [filtered, newSelectors] = filterUsableSelectors(selectors, options);
+      hasPageStyle = filtered || hasPageStyle;
       if (!newSelectors.length) {
         rules[index] = null;
       }
@@ -387,7 +418,7 @@ export const insertPageWxss = (
     }
   });
   rules = rules.filter(identity);
-  // wxss treeshake
+  // wxss treeshake on/off
   ast.stylesheet.rules = treeshake ? styleTreeShake(rules, options) : rules;
 
   if (hasPageStyle) {
@@ -473,6 +504,11 @@ export const transMap2Style = (
   return result;
 };
 
+/**
+ * getTplKey
+ * @param key
+ * @param path
+ */
 export const getTplKey = (
   key: string,
   path: string,
@@ -513,7 +549,7 @@ export const removeUnused = ({
   component,
 }: IUnused): void => {
   // remove unused component
-  component.forEach((fileName: string) => {
+  component.forEach((fileName: string): void => {
     const dir = getDir(fileName);
     remove(dir);
   });
@@ -544,7 +580,7 @@ export const clearUsedComp = (
     const { path } = thisComp;
     wxComponentInfo.delete(path);
     usingComponentKeys.delete(tag);
-    thisComp.iterateChild((ch: Comp) => {
+    thisComp.iterateChild((ch: Comp): void => {
       wxComponentInfo.delete(ch.path);
       usingComponentKeys.delete(ch.tag);
     });
@@ -570,7 +606,7 @@ export const clearUsedTpl = (
       const thisTpl = wxTemplateInfo.get(tplKey);
       wxTemplateInfo.delete(tplKey);
       if (thisTpl) {
-        thisTpl.iterateChild((ch: Comp) => {
+        thisTpl.iterateChild((ch: Comp): void => {
           usingTemplateKeys.delete(ch.tag);
           wxTemplateInfo.delete(getTplKey(ch.tag, ch.path));
         });
