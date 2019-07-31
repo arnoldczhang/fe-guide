@@ -173,10 +173,10 @@ func webView(
 }
 ```
 
-### 对动作的处理
 ### 对callback的处理
-- js传设置callback <--> callbackId 给native
+- js传设置callbackId给native
 - native原封不动返回callbackId
+- js根据callbackId执行对应的callback
 
 
 

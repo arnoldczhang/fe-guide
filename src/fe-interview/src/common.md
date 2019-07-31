@@ -817,11 +817,13 @@ var flattenArray = (arr) => {
 function vs class
 
 #### function
-- function声明提升，class有暂时性死区
-- function内部可引用未声明变量，class内部不行，因为会自动启用严格模式
+- function声明提升
+- function内部可引用未声明变量，
 - function方法、原型可枚举，class都不可枚举
 
 #### class
+- class有暂时性死区
+- class内部会自动启用严格模式
 - class的静态方法、原型方法都没有prototype，也没[[constructor]]，所以都不能实例化
 - class只能用new调用
 - class内部重写类名无效
