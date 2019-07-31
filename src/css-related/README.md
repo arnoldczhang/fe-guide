@@ -789,6 +789,60 @@ border: 0 - 边框宽度为0，会渲染，占内存
 }
 ```
 
+### 多列等宽
+- flex
+```css
+#parent {
+  margin-left: -15px;  /*使内容看起来居中*/
+  height: 500px;
+  display: flex;
+}
+.column{
+  flex: 1; /*一起平分#parent*/
+  margin-left: 15px; /*设置间距*/
+}
+.column:nth-child(odd){
+  background-color: #f00;
+}
+.column:nth-child(even){
+  background-color: #0f0;
+}
+```
+
+### 九宫格
+- grid
+```html
+<body>
+  <div id="parent">
+      <div class="item">1</div>
+      <div class="item">2</div>
+      <div class="item">3</div>
+      <div class="item">4</div>
+      <div class="item">5</div>
+      <div class="item">6</div>
+      <div class="item">7</div>
+      <div class="item">8</div>
+      <div class="item">9</div>
+  </div>
+</body>
+```
+
+```css
+#parent {
+    width: 1200px;
+    height: 500px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /*等同于1fr 1fr 1fr,此为重复的合并写法*/
+    grid-template-rows: repeat(3, 1fr);  /*等同于1fr 1fr 1fr,此为重复的合并写法*/
+}
+.item {
+    border: 1px solid #000;
+}
+```
+
+
+
 ---
 
 ## 答疑
