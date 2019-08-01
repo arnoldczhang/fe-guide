@@ -1944,6 +1944,7 @@ function handle(req, res) {
 
 ### 懒加载
 intersectionObserver
+- 目标元素和视口有一个交叉区，可以判断是否可见
 
 ---
 
