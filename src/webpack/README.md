@@ -379,11 +379,67 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 ---
 
 ## scopeHoisting
-Webpack 3 的新功能，又译作“作用域提升”。
-Webpack 将所有模块都用函数包裹起来，然后自己实现了一套模块加载、执行与缓存的功能，
-使用这样的结构是为了更容易实现 Code Splitting（包括按需加载）、模块热替换等功能
+[作用域提升](https://webpack.js.org/plugins/module-concatenation-plugin/#root)
 
+### 示例
 
+原打包输出内容
+```js
+// bundle.js
+// 最前面的一段代码实现了模块的加载、执行和缓存的逻辑，这里直接略过
+[
+  /* 0 */
+  function (module, exports, require) {
+    var module_a = require(1)
+    console.log(module_a['default'])
+  },
+  /* 1 */
+  function (module, exports, require) {
+    exports['default'] = 'module A'
+  }
+]
+```
+
+作用域提升后
+```js
+// bundle.js
+[
+  function (module, exports, require) {
+    // CONCATENATED MODULE: ./module-a.js
+    var module_a_defaultExport = 'module A'
+
+    // CONCATENATED MODULE: ./index.js
+    console.log(module_a_defaultExport)
+  }
+]
+```
+
+### 特点
+- 声明的函数减少，作用域减少
+- 文件体积减少
+
+### 原理
+将所有模块代码，以一定顺序声明在一个作用域里（会做变量名去重）
+
+### 要求
+- 必须以es2015模块语法方式
+- 暂不支持commonjs【require可以动态加载，无法预测模块间依赖关系】
+- webpack4的production模式会默认使用scope hoisting
+- 查看使用无效的原因
+  ```js
+  module.exports = {
+    //...
+    stats: {
+      // Examine all modules
+      maxModules: Infinity,
+      // Display bailout reasons
+      optimizationBailout: true
+    }
+  };
+
+  // 或
+  webpack --display-optimization-bailout
+  ```
 
 ---
 
