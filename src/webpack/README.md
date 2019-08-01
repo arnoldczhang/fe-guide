@@ -16,6 +16,8 @@
 * [`webpack加载流程`](#webpack加载流程)
 * [`webpack4`](#webpack4)
 * [`开发调试`](#开发调试)
+* [`bundle`](#bundle)
+* [`scope hoisting`](#scopeHoisting)
 * [`treeshaking`](#treeshaking)
 * [`tapable`](#tapable)
 * [`loader`](#loader)
@@ -373,6 +375,126 @@ module.exports = {
 
 **结论**
 google Closure Compiler效果最好，不过使用复杂，迁移成本太高
+
+---
+
+## scopeHoisting
+Webpack 3 的新功能，又译作“作用域提升”。
+Webpack 将所有模块都用函数包裹起来，然后自己实现了一套模块加载、执行与缓存的功能，
+使用这样的结构是为了更容易实现 Code Splitting（包括按需加载）、模块热替换等功能
+
+
+
+---
+
+## bundle
+[参考](https://zhuanlan.zhihu.com/p/25954788)
+
+### 结论
+- bundle时，会检查模块是否会被installed
+- 如果installed，就直接export使用
+- 否则会执行import（一次），缓存到installedModules，再export
+
+### webpack打包做些什么
+- 每个文件视为独立模块
+- 分析模块间依赖关系，做一次性替换
+- 给每个模块外层加一层包装函数，作为**模块初始化函数**
+- 所有初始化函数合成数组，赋值给modules变量
+
+### 模块初始化函数
+
+**webpack4**
+
+```js
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push(
+  [["输出文件名"], {
+    "a": (function (module, __webpack_exports__, __webpack_require__) {
+      // ...
+    }),
+    "b": (function (module, __webpack_exports__, __webpack_require__) {
+      // ...
+    }),
+    "c": (function (module, __webpack_exports__, __webpack_require__) {
+      // ...
+    }),
+    // ...
+  }]
+);
+```
+
+**webpack2**
+
+```js
+(function (modules) {
+  ...
+})([
+  (function (module, __webpack_exports__, __webpack_require__) {
+    ...
+  }),
+  (function (module, __webpack_exports__, __webpack_require__) {
+    ...
+  }),
+  (function (module, __webpack_exports__, __webpack_require__) {
+    ...
+  })
+]);
+```
+
+### module和__webpack_exports__
+
+#### module
+- 元信息
+- 模块内容、**模块id**等信息
+
+#### __webpack_exports__
+- require时读取的是这个对象
+
+#### 关系
+module.exports === __webpack_exports__
+
+### 模块id
+webpack4 - 4位随机字母【0-9、a-zA-Z、+-】
+webpack2 - 数字（0开始）
+
+### __webpack_require__
+```js
+function __webpack_require__(moduleId) {
+
+  // 检查 installedModules 中是否存在对应的 module
+  // 如果存在就返回 module.exports
+  if (installedModules[moduleId])
+    return installedModules[moduleId].exports;
+
+  // 创建一个新的 module 对象，用于下面函数的调用
+  var module = installedModules[moduleId] = {
+    i: moduleId,
+    l: false,
+    exports: {}
+  };
+
+  // 从 modules 中找到对应的模块初始化函数并执行
+  modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+  // 标识 module 已被加载过
+  module.l = true;
+
+  return module.exports;
+}
+```
+
+### 组成
+
+**modules**
+
+数组（webpack2）或对象（webpack4），保存模块初始化函数
+
+**installedModules**
+
+缓存加载过的模块
+
+**加载函数**
+
+__webpack_require__
 
 ---
 
