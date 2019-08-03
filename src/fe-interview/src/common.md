@@ -1968,3 +1968,24 @@ intersectionObserver
 ### jsbridge
 [参考](../../js&browser/jsbridge.md)
 
+---
+
+### 前端监控
+[参考](../../career/前端埋点和监控方案.md)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
