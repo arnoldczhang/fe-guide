@@ -1965,7 +1965,11 @@ intersectionObserver
 
 ---
 
-### 小程序的意义
+### 小程序实现
+[原理](https://www.cnblogs.com/freeliver54/p/9024999.html)
+
+- appService
+- appView
 
 ---
 
