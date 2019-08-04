@@ -1968,8 +1968,29 @@ intersectionObserver
 ### 小程序实现
 [原理](https://www.cnblogs.com/freeliver54/p/9024999.html)
 
-- appService
-- appView
+- 每个小程序至少占用两个webview：appView和appService
+- 由于这个原因，所以有有页面层级5层的限制
+
+#### appService
+- 负责逻辑处理
+- 底层由WAService.js提供各种api接口（调试模式是asdebug.js）
+  * 日志组件reporter
+  * wx原生api
+  * App、Page、Component等全局方法
+  * amd模块实现
+- 消息通信封装为weixinJSBridge
+
+#### appView
+- 负责视图渲染
+- 底层由WAWebview.js提供各种api接口
+  * 日志组件
+  * wx原生api（和处理ui显示相关的）
+  * 组件实现
+  * 虚拟节点diff
+  * render UI
+  * 事件触发
+- 通过$gwx模板方法，将wxml转为虚拟节点，最终在webview渲染（与普通h5的差异）
+- 渲染的实现方式类似web-component
 
 ---
 

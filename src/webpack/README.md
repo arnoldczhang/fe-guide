@@ -6,6 +6,7 @@
 - [webpack4配置指南](https://mp.weixin.qq.com/s/cX7yuneDxDk8_NnMy3Bc8Q)
 - [webpack4配置指南2](https://mp.weixin.qq.com/s/si4yq-M_JS0DqedAhTlKng)
 - [webpack官方plugin文档](https://webpack.js.org/api/compilation-hooks#shouldgeneratechunkassets)
+- [webpack4构建提速](https://juejin.im/post/5c9075305188252d5c743520#heading-5)
 
 ## 目录
 <details>
@@ -16,6 +17,7 @@
 * [`webpack-3.8.1`](#webpack-3.8.1)
 * [`webpack4`](#webpack4)
 * [`开发调试`](#开发调试)
+* [`中间缓存`](#中间缓存)
 * [`bundle`](#bundle)
 * [`scope hoisting`](#scopeHoisting)
 * [`code split`](#codesplit)
@@ -29,6 +31,97 @@
 
 ## 配置
 
+### output
+```js
+{
+  output:{
+   // name是你配置的entry中key名称，或者优化后chunk的名称
+   // hash是表示bundle文件名添加文件内容hash值，以便于实现浏览器持久化缓存支持
+   filename: '[name].[hash].js',
+   // 在script标签上添加crossOrigin,以便于支持跨域脚本的错误堆栈捕获
+   crossOriginLoading:'anonymous',
+   //静态资源路径，指的是输出到html中的资源路径前缀
+   publicPath:'https://7.ur.cn/fudao/pc/',
+   path: './dist/',//文件输出路径
+  }
+}
+```
+
+### module
+配置rules
+```js
+module: {
+  // 这些库都是不依赖其它库的库 不需要解析他们可以加快编译速度
+  // 优化点1：过滤不需要做任何处理的库
+  noParse: /node_modules\/(moment|chart\.js)/,
+  rules: [
+    {
+      test: /\.jsx?$/,
+      use: resolve('babel-loader'),
+      // 优化点2：缩小babel处理范围
+      include: [
+        path.resolve(projectDir, 'src'),
+        path.resolve(projectDir, 'node_modules/@test'),
+      ].filter(Boolean),
+      // 优化点3：忽略哪些压缩的文件
+      exclude: [/(.|_)min\.js$/],
+    }
+  ],
+}
+```
+
+### optimization
+
+#### splitChunks
+```js
+splitChunks: {
+  chunks: 'all',
+  minSize: 10000, // 提高缓存利用率，这需要在http2/spdy
+  maxSize: 0,//没有限制
+  minChunks: 3,// 共享最少的chunk数，使用次数超过这个值才会被提取
+  maxAsyncRequests: 5,//最多的异步chunk数
+  maxInitialRequests: 5,// 最多的同步chunks数
+  automaticNameDelimiter: '~',// 多页面共用chunk命名分隔符
+  name: true,
+  cacheGroups: {// 声明的公共chunk
+    vendor: {
+      // 过滤需要打入的模块
+      test: module => {
+        if (module.resource) {
+          const include = [/[\\/]node_modules[\\/]/].every(reg => {
+            return reg.test(module.resource);
+          });
+          const exclude = [/[\\/]node_modules[\\/](react|redux|antd)/].some(reg => {
+            return reg.test(module.resource);
+          });
+          return include && !exclude;
+        }
+        return false;
+      },
+      name: 'vendor',
+      priority: 50,// 确定模块打入的优先级
+      reuseExistingChunk: true,// 使用复用已经存在的模块
+    },
+    react: {
+      test({ resource }) {
+        return /[\\/]node_modules[\\/](react|redux)/.test(resource);
+      },
+      name: 'react',
+      priority: 20,
+      reuseExistingChunk: true,
+    },
+    antd: {
+      test: /[\\/]node_modules[\\/]antd/,
+      name: 'antd',
+      priority: 15,
+      reuseExistingChunk: true,
+    },
+  },
+},
+```
+
+#### minimizer
+
 ### resolve
 ```js
 {
@@ -36,7 +129,12 @@
   resolve: {
     // 现在可以写require('file')，代替require('file.jsx')或 require('file.es6')
     extensions: ['.*', '.js', '.jsx', '.es6'],
-    // 路径替换
+    // modules加速绝对路径查找效率
+    modules: [
+        path.resolve(__dirname, 'src'), 
+        path.resolve(__dirname,'node_modules'),
+    ],
+    // alias路径替换
     alias: {
       'react': 'anujs',
       'react-dom': 'anujs',
@@ -158,7 +256,6 @@ compiler.hooks.thisCompilation -> tap('WarnNoModeSetPlugin', () => {
 #### SetVarMainTemplatePlugin
 **作用**
 
-
 **调用位置**
 
 /webpack/lib/LibraryTemplatePlugin.js
@@ -186,13 +283,95 @@ mainTemplate.hooks.hash -> tap("SetVarMainTemplatePlugin", hash => {
 **调用位置**
 **hook**
 
-#### xxx
-**作用**
-**调用位置**
-**hook**
-
-
 ### loader开发
+// TODO
+
+### 热更新
+
+#### 组件、css
+- webpack.HotModuleReplacementPlugin
+- entry插入**require.resolve('../utils/webpackHotDevClient')**
+- webpack-dev-server启动参数加上**hot: true**
+- 热更新的js加上
+  ```js
+  if (process.env.NODE_ENV === 'development' && module.hot) {
+    module.hot.accept();
+  }
+  ```
+
+#### ssr
+webpack.watch + nodemon
+
+#### style
+`sourceMap: true`: 将sourcemap内联到style中，方便快速调试，但是会导致页面闪烁（FOUC）
+`singleton: true`: 复用同一个插入的style标签，能解决FOUC，但sourceMap就失效了（找不到源文件路径，而是合并后的路径）
+
+---
+
+## 中间缓存
+
+### babel-loader
+```js
+test: /\.jsx?$/,
+use: [
+  {
+    loader: resolve('babel-loader'),
+    options: {
+      babelrc: false,
+      // cacheDirectory 缓存babel编译结果加快重新编译速度
+      cacheDirectory: path.resolve(options.cache, 'babel-loader'),
+      presets: [[require('babel-preset-imt'), { isSSR }]],
+    },
+  },
+],
+```
+
+### eslint-loader
+```js
+test: /\.(js|mjs|jsx)$/,
+enforce: 'pre',
+use: [
+    {
+      options: {
+        // cache选项指定缓存路径
+        cache: path.resolve(options.cache, 'eslint-loader'),
+      },
+      loader: require.resolve('eslint-loader'),
+    },
+],
+```
+
+### css/scss
+cache-loader也可用于其他缓存
+```js
+{
+  loader: resolve('cache-loader'),
+  options: { cacheDirectory: path.join(cache, 'cache-loader-css') },
+},
+{
+  loader: resolve('css-loader'),
+  options: {
+    importLoaders: 2,
+    sourceMap,
+  },
+},
+```
+
+### js
+```js
+{
+    // 设置缓存目录
+    cache: path.resolve(cache, 'terser-webpack-plugin'),
+    parallel: true,// 开启多进程压缩
+    sourceMap,
+    terserOptions: {
+      compress: {
+        // 删除所有的 `console` 语句
+        drop_console: true,
+      },
+    },
+}
+```
 
 ---
 
