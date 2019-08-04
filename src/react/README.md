@@ -25,7 +25,7 @@
 * [`lifecycle`](#lifecycle)
 * [`更新过程`](#更新过程)
 * [`redux大型项目构建`](#redux大型项目构建)
-* [`ReactHooks流程`](#React Hooks流程)
+* [`React Hooks流程`](#ReactHooks流程)
 * [`React进阶`](#React进阶)
 * [`concurrent`](#concurrent)
 * [`contextAPI`](#contextAPI)
@@ -213,7 +213,7 @@ const domainsReducer = combineReducers({
 
 ---
 
-## React Hooks流程
+## ReactHooks流程
 ![react hooks](react-hook.jpg)
 
 ---

@@ -11,14 +11,15 @@
 <details>
 <summary>展开更多</summary>
 
-* [`配置`](#配置)
-* [`webpack-3.8.1`](#webpack-3.8.1)
+* [`常用配置`](#配置)
 * [`webpack加载流程`](#webpack加载流程)
+* [`webpack-3.8.1`](#webpack-3.8.1)
 * [`webpack4`](#webpack4)
 * [`开发调试`](#开发调试)
 * [`bundle`](#bundle)
 * [`scope hoisting`](#scopeHoisting)
-* [`treeshaking`](#treeshaking)
+* [`code split`](#codesplit)
+* [`tree shaking`](#treeshaking)
 * [`tapable`](#tapable)
 * [`loader`](#loader)
 * [`热更新`](#热更新)
@@ -300,7 +301,7 @@ console.log(new V8Engine().toString())
   not ie <= 8 # 排除小于 ie8 以下的浏览器
   ```
 
-### code splitting
+### code splitting配置
 
 **splitChunksPlugins**
 
@@ -440,6 +441,11 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
   // 或
   webpack --display-optimization-bailout
   ```
+
+---
+
+## codesplit
+// TODO
 
 ---
 
