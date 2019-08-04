@@ -1436,11 +1436,11 @@ LazyMan.prototype = {
 ### display/opacity/visibility
 
 #### 结构
-|  | 从渲染树中消失 | 渲染时占空间 | 事件监听 |
-| -------- | -----: | :----: | :----: |
-| display: none | √ | × | × |
-| opacity: 0 | × | √ | √ |
-| visibility: hidden | × | √ | × |
+|  | 从渲染树中消失 | 渲染时占空间 | 事件监听 |  影响计数 |
+| -------- | -----: | :----: | :----: | :----: |
+| display: none | √ | × | × | √ |
+| opacity: 0 | × | √ | √ | × |
+| visibility: hidden | × | √ | × | × |
 
 #### 继承性
 - 子元素都会继承
