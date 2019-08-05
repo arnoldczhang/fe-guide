@@ -142,6 +142,34 @@ document.link.disabled = false;
 }
 ```
 
+### 普通元素代替submit按钮（还有outline）
+```css
+[type="submit"] {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+}
+.btn {
+    display: inline-block;
+    padding: 2px 12px;
+    background-color: #19b955;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+}
+:focus + label.btn {
+    outline: 1px dashed hotpink;
+    outline: 3px auto -webkit-focus-ring-color;
+}
+```
+
+```html
+<div class="panel">
+    <input type="submit" id="box">
+    <label for="box" class="btn">提交</label>
+</div>
+```
+
+
 ---
 
 ### z-index
@@ -601,7 +629,8 @@ border: 0 - 边框宽度为0，会渲染，占内存
 - fixed
   * 绝对定位，相对于浏览器窗口定位
 - relative
-  * 相对于元素自身位置定位，所以类似`left:20px`有效
+  * 相对于元素自身位置定位，所以类似`left:20px`有效果
+  * 自身位置仍然占据
 - static
   * 默认，没有定位，元素处于正常流中，类似`left:20px`无效
 

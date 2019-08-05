@@ -1,13 +1,4 @@
-## 参考
-- https://www.zhihu.com/question/21047964/answer/490978822
-- [问到未来规划](https://www.zhihu.com/question/284937208/answer/451868574)
-- [interview真题](https://www.nowcoder.com/)
-- [能力考级](https://www.freecodecamp.org/)
-- [interview临场问法](https://mp.weixin.qq.com/s/5H_kjt-MoPsAxa4e_oSnkQ?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
-- [前端十大学习网站](https://segmentfault.com/a/1190000019635097?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
-- [面试](https://github.com/wintercn/blog/issues/8)
-
-## 最近的题
+## 最近学习
 [common](./src/common.md)
 
 ## 以前的题
@@ -127,6 +118,17 @@
     - 抽取公共文件是怎么配置的
     - 项目中如何处理安全问题
     - 怎么实现this对象的深拷贝
-- 各种链接
-    - https://juejin.im/post/5a0c1956f265da430a501f51
-    - 区块链：https://mp.weixin.qq.com/s/nJiZAN_A-bBDonILgW6TRg
+
+## 参考
+- https://www.zhihu.com/question/21047964/answer/490978822
+- [问到未来规划](https://www.zhihu.com/question/284937208/answer/451868574)
+- [interview真题](https://www.nowcoder.com/)
+- [能力考级](https://www.freecodecamp.org/)
+- [interview临场问法](https://mp.weixin.qq.com/s/5H_kjt-MoPsAxa4e_oSnkQ?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+- [前端十大学习网站](https://segmentfault.com/a/1190000019635097?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
+- [面试](https://github.com/wintercn/blog/issues/8)
+- [面试2](https://juejin.im/post/5bbc54a2e51d450e5a7445b4)
+
+## 各种链接
+- https://juejin.im/post/5a0c1956f265da430a501f51
+- 区块链：https://mp.weixin.qq.com/s/nJiZAN_A-bBDonILgW6TRg
