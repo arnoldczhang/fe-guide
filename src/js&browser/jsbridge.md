@@ -68,7 +68,7 @@ location.href连续调用native，会造成部分调用丢失，只有最后一�
 
 ---
 
-## 实现
+## callback实现
 - 每次invoke设置唯一callbackId（用于native的回调）
 - 根据不同环境调用不同nativeBridge
 - 收到native的响应时，获得bridgeName、callbackId、responseId
@@ -133,9 +133,14 @@ location.href连续调用native，会造成部分调用丢失，只有最后一�
 })();
 ```
 
+### 对callback的处理
+- js传设置callbackId给native
+- native原封不动返回callbackId
+- js根据callbackId执行对应的callback
+
 ---
 
-## 具体流程
+## 实例-注入api方式
 
 ### native处理
 - 在UIWebview里发起任意网络请求，比如jsbridge://methodName?param1=value1&param2=value2
@@ -143,6 +148,77 @@ location.href连续调用native，会造成部分调用丢失，只有最后一�
 - delegate内对约定的网络请求进行捕获处理（而非直接跳转）
 
 ```java
+// native调用js注册的方法functionInJs
+webView.callHandler("functionInJs", new Gson().toJson(user), new CallBackFunction() {
+    @Override
+    public void onCallBack(String data) {
+
+    }
+});
+
+// native注册的方法submitFromWeb
+webView.registerHandler("submitFromWeb", new BridgeHandler() {
+  @Override
+  public void handler(String data, CallBackFunction function) {
+    // TODO
+  }
+
+});
+```
+
+### js处理
+```js
+// bridge初始化
+function connectWebViewJavascriptBridge(callback) {
+  if (window.WebViewJavascriptBridge) {
+    callback(WebViewJavascriptBridge)
+  } else {
+    document.addEventListener(
+      'WebViewJavascriptBridgeReady'
+      , function() {
+        callback(WebViewJavascriptBridge)
+      },
+      false
+    );
+  }
+};
+
+connectWebViewJavascriptBridge(function(bridge) {
+  bridge.init(function(message, responseCallback) {
+    console.log('JS got a message', message);
+    var data = {
+      'Javascript Responds': '测试中文!'
+    };
+    if (responseCallback) {
+      console.log('JS responding with', data);
+      responseCallback(data);
+    }
+  });
+
+  // 为native注册functionInJs方法
+  bridge.registerHandler("functionInJs", function(data, responseCallback) {
+    document.getElementById("show").innerHTML = ("data from Java: = " + data);
+    if (responseCallback) {
+      var responseData = "Javascript Says Right back aka!";
+      responseCallback(responseData);
+    }
+  });
+});
+
+// 调用native方法submitFromWeb
+window.WebViewJavascriptBridge.callHandler(
+  'submitFromWeb'
+  , {'param': '中文测试'}
+  , function(responseData) {
+    document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
+  }
+);
+```
+
+---
+
+## 实例-拦截url
+```oc
 func webView(
     webView: UIWebView,
     shouldStartLoadWithRequest request: NSURLRequest,
@@ -173,12 +249,15 @@ func webView(
 }
 ```
 
-### 对callback的处理
-- js传设置callbackId给native
-- native原封不动返回callbackId
-- js根据callbackId执行对应的callback
-
-
-
+### js处理
+```js
+var WVJBIframe = document.createElement('iframe');
+WVJBIframe.style.display = 'none';
+WVJBIframe.src = 'https://__bridge_loaded__';
+document.documentElement.appendChild(WVJBIframe);
+setTimeout(function() {
+    document.documentElement.removeChild(WVJBIframe)
+}, 0);
+```
 
 
