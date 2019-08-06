@@ -28,7 +28,7 @@
 - 页面在建立连接、首次渲染完成前都是白屏
 - 首次渲染完成，由于接口数据未返回，展示不完整的页面结构或loading
 
-可行的优化
+#### 可行的优化
 - spa
 - 资源文件缓存
 
@@ -58,6 +58,8 @@ webview+原生组件
 ## 打包工具
 - [参考](./build.js)
 
+---
+
 ## 微信小程序解析流程
 - setData L.26067
 - doUpdates L.24544
@@ -71,8 +73,14 @@ webview+原生组件
 
 ## 实现原理
 - 双线程模式，防止页面卡顿
-- 每个小程序至少占用两个webview：appView和appService
+- 每个小程序至少占用两个webview：`appView` 和 `appService`
 - 每开一个小程序页面，就多一个webview线程，所以有有页面层级5层的限制
+
+### 双线程通信
+![双线程](./双线程.png)
+
+- 渲染层
+- 逻辑层
 
 ### appService
 - 负责逻辑处理
@@ -95,14 +103,35 @@ webview+原生组件
 - 通过$gwx模板方法，将wxml转为虚拟节点，最终在webview渲染（与普通h5的差异）
 - 渲染的实现方式类似web-component
 
-### 双线程通信
-![双线程](./双线程.png)
+### Exparser框架
+- 微信小程序的组件组织框架
+- 类似web-component中的ShadowDOM
 
+### 更新步骤
 - 渲染层将wxml转为虚拟节点
-- 逻辑层发生数据变更时，调用宿主提供的setData
+- 逻辑层发生数据变更时，调用宿主）提供的setData
 - setData底层diff出虚拟节点树的变更
 - 将树变更信息传给native，再传到渲染层
 - 渲染层将diff应用到原dom树
+
+### 打包上传
+- wcc：所有wxml转虚拟节点
+- wcsc：所有wxss转为js字符串，通过<style/>append到header
+
+### 下载解析
+- webview.loadUrl(本地默认框架`page-frame.html`)
+- 下载wxml（虚拟节点）和wxss（style），append到页面
+- 根据虚拟节点生成对应的shadowDom或原生组件
+- 动态注入js，和页面进行交互
+
+### 原生组件的使用
+- 通过WeixinJsbridge，在html上绑定native调用方法
+- html将需要替换的h5元素的位置信息传给native方法
+- html对替换元素进行占位处理
+- native绘制一个包含原生组件的view层级，盖在webview层级上
+
+**注：map等组件都是原生组件，所以会普通h5组件出现无法覆盖的现象**
+解决办法：使用cover-view等原生组件覆盖
 
 ---
 

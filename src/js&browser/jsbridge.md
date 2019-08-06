@@ -3,6 +3,18 @@
 ## 参考
 - [JSBridge的原理](https://juejin.im/post/5abca877f265da238155b6bc)
 
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`原理`](#原理)
+* [`callback实现`](#callback实现)
+* [`实例-注入api方式`](#实例-注入api方式)
+* [`实例-拦截url`](#实例-拦截url)
+* [`webview加载html`](#webview加载html)
+
+</details>
+
 ## 原理
 
 ### js调用native
@@ -259,5 +271,25 @@ setTimeout(function() {
     document.documentElement.removeChild(WVJBIframe)
 }, 0);
 ```
+
+---
+
+## webview加载html
+
+### 加载url
+webView.loadUrl("http://139.196.35.30:8080/OkHttpTest/apppackage/test.html");
+
+### 加载asset文件夹下html
+webView.loadUrl("file:///android_asset/test.html");
+
+### 加载手机sdcard上的html页面
+webView.loadUrl("content://com.ansen.webview/sdcard/test.html");
+
+### 使用webview显示html代码
+webView.loadDataWithBaseURL(null,"<html><head><title> 欢迎您 </title></head>" +
+        "<body><h2>使用webview显示 html代码</h2></body></html>", "text/html" , "utf-8", null);
+
+
+
 
 
