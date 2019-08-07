@@ -18,8 +18,8 @@
 ## 原理
 
 ### js调用native
-- 注入api
-- 拦截url schema
+- 方式1：注入api
+- 方式2：拦截url schema
 
 #### 注入api
 ```java
@@ -155,10 +155,6 @@ location.href连续调用native，会造成部分调用丢失，只有最后一�
 ## 实例-注入api方式
 
 ### native处理
-- 在UIWebview里发起任意网络请求，比如jsbridge://methodName?param1=value1&param2=value2
-- UIWebview通过delegate函数获取网络请求的通知
-- delegate内对约定的网络请求进行捕获处理（而非直接跳转）
-
 ```java
 // native调用js注册的方法functionInJs
 webView.callHandler("functionInJs", new Gson().toJson(user), new CallBackFunction() {
@@ -230,6 +226,10 @@ window.WebViewJavascriptBridge.callHandler(
 ---
 
 ## 实例-拦截url
+- 在UIWebview里发起任意网络请求，比如jsbridge://methodName?param1=value1&param2=value2
+- UIWebview通过delegate函数获取网络请求的通知
+- delegate内对约定的网络请求进行捕获处理（而非直接跳转）
+
 ```oc
 func webView(
     webView: UIWebView,
@@ -274,21 +274,27 @@ setTimeout(function() {
 
 ---
 
-## webview加载html
+## webview加载html的四种方式
 
-### 加载url
+1. 加载url
+```java
 webView.loadUrl("http://139.196.35.30:8080/OkHttpTest/apppackage/test.html");
+```
 
-### 加载asset文件夹下html
+2. 加载asset文件夹下html
+```java
 webView.loadUrl("file:///android_asset/test.html");
+```
 
-### 加载手机sdcard上的html页面
+3. 加载手机sdcard上的html页面
+```java
 webView.loadUrl("content://com.ansen.webview/sdcard/test.html");
+```
 
-### 使用webview显示html代码
-webView.loadDataWithBaseURL(null,"<html><head><title> 欢迎您 </title></head>" +
-        "<body><h2>使用webview显示 html代码</h2></body></html>", "text/html" , "utf-8", null);
-
+4. 使用webview显示html代码
+```java
+webView.loadDataWithBaseURL(null,"<html><head><title> 欢迎您 </title></head>" + "<body><h2>使用webview显示 html代码</h2></body></html>", "text/html" , "utf-8", null);
+```
 
 
 
