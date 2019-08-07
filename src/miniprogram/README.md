@@ -109,7 +109,7 @@ webview+原生组件
 
 ### 更新步骤
 - 渲染层将wxml转为虚拟节点
-- 逻辑层发生数据变更时，调用宿主）提供的setData
+- 逻辑层发生数据变更时，调用宿主提供的setData
 - setData底层diff出虚拟节点树的变更
 - 将树变更信息传给native，再传到渲染层
 - 渲染层将diff应用到原dom树
@@ -119,9 +119,9 @@ webview+原生组件
 - wcsc：所有wxss转为js字符串，通过<style/>append到header
 
 ### 下载解析
-- webview.loadUrl(本地默认框架`page-frame.html`)
+- webview.loadUrl(`page-frame.html`)【page-frame是本地默认框架】
 - 下载wxml（虚拟节点）和wxss（style），append到页面
-- 根据虚拟节点生成对应的shadowDom或原生组件
+- 根据虚拟节点生成对应的shadowDom或原生组件【利用j-component】
 - 动态注入js，和页面进行交互
 
 ### 原生组件的使用
@@ -131,6 +131,7 @@ webview+原生组件
 - native绘制一个包含原生组件的view层级，盖在webview层级上
 
 **注：map等组件都是原生组件，所以会普通h5组件出现无法覆盖的现象**
+
 解决办法：使用cover-view等原生组件覆盖
 
 ---
