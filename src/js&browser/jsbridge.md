@@ -232,7 +232,7 @@ window.WebViewJavascriptBridge.callHandler(
 
 ### native处理
 ```oc
-func webView(
+func delegate(
     webView: UIWebView,
     shouldStartLoadWithRequest request: NSURLRequest,
     navigationType: UIWebViewNavigationType
