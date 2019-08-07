@@ -58,7 +58,8 @@ export const getRelativePath = (src: string, dest: string) => {
     }
     index++;
   }
-  return `${Array(destLen - index).fill('..').join('/')}/${srcArr.slice(index).join('/')}/${fileName}`;
+  const finalTag = index === lenCount ? '' : '/';
+  return `${Array(destLen - index).fill('..').join('/')}/${srcArr.slice(index).join('/')}${finalTag}${fileName}`;
 };
 
 export const identity = (v: any): any => v;

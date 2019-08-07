@@ -1,4 +1,5 @@
 import { animationStyle, ICO } from '../types';
+import { getRelativePath } from '../utils';
 import { isStr } from '../utils/assert';
 import { JELLY_STYLE, PRE, SHINE_STYLE } from './attr';
 import {
@@ -162,4 +163,12 @@ export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): vo
         break;
     }
   });
+};
+
+export const getCompJs = (
+  output: string,
+  dest: string,
+): string => {
+  const relativePath = getRelativePath(`${output}/${SKELETON_DEFAULT_JS_FILE}`, dest);
+  return `Component({...require('${relativePath}')});`;
 };

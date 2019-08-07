@@ -7,6 +7,7 @@ import {
   COMP_JSON,
   COMP_WXSS,
   DEFAULT_WXSS,
+  getCompJs,
   JSON_CONFIG,
   TEXT,
 } from '../config';
@@ -456,7 +457,7 @@ export const genNewComponent = (
   // gen js
   const destJs: string = `${outputPath}${modifySuffix(relativePath, 'js')}`;
   ensure(destJs);
-  write(destJs, COMP_JS);
+  write(destJs, getCompJs(outputPath, destJs));
 
   // clear unused component in json file
   if (deleteUnused) {

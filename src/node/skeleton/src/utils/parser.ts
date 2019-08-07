@@ -27,6 +27,7 @@ import {
   COMP_JS,
   COMP_WXSS,
   ELEMENT_TAG,
+  getCompJs,
   IMAGE_TAG,
   IMPORT_TAG,
   INCLUDE_TAG,
@@ -613,7 +614,7 @@ export const parseFromJSON = (
 
       // gen component-js
       ensure(destJs);
-      write(destJs, COMP_JS);
+      write(destJs, getCompJs(outputPath, destJs));
 
       // TODO copy Components.properties to destJs with babel
     }

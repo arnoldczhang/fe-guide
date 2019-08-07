@@ -14,6 +14,7 @@
 <summary>展开更多</summary>
 
 * [`tcp`](#tcp)
+* [`udp`](#udp)
 * [`requestHeader`](#requestHeader)
 * [`http1.0`](#http1.0)
 * [`http1.1`](#http1.1)
@@ -26,7 +27,15 @@
 
 </details>
 
+---
+
 ## tcp
+基于IP协议构建
+
+**RTT**: 一个数据包从发出去到回来的时间
+**cwnd**: 拥塞窗口
+**rwnd**: 接收窗口
+**ssthresh**: 慢启动门限
 
 ### tcp和http的关系
 
@@ -43,6 +52,59 @@
 
 #### 连接上限
 - Chrome 最多允许对同一个 Host 建立六个 TCP 连接，不同的浏览器有一些区别
+
+### 拥塞机制
+- 基于丢包
+  * reno
+  * newreno
+  * cubic
+- 基于链路容量
+  * bbr
+- 基于时延
+  * vegas
+  * fastTCP
+- 基于学习
+  * remy
+
+#### RENO
+
+**慢启动**
+
+- 启动时会限制连接的最大速度，数据传输成功，传输速度不断提升
+- 当新建连接时，cwnd初始化为1个最大报文段(MSS)大小
+- 之后随着报文段确认，就新增一个MSS，最终cwnd呈指数型增长
+
+开始 ---> cwnd = 1
+经过1个RTT后 ---> cwnd = 1*2 = 2
+经过2个RTT后 ---> cwnd = 2*2= 4
+经过3个RTT后 ---> cwnd = 4*2 = 8
+
+**拥塞规避**
+
+- cwnd不能无限增长，需要一个慢启动门限(ssthresh)
+- ssthresh多设为65536
+- 超过ssthresh，进入拥塞规避
+- cwnd值呈线性增长（每次加一）
+
+**快速重传**
+
+- TCP在收到乱序到达包时，会发送ack
+- 当接收到3个ack时，TCP判定此为数据包丢失
+- 进入快速重传
+
+**快速恢复**
+
+- ssthresh设为cwnd一半
+- cwnd设为ssthresh值（或ssthresh + 3）
+- 重新进入拥塞规避
+
+
+---
+
+## udp
+基于IP协议构建
+
+
 
 ---
 
