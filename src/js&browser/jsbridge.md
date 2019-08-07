@@ -230,6 +230,7 @@ window.WebViewJavascriptBridge.callHandler(
 - UIWebview通过delegate函数获取网络请求的通知
 - delegate内对约定的网络请求进行捕获处理（而非直接跳转）
 
+### native处理
 ```oc
 func webView(
     webView: UIWebView,
