@@ -45,6 +45,8 @@ export interface IPath {
   parentTpl?: Comp;
   // add default-bg-class when tag node has only one text child
   defaultBg?: boolean;
+  // fix errors like `tag`, `id` selectors in template wxss
+  tplWxss?: boolean;
   deleteUnused?: boolean;
   // cach componet dest path
   wxComponentInfo?: Set<string>;

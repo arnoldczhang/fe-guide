@@ -69,7 +69,7 @@ export const wx: ICO = new Proxy({}, {
 });
 
 // wxss
-export const COMP_WXSS = `@import '${SKELETON_DEFAULT_WXSS}'`;
+export const COMP_WXSS = `@import "${SKELETON_DEFAULT_WXSS}";`;
 
 export const WXSS_BG_GREY = `${PRE}-default-grey`;
 

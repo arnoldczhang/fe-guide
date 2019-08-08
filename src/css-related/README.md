@@ -176,6 +176,9 @@ document.link.disabled = false;
 [参考](https://juejin.im/post/5ba4efe36fb9a05cf52ac192?utm_source=gold_browser_extension)
 [参考2](https://juejin.im/post/5b876f86518825431079ddd6)
 
+- 层叠上下文
+- 层叠等级
+
 #### 层叠上下文
 根层叠上下文 - <html></html>
 

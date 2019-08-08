@@ -9,11 +9,16 @@ import {
   DEFAULT_WXSS,
   getCompJs,
   JSON_CONFIG,
+  PATH,
   TEXT,
 } from '../config';
 import { COMMENT_TAG, IMPORT_TAG, INCLUDE_TAG, RULE_TAG, TEMPLATE_TAG } from '../config/tag';
 import { IAst, ICO, IComp, IPath, IUnused } from '../types';
 import { is, isArr } from './assert';
+import {
+  hasCach,
+  setCach,
+} from './cach';
 import {
   addSuffix,
   getDir,
@@ -34,8 +39,10 @@ import {
 } from './fs';
 import { parseAsTreeNode, parseFromJSON } from './parser';
 import {
+  addSuffixWxss,
   getTemplateIs,
   getTemplateName,
+  isGenWxss,
   matchIdStyle,
   removeComment,
   replacePseudo,
@@ -143,12 +150,11 @@ export const parseFile = (
  */
 export const insertInitialWxss = (
   template: string,
-  wxss?: string,
-): string => {
-  wxss = wxss || COMP_WXSS;
-  return `${template}
-${wxss}`;
-};
+  wxss = COMP_WXSS,
+): string => (
+  `${template}
+${wxss}`
+);
 
 /**
  * getJsonValue
@@ -275,7 +281,7 @@ export const ensureAndInsertWxss = (
 ): void => {
   if (exists(src)) {
     ensure(dest);
-    write(dest, insertInitialWxss(`@import '${getRelativePath(src, dest)}';`));
+    write(dest, insertInitialWxss(`@import "${getRelativePath(src, dest)}";`));
   }
 };
 
@@ -303,16 +309,16 @@ export const ensureAndInsertWxml = (
 };
 
 /**
- * checkImportWxssUsage
+ * isImportedWxssInvalid
  * @param src
  */
-export const checkImportWxssUsage = (
+export const isImportedWxssInvalid = (
   src: string,
-): void => {
+): boolean => {
   const content: string = String(exists(src) ? read(src) : '');
   const ast: css.Stylesheet = css.parse(content);
   const { rules } = ast.stylesheet;
-  rules.some((rule: css.Rule & css.Import) => {
+  return rules.some((rule: css.Rule & css.Import) => {
     const { type, selectors } = rule;
     if (is(type, RULE_TAG)) {
       return selectors.some((selector: string) => {
@@ -324,6 +330,9 @@ export const checkImportWxssUsage = (
         }
         return false;
       });
+    } else if (is(type, IMPORT_TAG)) {
+      const srcPath: string = join(getDir(src), rule.import.slice(1, -1));
+      return isImportedWxssInvalid(srcPath);
     }
     return false;
   });
@@ -365,10 +374,7 @@ export const filterUsableSelectors = (
         // if matching id style, rewrite style if is used in wxml
         if (idMatchResult) {
           const id = idMatchResult[2];
-          if (wxmlKlassInfo[id]) {
-            tmpSelectors[idx] = tmp.replace(id, wxmlKlassInfo[id]);
-          }
-
+          tmpSelectors[idx] = wxmlKlassInfo[id] && tmp.replace(id, wxmlKlassInfo[id]) || '';
           if (last) {
             newSelectors.push(tmpSelectors.join(' '));
           }
@@ -376,7 +382,7 @@ export const filterUsableSelectors = (
       }
     });
   });
-  return [filtered, newSelectors];
+  return [filtered, newSelectors.filter(identity)];
 };
 
 /**
@@ -390,8 +396,12 @@ export const insertPageWxss = (
   dest: string,
   options: IPath,
 ): void => {
+  if (hasCach(dest, PATH)) {
+    return;
+  }
+  setCach(dest, 1, PATH);
   ensure(dest);
-  const { treeshake } = options;
+  const { treeshake, tplWxss } = options;
   const content: string = String(exists(src) ? read(src) : '');
   const ast: css.Stylesheet = css.parse(content);
   let { rules } = ast.stylesheet;
@@ -404,11 +414,25 @@ export const insertPageWxss = (
     const { type, selectors } = rule;
     // { type: 'import', import: '"../../components/xx/xx.wxss"'}
     if (is(type, IMPORT_TAG)) {
-      const srcPath: string = join(getDir(src), rule.import.slice(1, -1));
-      rule.import = `"${getRelativePath(srcPath, dest)}"`;
-      // check template/components wxss is valid or not
-      checkImportWxssUsage(srcPath);
-      // { type: 'rule', selectors: [ '.loading-data', '.no-data' ]}
+      const tplSrc: string = join(getDir(src), rule.import.slice(1, -1));
+      const newTplSrc = addSuffixWxss(tplSrc);
+      const relativeTplSrc = getRelativePath(tplSrc, dest);
+      // check template/components wxss is invalid or not
+      const invalid = isImportedWxssInvalid(tplSrc);
+      if (tplWxss) {
+        if (!invalid) {
+          rule.import = `"${relativeTplSrc}"`;
+          removeImportedWxss(newTplSrc);
+        // generate new wxss if origin wxss is invalid
+        } else {
+          hasPageStyle = true;
+          insertPageWxss(tplSrc, newTplSrc, { ...options, treeshake: false });
+          rule.import = `"${getRelativePath(newTplSrc, dest)}"`;
+        }
+      } else {
+        rule.import = `"${relativeTplSrc}"`;
+      }
+    // { type: 'rule', selectors: [ '.loading-data', '.no-data' ]}
     } else if (is(type, RULE_TAG)) {
       const [filtered, newSelectors] = filterUsableSelectors(selectors, options);
       hasPageStyle = filtered || hasPageStyle;
@@ -532,7 +556,7 @@ export const updateTemplateInfo = (
   const iss = getTemplateIs(content);
   const tplName = names.filter((name: string): boolean => !iss.includes(name))[0];
   const [, absolutePath] = dest;
-  const tpl = new Comp(tplName, absolutePath);
+  const tpl = new Comp(tplName, absolutePath, src);
   usingTemplateKeys.set(tplName, dest);
   wxTemplateInfo.set(getTplKey(tplName, absolutePath), tpl);
   if (parentTpl) {
@@ -559,10 +583,12 @@ export const removeUnused = ({
   template.forEach((tpl) => {
     const { path } = tpl;
     const wxss = modifySuffix(path, 'wxss');
+    const tplWxss = addSuffixWxss(wxss);
     remove(path);
-    if (exists(wxss)) {
-      remove(wxss);
-    }
+    // remove wxss if exists
+    if (exists(wxss)) { remove(wxss); }
+    // remove invalid wxss if exists
+    if (exists(tplWxss)) { remove(tplWxss); }
   });
 };
 
@@ -630,6 +656,34 @@ export const hasOnlyTextChild = (
     result = !tag && is(node, TEXT);
   }
   return result;
+};
+
+/**
+ * removeImportedWxss
+ * @param src
+ */
+export const removeImportedWxss = (
+  src: string,
+): void => {
+  if (exists(src)) {
+    const content: string = String(exists(src) ? read(src) : '');
+    const ast: css.Stylesheet = css.parse(content);
+    const { rules } = ast.stylesheet;
+
+    rules.forEach((
+      rule: css.Rule & css.Import,
+    ): void => {
+      const { type, import: importAttr } = rule;
+      // { type: 'import', import: '"../../components/xx/xx.wxss"'}
+      if (is(type, IMPORT_TAG)) {
+        if (isGenWxss(importAttr)) {
+          const importedSrc: string = join(getDir(src), importAttr.slice(1, -1));
+          removeImportedWxss(importedSrc);
+        }
+      }
+    });
+    remove(src);
+  }
 };
 
 export {

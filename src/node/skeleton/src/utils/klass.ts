@@ -3,10 +3,17 @@ import { CF } from "../types";
 export class Comp {
   public tag: string;
   public path: string;
+  public src: string;
   public children: Comp[];
-  constructor(tag: string, path: string, children: Comp[] = []) {
+  constructor(
+    tag: string,
+    path: string,
+    src: string,
+    children: Comp[] = [],
+  ) {
     this.tag = tag;
     this.path = path;
+    this.src = src;
     this.children = children;
   }
 

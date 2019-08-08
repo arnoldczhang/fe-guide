@@ -593,7 +593,7 @@ export const parseFromJSON = (
       return;
     }
 
-    const thisComp: Comp = new Comp(key, destWxml);
+    const thisComp: Comp = new Comp(key, destWxml, srcWxml);
     usingComponentKeys.set(key, thisComp);
     wxComponentInfo.add(destWxml);
 

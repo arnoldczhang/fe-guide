@@ -1,3 +1,4 @@
+import { SKELETON } from "../config/dir";
 import { CF } from "../types";
 import { isStr } from "./assert";
 import { identity } from "./dir";
@@ -74,6 +75,10 @@ export const isItemVar = (input: string): boolean => (
   /item\.?/.test(input)
 );
 
+export const isGenWxss = (input: string): boolean => (
+  new RegExp(`\\.${SKELETON}\\.wxss['"]?$`).test(input)
+);
+
 // ============= //
 // === match === //
 // ============= //
@@ -107,8 +112,15 @@ export const replaceWith = (
   input: string,
   reg: RegExp | string = /\s+/,
   replacement?: CF,
-) => (
-    input.replace(reg, replacement)
+): string => (
+  input.replace(reg, replacement)
+);
+
+export const addSuffixWxss = (
+  input: string,
+  suffix = SKELETON,
+): string => (
+  input.replace(/(.+)\.(wxss)$/, `$1.${suffix}.$2`)
 );
 
 export const interceptWxVariable = (
@@ -139,6 +151,7 @@ export const removeBlankAndWxVariable = (input: string): string => (
 );
 
 // rgb(0, 0, 0)
+// hsl(0, 0, 0)
 // #f1f1f1
 export const replaceColorSymbol = (input: string): string => (
   input.replace(/[#,\(\)\s]*/g, '')
@@ -216,6 +229,11 @@ export const getTemplateIs = (
     getExecRes(input, /<template[^\/\>]*is=(['"])([^'"]+)\1[^\/\>]*\/?>/g)
 );
 
+/**
+ * getPropTarget
+ * @param input
+ * @param prop
+ */
 export const getPropTarget = (
   input: string,
   prop: string,

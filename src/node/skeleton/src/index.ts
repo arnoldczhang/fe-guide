@@ -35,6 +35,7 @@ const run = (options: any = {}): void => {
     deleteUnused,
     watch,
     defaultBg,
+    tplWxss,
     subPackage,
   } = options;
   const srcPath = inputDir ? join(root, inputDir) : `${root}/src`;
@@ -61,6 +62,7 @@ const run = (options: any = {}): void => {
     compPath: c,
     deleteUnused,
     watch,
+    tplWxss,
     defaultBg,
     wxmlKlassInfo: {},
     wxmlStructInfo: {},
