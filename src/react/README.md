@@ -24,6 +24,7 @@
 * [`相关库`](#相关库)
 * [`lifecycle`](#lifecycle)
 * [`更新过程`](#更新过程)
+* [`react16之前`](#react16之前)
 * [`redux大型项目构建`](#redux大型项目构建)
 * [`React Hooks流程`](#ReactHooks流程)
 * [`React进阶`](#React进阶)
@@ -78,6 +79,14 @@ class ExampleComponent extends React.Component {
 - componentWillUpdate
 - render
 - componentDidUpdate
+
+---
+
+## react16之前
+- 自顶向下递归解析，生成虚拟节点
+- 通过diff算法，生成变更patch
+- patch放到更新队列
+- 无法中断，直到整棵虚拟节点树解析完成，才会将线程交给渲染引擎
 
 ---
 

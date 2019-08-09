@@ -14,6 +14,7 @@
 - [提高幸福感的 9 个 CSS 技巧](https://juejin.im/post/5cb45a06f265da03474df54e)
 - [Web开发者需要知道的CSS Tricks](https://juejin.im/post/5aab4f985188255582521c57)
 - [CSS 常用技巧](https://juejin.im/post/5b1f41246fb9a01e725131fb)
+- [csswg](https://drafts.csswg.org/)
 
 ## 目录
 <details>
@@ -219,6 +220,8 @@ document.link.disabled = false;
 
 #### 层叠顺序
 ![层叠顺序](./层叠顺序.png)
+
+注：inline/inline-block的等级高于block，是因为网页设计之初就是希望文字能不被覆盖
 
 ---
 
