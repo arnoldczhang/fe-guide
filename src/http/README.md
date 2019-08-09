@@ -24,6 +24,7 @@
 * [`quic`](#quic)
 * [`https`](#https)
 * [`osl`](#osl)
+* [`code`](#code)
 
 </details>
 
@@ -351,4 +352,16 @@ range，请求资源一部分（206），支持断点续传
 Open System Interconnection 开放式系统互联
 
 ![osl](./osl层次.jpg)
+
+---
+
+## code
+304 - not modified
+401 -unauthorized
+  * 用户已认证，但是未被授权访问
+403 - forbidden
+  * 用户未被认证
+405 - method not allowed
+
+
 

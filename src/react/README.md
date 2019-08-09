@@ -25,6 +25,7 @@
 * [`lifecycle`](#lifecycle)
 * [`更新过程`](#更新过程)
 * [`react16之前`](#react16之前)
+* [`react16`](#react16)
 * [`redux大型项目构建`](#redux大型项目构建)
 * [`React Hooks流程`](#ReactHooks流程)
 * [`React进阶`](#React进阶)
@@ -87,6 +88,27 @@ class ExampleComponent extends React.Component {
 - 通过diff算法，生成变更patch
 - patch放到更新队列
 - 无法中断，直到整棵虚拟节点树解析完成，才会将线程交给渲染引擎
+
+---
+
+## react16
+[requestIdleCallback](../js&browser/requestIdleCallback.md)
+
+### fiber
+- 虚拟的堆栈帧
+- 存在优先级
+
+### first render
+![first render](../mobx/react16-init.png)
+
+1. react-element转fiber，加入更新队列
+2. schedule阶段
+  * schedule work
+  * request work
+  * perform work
+3. fiber reconcile
+  * reconcilation: 遍历fibers，diff出effectlist给commit阶段
+  * commit: beginWork
 
 ---
 

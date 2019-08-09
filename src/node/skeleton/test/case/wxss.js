@@ -4,8 +4,8 @@ const {
 const chai = require('chai');
 const expect = chai.expect;
 
-describe('wxss', () => {
-  it('wxss【按自定义组件规则】过滤', (done) => {
+describe('filterUsableSelectors', () => {
+  it('【按自定义组件规则】过滤', (done) => {
     const options = {
       wxmlKlassInfo: {
         '#abc': '.aabbss',

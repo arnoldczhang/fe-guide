@@ -20,6 +20,7 @@ const {
   removeUnused,
   transMap2Style,
   filterUsableSelectors,
+  treewalk,
 } = require('./utils');
 
 const run = (options: any = {}): void => {
@@ -135,6 +136,7 @@ run.defaultConfigName = DEFAULT_CONFIG_FILE;
 
 run.test = {
   filterUsableSelectors,
+  treewalk,
 };
 
 module.exports = run;
