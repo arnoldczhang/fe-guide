@@ -97,18 +97,37 @@ class ExampleComponent extends React.Component {
 ### fiber
 - 虚拟的堆栈帧
 - 存在优先级
+- 时间分片
+
+#### 结构
+- return: 父节点
+- sibling: 下一个兄弟节点
+- child:
+- alternate: current-tree <==> workInProgress-tree对应的fiber
 
 ### first render
 ![first render](../mobx/react16-init.png)
 
-1. react-element转fiber，加入更新队列
+1. render阶段
+  * React.createElement创建element-tree
+  * 每个element绑定fiber，记录上下文信息
+  * fiber-tree => current-tree
+  * setState会重建element，更新fiber的必要属性
 2. schedule阶段
   * schedule work
+    + 根据fiber找其根节点root（找不到则会根据fiber类型，出warnUnmounted）
+    + 查找过程更新每个fiber的expirationTime
   * request work
+    + 将root-fiber提上schedule
   * perform work
-3. fiber reconcile
-  * reconcilation: 遍历fibers，diff出effectlist给commit阶段
-  * commit: beginWork
+    + 构造workInProgress-tree
+    + current指向新的fiber
+3. reconcile阶段
+  * reconcilation
+    + 遍历fibers，diff出effectlist（各种变更信息）给commit阶段
+  * commit
+    + commitRoot根据effect的effectTag，分别做增、删、改等操作
+    + 最终将结果反映到真实dom
 
 ---
 
