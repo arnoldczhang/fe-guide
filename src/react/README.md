@@ -89,6 +89,15 @@ class ExampleComponent extends React.Component {
 - patch放到更新队列
 - 无法中断，直到整棵虚拟节点树解析完成，才会将线程交给渲染引擎
 
+### diff策略
+1. 针对input、option、select、textarea做了特殊处理
+2. 针对dom属性做处理
+  * style
+  * 其他属性
+3. 针对dom&dom子节点做处理
+  * text不同 => updateTextContent
+  * key、type不同 => 节点增、删、改
+
 ---
 
 ## react16
@@ -105,7 +114,7 @@ class ExampleComponent extends React.Component {
 - child:
 - alternate: current-tree <==> workInProgress-tree对应的fiber
 
-### first render
+### first-render
 ![first render](../mobx/react16-init.png)
 
 1. render阶段
@@ -128,6 +137,47 @@ class ExampleComponent extends React.Component {
   * commit
     + commitRoot根据effect的effectTag，分别做增、删、改等操作
     + 最终将结果反映到真实dom
+
+### diff策略
+reconcileChildFibers
+
+#### 判断fiber类型
+- text节点
+- 单个element
+- element数组
+
+#### text节点
+- 如果第一个节点是text节点
+  * 删除剩余sibling节点
+  * 复用第一个节点
+- 如果第一个节点不是text节点
+  * 删除当前及其sibiling节点
+  * 创建text节点
+
+注：删除只是打上tag=delete，真正在commit时删除
+
+#### 单个element节点
+- 如果key、type相同
+  * 删除老fiber的siblings
+  * 复用老fiber
+- 如果key、type不同
+  * 在当前fiber及siblings里找key相同的，复用
+  * 找不到的话，删除当前fiber，创建新fiber
+- 如果key相同、type不同
+  * 复用老fiber，删除siblings
+
+#### element数组
+- 遍历
+- 如果newChild是text节点
+  * 老fiber有key的话（说明是element），不能复用，返回null
+  * 老fiber没有key的话，复用
+- 如果newChild是element节点
+  * 根据key、type判断是否可复用
+
+#### 整个流程
+1. 新老fiber的index对比，用updateSlot找可复用的fiber（kty、type）
+2. 老fiber数和新fiber数对比，老<新，新fiber插入，否则老fiber批量删除
+3. 老fiber按key、index存到map，遍历新数组，做老元素移动/插入处理
 
 ---
 
