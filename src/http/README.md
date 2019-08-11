@@ -167,27 +167,32 @@
 ---
 
 ## http1.0
-  - 带宽限制
-  - 延迟
-    + 浏览器阻塞（并行请求）
-    + DNS查询（域名发散）
-    + tcp
-  - 状态码
-    + 301: 永久重定向
-    + 302: 临时重定向
-      * 只有当服务器发出 Cache-Control 或 Expires（废弃） 头字段进行指示，
-        此响应才能被缓存，否则不能被缓存
-      * 临时URI应该由响应头部中的 Location 字段给出
-      * 在除 GET 或 HEAD 两种请求方法之外的请求时，接收到302状态码，
-        客户端不得自动重定向请求，除非用户可以确认
-    + 304: [协商缓存](../js&browser/页面过程与浏览器缓存.md#协商缓存)
-  - 缓存处理
-    + If-Modified-Since：再次请求服务器时，通过此字段通知服务器上次请求时，服务器返回的资源最后修改时间
-    + 缓存头部优先级：Pragma > Cache-Control > Expires（废弃） > ETag > Last-Modified
+- 带宽限制
+- 延迟
+  + 浏览器阻塞（并行请求）
+  + DNS查询（域名发散）
+  + tcp
+- 状态码
+  + 301: 永久重定向
+  + 302: 临时重定向
+    * 只有当服务器发出 Cache-Control 或 Expires（废弃） 头字段进行指示，
+      此响应才能被缓存，否则不能被缓存
+    * 临时URI应该由响应头部中的 Location 字段给出
+    * 在除 GET 或 HEAD 两种请求方法之外的请求时，接收到302状态码，
+      客户端不得自动重定向请求，除非用户可以确认
+  + 304: [协商缓存](../js&browser/页面过程与浏览器缓存.md#协商缓存)
+- 缓存处理
+  + If-Modified-Since：再次请求服务器时，通过此字段通知服务器上次请求时，服务器返回的资源最后修改时间
+  + 缓存头部优先级: Pragma > Cache-Control > Expires（废弃） > ETag > Last-Modified
 
 ---
 
 ## http1.1
+
+对比http1.0，新增如下特性：
+- 缓存处理
+- 带宽优化
+- 长连接
 
 ### 缓存处理扩展
 Entity tag，If-Unmodified-Since, If-Match, If-None-Match

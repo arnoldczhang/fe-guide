@@ -111,7 +111,7 @@ class ExampleComponent extends React.Component {
 #### 结构
 - return: 父节点
 - sibling: 下一个兄弟节点
-- child:
+- child: 子节点
 - alternate: current-tree <==> workInProgress-tree对应的fiber
 
 ### first-render
@@ -157,6 +157,7 @@ reconcileChildFibers
 注：删除只是打上tag=delete，真正在commit时删除
 
 #### 单个element节点
+- props
 - 如果key、type相同
   * 删除老fiber的siblings
   * 复用老fiber
@@ -178,6 +179,31 @@ reconcileChildFibers
 1. 新老fiber的index对比，用updateSlot找可复用的fiber（kty、type）
 2. 老fiber数和新fiber数对比，老<新，新fiber插入，否则老fiber批量删除
 3. 老fiber按key、index存到map，遍历新数组，做老元素移动/插入处理
+
+### 对比差异
+- react16将渲染阶段分为三段（render，diff，commit）
+- fiber是链表形式
+- 每个fiber有expirationTime、优先级（用于在commit阶段做时间分片渲染）
+
+### 一些问题
+
+#### 虚拟节点和fiber区别
+- 虚拟节点描述的还是node
+- fiber是虚拟节点的抽象表示，类似一个工作单元，便于中断挂起
+
+#### 拆分维度
+按虚拟节点element拆
+
+#### 如何调度
+- 工作循环
+- fiber优先级
+
+每次工作单元处理完，判断当前帧是否有空余时间，
+没有的话，用requestIdleCallback回调执行
+
+#### 中断/断点恢复
+- fiber保存当前进度（firstEffect、lastEffect）
+- 修改effectTag（Update、Snapshot、Deletion、Placement）
 
 ---
 
