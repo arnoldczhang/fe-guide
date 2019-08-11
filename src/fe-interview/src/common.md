@@ -731,7 +731,7 @@ var flattenArray = (arr) => {
 
 ---
 
-### 何为可迭代对象
+### 可迭代对象
 - Array
 - Map
 - Set
