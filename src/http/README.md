@@ -249,7 +249,7 @@ range，请求资源一部分（206），支持断点续传
 一台服务器，多个server，同一个ip
 
 ### 长连接
-一次tcp传多个http请求（keep-alive）
+一次tcp串行发送多个http请求（keep-alive）
 
 ### 缓存字段
 - ![缓存字段](缓存字段.jpg)
