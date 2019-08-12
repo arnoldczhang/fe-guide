@@ -1,13 +1,32 @@
+import { Comp } from '../utils/klass';
 import { IAst, ICO } from './common';
 
 export type ASTFC = (ast: IAst) => any;
 
 export interface INpmOptions {
+  // tagName to be ignored
   ignore?: string[] | string;
+  // input root direction
   inputDir?: string;
+  // output root direction
   outDir?: string;
+  // use wxml/wxss treeshake
   treeshake?: boolean;
+  // main package pages
   page?: string[] | string;
+  // animation automatically add to default-bg
+  animation?: string | string[];
+  // remove unused components and templates
+  deleteUnused?: boolean;
+  // add default-bg to element which has only one textnode child
+  defaultBg?: boolean;
+  // sub package pages
+  subPackage?: IPack[];
+}
+
+export interface IPack {
+  root: string;
+  page: string[];
 }
 
 export interface IPath {
@@ -20,7 +39,16 @@ export interface IPath {
   pagePath?: string;
   compPath?: string;
   watch?: boolean;
-  wxTemplateInfo?: Map<string, string>;
+  // used in tpl/comp
+  parentComp?: Comp;
+  // used in tpl/comp
+  parentTpl?: Comp;
+  // add default-bg-class when tag node has only one text child
+  defaultBg?: boolean;
+  // fix errors like `tag`, `id` selectors in template wxss
+  tplWxss?: boolean;
+  deleteUnused?: boolean;
+  // cach componet dest path
   wxComponentInfo?: Set<string>;
   // cach `id` <-> `class` map
   // replace id with random class
@@ -29,7 +57,11 @@ export interface IPath {
   // search ast path in treeshaking
   wxmlStructInfo?: ICO;
   // cach key of `usingComponent` used in pages
-  usingComponentKeys?: Set<string>;
+  usingComponentKeys?: Map<string, Comp>;
+  // cach template info used in pages
+  wxTemplateInfo?: Map<string, Comp>;
+  // cach template used in current page
+  usingTemplateKeys?: Map<string, string[]>;
   // cach key of skeleton files in `usingComponent` used in pages
   skeletonKeys?: Set<string>;
   // cach global style map
@@ -38,9 +70,16 @@ export interface IPath {
   treeshake?: boolean;
   isPage?: boolean;
   ignoreTags?: string[];
+  // sub page root, in order to find the components` dir used in sub page
+  subPageRoot?: string;
 }
 
 export enum animationStyle {
   shine = 'shine',
   jelly = 'jelly',
+}
+
+export interface IUnused {
+  template: Map<string, Comp>;
+  component: Set<string>;
 }

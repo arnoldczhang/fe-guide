@@ -87,12 +87,14 @@ export const cachKlassStruct = (
     klass = klass.join(' ');
   }
 
-  splitWxAttrs(klass).forEach((kl: string) => {
-    if (kl) {
-      wxmlStructInfo[kl] = wxmlStructInfo[kl] || [];
-      wxmlStructInfo[kl].push(child);
-    }
-  });
+  if (klass) {
+    splitWxAttrs(klass).forEach((kl: string) => {
+      if (kl) {
+        wxmlStructInfo[kl] = wxmlStructInfo[kl] || [];
+        wxmlStructInfo[kl].push(child);
+      }
+    });
+  }
 };
 
 /**
@@ -193,18 +195,20 @@ export const getInterSectSelectorChild = (
     return result;
   }
 
-  if (temp.length > 1) {
-    for (let i = 0, l = temp.length; i < l; i += 1) {
-      const children = temp[i];
-      for (let j = 0, jl = children.length; j < jl; j += 1) {
-        const child = children[j];
-        if (temp.every((other: IAst[][]): boolean => other.includes(child))) {
+  const tmpLen = temp.length;
+  if (tmpLen) {
+    if (tmpLen > 1) {
+      for (let i = 0, l = tmpLen; i < l; i += 1) {
+        const children = temp[i];
+        // find the intersection of all selectors` children
+        const child = children[0];
+        if (temp.slice(1).every((other: IAst[][]): boolean => other.includes(child))) {
           resultSet.add(child as IAst[]);
         }
       }
+    } else {
+      return temp[0];
     }
-  } else {
-    return temp[0];
   }
 
   result = [...resultSet];
@@ -256,6 +260,7 @@ export const getPageData = (input: string): ICO => {
   let doing: boolean = true;
   let result: ICO;
   const argSet: Set<string> = new Set();
+  if (!input) { return result; }
   iterateObjValue(input, (res: string[]) => {
     if (hasObjKey(res[1])) {
       argSet.add(RegExp.$1);
@@ -263,9 +268,10 @@ export const getPageData = (input: string): ICO => {
   });
   let fnBody: string = `return ${input};`;
   const argArr = [...argSet];
+  if (!argArr.length) { argArr.push('wx'); }
   while (doing) {
-    const getContentFn = new Function(...argArr.concat(fnBody));
     try {
+      const getContentFn = new Function(...argArr.concat(fnBody));
       result = getContentFn(
         ...getRepeatArr(argArr.length, wx),
       );
@@ -285,22 +291,31 @@ export const getPageData = (input: string): ICO => {
  * getExecWxml
  * @param content
  * @param wxml
+ * @param options
  */
 export const getExecWxml = (
   content: string,
   wxml: string,
+  options: IPath,
 ): string => {
+  const { isPage } = options;
   let data = getPageData(content);
   if (!data) { return wxml; }
   data = data || {};
-  const transWxml = wxml.replace(/((?:[^\s]+\=|))(['"]*)\{\{([^\{\}]+)\}\}(\2)/g, (m, $1, $2, $3, $4) => {
+  const dataKeyRE = new RegExp(`((?:${keys(data).join('|')}))`, 'g');
+  const transWxml = replaceWith(wxml, /((?:[^\s]+\=|))(['"]*)\{\{([^\{\}]+)\}\}(\2)/g, (m, $1, $2, $3, $4) => {
     let result;
     let scanning: boolean = true;
     const isVisibleStyle: boolean = isIfAll($1) || isHidden($1);
-    // const isForStyle: boolean = isForRelated($1);
 
     if (isVisibleStyle) {
-      result = `${$1}${$2}\{\{$\{${$3}\}\}\}${$4}`;
+      if (isPage) {
+        result = `${$1}${$2}\{\{$\{${$3}\}\}\}${$4}`;
+      } else if (keys(data).length) {
+        result = replaceWith(m, dataKeyRE, (im, i$1) => `$\{${i$1}\}`);
+      } else {
+        return m;
+      }
     } else {
       return m;
     }
@@ -362,6 +377,7 @@ export const wxmlTreeShake = (
 ): string => {
   const srcJs: string = modifySuffix(src, 'js');
   const jsContent: string | void | Promise<any> | Buffer = exists(srcJs) ? read(srcJs) : '';
+  if (!jsContent) { return content; }
   const result = transform(jsContent as string) || {};
   const { ast } = result;
   let maxDiff: number[] = [];
@@ -378,11 +394,13 @@ export const wxmlTreeShake = (
       }
     },
   });
-  try {
-    const dataString = (jsContent as string).slice(...maxDiff);
-    return getExecWxml(dataString, content);
-  } catch (err) {
-    logger.warn(err);
+  if (maxDiff.length && maxDiff.every((val: any) => val >= 0)) {
+    try {
+      const dataString = (jsContent as string).slice(...maxDiff);
+      return getExecWxml(dataString, content, options);
+    } catch (err) {
+      logger.warn(err);
+    }
   }
   return content;
 };

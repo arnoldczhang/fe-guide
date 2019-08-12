@@ -56,6 +56,12 @@ export interface IAst {
   child?: IAst[];
 }
 
+export interface IComp {
+  tag?: string;
+  path?: string;
+  children?: IComp[];
+}
+
 export type ICach = ICO & Partial<{
   [PATH]: ICO;
 }>;

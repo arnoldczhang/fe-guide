@@ -1,5 +1,15 @@
 # TODO
 
+## 日志
+
+**2019-8-5**
+
+1. react - ddd
+2. [小程序底层原理&webview](https://www.kancloud.cn/tatahy/weixin/710883)
+3. [深入基础](https://github.com/mqyqingfeng/Blog/issues/2)
+
+---
+
 ## daily
 - [每日精选博文推荐](https://github.com/kujian/frontendDaily/blob/master/2019/04/09.md)
 - [每日interview](https://github.com/yygmind/blog)

@@ -12,6 +12,9 @@
 - [前端换肤参考](https://blog.souche.com/untitled-17/)
 - [clippy属性在线调试](https://bennettfeely.com/clippy/)
 - [提高幸福感的 9 个 CSS 技巧](https://juejin.im/post/5cb45a06f265da03474df54e)
+- [Web开发者需要知道的CSS Tricks](https://juejin.im/post/5aab4f985188255582521c57)
+- [CSS 常用技巧](https://juejin.im/post/5b1f41246fb9a01e725131fb)
+- [csswg](https://drafts.csswg.org/)
 
 ## 目录
 <details>
@@ -19,6 +22,7 @@
 
 * [`常见用法`](#常见用法)
 * [`属性`](#属性)
+* [`布局`](#布局)
 * [`须知`](#须知)
 * [`答疑`](#答疑)
 
@@ -31,6 +35,29 @@
 
 ### 伪元素/伪类
 - https://segmentfault.com/a/1190000000484493
+
+**伪类**
+
+:Pseudo-classes
+行为能力的增强
+
+- :hover
+- :active
+- :visited
+- :focus
+- :link
+- :first-child
+
+
+**伪元素**
+
+::Pseudo-elements
+元素内容的丰富
+
+- ::before
+- ::after
+- ::first-letter
+- ::first-line
 
 ### img裁剪
 object-fit
@@ -116,17 +143,53 @@ document.link.disabled = false;
 }
 ```
 
+### 普通元素代替submit按钮（还有outline）
+```css
+[type="submit"] {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+}
+.btn {
+    display: inline-block;
+    padding: 2px 12px;
+    background-color: #19b955;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+}
+:focus + label.btn {
+    outline: 1px dashed hotpink;
+    outline: 3px auto -webkit-focus-ring-color;
+}
+```
+
+```html
+<div class="panel">
+    <input type="submit" id="box">
+    <label for="box" class="btn">提交</label>
+</div>
+```
+
+
+---
+
 ### z-index
 [参考](https://juejin.im/post/5ba4efe36fb9a05cf52ac192?utm_source=gold_browser_extension)
+[参考2](https://juejin.im/post/5b876f86518825431079ddd6)
+
+- 层叠上下文
+- 层叠等级
 
 #### 层叠上下文
 根层叠上下文 - <html></html>
 
+- 元素产生层叠上下文后，各元素内子元素的层叠关系由父元素决定，
+  如果父元素z-index一致，由html先后顺序决定
 - 层叠上下文可以互相包含
 - 与兄弟元素互相独立（处理层叠时）
 - 自包含：当元素内容被层叠后，整个元素在父元素内都会被层叠
 
-**新建层叠上下文**
+**如何产生层叠上下文**
 
 - position值为absolute|relative，且z-index值不为 auto
 - position 值为 fixed|sticky
@@ -148,15 +211,19 @@ document.link.disabled = false;
 - 定位元素
   * z-index
 - 非定位元素
-  * 层叠顺序
-  * HTML中顺序
   * 父级以上元素层叠等级
+  * HTML中顺序
+  * 层叠顺序
 
 #### z-index
 正整数、负整数、0、auto，默认auto
 
 #### 层叠顺序
 ![层叠顺序](./层叠顺序.png)
+
+注：inline/inline-block的等级高于block，是因为网页设计之初就是希望文字能不被覆盖
+
+---
 
 ### :focus-visible
 键盘访问（比如按tab）时，元素边缘会出现选中的蓝框
@@ -187,25 +254,6 @@ Chrome浏览器67+支持
 }
 .demo2 > li:last-child {
   margin-left: auto;
-}
-</style>
-```
-
-### 垂直水平居中
-```css
-<div id="grid">
-  <div id="box">aa</div>
-</div>
-<style>
-#grid {
-  display: flex;
-  height: 500px;
-  width: 500px;
-}
-#box {
-  margin: auto;
-  height: 100px;
-  width: 100px;
 }
 </style>
 ```
@@ -403,13 +451,19 @@ document.getElementById('box').addEventListener('animationiteration', function()
 flex-shrink: 0
 
 ### 垂直居中
+
+- PC端有兼容性要求，宽高固定，推荐absolute + 负margin
+- PC端有兼容要求，宽高不固定，推荐css-table
+- PC端无兼容性要求，推荐flex
+- 移动端推荐使用flex
+
 ```html
 <div class="margin" style="width: 500px;height: 500px;background-color: aqua">
     <div class="center" style="width: 200px;height: 200px;background-color: antiquewhite"></div>
 </div>
 ```
 
-- 百分比 + transform
+- absolute + transform
   ```css
   .center{
       position: absolute;
@@ -418,12 +472,22 @@ flex-shrink: 0
       transform: translate(-50%, -50%);
     }
   ```
+- grid
+  ```css
+  .margin {
+      display: grid;
+  }
+  .center {
+      align-self: center;
+      justify-self: center;
+  }
+  ```
 - flex
   ```css
   .margin {
       display: flex;
       justify-content: center;
-      align-items: Center;
+      align-items: center;
   }
   ```
 - flex + margin
@@ -436,7 +500,7 @@ flex-shrink: 0
   margin: auto;
 }
 ```
-- 绝对定位
+- absolute + margin auto
  ```css
  .margin{
     position: relative;
@@ -449,6 +513,46 @@ flex-shrink: 0
     top: 0; left: 0; bottom: 0; right: 0;
   }
  ```
+- absolute + calc
+  ```css
+  .margin {
+      position: relative;
+  }
+  .center {
+      position: absolute;;
+      top: calc(50% - 50px);
+      left: calc(50% - 50px);
+  }
+  ```
+- writing-mode
+  * 文字显示方向
+  ```css
+  .margin {
+    writing-mode: vertical-lr;
+  }
+  ```
+- table
+  ```css
+  .margin {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .center {
+    display: inline-block;
+  }
+  ```
+- vertical-align + font-size 0
+  ```css
+  #parent{
+    height: 150px;
+    line-height: 150px;
+    font-size: 0;
+  }
+  img#son{
+    vertical-align: middle;
+  }
+  ```
 
 ---
 
@@ -531,10 +635,246 @@ border: 0 - 边框宽度为0，会渲染，占内存
 - fixed
   * 绝对定位，相对于浏览器窗口定位
 - relative
-  * 相对于元素自身位置定位，所以类似`left:20px`有效
+  * 相对于元素自身位置定位，所以类似`left:20px`有效果
+  * 自身位置仍然占据
 - static
   * 默认，没有定位，元素处于正常流中，类似`left:20px`无效
 
+---
+
+## 布局
+
+### 垂直居中
+[参考](../../css-related/README.md#垂直居中)
+
+- 优先line-height
+- [vertical-align](https://www.zhangxinxu.com/wordpress/2015/08/css-deep-understand-vertical-align-and-line-height/)
+- absolute
+- flex
+
+### 水平居中
+[各种布局](https://juejin.im/post/5aa252ac518825558001d5de#heading-8)
+- 纯文本
+  ```css
+  .center {
+    text-align: center;
+    display: inline; // 或inline-block
+  }
+  ```
+- 非移动端
+  ```css
+  .center {
+    margin: 0 auto;
+  }
+  ```
+- 移动端-flex
+
+### 水平垂直居中
+- button做父元素（IE下，点击会有外边框）
+  ```css
+  button#parent{  /*改掉button默认样式就好了,不需要居中处理*/
+    height: 150px;
+    width: 200px;
+    outline: none;  
+    border: none;
+  }
+  ```
+- table-cell
+  ```css
+  #parent{
+    height: 150px;
+    width: 200px;
+    display: table-cell;
+    vertical-align: middle;
+    /*text-align: center;*/   /*如果是行内元素就添加这个*/
+  }
+  #son{
+      /*margin: 0 auto;*/    /*如果是块级元素就添加这个*/
+      width: 100px;
+      height: 50px;
+  }
+  ```
+- absolute + top/bottom/left/right:0 + margin: auto
+- flex
+
+### 两列布局
+- float:left + margin-left
+- float:left + overflow:hidden
+- table(margin失效)
+- flex
+- grid
+
+### 三列布局
+- 中间flex: 1 + 左右定宽
+- 双飞翼
+- 圣杯
+
+#### 双飞翼
+左列和右列宽度恒定，中间列的宽度根据浏览器窗口的大小自适应
+
+**中间内容放最前面**
+
+```html
+<div class="container">
+  <!-- 放最前面 -->
+  <div class="column" id="center_panel">
+    <div class="box"></div>
+  </div>
+  <div class="column" id="right_panel"></div>
+  <div class="column" id="left_panel"></div>
+</div>
+```
+
+**三栏都脱离文档流**
+
+```css
+.column {
+  float:left;
+}
+```
+
+**中间栏宽度自适应**
+
+```css
+#center_panel {
+  width: 100%;
+}
+```
+
+**左边栏通过margin-left置左**
+
+```css
+#left_panel {
+  width: 100px;
+  margin-left: -100%; // margin相对父元素宽度
+}
+```
+
+**右边栏通过margin-left置右**
+
+```css
+#right_panel {
+  width: 100px;
+  margin-left: -100px; // 本身会换行，-自身宽度会移回上一行
+}
+```
+
+**中间栏主体内容设margin**
+
+```css
+.box {
+  margin: 0 100px 0 100px;
+}
+```
+
+**容器清除浮动**
+
+```css
+.container::after {
+  content: '';
+  display: block;
+  height: 0;
+  clear:both;
+  visibility: hidden;  
+}
+```
+
+#### 圣杯
+和双飞翼类似
+
+**文档结构不变**
+
+**容器加padding**
+
+```css
+.container {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 100px 0 100px; // 左右padding是左右边栏宽度
+}
+```
+
+**三栏加position:relative**
+
+```css
+.column {
+  float:left;
+  height: 300px;
+  position: relative; // left相对于自身定位，所以要加relative
+}
+```
+
+**左边栏置左**
+
+```css
+#right_panel {
+  width: 100px;
+  margin-left: -100%;
+  left: -100px; // 加了relative所以有效
+}
+```
+
+**右边栏置右**
+
+```css
+#left_panel {
+  width: 100px;
+  margin-left: -100px;
+  right: -100px;
+}
+```
+
+### 多列等宽
+- flex
+```css
+#parent {
+  margin-left: -15px;  /*使内容看起来居中*/
+  height: 500px;
+  display: flex;
+}
+.column{
+  flex: 1; /*一起平分#parent*/
+  margin-left: 15px; /*设置间距*/
+}
+.column:nth-child(odd){
+  background-color: #f00;
+}
+.column:nth-child(even){
+  background-color: #0f0;
+}
+```
+
+### 九宫格
+- grid
+```html
+<body>
+  <div id="parent">
+      <div class="item">1</div>
+      <div class="item">2</div>
+      <div class="item">3</div>
+      <div class="item">4</div>
+      <div class="item">5</div>
+      <div class="item">6</div>
+      <div class="item">7</div>
+      <div class="item">8</div>
+      <div class="item">9</div>
+  </div>
+</body>
+```
+
+```css
+#parent {
+    width: 1200px;
+    height: 500px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /*等同于1fr 1fr 1fr,此为重复的合并写法*/
+    grid-template-rows: repeat(3, 1fr);  /*等同于1fr 1fr 1fr,此为重复的合并写法*/
+}
+.item {
+    border: 1px solid #000;
+}
+```
 
 ---
 

@@ -24,8 +24,10 @@
 * [`相关库`](#相关库)
 * [`lifecycle`](#lifecycle)
 * [`更新过程`](#更新过程)
+* [`react16之前`](#react16之前)
+* [`react16`](#react16)
 * [`redux大型项目构建`](#redux大型项目构建)
-* [`ReactHooks流程`](#React Hooks流程)
+* [`React Hooks流程`](#ReactHooks流程)
 * [`React进阶`](#React进阶)
 * [`concurrent`](#concurrent)
 * [`contextAPI`](#contextAPI)
@@ -78,6 +80,130 @@ class ExampleComponent extends React.Component {
 - componentWillUpdate
 - render
 - componentDidUpdate
+
+---
+
+## react16之前
+- 自顶向下递归解析，生成虚拟节点
+- 通过diff算法，生成变更patch
+- patch放到更新队列
+- 无法中断，直到整棵虚拟节点树解析完成，才会将线程交给渲染引擎
+
+### diff策略
+1. 针对input、option、select、textarea做了特殊处理
+2. 针对dom属性做处理
+  * style
+  * 其他属性
+3. 针对dom&dom子节点做处理
+  * text不同 => updateTextContent
+  * key、type不同 => 节点增、删、改
+
+---
+
+## react16
+[requestIdleCallback](../js&browser/requestIdleCallback.md)
+
+### fiber
+- 虚拟的堆栈帧
+- 存在优先级
+- 时间分片
+
+#### 结构
+- return: 父节点
+- sibling: 下一个兄弟节点
+- child: 子节点
+- alternate: current-tree <==> workInProgress-tree对应的fiber
+
+### first-render
+![first render](../mobx/react16-init.png)
+
+1. render阶段
+  * React.createElement创建element-tree
+  * 每个element绑定fiber，记录上下文信息
+  * fiber-tree => current-tree
+  * setState会重建element，更新fiber的必要属性
+2. schedule阶段
+  * schedule work
+    + 根据fiber找其根节点root（找不到则会根据fiber类型，出warnUnmounted）
+    + 查找过程更新每个fiber的expirationTime
+  * request work
+    + 将root-fiber提上schedule
+  * perform work
+    + 构造workInProgress-tree
+    + current指向新的fiber
+3. reconcile阶段
+  * reconcilation
+    + 遍历fibers，diff出effectlist（各种变更信息）给commit阶段
+  * commit
+    + commitRoot根据effect的effectTag，分别做增、删、改等操作
+    + 最终将结果反映到真实dom
+
+### diff策略
+reconcileChildFibers
+
+#### 判断fiber类型
+- text节点
+- 单个element
+- element数组
+
+#### text节点
+- 如果第一个节点是text节点
+  * 删除剩余sibling节点
+  * 复用第一个节点
+- 如果第一个节点不是text节点
+  * 删除当前及其sibiling节点
+  * 创建text节点
+
+注：删除只是打上tag=delete，真正在commit时删除
+
+#### 单个element节点
+- props
+- 如果key、type相同
+  * 删除老fiber的siblings
+  * 复用老fiber
+- 如果key、type不同
+  * 在当前fiber及siblings里找key相同的，复用
+  * 找不到的话，删除当前fiber，创建新fiber
+- 如果key相同、type不同
+  * 复用老fiber，删除siblings
+
+#### element数组
+- 遍历
+- 如果newChild是text节点
+  * 老fiber有key的话（说明是element），不能复用，返回null
+  * 老fiber没有key的话，复用
+- 如果newChild是element节点
+  * 根据key、type判断是否可复用
+
+#### 整个流程
+1. 新老fiber的index对比，用updateSlot找可复用的fiber（kty、type）
+2. 老fiber数和新fiber数对比，老<新，新fiber插入，否则老fiber批量删除
+3. 老fiber按key、index存到map，遍历新数组，做老元素移动/插入处理
+
+### 对比差异
+- react16将渲染阶段分为三段（render，diff，commit）
+- fiber是链表形式
+- 每个fiber有expirationTime、优先级（用于在commit阶段做时间分片渲染）
+
+### 一些问题
+
+#### 虚拟节点和fiber区别
+- 虚拟节点描述的还是node
+- fiber是虚拟节点的抽象表示，类似一个工作单元，便于中断挂起
+
+#### 拆分维度
+按虚拟节点element拆
+
+#### 如何调度
+- 工作循环
+- fiber优先级
+
+每次工作单元处理完，判断当前帧是否有空余时间，
+没有的话，用requestIdleCallback回调执行
+
+#### 中断/断点恢复
+- fiber保存当前进度（firstEffect、lastEffect）
+- 修改effectTag（Update、Snapshot、Deletion、Placement）
 
 ---
 
@@ -213,7 +339,7 @@ const domainsReducer = combineReducers({
 
 ---
 
-## React Hooks流程
+## ReactHooks流程
 ![react hooks](react-hook.jpg)
 
 ---

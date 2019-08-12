@@ -1,3 +1,4 @@
+import { SKELETON } from "../config/dir";
 import { CF } from "../types";
 import { isStr } from "./assert";
 import { identity } from "./dir";
@@ -59,7 +60,7 @@ export const withoutPageSelector = (selector: string): boolean => (
 );
 
 export const hasObjKey = (input: string): boolean => (
-  /^\s*[!~\-\+\/]*([^\.]+)\./.test(input)
+  /^\s*[!~\-\+\/]*\(?([^'"\.\s]+)\./.test(input)
 );
 
 export const hasUnDefVariable = (input: string): boolean => (
@@ -72,6 +73,10 @@ export const hasUnDefProperty = (input: string): boolean => (
 
 export const isItemVar = (input: string): boolean => (
   /item\.?/.test(input)
+);
+
+export const isGenWxss = (input: string): boolean => (
+  new RegExp(`\\.${SKELETON}\\.wxss['"]?$`).test(input)
 );
 
 // ============= //
@@ -97,7 +102,7 @@ export const splitWxAttrs = (input: string): string[] => (
 // #aa.bb:focus
 // page#aa.bb:focus
 export const matchIdStyle = (key: string): any[] | null => (
-  key.match(/(?:^([\.\w]+)?(#[^#\.\:]+)(\.\w+)?(\:[a-z]+)?$)/)
+  key.match(/(?:^([\.\-\w]+)*(#[^#\.\:]+)([\.\-\w]+)*(\:\:?[a-z]+)?$)/)
 );
 
 // ============== //
@@ -107,15 +112,22 @@ export const replaceWith = (
   input: string,
   reg: RegExp | string = /\s+/,
   replacement?: CF,
-) => (
-    input.replace(reg, replacement)
+): string => (
+  input.replace(reg, replacement)
+);
+
+export const addSuffixWxss = (
+  input: string,
+  suffix = SKELETON,
+): string => (
+  input.replace(/(.+)\.(wxss)$/, `$1.${suffix}.$2`)
 );
 
 export const interceptWxVariable = (
   input: any,
   replacement?: string,
 ): string => (
-  isStr(input) ? input.replace(/\{\{([^\{\}]+)\}\}/, replacement || '$1') : input
+  isStr(input) ? input.replace(/\{\{([^\{\}]*)\}\}/, replacement || '$1') : input
 );
 
 export const replacePseudo = (
@@ -134,11 +146,12 @@ export const removeComment = (file: string): string => (
     .replace(/(\s|^)\/\/.*/g, '$1')
 );
 
-export const removeBlank = (input: string): string => (
+export const removeBlankAndWxVariable = (input: string): string => (
   input.replace(/(?:\n|\t|^ +| +$|\{\{[^\{\}]*\}\})/g, '')
 );
 
 // rgb(0, 0, 0)
+// hsl(0, 0, 0)
 // #f1f1f1
 export const replaceColorSymbol = (input: string): string => (
   input.replace(/[#,\(\)\s]*/g, '')
@@ -216,6 +229,11 @@ export const getTemplateIs = (
     getExecRes(input, /<template[^\/\>]*is=(['"])([^'"]+)\1[^\/\>]*\/?>/g)
 );
 
+/**
+ * getPropTarget
+ * @param input
+ * @param prop
+ */
 export const getPropTarget = (
   input: string,
   prop: string,

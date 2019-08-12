@@ -58,7 +58,12 @@ export const getRelativePath = (src: string, dest: string) => {
     }
     index++;
   }
-  return `${Array(destLen - index).fill('..').join('/')}/${srcArr.slice(index).join('/')}/${fileName}`;
+  const pathSrc = srcArr.slice(index).join('/');
+  // Fix: duplicate `/` in output path
+  const finalTag = index === lenCount && !pathSrc ? '' : '/';
+  const pathSize = destLen - index;
+  const relativeDot = pathSize ? Array(pathSize).fill('..').join('/') : '.';
+  return `${relativeDot}/${pathSrc}${finalTag}${fileName}`;
 };
 
 export const identity = (v: any): any => v;

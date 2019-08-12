@@ -3,6 +3,7 @@
 ## 参考
 - [基础20题](https://mp.weixin.qq.com/s/ViucwxvZg-g_YsHxN1PiAA)
 - [前端100问](https://juejin.im/post/5d23e750f265da1b855c7bbe?utm_source=gold_browser_extension#heading-2)
+- [前端必学](https://juejin.im/post/5d387f696fb9a07eeb13ea60?utm_source=gold_browser_extension)
 
 ## 目录
 <details>
@@ -38,6 +39,7 @@
 * [`算法题`](#算法题)
 * [`如何实现一个new`](#如何实现一个new)
 * [`http2多路复用`](#http2多路复用)
+* [`描述网页从输入url到渲染的过程`](#描述网页从输入url到渲染的过程)
 * [`TCP三次握手&四次挥手的理解`](#TCP三次握手&四次挥手的理解)
 * [`react的setState变更的同/异步`](#react的setState变更的同/异步)
 * [`npm模块安装机制`](#npm模块安装机制)
@@ -57,7 +59,7 @@
 * [`实现sleep`](#实现sleep)
 * [`https`](#https)
 * [`埋点请求用1x1图片`](#埋点请求用1x1图片)
-* [`垂直居中`](#垂直居中)
+* [`css布局`](#css布局)
 * [`排序`](#排序)
 * [`class/function`](#class/function)
 * [`display/opacity/visibility`](#display/opacity/visibility)
@@ -79,7 +81,21 @@
 * [`vue在v-for时给每项元素绑定事件需要用事件代理吗?`](#vue在v-for时给每项元素绑定事件需要用事件代理吗?)
 * [`反爬虫技术`](#反爬虫技术)
 * [`逆序数字（递归实现）`](#逆序数字（递归实现）)
-
+* [`正则引擎`](#正则引擎)
+* [`node异步错误捕获`](#node异步错误捕获)
+* [`css影响页面加载`](#css影响页面加载)
+* [`BOMvsDOMvsHTML5`](#BOMvsDOMvsHTML5)
+* [`white-space/word-break/word-wrap`](#white-space/word-break/word-wrap)
+* [`z-index`](#z-index)
+* [`CSS性能优化`](#CSS性能优化)
+* [`jsonp`](#jsonp)
+* [`浏览器页面资源加载过程与优化`](#浏览器页面资源加载过程与优化)
+* [`懒加载`](#懒加载)
+* [`css布局`](#css布局)
+* [`文档流`](#文档流)
+* [`清除浮动`](#清除浮动)
+* [`jsbridge`](#jsbridge)
+* [`前端监控&异常捕获`](#前端监控&异常捕获)
 
 </details>
 
@@ -216,15 +232,29 @@ const count = arr.reduce((t, c) => {
 ### flex属性
 **flex-basis**
 
-- 设置或检索弹性盒伸缩基准值
+- 设置或检索弹性盒伸缩基准值，不设置，默认使用元素的width，
+  如果width是auto，宽度由文本内容决定
 - 用法
   * flex-basis: 120px;
   * flex-basis: auto;
   * flex-basis: 10%;
 
+**flex-grow**
+
+- 设置弹性盒对象扩展比
+- 如果子元素的宽度和小于父容器，则剩余空间根据flex-grow瓜分
+- 默认0，即剩余空间宽度瓜分到0，到当前子元素
+- 
+
+**flex**
+
+flex: 1
+
+- 均分父元素剩余宽度达到自适应
+
 **flex-shrink**
 
-- 元素收缩比
+- 设置弹性盒对象收缩比
 - 用法
   * flex-shrink: 0; // 不收缩
   * flex-shrink: 1; // 默认值
@@ -303,6 +333,7 @@ const count = arr.reduce((t, c) => {
 - top和bottom 、left和right: 相对于直接非static父元素的高度/宽度
 - padding/margin: 相对于直接父元素的width，与height无关
 - border-radius: 相对于自身宽度
+- vertical-align: 百分比相对于自身line-height计算
 
 #### vh/vw
 缺点：
@@ -323,16 +354,32 @@ const count = arr.reduce((t, c) => {
 - 插件：postcss-px-to-viewport
 
 #### rem
+本质是等比缩放
+
 缺点：font-size的设置必须在样式前
 
 - 默认1rem = 16px
-- rem只是制定等比缩放
 - 配合媒体查询才能实现响应式
+- 当html的字体大小恒等于屏幕宽度 / 100，则1rem = 1vw
+- 在dom ready、resize、屏幕rotate时重新计算html的font-size
+
+**举例**
+
+```js
+// 1. 计算font-size
+document.documentElement.style.fontSize = document.documentElement.clientWidth / 100 + 'px';
+
+// 2. 计算元素宽度
+// 比如设计稿尺寸是640px，元素宽度100px
+// 公式：元素宽度 / 640 * 100
+// 元素宽度 = 100 / 640 * 100 = 15.625rem
+```
 
 **步骤**
 
 1. 给根元素设置字体大小，并在body元素校正
 ```css
+<!-- 1rem = 100px -->
 html{font-size:100px;}
 <!-- 1rem = 10px -->
 html{font-size: 62.5%;}
@@ -386,69 +433,40 @@ module.exports = {
 **设置font-size**
 
 ```js
-!function(a,b){
-  function c(){
-    var b=f.getBoundingClientRect().width;
-    b/k>540&&(b=540*k);
-    var c=b/10;
-    f.style.fontSize=c+"px",m.rem=a.rem=c
+const resize = (size) => {
+  let viewWidth
+  const dpr = window.devicePixelRatio
+  const html = document.documentElement
+  const dataDpr = html.getAttribute('data-dpr')
+  const ratio = dataDpr ? (dpr / dataDpr) : dpr
+
+  try {
+    viewWidth = +(html.getAttribute('style').match(/(\d+)/) || [])[1]
+  } catch(e) {
+    const w = html.offsetWidth
+    if (w / dpr > 540) {
+      viewWidth = 540 * dpr / 10
+    } else {
+      viewWidth = w / 10
+    }
   }
-var d,e=a.document,f=e.documentElement,
-g=e.querySelector('meta[name="viewport"]'),
-h=e.querySelector('meta[name="flexible"]'),
-i=e.querySelector('meta[name="flexible-in-x5"]'),
-j=!0,k=0,l=0,m=b.flexible||(b.flexible={});
-if(g){
-  console.warn("将根据已有的meta标签来设置缩放比例");
-  var n=g.getAttribute("content").match(/initial\-scale=([\d\.]+)/);
-  n&&(l=parseFloat(n[1]),k=parseInt(1/l))
-} else if(h){
-  var o=h.getAttribute("content");
-  if(o){
-    var p=o.match(/initial\-dpr=([\d\.]+)/),
-    q=o.match(/maximum\-dpr=([\d\.]+)/);
-    p&&(k=parseFloat(p[1]),l=parseFloat((1/k).toFixed(2))),
-    q&&(k=parseFloat(q[1]),l=parseFloat((1/k).toFixed(2)))
+
+  viewWidth = viewWidth * ratio
+
+  if (Number(viewWidth) >= 0 && typeof viewWidth === 'number') {
+    return (size * viewWidth) / 75 // 75 is the 1/10 iphone6 deivce width pixel
+  } else {
+    return size
   }
-}if(i&&(j="false"!==i.getAttribute("content")),!k&&!l){
-  var r=(a.navigator.appVersion.match(/android/gi),a.chrome),
-  s=a.navigator.appVersion.match(/iphone/gi),
-  t=a.devicePixelRatio,u=/TBS\/\d+/.test(a.navigator.userAgent),v=!1;
-  try{
-    v="true"===localStorage.getItem("IN_FLEXIBLE_WHITE_LIST")
-  }catch(w){
-    v=!1
-  }
-  k=s||r||u&&j&&v?t>=3&&(!k||k>=3)?3:t>=2&&(!k||k>=2)?2:1:1,l=1/k
-}if(f.setAttribute("data-dpr",k),!g)
-  if(g=e.createElement("meta"),g.setAttribute("name","viewport"),g.setAttribute("content","initial-scale="+l+", maximum-scale="+l+", minimum-scale="+l+", user-scalable=no"),f.firstElementChild)
-    f.firstElementChild.appendChild(g);
-  else{
-    var x=e.createElement("div");
-    x.appendChild(g),e.write(x.innerHTML)
-  }
-  a.addEventListener("resize",function(){
-    clearTimeout(d),d=setTimeout(c,300)
-  },!1),
-  a.addEventListener("pageshow",function(a){
-    // persisted 是否来自缓存
-    a.persisted&&(clearTimeout(d),d=setTimeout(c,300))
-  },!1),
-  "complete"===e.readyState?e.body.style.fontSize=12*k+"px":e.addEventListener("DOMContentLoaded",function(a){
-    e.body.style.fontSize=12*k+"px"
-  },!1),c(),m.dpr=a.dpr=k,m.refreshRem=c,
-  m.rem2px=function(a){
-    var b=parseFloat(a)*this.rem;
-    return"string"==typeof a&&a.match(/rem$/)&&(b+="px"),b
-  },m.px2rem=function(a){
-    var b=parseFloat(a)/this.rem;
-    return"string"==typeof a&&a.match(/px$/)&&(b+="rem"),b
-  }
-}(window,window.lib||(window.lib={}));
+};
 ```
+
+---
 
 ### setTimeout原理
 [参考](../../js&browser/基本常识.md#setTimeout)
+
+---
 
 ### onload/DOMContentLoaded
 [DOMContentLoaded](https://juejin.im/post/5b2a508ae51d4558de5bd5d1)
@@ -456,17 +474,32 @@ if(g){
 #### DOMContentLoaded
 - HTML5事件
 - 初始的HTML文件被完整读取时触发
+- 异步加载的css，不会影响DOMContentLoaded
+
+**几种说法**
+
+说法一：js高程
+- 形成完整dom树后触发
+- 不理会js、css、图片等资源文件
+
+说法二：普遍观点
 - 等待js的下载 + 加载
-- 不理会css、图片、iframe的完成加载
-- chrome76测下来css加载会影响DOMContentLoaded
+- 不理会css、图片、iframe等的加载
+
+说法三：较权威的观点
+[css加载](https://segmentfault.com/a/1190000018130499)
+- 只存在css 或 js加载在css之前，DOMContentLoaded不需要等css加载完才触发
+- 存在css和js 或 js加载在css后面，DOMContentLoaded需要等css和js都加载完才触发
+
+我的实验：chrome76
+- 无论js是否存在，或js和css位置关系如何，都会影响DOMContentLoaded触发
 
 #### onload
 - DOM事件
 - 所有内容加载完，包括js中的js、css、图片、iframe
 - 不包括请求
 
-### https原理，如何判断私钥合法
-TODO
+---
 
 ### 事件触发过程
 - attachEvent(event,listener)
@@ -474,6 +507,8 @@ TODO
 
 捕获 - 目标状态 - 冒泡
 onDoingthing冒泡阶段触发
+
+---
 
 ### a==1&&a==2&&a==3
 
@@ -562,10 +597,11 @@ js被解析和执行环境的抽象概念
   * this
 
 #### 作用域链
-作用域的工作模型，分两种
-1. 词法作用域（js是这种）
-2. 动态作用域
-
+- 作用域在函数定义时就决定了
+- 作用域的工作模型，分两种
+  1. 词法（静态）作用域（js是这种）
+  2. 动态作用域
+    * bash脚本
 
 **作用域**
 
@@ -695,7 +731,7 @@ var flattenArray = (arr) => {
 
 ---
 
-### 何为可迭代对象
+### 可迭代对象
 - Array
 - Map
 - Set
@@ -753,11 +789,13 @@ var flattenArray = (arr) => {
 function vs class
 
 #### function
-- function声明提升，class有暂时性死区
-- function内部可引用未声明变量，class内部不行，因为会自动启用严格模式
+- function声明提升
+- function内部可引用未声明变量，
 - function方法、原型可枚举，class都不可枚举
 
 #### class
+- class有暂时性死区
+- class内部会自动启用严格模式
 - class的静态方法、原型方法都没有prototype，也没[[constructor]]，所以都不能实例化
 - class只能用new调用
 - class内部重写类名无效
@@ -856,6 +894,11 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
 
 ---
 
+### 描述网页从输入url到渲染的过程
+[过程](../../js&browser/页面过程与浏览器缓存.md#过程简述)
+
+---
+
 ### TCP三次握手&四次挥手的理解
 [网络编程基础](https://crystalwindz.com/unp_note_1/#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E6%9C%AC%E4%B9%A6%E7%AE%80%E4%BB%8B)
 
@@ -866,7 +909,7 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
 
 #### 四次挥手
 - 客户端发送要求断开的请求
-- 服务端返回正在断开的请求
+- 服务端返回正在断开的请求【服务端可能并不会立即关闭SOCKET，所以先返回ACK】
 - 服务端返回已经关闭的请求
 - 客户端发送正式断开的请求
 
@@ -974,6 +1017,7 @@ instanceof
 **回流**
 
 - 几何属性变动，页面需要全部或局部更新
+- [触发浏览器回流的属性方法一览表](https://mp.weixin.qq.com/s/EL40dbdMWKh9BSfHKtZf2Q)
 
 回流必定会发生重绘，重绘不一定会引发回流
 
@@ -1244,15 +1288,21 @@ sleep(output,1000);
 [http](../../http/README.md)
 [参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/74)
 
-https = http + ssl安全层（比http多了2次tls的RTT）
+https = http + tls安全层（比http多了2次tls的RTT）
+
+#### 与http的区别
+- https需要证书
+- http是明文传输，https会用tls加密传输
+- http80端口，https443端口
 
 #### 加密方式
 
 **非对称加密**
 
-- A发起请求B，带自己公钥
-- B将信息用公钥加密，返给A
-- A用自己私钥解密B返的信息
+- 服务端A，将公钥发送给客户端B
+- 客户端B产生一个秘钥，用服务端A的公钥加密，返给服务端A
+- 服务端A用自己私钥解密B返的信息，获取客户端B的秘钥
+- 以后A和B的数据通信都通过这个秘钥加密
 
 #### 风险
 
@@ -1272,7 +1322,7 @@ https = http + ssl安全层（比http多了2次tls的RTT）
 
 **鉴别真伪**
 
-- B向A请求时，A返回的是证书（不再是自己的公钥）
+- 客户端B向服务端A请求时，A返回的是证书（不再是自己的公钥）
 - B根据证书对应机构的公钥，解密出证书签名
 - B使用同样规则，生成自己的证书签名，两者对比一致，说明证书有效
 - B用机构的公钥，解密出A的公钥，之后就是非对称加密的过程
@@ -1296,11 +1346,6 @@ https = http + ssl安全层（比http多了2次tls的RTT）
 - 执行过程无阻塞
 - 相比XMLHttpRequest对象发送GET请求，性能上更好
 - GIF的最低合法体积最小
-
----
-
-### 垂直居中
-[参考](../../css-related/README.md#垂直居中)
 
 ---
 
@@ -1392,11 +1437,11 @@ LazyMan.prototype = {
 ### display/opacity/visibility
 
 #### 结构
-|  | 从渲染树中消失 | 渲染时占空间 | 事件监听 |
-| -------- | -----: | :----: | :----: |
-| display: none | √ | × | × |
-| opacity: 0 | × | √ | √ |
-| visibility: hidden | × | √ | × |
+|  | 从渲染树中消失 | 渲染时占空间 | 事件监听 |  影响计数 |
+| -------- | -----: | :----: | :----: | :----: |
+| display: none | √ | × | × | √ |
+| opacity: 0 | × | √ | √ | × |
+| visibility: hidden | × | √ | × | × |
 
 #### 继承性
 - 子元素都会继承
@@ -1502,7 +1547,7 @@ https://jsperf.com
 
 ### JSpring的vnode解析
 - html -> vobj
-  ```js
+  ```json
   {
     tagName : tagName,
 		staticAttrs : staticAttrs,
@@ -1628,4 +1673,319 @@ function fun(num){
     }
 }
 ```
+
+---
+
+### 正则
+
+#### 正则引擎
+- NFA：非确定性有限状态自动机
+- DFA：确定性有限状态自动机
+
+---
+
+### node异步错误捕获
+- uncaughtException
+  ```js
+  process.on('uncaughtException', (e)=>{
+    console.error('process error is:', e.message);
+    // 显式的手动杀掉进程
+    process.exit(1);
+    restartServer(); // 重启服务
+  });
+  ```
+- domain
+  * 把处理多个不同的IO的操作作为一个组。注册事件和回调到domain，当发生一个错误事件或抛出一个错误时，domain对象会被通知，不会丢失上下文环境，也不导致程序错误立即退出
+  ```js
+  const domain = require('domain');
+  const d = domain.create();
+
+  d.on('error', (err) => {
+    console.log('err', err.message);
+    console.log(needSend.message);
+  });
+
+  const needSend = { message: '需要传递给错误处理的一些信息' };
+  d.add(needSend);
+  d.run(() => {
+    setTimeout(() => {
+      throw new Error('aaaa');
+    }, 1);  
+  });
+  ```
+
+#### 多进程使用domain例子
+```js
+const cluster = require('cluster');
+const os = require('os');
+const http = require('http');
+const domain = require('domain');
+
+const d = domain.create();
+
+if (cluster.isMaster) {
+  const cpuNum = os.cpus().length;
+  for (let i = 0; i < cpuNum; ++i) {
+    cluster.fork()
+  };
+  // fork work log
+  cluster.on('fork', worker=>{
+    console.info(`${new Date()} worker${worker.process.pid}进程启动成功`);
+  });
+  // 监听异常退出进程，并重新fork
+  cluster.on('exit',(worker,code,signal)=>{
+    console.info(`${new Date()} worker${worker.process.pid}进程启动异常退出`);
+    cluster.fork();
+  })
+} else {
+  http.createServer((req, res)=>{
+    d.add(res);
+    d.on('error', (err) => {
+      console.log('记录的err信息', err.message);
+      console.log('出错的 work id:', process.pid);
+      // uploadError(err)  // 上报错误信息至监控
+      res.end('服务器异常, 请稍后再试');
+      // 将异常子进程杀死
+      cluster.worker.kill(process.pid);
+    });
+    d.run(handle.bind(null, req, res));
+  }).listen(8080);
+}
+
+function handle(req, res) {
+  if (process.pid % 2 === 0) {
+    throw new Error(`出错了`);
+  }
+  res.end(`response by worker: ${process.pid}`);
+};
+```
+
+---
+
+### css影响页面加载
+[参考](../../js&browser/页面过程与浏览器缓存.md#知识点)
+
+---
+
+### BOMvsDOMvsHTML5
+
+#### BOM
+浏览器对象模型
+
+- window
+- location
+- navigator
+
+#### DOM
+文档对象模型
+
+- nodeType
+- querySelectorAll
+- treewalker
+- onload
+
+#### HTML5
+各浏览器自定义的模型
+
+- DOMContentLoaded
+
+---
+
+### white-space/word-break/word-wrap
+[参考](https://juejin.im/post/5b8905456fb9a01a105966b4)
+
+#### white-space
+控制空白字符的显示
+
+- normal: 空格和换行符无效，自动换行
+- nowrap: 永不换行
+- pre: 即preserve，空格和换行符保留，无自动换行
+- pre-wrap: 即preserve + wrap，空格和换行符保留，自动换行
+- pre-line: 即preserve new line +wrap，空格无效，换行符保留，自动换行
+
+#### word-break
+控制单词如何被拆分换行
+
+- keep-all: 一律不换行，除了空格
+- break-all: 一律换行
+
+#### word-wrap
+控制单词如何被拆分换行
+
+- break-word: 当一个单词一行显示不下时，才会换行
+
+---
+
+### z-index
+[参考](../../css-related/README.md#z-index)
+
+---
+
+### CSS性能优化
+- 内联首屏关键css
+  * 【<14.6kb，[tcp连接](https://tylercipriani.com/blog/2016/09/25/the-14kb-in-the-tcp-initial-window/)单次往返最大数据量】
+- 文件压缩
+- 去除无用css
+- 有效使用选择器
+  * css选择器从右向左解析
+  * 现代浏览器对不同选择器的解析已做了优化，差别很小
+  * 避免嵌套过深
+  * 避免标签+id混用
+  * 避免通配符
+  * 维持可读性
+- 异步加载css
+  * js动态建link
+  * link的media设为不匹配的媒体类型，加载完后改回正确类型
+    ```html
+    <link rel="stylesheet" href="mystyles.css" media="noexist" onload="this.media='all'">
+    ```
+  * link的ref设为alternate可选样式表
+    ```html
+    <link rel="alternate stylesheet" href="mystyles.css" onload="this.rel='stylesheet'">
+    ```
+  * link的ref设为preload，as设为style
+    + html标准规范，目前尚有兼容性问题
+    + 相比上两种方式，能更早加载css
+    ```html
+    <link rel="preload" href="mystyles.css" as="style" onload="this.rel='stylesheet'">
+    ```
+- 避免昂贵属性
+  * box-shadow
+  * border-radius
+  * filter
+  * opacity
+  * :nth-child
+- 优化重绘重排
+- 避免@import
+  * 破坏了浏览器并行下载
+
+---
+
+### jsonp
+[沙箱技术](https://github.com/aui/jsonp-sandbox/issues/13)
+
+---
+
+### 浏览器页面资源加载过程与优化
+
+#### 加载过程
+- 资源分类
+- 安全策略检查
+- 计算资源优先级
+- 按优先级加载
+
+**安全策略检查**
+
+[安全策略检查](../../js&browser/网络安全.md#CSP)
+
+**计算资源优先级**
+
+![资源优先级](./资源优先级.png)
+- 网络请求
+- 浏览器内核
+  * html,css,font
+  * <link rel="preload" />,script,xhr
+  * image,audio,语音
+  * prefetch
+- 用户控制台
+
+**preload**
+
+【提前加载资源，优先级不提升】告知浏览器哪些资源将被使用，可以预加载
+
+**prefetch**
+
+【降低请求加载优先级】在浏览器空闲时才预加载
+
+- 资源预加载：<link rel="prefetch" href="test.css">
+- DNS预解析：<link rel="dns-prefetch" href="//haitao.nos.netease.com">
+- http预连接：<link rel="prefetch" href="//www.kaola.com">
+- 页面预渲染：<link rel="prerender" href="//m.kaola.com">
+
+#### localStorage的使用
+- 微信
+  * js都放在localStorage里
+  * 页面请求会带一个资源map，和localStorage对比
+- 天猫
+  * 缓存关键xhr
+- 京东
+  * 非关键（首屏）资源放在localStorage
+  * 页面滚动到可视区之后，再拉取localStorage，动态append到页面
+
+---
+
+### 懒加载
+intersectionObserver
+- 目标元素和视口有一个交叉区，可以判断是否可见
+
+---
+
+### css布局
+[css布局](../../css-related/README.md#布局)
+
+---
+
+### 文档流
+将窗体自上而下分成一行一行，并在每行中按从左至右依次排放元素，
+称为文档流
+
+**脱离文档流**
+
+- float
+- position: absolute
+- position: fixed
+
+---
+
+### 清除浮动
+- 新增子标签 + clear:both【不推荐，语义化差】
+- 父标签 + overflow:hidden【不推荐，内容多时无法显示溢出内容】
+- 父标签 + 伪元素clear:both【推荐】
+  ```css
+  .clearfix::after {
+    content: "";
+    display: block;
+    height: 0;
+    clear:both;
+    visibility: hidden;
+  }
+  ```
+- 父标签 + 双伪元素【推荐】
+  ```css
+  .clearfix:after,.clearfix:before{
+    content: "";
+    display: table;
+  }
+  .clearfix:after{
+    clear: both;
+  }
+  .clearfix{
+    *zoom: 1;
+  }
+  ```
+
+---
+
+### 小程序实现
+[参考](../../miniprogram/README.md)
+
+---
+
+### jsbridge
+[参考](../../js&browser/jsbridge.md)
+
+---
+
+### 前端监控&异常捕获
+[参考](../../career/前端埋点和监控方案.md)
+
+
+
+
+
+
+
+
+
+
 

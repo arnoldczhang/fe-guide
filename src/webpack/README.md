@@ -6,17 +6,22 @@
 - [webpack4配置指南](https://mp.weixin.qq.com/s/cX7yuneDxDk8_NnMy3Bc8Q)
 - [webpack4配置指南2](https://mp.weixin.qq.com/s/si4yq-M_JS0DqedAhTlKng)
 - [webpack官方plugin文档](https://webpack.js.org/api/compilation-hooks#shouldgeneratechunkassets)
+- [webpack4构建提速](https://juejin.im/post/5c9075305188252d5c743520#heading-5)
 
 ## 目录
 <details>
 <summary>展开更多</summary>
 
-* [`配置`](#配置)
-* [`webpack-3.8.1`](#webpack-3.8.1)
+* [`常用配置`](#配置)
 * [`webpack加载流程`](#webpack加载流程)
+* [`webpack-3.8.1`](#webpack-3.8.1)
 * [`webpack4`](#webpack4)
 * [`开发调试`](#开发调试)
-* [`treeshaking`](#treeshaking)
+* [`中间缓存`](#中间缓存)
+* [`bundle`](#bundle)
+* [`scope hoisting`](#scopeHoisting)
+* [`code split`](#codesplit)
+* [`tree shaking`](#treeshaking)
 * [`tapable`](#tapable)
 * [`loader`](#loader)
 * [`热更新`](#热更新)
@@ -26,6 +31,97 @@
 
 ## 配置
 
+### output
+```js
+{
+  output:{
+   // name是你配置的entry中key名称，或者优化后chunk的名称
+   // hash是表示bundle文件名添加文件内容hash值，以便于实现浏览器持久化缓存支持
+   filename: '[name].[hash].js',
+   // 在script标签上添加crossOrigin,以便于支持跨域脚本的错误堆栈捕获
+   crossOriginLoading:'anonymous',
+   //静态资源路径，指的是输出到html中的资源路径前缀
+   publicPath:'https://7.ur.cn/fudao/pc/',
+   path: './dist/',//文件输出路径
+  }
+}
+```
+
+### module
+配置rules
+```js
+module: {
+  // 这些库都是不依赖其它库的库 不需要解析他们可以加快编译速度
+  // 优化点1：过滤不需要做任何处理的库
+  noParse: /node_modules\/(moment|chart\.js)/,
+  rules: [
+    {
+      test: /\.jsx?$/,
+      use: resolve('babel-loader'),
+      // 优化点2：缩小babel处理范围
+      include: [
+        path.resolve(projectDir, 'src'),
+        path.resolve(projectDir, 'node_modules/@test'),
+      ].filter(Boolean),
+      // 优化点3：忽略哪些压缩的文件
+      exclude: [/(.|_)min\.js$/],
+    }
+  ],
+}
+```
+
+### optimization
+
+#### splitChunks
+```js
+splitChunks: {
+  chunks: 'all',
+  minSize: 10000, // 提高缓存利用率，这需要在http2/spdy
+  maxSize: 0,//没有限制
+  minChunks: 3,// 共享最少的chunk数，使用次数超过这个值才会被提取
+  maxAsyncRequests: 5,//最多的异步chunk数
+  maxInitialRequests: 5,// 最多的同步chunks数
+  automaticNameDelimiter: '~',// 多页面共用chunk命名分隔符
+  name: true,
+  cacheGroups: {// 声明的公共chunk
+    vendor: {
+      // 过滤需要打入的模块
+      test: module => {
+        if (module.resource) {
+          const include = [/[\\/]node_modules[\\/]/].every(reg => {
+            return reg.test(module.resource);
+          });
+          const exclude = [/[\\/]node_modules[\\/](react|redux|antd)/].some(reg => {
+            return reg.test(module.resource);
+          });
+          return include && !exclude;
+        }
+        return false;
+      },
+      name: 'vendor',
+      priority: 50,// 确定模块打入的优先级
+      reuseExistingChunk: true,// 使用复用已经存在的模块
+    },
+    react: {
+      test({ resource }) {
+        return /[\\/]node_modules[\\/](react|redux)/.test(resource);
+      },
+      name: 'react',
+      priority: 20,
+      reuseExistingChunk: true,
+    },
+    antd: {
+      test: /[\\/]node_modules[\\/]antd/,
+      name: 'antd',
+      priority: 15,
+      reuseExistingChunk: true,
+    },
+  },
+},
+```
+
+#### minimizer
+
 ### resolve
 ```js
 {
@@ -33,7 +129,12 @@
   resolve: {
     // 现在可以写require('file')，代替require('file.jsx')或 require('file.es6')
     extensions: ['.*', '.js', '.jsx', '.es6'],
-    // 路径替换
+    // modules加速绝对路径查找效率
+    modules: [
+        path.resolve(__dirname, 'src'), 
+        path.resolve(__dirname,'node_modules'),
+    ],
+    // alias路径替换
     alias: {
       'react': 'anujs',
       'react-dom': 'anujs',
@@ -43,6 +144,11 @@
   // ...
 }
 ```
+
+### hash
+- hash：跟整个项目的构建相关，构建生成的文件hash值都是一样的，只要项目里有文件更改，整个项目构建的hash值都会更改。
+- chunkhash：根据不同的入口文件(Entry)进行依赖文件解析、构建对应的chunk，生成对应的hash值。
+- contenthash：由文件内容产生的hash值，内容不同产生的contenthash值也不一样。
 
 ---
 
@@ -150,7 +256,6 @@ compiler.hooks.thisCompilation -> tap('WarnNoModeSetPlugin', () => {
 #### SetVarMainTemplatePlugin
 **作用**
 
-
 **调用位置**
 
 /webpack/lib/LibraryTemplatePlugin.js
@@ -178,13 +283,95 @@ mainTemplate.hooks.hash -> tap("SetVarMainTemplatePlugin", hash => {
 **调用位置**
 **hook**
 
-#### xxx
-**作用**
-**调用位置**
-**hook**
-
-
 ### loader开发
+// TODO
+
+### 热更新
+
+#### 组件、css
+- webpack.HotModuleReplacementPlugin
+- entry插入**require.resolve('../utils/webpackHotDevClient')**
+- webpack-dev-server启动参数加上**hot: true**
+- 热更新的js加上
+  ```js
+  if (process.env.NODE_ENV === 'development' && module.hot) {
+    module.hot.accept();
+  }
+  ```
+
+#### ssr
+webpack.watch + nodemon
+
+#### style
+`sourceMap: true`: 将sourcemap内联到style中，方便快速调试，但是会导致页面闪烁（FOUC）
+`singleton: true`: 复用同一个插入的style标签，能解决FOUC，但sourceMap就失效了（找不到源文件路径，而是合并后的路径）
+
+---
+
+## 中间缓存
+
+### babel-loader
+```js
+test: /\.jsx?$/,
+use: [
+  {
+    loader: resolve('babel-loader'),
+    options: {
+      babelrc: false,
+      // cacheDirectory 缓存babel编译结果加快重新编译速度
+      cacheDirectory: path.resolve(options.cache, 'babel-loader'),
+      presets: [[require('babel-preset-imt'), { isSSR }]],
+    },
+  },
+],
+```
+
+### eslint-loader
+```js
+test: /\.(js|mjs|jsx)$/,
+enforce: 'pre',
+use: [
+    {
+      options: {
+        // cache选项指定缓存路径
+        cache: path.resolve(options.cache, 'eslint-loader'),
+      },
+      loader: require.resolve('eslint-loader'),
+    },
+],
+```
+
+### css/scss
+cache-loader也可用于其他缓存
+```js
+{
+  loader: resolve('cache-loader'),
+  options: { cacheDirectory: path.join(cache, 'cache-loader-css') },
+},
+{
+  loader: resolve('css-loader'),
+  options: {
+    importLoaders: 2,
+    sourceMap,
+  },
+},
+```
+
+### js
+```js
+{
+    // 设置缓存目录
+    cache: path.resolve(cache, 'terser-webpack-plugin'),
+    parallel: true,// 开启多进程压缩
+    sourceMap,
+    terserOptions: {
+      compress: {
+        // 删除所有的 `console` 语句
+        drop_console: true,
+      },
+    },
+}
+```
 
 ---
 
@@ -293,7 +480,7 @@ console.log(new V8Engine().toString())
   not ie <= 8 # 排除小于 ie8 以下的浏览器
   ```
 
-### code splitting
+### code splitting配置
 
 **splitChunksPlugins**
 
@@ -368,6 +555,187 @@ module.exports = {
 
 **结论**
 google Closure Compiler效果最好，不过使用复杂，迁移成本太高
+
+---
+
+## scopeHoisting
+[作用域提升](https://webpack.js.org/plugins/module-concatenation-plugin/#root)
+
+### 示例
+
+原打包输出内容
+```js
+// bundle.js
+// 最前面的一段代码实现了模块的加载、执行和缓存的逻辑，这里直接略过
+[
+  /* 0 */
+  function (module, exports, require) {
+    var module_a = require(1)
+    console.log(module_a['default'])
+  },
+  /* 1 */
+  function (module, exports, require) {
+    exports['default'] = 'module A'
+  }
+]
+```
+
+作用域提升后
+```js
+// bundle.js
+[
+  function (module, exports, require) {
+    // CONCATENATED MODULE: ./module-a.js
+    var module_a_defaultExport = 'module A'
+
+    // CONCATENATED MODULE: ./index.js
+    console.log(module_a_defaultExport)
+  }
+]
+```
+
+### 特点
+- 声明的函数减少，作用域减少
+- 文件体积减少
+
+### 原理
+将所有模块代码，以一定顺序声明在一个作用域里（会做变量名去重）
+
+### 要求
+- 必须以es2015模块语法方式
+- 暂不支持commonjs【require可以动态加载，无法预测模块间依赖关系】
+- webpack4的production模式会默认使用scope hoisting
+- 查看使用无效的原因
+  ```js
+  module.exports = {
+    //...
+    stats: {
+      // Examine all modules
+      maxModules: Infinity,
+      // Display bailout reasons
+      optimizationBailout: true
+    }
+  };
+
+  // 或
+  webpack --display-optimization-bailout
+  ```
+
+---
+
+## codesplit
+// TODO
+
+---
+
+## bundle
+[参考](https://zhuanlan.zhihu.com/p/25954788)
+
+### 结论
+- bundle时，会检查模块是否会被installed
+- 如果installed，就直接export使用
+- 否则会执行import（一次），缓存到installedModules，再export
+
+### webpack打包做些什么
+- 每个文件视为独立模块
+- 分析模块间依赖关系，做一次性替换
+- 给每个模块外层加一层包装函数，作为**模块初始化函数**
+- 所有初始化函数合成数组，赋值给modules变量
+
+### 模块初始化函数
+
+**webpack4**
+
+```js
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push(
+  [["输出文件名"], {
+    "a": (function (module, __webpack_exports__, __webpack_require__) {
+      // ...
+    }),
+    "b": (function (module, __webpack_exports__, __webpack_require__) {
+      // ...
+    }),
+    "c": (function (module, __webpack_exports__, __webpack_require__) {
+      // ...
+    }),
+    // ...
+  }]
+);
+```
+
+**webpack2**
+
+```js
+(function (modules) {
+  ...
+})([
+  (function (module, __webpack_exports__, __webpack_require__) {
+    ...
+  }),
+  (function (module, __webpack_exports__, __webpack_require__) {
+    ...
+  }),
+  (function (module, __webpack_exports__, __webpack_require__) {
+    ...
+  })
+]);
+```
+
+### module和__webpack_exports__
+
+#### module
+- 元信息
+- 模块内容、**模块id**等信息
+
+#### __webpack_exports__
+- require时读取的是这个对象
+
+#### 关系
+module.exports === __webpack_exports__
+
+### 模块id
+webpack4 - 4位随机字母【0-9、a-zA-Z、+-】
+webpack2 - 数字（0开始）
+
+### __webpack_require__
+```js
+function __webpack_require__(moduleId) {
+
+  // 检查 installedModules 中是否存在对应的 module
+  // 如果存在就返回 module.exports
+  if (installedModules[moduleId])
+    return installedModules[moduleId].exports;
+
+  // 创建一个新的 module 对象，用于下面函数的调用
+  var module = installedModules[moduleId] = {
+    i: moduleId,
+    l: false,
+    exports: {}
+  };
+
+  // 从 modules 中找到对应的模块初始化函数并执行
+  modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+  // 标识 module 已被加载过
+  module.l = true;
+
+  return module.exports;
+}
+```
+
+### 组成
+
+**modules**
+
+数组（webpack2）或对象（webpack4），保存模块初始化函数
+
+**installedModules**
+
+缓存加载过的模块
+
+**加载函数**
+
+__webpack_require__
 
 ---
 

@@ -4,8 +4,10 @@ import { isString } from 'util';
 import {
   ATTR_BG,
   ATTR_CLEAR,
+  ATTR_DARK_BG,
   ATTR_FOR,
   ATTR_HEIGHT,
+  ATTR_LIGHT_BG,
   ATTR_MARGIN,
   ATTR_MARGIN_BOTTOM,
   ATTR_MARGIN_LEFT,
@@ -18,12 +20,14 @@ import {
   ATTR_PADDING_TOP,
   ATTR_REMOVE,
   ATTR_REPEAT,
+  ATTR_REPLACE,
   ATTR_SHOW,
   ATTR_WIDTH,
   BUTTON_TAG,
   COMP_JS,
   COMP_WXSS,
   ELEMENT_TAG,
+  getCompJs,
   IMAGE_TAG,
   IMPORT_TAG,
   INCLUDE_TAG,
@@ -46,8 +50,11 @@ import {
   WXSS_BG_GREY,
 } from '../config';
 import { CF, IAst, ICO, IPath } from '../types';
-import { triggerBgAction,
+import {
+  triggerBgAction,
+  triggerDarkBgAction,
   triggerHeightAction,
+  triggerLightBgAction,
   triggerMarginAction,
   triggerMarginBottomAction,
   triggerMarginLeftAction,
@@ -58,9 +65,10 @@ import { triggerBgAction,
   triggerPaddingLeftAction,
   triggerPaddingRightAction,
   triggerPaddingTopAction,
+  triggerReplaceAction,
   triggerWidthAction,
 } from './action';
-import { has, is, isArr, isFalsy, isStr } from './assert';
+import { has, is, isArr, isFalsy, isStr, isTrue } from './assert';
 import {
   hasCach,
   setCach,
@@ -80,14 +88,19 @@ import {
 } from './fs';
 import {
   addSuffix,
+  clearUsedComp,
+  clearUsedTpl,
   ensureAndInsertWxml,
   ensureAndInsertWxss,
+  hasOnlyTextChild,
   modifySuffix,
   updateTemplateInfo,
   updateUsingInJsonConfig,
 } from './index';
+import { Comp } from './klass';
 import Logger from './log';
 import {
+  appendUniq,
   genKlass,
 } from './random';
 import {
@@ -97,11 +110,12 @@ import {
   isBindEvent,
   isElif,
   isElse,
+  isHidden,
   isId,
   isIf,
   isKlass,
   isNpmComponent,
-  removeBlank,
+  removeBlankAndWxVariable,
   replaceColorSymbol,
   replaceLengthSymbol,
   splitWith,
@@ -123,14 +137,14 @@ export const parseAsTreeNode = (
   ast: IAst,
   options: IPath,
 ): IAst => (
-    [
-      parseFromConfig,
-      parseFromCustomAttr,
-      parseFromTag,
-      parseFromNode,
-      parseFromAttr,
-      parseFromStruct,
-    ].reduce((res: IAst, next) => next(res, options), ast)
+  [
+    parseFromConfig,
+    parseFromCustomAttr,
+    parseFromAttr,
+    parseFromTag,
+    parseFromNode,
+    parseFromStruct,
+  ].reduce((res: IAst, next) => next(res, options), ast)
 );
 
 /**
@@ -165,7 +179,7 @@ export const parseFromNode = (
     }
     return ast;
   }
-  ast.text = removeBlank(text);
+  ast.text = removeBlankAndWxVariable(text);
   if (!ast.text) {
     return emptyNode;
   }
@@ -192,7 +206,7 @@ export const parseFromCustomAttr = (
     klass = isStr(attr[KLASS]) ? [attr[KLASS]] : attr[KLASS] || [];
     switch (key) {
       // repeat
-      // support 2 ways:
+      // support 2 datatype:
       //  1. number / {{number}}
       //  2. variable which represents an array
       case ATTR_FOR:
@@ -213,6 +227,9 @@ export const parseFromCustomAttr = (
       case ATTR_CLEAR:
         ast.child = [];
         break;
+      case ATTR_REPLACE:
+        triggerReplaceAction(ast, value);
+        return ast;
       case ATTR_PADDING:
         triggerPaddingAction(ast, options, result, value, klass);
         break;
@@ -252,6 +269,12 @@ export const parseFromCustomAttr = (
       case ATTR_BG:
         triggerBgAction(ast, options, result, value, klass);
         break;
+      case ATTR_DARK_BG:
+        triggerDarkBgAction(ast, options, result, value, klass);
+        break;
+      case ATTR_LIGHT_BG:
+        triggerLightBgAction(ast, options, result, value, klass);
+        break;
       default:
         if (!has(key, result) && !exceptKeys.includes(key)) {
           result[key] = value;
@@ -285,27 +308,28 @@ export const parseFromAttr = (
       // remove all events
       case isBindEvent(key):
         break;
+      // hidden
+      case treeshake && isHidden(key):
+        if (!isFalsy(pureValue)) {
+          return emptyNode;
+        }
+        result[key] = value;
+        break;
       // wx:if
       // if this value eq false remove this element
       case treeshake && isIf(key):
-        if (isPage) {
-          if (isFalsy(pureValue)) {
-            return emptyNode;
-          }
-          result[key] = '{{true}}';
-          break;
-        } else {
-          result[key] = value;
-          break;
+        if (isFalsy(pureValue)) {
+          return emptyNode;
         }
+        result[key] = value;
+        break;
       // wx:elif
       // if this value eq false, remove this element
       // else modify this attribute from `wx:elif` to `wx:if`
       case treeshake && isElif(key):
-        if (isPage) {
-          if (isFalsy(pureValue)) {
-            return emptyNode;
-          }
+        if (isFalsy(pureValue)) {
+          return emptyNode;
+        } else if (isTrue(pureValue)) {
           result[WX_HIDDEN] = '{{false}}';
           result[WX_IF] = '{{true}}';
           break;
@@ -317,19 +341,16 @@ export const parseFromAttr = (
       // if pre sibling wx:if="{{true}}" remove this element
       // else remove this attribute `wx:else`
       case treeshake && isElse(key):
-        if (isPage) {
-          let tmpSibling = sibling || {};
-          if (!tmpSibling.node || !is(tmpSibling.node, ELEMENT_TAG)) {
-            tmpSibling = tmpSibling.sibling || {};
-          }
-          const { node } = tmpSibling;
-          if (node && tmpSibling.attr
-            && !isFalsy(interceptWxVariable(tmpSibling.attr[WX_IF]))
-          ) {
-            return emptyNode;
-          } else {
-            break;
-          }
+        let tmpSibling = sibling || {};
+        if (!tmpSibling.node || !is(tmpSibling.node, ELEMENT_TAG)) {
+          tmpSibling = tmpSibling.sibling || {};
+        }
+        const { node } = tmpSibling;
+        const interceptValue = tmpSibling.attr && interceptWxVariable(tmpSibling.attr[WX_IF]);
+        if (node && tmpSibling.attr && !isFalsy(interceptValue)) {
+          return emptyNode;
+        } else if (is(interceptValue, void 0)) {
+          break;
         } else {
           result[key] = value;
           break;
@@ -347,6 +368,7 @@ export const parseFromAttr = (
           wxmlKlassInfo[`#${value}`] = klass;
         }
         break;
+      // class
       case isKlass(key):
         result.class = result.class || [];
         if (!value) {
@@ -406,14 +428,15 @@ export const parseFromTag = (
 ): IAst => {
   const { tag, attr } = ast;
   const {
+    defaultBg,
     protoPath,
     mainPath,
     skeletonKeys,
-    wxTemplateInfo,
+    usingComponentKeys,
     watch,
   } = options;
   if (!tag) { return ast; }
-
+  const klass = attr && isStr(attr[KLASS]) ? [attr[KLASS]] : attr && attr[KLASS] || [];
   switch (true) {
     // <import />
     case is(tag, IMPORT_TAG):
@@ -424,10 +447,16 @@ export const parseFromTag = (
           const srcWxss: string = modifySuffix(srcWxml, 'wxss');
           const destWxss: string = modifySuffix(destWxml, 'wxss');
           setCach(destWxml, 1, PATH);
+          updateTemplateInfo(srcWxml, [attr.src, destWxml], options);
           ensureAndInsertWxml(srcWxml, destWxml, options);
           ensureAndInsertWxss(srcWxss, destWxss, options);
-          updateTemplateInfo(srcWxml, destWxml, options);
         }
+      }
+      break;
+    // <template />
+    case is(tag, TEMPLATE_TAG):
+      if (attr.is) {
+        clearUsedTpl(attr.is, options);
       }
       break;
     // <include />
@@ -444,23 +473,24 @@ export const parseFromTag = (
     // <button />
     case is(tag, BUTTON_TAG):
       ast.tag = 'view';
+      if (!attr) {
+        ast.attr = {};
+      }
+      ast.attr[KLASS] = appendUniq(klass, WXSS_BG_GREY);
       break;
     // <image />
     case is(tag, IMAGE_TAG):
       if (!attr) {
         ast.attr = {};
       }
-      const klass = isStr(ast.attr[KLASS]) ? [ast.attr[KLASS]] : ast.attr[KLASS] || [];
       ast.tag = 'view';
       if (ast.attr.src) {
         delete ast.attr.src;
       }
-      ast.attr[KLASS] = [...klass, WXSS_BG_GREY];
-      // if (attr && attr.src && /^\./.test(attr.src)) {
-      //   const { src } = attr;
-      //   const [dir, fileName] = [getDir(src), getFileName(src)];
-      //   attr.src = join(getRelativePath(protoPath, join(mainPath, dir)), fileName);
-      // }
+      if (ast.attr.mode) {
+        delete ast.attr.mode;
+      }
+      ast.attr[KLASS] = appendUniq(klass, WXSS_BG_GREY);
       break;
     // remove <wxs />
     case is(tag, WXS_TAG):
@@ -469,7 +499,17 @@ export const parseFromTag = (
     // fix: compiling skeleton to skeleton
     case skeletonKeys.has(tag):
       return emptyNode;
+    // if comp is used in pages, keep it
+    case usingComponentKeys.has(tag):
+      clearUsedComp(tag, options);
+      break;
     default:
+      if (defaultBg && hasOnlyTextChild(ast)) {
+        if (!attr) {
+          ast.attr = {};
+        }
+        ast.attr[KLASS] = appendUniq(klass, WXSS_BG_GREY);
+      }
       break;
   }
   return ast;
@@ -491,6 +531,7 @@ export const parseFromJSON = (
   isPage?: boolean,
 ): ICO => {
   const {
+    parentComp,
     usingComponentKeys,
     skeletonKeys,
     wxComponentInfo,
@@ -498,83 +539,84 @@ export const parseFromJSON = (
   } = options;
   const src: string = getDir(srcFile);
   const dest: string = getDir(destFile);
-  const { root, compPath, srcPath: rootSrcPath, outputPath } = options;
+  const { root, compPath, subPageRoot, outputPath } = options;
+  const rootSrcPath = subPageRoot || options.srcPath;
   keys(json).forEach((key: string): void => {
-    if (isPage) {
-      usingComponentKeys.add(key);
-    }
     let pathValue: string = json[key];
     let [srcJs, destJs, srcWxml, destWxml, srcWxss, destWxss, srcJson, destJson] = Array(10);
-    if (isNpmComponent(pathValue)) {
-      pathValue = pathValue.slice(1);
-      srcJs = pathResolve.sync(pathValue, { basedir: root });
-      const srcJsFileName: string = getFileName(srcJs);
-      const [srcJsName] = splitWith(srcJsFileName, '.');
-      const destRoot: string = resolve(compPath, pathValue);
-      srcJson = modifySuffix(srcJs, 'json');
-      destJson = `${destRoot}/${modifySuffix(srcJsFileName, 'json')}`;
-      destJs = `${destRoot}/${modifySuffix(srcJsFileName, 'js')}`;
-      srcWxml = modifySuffix(srcJs, 'wxml');
-      destWxml = `${destRoot}/${modifySuffix(srcJsFileName, 'wxml')}`;
-      srcWxss = modifySuffix(srcJs, 'wxss');
-      destWxss = `${destRoot}/${modifySuffix(srcJsFileName, 'wxss')}`;
-      json[key] = `${getRelativePath(destRoot, destFile)}/${srcJsName}`;
-    } else {
-      const isRootStyle = /^\//.test(pathValue);
-      if (isRootStyle) {
+    try {
+      if (isNpmComponent(pathValue)) {
         pathValue = pathValue.slice(1);
-      }
-      let srcPath: string = resolve(isRootStyle ? rootSrcPath : src, pathValue);
-      let destPath: string = resolve(isRootStyle ? outputPath : dest, pathValue);
-      // fix: avoid compiling skeleton to skeleton
-      if (srcPath.includes(outputPath)) {
-        delete json[key];
-        skeletonKeys.add(key);
-        usingComponentKeys.delete(key);
-        return;
-      }
-
-      try {
-        if (state(srcPath).isDirectory()) {
-          srcPath = `${srcPath}/index`;
-          destPath = `${destPath}/index`;
+        srcJs = pathResolve.sync(pathValue, { basedir: root });
+        const srcJsFileName: string = getFileName(srcJs);
+        const [srcJsName] = splitWith(srcJsFileName, '.');
+        const destRoot: string = resolve(compPath, pathValue);
+        srcJson = modifySuffix(srcJs, 'json');
+        destJson = `${destRoot}/${modifySuffix(srcJsFileName, 'json')}`;
+        destJs = `${destRoot}/${modifySuffix(srcJsFileName, 'js')}`;
+        srcWxml = modifySuffix(srcJs, 'wxml');
+        destWxml = `${destRoot}/${modifySuffix(srcJsFileName, 'wxml')}`;
+        srcWxss = modifySuffix(srcJs, 'wxss');
+        destWxss = `${destRoot}/${modifySuffix(srcJsFileName, 'wxss')}`;
+        json[key] = `${getRelativePath(destRoot, destFile)}/${srcJsName}`;
+      } else {
+        const isRootStyle = /^\//.test(pathValue);
+        if (isRootStyle) {
+          pathValue = pathValue.slice(1);
         }
-      } catch (err) {
+        let srcPath: string = resolve(isRootStyle ? rootSrcPath : src, pathValue);
+        let destPath: string = resolve(isRootStyle ? outputPath : dest, pathValue);
+        // fix: avoid compiling skeleton to skeleton
+        if (srcPath.includes(outputPath)) {
+          delete json[key];
+          skeletonKeys.add(key);
+          return;
+        }
 
+        try {
+          if (state(srcPath).isDirectory()) {
+            srcPath = `${srcPath}/index`;
+            destPath = `${destPath}/index`;
+          }
+        } catch (err) {}
+        srcJson = addSuffix(srcPath, 'json');
+        destJson = addSuffix(destPath, 'json');
+        srcJs = addSuffix(srcPath, 'js');
+        destJs = addSuffix(destPath, 'js');
+        srcWxml = addSuffix(srcPath, 'wxml');
+        destWxml = addSuffix(destPath, 'wxml');
+        srcWxss = addSuffix(srcPath, 'wxss');
+        destWxss = addSuffix(destPath, 'wxss');
+        json[key] = getRelativePath(destPath, destFile);
       }
-      srcJson = addSuffix(srcPath, 'json');
-      destJson = addSuffix(destPath, 'json');
-      srcJs = addSuffix(srcPath, 'js');
-      destJs = addSuffix(destPath, 'js');
-      srcWxml = addSuffix(srcPath, 'wxml');
-      destWxml = addSuffix(destPath, 'wxml');
-      srcWxss = addSuffix(srcPath, 'wxss');
-      destWxss = addSuffix(destPath, 'wxss');
-      json[key] = getRelativePath(destPath, destFile);
+    } catch (err) {
+      return;
     }
 
+    const thisComp: Comp = new Comp(key, destWxml, srcWxml);
+    usingComponentKeys.set(key, thisComp);
     wxComponentInfo.add(destWxml);
 
-    if (watch || !hasCach(destWxml, PATH)) {
+    if (parentComp) {
+      parentComp.addChild(thisComp);
+    }
 
+    if (watch || !hasCach(destWxml, PATH)) {
       // gen component-wxml
       setCach(destWxml, 1, PATH);
       ensureAndInsertWxml(srcWxml, destWxml, options);
 
       // gen component-json
-      updateUsingInJsonConfig(srcJson, destJson, options);
+      updateUsingInJsonConfig(srcJson, destJson, { ...options, parentComp: thisComp });
 
       // gen component-wxss
       ensureAndInsertWxss(srcWxss, destWxss, options);
 
       // gen component-js
       ensure(destJs);
-      write(destJs, COMP_JS);
+      write(destJs, getCompJs(outputPath, destJs));
 
       // TODO copy Components.properties to destJs with babel
-      // const { ast } = transformSync(String(read(srcJs)), {
-      //   ast: true,
-      // });
     }
   });
   return json;
@@ -594,8 +636,6 @@ export const setRootShow = (
   if (isPage && child && child.length) {
     child.forEach((
       ch: IAst,
-      idx: number,
-      array: IAst[],
     ) => {
       const { attr, tag } = ch;
       if (!tag) { return; }
