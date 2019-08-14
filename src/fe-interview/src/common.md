@@ -96,6 +96,8 @@
 * [`清除浮动`](#清除浮动)
 * [`jsbridge`](#jsbridge)
 * [`前端监控&异常捕获`](#前端监控&异常捕获)
+* [`红黑树`](#红黑树)
+* [`闭包`](#闭包)
 
 </details>
 
@@ -2007,10 +2009,91 @@ intersectionObserver
 ### 前端监控&异常捕获
 [参考](../../career/前端埋点和监控方案.md)
 
+---
 
+### 红黑树
 
+---
 
+### 闭包
+自由变量 = 非函数局部变量 + 非函数入参
 
+上下文已经销毁，但是作用域链还在，所以能取到
+
+参考[执行上下文](../js&browser/并发模型-event_loop.md#执行上下文)
+
+#### 示例:执行上下文
+```js
+// 普通循环方法执行
+var data = [];
+
+for (var i = 0; i < 3; i++) {
+  data[i] = function () {
+    console.log(i);
+  };
+}
+
+data[0](); // 3
+
+/*
+globalContext = {
+  VO: {
+    data: [fn, fn, fn],
+    i: 3,
+  },
+}
+
+data[i]Context = {
+  AO: {
+    arguments: {
+      length: 0,
+    },
+  },
+  Scope: [AO, globalContext.VO],
+}
+*/
+
+// 闭包循环方法执行
+var data = [];
+
+for (var i = 0; i < 3; i++) {
+  data[i] = (function (i) {
+        return function(){
+            console.log(i);
+        }
+  })(i);
+}
+
+data[0](); // 0
+
+/*
+globalContext = {
+  VO: {
+    data: [fn, fn, fn],
+    i: 3,
+  },
+}
+
+匿名[i]Context = {
+  AO: {
+    arguments: {
+      0: 0,
+      length: 1,
+    },
+    i: 0,
+  },
+  Scope: [AO, globalContext.VO],
+}
+data[i]Context = {
+  AO: {
+    arguments: {
+      length: 0,
+    },
+  },
+  Scope: [AO, 匿名Context.VO, globalContext.VO],
+}
+ */
+```
 
 
 

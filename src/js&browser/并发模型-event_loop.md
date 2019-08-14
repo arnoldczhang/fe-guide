@@ -36,8 +36,8 @@
 ## 执行上下文和作用域链
 * 函数被调用
 * 创建执行上下文
-    * a) 作用域链
-    * b) 变量、函数和参数
+    * a) 变量、函数和参数
+    * b) 作用域链
     * c) this
 * 开始执行（在执行上下文上）
     * ...
@@ -49,6 +49,42 @@
 * 从执行上下文栈pop出一个新的执行上下文执行
 
 ### 执行上下文
+
+```js
+
+// 全局
+globalContext = {
+    VO: [global],
+    Scope: [globalContext.VO],
+    this: globalContext.VO
+}
+
+// 示例方法
+var scope = "global scope";
+function checkscope(){
+    var scope = "local scope";
+    function f(){
+        return scope;
+    }
+    return f;
+}
+
+var foo = checkscope();
+foo();
+​
+// f
+fContext = {
+    AO: {
+        arguments: {
+          length: 0,
+        },
+    },
+    Scope: [AO, checkscopeContext.VO, globalContext.VO],
+    this: undefined
+}
+
+```
+
 js被解析和执行环境的抽象概念
 
 - 全局执行上下文
