@@ -723,10 +723,25 @@ var flattenArray = (arr) => {
 - add/delete
 
 #### WeakSet
+- key必须是对象（可存DOM引用）
+- key是弱引用，不会影响垃圾回收（对象被回收后，key自动移除）
+- key不可遍历（同样的，可遍历就会受垃圾回收的影响，返回值有不确定性）
 - 成员不能重复
-- 成员必须是对象（可存DOM引用）
-- 不可遍历
 - add/delete
+
+例
+
+```js
+// 将元素存至WeakMap，在其被卸载时，自动垃圾回收
+let wm = new WeakMap(), element = document.querySelector(".element");
+wm.set(element, "data");
+
+let value = wm.get(elemet);
+console.log(value); // data
+
+element.parentNode.removeChild(element);
+element = null;
+```
 
 #### Map
 - 可遍历
