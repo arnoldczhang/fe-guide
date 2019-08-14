@@ -746,9 +746,48 @@ var flattenArray = (arr) => {
 - 类似树的先序遍历
 - 从邻接节点出发，优先遍历子节点
 
+![深度优先](./深度优先.png)
+
+```js
+// children逆序push，while-pop出来
+// 能保证节点原来的顺位
+function dts(node) {
+  const list = [];
+  list.push(node);
+  while (list.length) {
+    const item = list.pop();
+    console.log(item.value);
+    if (item.children && item.children.length) {
+      for (let i = item.children.length - 1; i >= 0; i -= 1) {
+        list.push(item.children[i]);
+      }
+    }
+  }
+};
+```
+
 #### 广度优先
 - 优先访问当前节点的邻接节点
 - 当没有邻接节点时，另选一个未被访问的节点，重复上述过程
+
+![广度优先](./广度优先.png)
+
+```js
+// 正常操作
+function wts(node) {
+  const list = [];
+  list.push(node);
+  while (list.length) {
+    const item = list.shift();
+    console.log(item.value);
+    if (item.children && item.children.length) {
+      for (let i = 0; i < item.children.length; i += 1) {
+        list.push(item.children[i]);
+      }
+    }
+  }
+};
+```
 
 ---
 
