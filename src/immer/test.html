@@ -16,8 +16,14 @@
     aadadsd
     <input type="password" name="" />
     </div>
-    <script type="text/javascript" src="../../dist/immer.min.js"></script>
+    <script type="text/javascript" src="./immer.js"></script>
     <script type="text/javascript">
+    const base = { arr: [{ name: 'a' }, { name: 'b' }, { name: 'c' }] };
+    const next = immer.produce(base, function(draft) {
+      draft.counter++;
+      draft = {};
+    })
+    console.log(next.counter) // 1
     // const proxy = new Proxy({
     //   url: 'http://www.baidu.com',
     // }, {
