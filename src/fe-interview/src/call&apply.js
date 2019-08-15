@@ -29,18 +29,20 @@ Function.prototype.apply2 = function(context = window) {
 };
 
 // Function.prototype.bind
-Function.prototype.bind2 = function(context = window) {
-  if (typeof this === 'function') {
-    const restArgs = [...arguments].slice(1);
-    context.fn = this;
-    context.rest = function rest(...args) {
-      const result = context.fn(...restArgs.concat(args));
-      delete context.fn;
-      delete context.rest;
-      return result;
-    };
-    return context.rest;
+Function.prototype.bind2 = function(thisObj = window) {
+  if (typeof this !== 'function') {
+    throw new Error('Function.prototype.bind - what is trying to be bound is not callable');
   }
+  const fn = this;
+  thisObj = thisObj || window;
+  const args = [].slice.call(arguments, 1);
+  function fnn() {
+    return fn.apply(this instanceof fnn ? this : thisObj, args.concat(...arguments));
+  };
+  function fo(){};
+  fo.prototype = fn.prototype;
+  fnn.prototype = new fo;
+  return fnn;
 };
 
 // test

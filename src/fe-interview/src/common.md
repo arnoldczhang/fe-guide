@@ -2016,6 +2016,8 @@ intersectionObserver
 ---
 
 ### 闭包
+能够访问自由变量的函数
+
 自由变量 = 非函数局部变量 + 非函数入参
 
 上下文已经销毁，但是作用域链还在，所以能取到
@@ -2095,7 +2097,13 @@ data[i]Context = {
  */
 ```
 
+---
 
+### bind(thisObj, ...args)
+[参考](./call&apply.js)
+
+- thisObj绑定一次有效
+- 作为constructor时，绑定的thisObj无效
 
 
 
