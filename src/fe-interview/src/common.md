@@ -725,11 +725,21 @@ var flattenArray = (arr) => {
 - add/delete
 
 #### WeakSet
-- key必须是对象（可存DOM引用）
+- 成员必须是引用
+- 成员是弱引用，不会影响垃圾回收（对象被回收后，成员自动移除）
+- 不能重复
+- 不可遍历
+- add/delete
+
+#### Map
+- 可遍历
+- set/delete
+
+#### WeakMap
+- key必须是引用（可存DOM引用）
 - key是弱引用，不会影响垃圾回收（对象被回收后，key自动移除）
 - key不可遍历（同样的，可遍历就会受垃圾回收的影响，返回值有不确定性）
-- 成员不能重复
-- add/delete
+- set/delete
 
 例
 
@@ -744,15 +754,6 @@ console.log(value); // data
 element.parentNode.removeChild(element);
 element = null;
 ```
-
-#### Map
-- 可遍历
-- set/delete
-
-#### WeakMap
-- 不可遍历
-- 键值是对象
-- set/delete
 
 ---
 
