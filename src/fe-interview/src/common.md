@@ -9,95 +9,116 @@
 <details>
 <summary>展开更多</summary>
 
+**基础js**
+
 * [`==和===`](#==和===)
 * [`[]==![]`](#[]==![])
 * [`let、const以及var的区别`](#let、const以及var的区别)
-* [`flex布局`](#flex布局)
 * [`this`](#this)
 * [`函数声明&变量声明`](#函数声明&变量声明)
 * [`统计数组成员重复个数`](#统计数组成员重复个数)
-* [`vue/react中key的作用`](#vue/react中key的作用)
 * [`setTimeout原理`](#setTimeout原理)
 * [`onload/DOMContentLoaded`](#onload/DOMContentLoaded)
 * [`事件触发过程`](#事件触发过程)
-* [`flex属性`](#flex属性)
-* [`响应式方案`](#响应式方案)
 * [`a==1&&a==2&&a==3`](#a==1&&a==2&&a==3)
-* [`隐藏页面元素`](#隐藏页面元素)
-* [`Promise.all实现`](#Promise.all实现)
 * [`执行上下文和作用域链`](#执行上下文和作用域链)
 * [`节流&防抖`](#节流&防抖)
 * [`flattenArray`](#flattenArray)
 * [`数组去重uniq`](#数组去重uniq)
 * [`何为可迭代对象`](#何为可迭代对象)
 * [`Set、Map、WeakSet和WeakMap的区别`](#Set、Map、WeakSet和WeakMap的区别)
-* [`深度优先和广度优先`](#深度优先和广度优先)
 * [`es5/es6继承的区别`](#es5/es6继承的区别)
 * [`setTimeout、Promise、Async/Await区别`](#setTimeout、Promise、Async/Await区别)
 * [`模拟async&await`](#模拟async&await)
-* [`同/异任务`](#同/异任务)
-* [`算法题`](#算法题)
-* [`如何实现一个new`](#如何实现一个new)
-* [`http2多路复用`](#http2多路复用)
-* [`描述网页从输入url到渲染的过程`](#描述网页从输入url到渲染的过程)
-* [`TCP三次握手&四次挥手的理解`](#TCP三次握手&四次挥手的理解)
-* [`react的setState变更的同/异步`](#react的setState变更的同/异步)
-* [`npm模块安装机制`](#npm模块安装机制)
 * [`判断数组方法的区别`](#判断数组方法的区别)
-* [`重绘和回流`](#重绘和回流)
-* [`发布订阅VS观察者模式`](#发布订阅VS观察者模式)
-* [`redux和vuex`](#redux和vuex)
-* [`浏览器和Node事件循环的区别`](#浏览器和Node事件循环的区别)
-* [`前端中的模块化开发`](#前端中的模块化开发)
-* [`cookie和token都存放在header中，为什么不会劫持token`](#cookie和token都存放在header中，为什么不会劫持token)
-* [`如何实现token加密`](#如何实现token加密)
 * [`setTimeout输出0-9改法`](#setTimeout输出0-9改法)
-* [`VirtualDom对比原生DOM处理`](#VirtualDom对比原生DOM处理)
-* [`浏览器缓存读取规则`](#浏览器缓存读取规则)
-* [`BFC`](#BFC)
+* [`闭包`](#闭包)
+* [`bind`](#bind)
 * [`作用域`](#作用域)
 * [`实现sleep`](#实现sleep)
-* [`https`](#https)
-* [`埋点请求用1x1图片`](#埋点请求用1x1图片)
-* [`css布局`](#css布局)
-* [`排序`](#排序)
 * [`class/function`](#class/function)
-* [`display/opacity/visibility`](#display/opacity/visibility)
 * [`普通函数/箭头函数`](#普通函数/箭头函数)
 * [`求数组交集`](#求数组交集)
 * [`Promise.prototype.finally`](#Promise.prototype.finally)
 * [`es6->es5`](#es6->es5)
-* [`retina屏1px问题`](#retina屏1px问题)
 * [`webpack热更新`](#webpack热更新)
 * [`字符串中查找字符串位置`](#字符串中查找字符串位置)
 * [`forVSforEach`](#forVSforEach)
 * [`proxy`](#proxy)
-* [`JSpring的vnode解析`](#JSpring的vnode解析)
 * [`取arr[0]和arr[100000]区别`](#取arr[0]和arr[100000]区别)
-* [`Vue的父组件和子组件生命周期钩子执行顺序`](#Vue的父组件和子组件生命周期钩子执行顺序)
 * [`中文输入防抖`](#中文输入防抖)
-* [`react里的link和a的区别`](#react里的link和a的区别)
-* [`验证url合法性`](#验证url合法性)
-* [`vue在v-for时给每项元素绑定事件需要用事件代理吗?`](#vue在v-for时给每项元素绑定事件需要用事件代理吗?)
-* [`反爬虫技术`](#反爬虫技术)
-* [`逆序数字（递归实现）`](#逆序数字（递归实现）)
 * [`正则引擎`](#正则引擎)
-* [`node异步错误捕获`](#node异步错误捕获)
-* [`css影响页面加载`](#css影响页面加载)
 * [`BOMvsDOMvsHTML5`](#BOMvsDOMvsHTML5)
+* [`懒加载`](#懒加载)
+
+**进阶js**
+
+* [`如何实现一个new`](#如何实现一个new)
+* [`Promise.all实现`](#Promise.all实现)
+* [`jsbridge`](#jsbridge)
+* [`前端监控&异常捕获`](#前端监控&异常捕获)
+
+**框架**
+
+* [`vue/react中key的作用`](#vue/react中key的作用)
+* [`react的setState变更的同/异步`](#react的setState变更的同/异步)
+* [`redux和vuex`](#redux和vuex)
+* [`VirtualDom对比原生DOM处理`](#VirtualDom对比原生DOM处理)
+* [`JSpring的vnode解析`](#JSpring的vnode解析)
+* [`Vue的父组件和子组件生命周期钩子执行顺序`](#Vue的父组件和子组件生命周期钩子执行顺序)
+* [`react里的link和a的区别`](#react里的link和a的区别)
+* [`vue在v-for时给每项元素绑定事件需要用事件代理吗?`](#vue在v-for时给每项元素绑定事件需要用事件代理吗?)
+
+**node**
+
+* [`npm模块安装机制`](#npm模块安装机制)
+* [`前端中的模块化开发`](#前端中的模块化开发)
+* [`浏览器和Node事件循环的区别`](#浏览器和Node事件循环的区别)
+* [`node异步错误捕获`](#node异步错误捕获)
+
+**浏览器**
+
+* [`同/异任务`](#同/异任务)
+* [`http2多路复用`](#http2多路复用)
+* [`描述网页从输入url到渲染的过程`](#描述网页从输入url到渲染的过程)
+* [`TCP三次握手&四次挥手的理解`](#TCP三次握手&四次挥手的理解)
+* [`重绘和回流`](#重绘和回流)
+* [`cookie和token都存放在header中，为什么不会劫持token`](#cookie和token都存放在header中，为什么不会劫持token)
+* [`如何实现token加密`](#如何实现token加密)
+* [`浏览器缓存读取规则`](#浏览器缓存读取规则)
+* [`https`](#https)
+* [`埋点请求用1x1图片`](#埋点请求用1x1图片)
+* [`验证url合法性`](#验证url合法性)
+* [`反爬虫技术`](#反爬虫技术)
+* [`jsonp`](#jsonp)
+* [`浏览器页面资源加载过程与优化`](#浏览器页面资源加载过程与优化)
+
+**算法**
+
+* [`算法题`](#算法题)
+* [`深度优先和广度优先`](#深度优先和广度优先)
+* [`发布订阅VS观察者模式`](#发布订阅VS观察者模式)
+* [`排序`](#排序)
+* [`逆序数字（递归实现）`](#逆序数字（递归实现）)
+* [`红黑树`](#红黑树)
+
+**css**
+
+* [`flex布局`](#flex布局)
+* [`flex属性`](#flex属性)
+* [`响应式方案`](#响应式方案)
+* [`隐藏页面元素`](#隐藏页面元素)
+* [`BFC`](#BFC)
+* [`css布局`](#css布局)
+* [`display/opacity/visibility`](#display/opacity/visibility)
+* [`retina屏1px问题`](#retina屏1px问题)
+* [`css影响页面加载`](#css影响页面加载)
 * [`white-space/word-break/word-wrap`](#white-space/word-break/word-wrap)
 * [`z-index`](#z-index)
 * [`CSS性能优化`](#CSS性能优化)
-* [`jsonp`](#jsonp)
-* [`浏览器页面资源加载过程与优化`](#浏览器页面资源加载过程与优化)
-* [`懒加载`](#懒加载)
 * [`css布局`](#css布局)
 * [`文档流`](#文档流)
 * [`清除浮动`](#清除浮动)
-* [`jsbridge`](#jsbridge)
-* [`前端监控&异常捕获`](#前端监控&异常捕获)
-* [`红黑树`](#红黑树)
-* [`闭包`](#闭包)
 
 </details>
 
@@ -2105,7 +2126,10 @@ data[i]Context = {
 
 ---
 
-### bind(thisObj, ...args)
+### bind
+
+bind(thisObj, ...args)
+
 [参考](./call&apply.js)
 
 - thisObj绑定一次有效
