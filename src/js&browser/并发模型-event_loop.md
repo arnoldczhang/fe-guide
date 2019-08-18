@@ -106,17 +106,19 @@ js被解析和执行环境的抽象概念
 - 函数作用域
 - 块级作用域
 
-**任务队列**
+**作用域链**
+
+![作用域链](./作用域链.jpg)
+
+### 执行执行次序
+
+**EventLoop**
 
 先进先出
 
 **执行栈**
 
 即js调用栈，具有 LIFO (后进先出) 结构
-
-**作用域链**
-
-![作用域链](./作用域链.jpg)
 
 - - -
 
@@ -163,6 +165,7 @@ js被解析和执行环境的抽象概念
 ![node环境-事件循环](node环境-事件循环.png)
 
 libuv引擎中的事件循环（宏任务）分为 6 个阶段：
+
 * timers: 执行setTimeout和setInterval中到期的callback。
 * I/O callback: 上一轮循环中少数的callback会放在这一阶段执行。
 * idle, prepare: 仅在内部使用。
@@ -175,9 +178,9 @@ libuv引擎中的事件循环（宏任务）分为 6 个阶段：
 ![浏览器和node的eventLoop](./浏览器和node的eventLoop.png)
 
 node10以前
-- 执行一个阶段的所有任务
+- 执行宏任务一个阶段的所有任务
 - 执行nextTick队列里面的内容
-- 然后执行完微任务队列的内容
+- 执行微任务队列的内容
 
 node11以后
 和浏览器的行为统一了，都是每执行一个宏任务就执行完微任务队列
@@ -348,14 +351,19 @@ async function f() {
   console.log('ok')
 }
 
-// 也表示
+// 即为
 function f() {
   return RESOLVE(p).then(() => {
     console.log('ok')
   })
 }
-
 ```
+
+> chrome73之前
+> 不判断p是否是promise，会创建3个promise转换
+
+> chrome73（金丝雀）中做了改动
+> 如果p已经是promise，则不会再创建Promise包装器
 
 ### 深入理解
 - ![await](await.jpg)
