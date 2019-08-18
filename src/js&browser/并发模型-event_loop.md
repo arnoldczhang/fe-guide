@@ -209,15 +209,22 @@ node11以后
 - Layout - 确认每个 DOM 的大致位置（排版）
 - Paint - 绘制每个 DOM 具体的内容（绘制）
 
-## 取消动画合并
+### requestAnimationFrame
+
+#### 特性
+- 由系统来决定回调函数的执行时机，
+  比如屏幕刷新率是75Hz，则间隔就变成13.3ms，60Hz对应16ms
+- 屏幕刷新间隔只会执行一次
+- 页面处于未激活状态时，requestAnimation将停止，再次激活，从上次状态恢复
+
+#### 取消动画合并
 - 嵌套requestAnimationFrame
 - box.offsetWidth // 获取排版样式来打断渲染
 
-## requestAnimationFrame和setTimeout的区别
+#### 和setTimeout的区别
 - setTimeout加入Event Loop，requestAnimationFrame加入渲染队列
 - 单位时间，setTimeout会执行多次，requestAnimationFrame严格遵守【执行一次渲染一次】
 - setTimeout(callback, 1000 / 60)可以模拟requestAnimationFrame，但不适合
-
 
 - - -
 

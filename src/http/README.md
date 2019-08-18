@@ -201,6 +201,8 @@ Entity tag，If-Unmodified-Since, If-Match, If-None-Match
 #### Cach-Control
 
 - private：客户端可以缓存
+  * 走浏览器自己的缓存策略
+  * 比如Expires = 当前时间(Date - Last-Modified) * 10%（下面有举例）
 - public：客户端和代理服务器都可缓存
   * 包括中间节点的proxy
 - max-age=xxx：缓存的内容将在 xxx 秒后失效
@@ -224,11 +226,9 @@ Entity tag，If-Unmodified-Since, If-Match, If-None-Match
 * HTTP 1.0 风格的 Expires 响应头
 * Last-Modified响应头
 
-例：可缓存时长
-
-可缓存时长1小时（22 - 12） * 0.1
-
-注：浏览器差异导致缓存时长不同
+> 可缓存时长
+> 可缓存时长1小时（22 - 12） * 0.1
+> 注：浏览器差异导致缓存时长不同
 
 ```text
 HTTP/2 200
