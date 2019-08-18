@@ -215,6 +215,49 @@ document.link.disabled = false;
   * HTML中顺序
   * 层叠顺序
 
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      .box1, .box2 {
+        position: relative;
+        z-index: 0;
+      }
+      .child1 {
+        width: 200px;
+        height: 100px;
+        background: #168bf5;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+      }
+      .child2 {
+        width: 100px;
+        height: 200px;
+        background: #32c292;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+      }
+    </style>
+    </head>
+    
+    <body>
+      <div class="box1">
+        <div class="child1">child1</div>
+      </div>
+    
+      <div class="box2">
+        <div class="child2">child2</div>
+      </div>
+    </body>
+</html>
+```
+
 #### z-index
 正整数、负整数、0、auto，默认auto
 

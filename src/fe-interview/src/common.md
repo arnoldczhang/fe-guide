@@ -120,6 +120,11 @@
 * [`文档流`](#文档流)
 * [`清除浮动`](#清除浮动)
 
+**html**
+
+* [`doctype`](#doctype)
+* [`src和href`](#src和href)
+
 </details>
 
 ### ==和===
@@ -245,7 +250,6 @@ const count = arr.reduce((t, c) => {
     return t;
 }, {});
 // count => { 0: 1, 1: 2, 2: 3 }
-
 ```
 
 ---
@@ -607,7 +611,7 @@ arr.join = arr.shift;
 
 #### 视觉隐藏
 - position: fixed; top:-9999px;
-- transform: scale(0);
+- transform: scale(0, 0);
 - transform: translateX(-9999px);
 - transform: rotateX(90deg);
 - width: 0;
@@ -1246,8 +1250,8 @@ for (let i = 0; i< 10; i++){
 - 形成了BFC的区域不会与float box重叠
 - 计算BFC高度时，浮动元素也参与计算
 
-#### 解决问题
-- 清除浮动
+#### 解决的问题
+- 清除浮动（浮动元素影响父元素宽高）
 - 防止同一 BFC 容器中的相邻元素间的外边距重叠问题
 
 #### 其他术语
@@ -2010,7 +2014,7 @@ intersectionObserver
     content: "";
     display: block;
     height: 0;
-    clear:both;
+    clear: both;
     visibility: hidden;
   }
   ```
@@ -2142,6 +2146,13 @@ bind(thisObj, ...args)
 - thisObj绑定一次有效
 - 作为constructor时，绑定的thisObj无效
 
+---
 
+### doctype
+[参考](../../html/README.md#doctype)
+
+---
+
+### src和href
 
 
