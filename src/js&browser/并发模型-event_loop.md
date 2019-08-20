@@ -174,7 +174,6 @@ libuv引擎中的事件循环（宏任务）分为 6 个阶段：
 * close callbacks: 执行close事件的callback，例如socket.on('close'[,fn])或者http.server.on('close, fn)。
 
 #### 执行顺序区别
-
 ![浏览器和node的eventLoop](./浏览器和node的eventLoop.png)
 
 node10以前

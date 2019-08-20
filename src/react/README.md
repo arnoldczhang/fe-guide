@@ -87,7 +87,7 @@ class ExampleComponent extends React.Component {
 - 自顶向下递归解析，生成虚拟节点
 - 通过diff算法，生成变更patch
 - patch放到更新队列
-- 无法中断，直到整棵虚拟节点树解析完成，才会将线程交给渲染引擎
+- 无法中断，直到整棵虚拟节点树解析完成，将线程交给渲染引擎
 
 ### diff策略
 1. 针对input、option、select、textarea做了特殊处理
