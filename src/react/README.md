@@ -185,6 +185,8 @@ reconcileChildFibers
 - fiber是链表形式
 - 每个fiber有expirationTime、优先级（用于在commit阶段做时间分片渲染）
 
+**注：一开始用的 Priority，后来改为 expirationTime， 之后又改为递减的 expirationTime**
+
 ### 一些问题
 
 #### 虚拟节点和fiber区别

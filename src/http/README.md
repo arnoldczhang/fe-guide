@@ -164,6 +164,10 @@
 - "Device-Memory" ":" #memory-value
   - 浏览器可以返回设备内存大小给服务端，Chrome 63+ 和 Opera50+支持
 
+### POST和PUT
+- PUT方法是幂等的，连续调用一次或者多次的效果相同
+- PUT指向单一资源，POST指向资源集合
+
 ---
 
 ## http1.0
@@ -196,7 +200,8 @@
 
 ### 缓存处理扩展
 Entity tag，If-Unmodified-Since, If-Match, If-None-Match
-参考[浏览器缓存](../js&browser/页面过程与浏览器缓存.md#缓存分类)
+
+缓存字段[参考](../js&browser/页面过程与浏览器缓存.md#缓存分类)
 
 #### Cach-Control
 
@@ -238,6 +243,10 @@ Last-Modified: Wed, 27 Mar 2019 12:00:00 GMT
 
 ### 带宽优化
 range，请求资源一部分（206），支持断点续传
+
+#### 断点续传
+
+检查服务器是否支持：Content-Range
 
 ### 错误通知
 
