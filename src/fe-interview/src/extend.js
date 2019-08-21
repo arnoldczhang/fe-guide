@@ -36,3 +36,18 @@ console.log(childInstance);
 ChildKlass.sayWord(childInstance);
 
 
+//=============================
+
+// 解法2: 寄生组合式继承
+function getProto(proto) {
+  function F() {};
+  F.prototype = proto;
+  return new F();
+};
+
+function extend2(Child, Parent) {
+  const parent = getProto(Parent);
+  parent.constructor = Child;
+  Child.prototype = parent;
+};
+
