@@ -2241,7 +2241,5 @@ bind(thisObj, ...args)
 ### 域名收敛
 [dns解析](../../js&browser/页面过程与浏览器缓存.md#dns)
 
-
-
 ---
 
