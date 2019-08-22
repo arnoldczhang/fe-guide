@@ -4,6 +4,7 @@
 - [基础20题](https://mp.weixin.qq.com/s/ViucwxvZg-g_YsHxN1PiAA)
 - [前端100问](https://juejin.im/post/5d23e750f265da1b855c7bbe?utm_source=gold_browser_extension#heading-2)
 - [前端必学](https://juejin.im/post/5d387f696fb9a07eeb13ea60?utm_source=gold_browser_extension)
+- [react](https://github.com/xiaomuzhu/front-end-interview/blob/master/docs/guide/react.md)
 
 ## 目录
 <details>
@@ -70,6 +71,9 @@
 * [`Vue的父组件和子组件生命周期钩子执行顺序`](#Vue的父组件和子组件生命周期钩子执行顺序)
 * [`react里的link和a的区别`](#react里的link和a的区别)
 * [`vue在v-for时给每项元素绑定事件需要用事件代理吗?`](#vue在v-for时给每项元素绑定事件需要用事件代理吗?)
+* [`vue生命周期`](#vue生命周期)
+* [`异步请求`](#异步请求)
+* [`reduxVSmobx`](#reduxVSmobx)
 
 **node**
 
@@ -987,7 +991,7 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
 [参考](https://github.com/sisterAn/blog/issues/26)
 
 - react自身引发的事件处理（onClick，componentWillMount等），异步执行
-- 此外的调用（addEventLister、setTimeout等），同步执行
+- 此外的调用（addEventListener、setTimeout等），同步执行
 
 #### 原因
 - 同/异步处理受isBatchingUpdates影响，默认isBatchingUpdates=false，也就是同步执行
@@ -1714,6 +1718,16 @@ https://jsperf.com
     children: []
   }
   ```
+- vnode -> element
+  ```js
+  const fragment = document[NodeFn[nodeType]].bind(null, tagName);
+  fragment.appendChild(element1);
+  // ...
+  ```
+- render
+  ```js
+  this.container.appendChild(fragment);
+  ```
 
 ---
 
@@ -2242,4 +2256,61 @@ bind(thisObj, ...args)
 [dns解析](../../js&browser/页面过程与浏览器缓存.md#dns)
 
 ---
+
+### vue生命周期
+- beforeCreate: 组件实例被创建之初，组件的属性生效之前
+- created: 组件实例已经完全创建，属性也绑定，但真实dom还没有生成，$el还不可用
+- beforeMount: 在挂载开始之前被调用：相关的 render 函数首次被调用
+- mounted: el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子
+- beforeUpdate: 组件数据更新之前调用，发生在虚拟 DOM 打补丁之前
+- update: 组件数据更新之后
+- activited: keep-alive专属，组件被激活时调用
+- deadctivated: keep-alive专属，组件被销毁时调用
+- beforeDestory: 组件销毁前调用
+- destoryed: 组件销毁后调用
+
+---
+
+### 异步请求
+
+#### vue
+- created
+- mounted
+
+#### react
+- componentDidmount
+
+注：17后，componentWillMount被废弃，改为UNSAFE_componentWillMount
+
+---
+
+### reduxVSmobx
+
+**store**
+
+- redux是单一store，由顶层Provider保存
+- mobx的数据分散在多个store
+
+**数据类型**
+
+- redux保存纯数据
+- mobx保存getter/setter
+
+**不变性**
+
+- redux数据不变性，只能读取，无法直接修改
+- mobx数据可直接修改
+
+**调试**
+
+- redux方便，纯函数定位明确
+- mobx有vue的缺点
+
+---
+
+
+
+
+
+
 
