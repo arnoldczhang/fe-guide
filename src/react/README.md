@@ -141,6 +141,13 @@ class ExampleComponent extends React.Component {
 ### diff策略
 reconcileChildFibers
 
+#### 简易流程
+- 首次渲染创建current树
+- 处理变更时，创建workInProgress树
+- 所有操作在workInProgress树进行
+- 操作完，将workInProgress树变更反应到页面上
+- workInProgess树替换current树
+
 #### 判断fiber类型
 - text节点
 - 单个element
