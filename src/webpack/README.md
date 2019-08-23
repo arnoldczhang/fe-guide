@@ -73,6 +73,30 @@ module: {
 ### optimization
 
 #### splitChunks
+
+**拆分标准**
+
+- 基础框架（react、redux）
+- 基础工具（lodash、utils）
+- 基础ui（antd）
+
+**每次打包的id一直变怎么破？**
+
+> HashedModuleIdsPlugin
+
+```js
+{
+  // ...
+  plugins: [
+    // ...
+    new webpack.HashedModuleIdsPlugin(),
+  ],
+  // ...
+}
+```
+
+**示例用法**
+
 ```js
 splitChunks: {
   chunks: 'all',
