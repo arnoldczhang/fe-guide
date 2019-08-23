@@ -115,7 +115,16 @@ class ExampleComponent extends React.Component {
 - alternate: current-tree <==> workInProgress-tree对应的fiber
 
 ### first-render
+
+**调用过程**
+
 ![first render](../mobx/react16-init.png)
+
+**动画演示**
+
+图中垂直方向是sibling的关系
+
+![fiber遍历过程](./fiber遍历过程（动画）.gif)
 
 1. render阶段
   * React.createElement创建element-tree
@@ -131,6 +140,8 @@ class ExampleComponent extends React.Component {
   * perform work
     + 构造workInProgress-tree
     + current指向新的fiber
+  * begin work
+    + 返回指向要在循环中处理的下一个子节点的指针或 null
 3. reconcile阶段
   * reconcilation
     + 遍历fibers，diff出effectlist（各种变更信息）给commit阶段
@@ -393,7 +404,8 @@ class Fiber {
 - 返回return节点，重复siblings
 - 直至root
 
-[Fiber遍历图](./Fiber遍历图.jpg)
+![Fiber遍历图](./Fiber遍历图.jpg)
+![Fiber遍历动画图](./fiber遍历过程（动画）.gif)
 
 **伪代码**
 
