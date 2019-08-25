@@ -12,22 +12,54 @@
 <details>
 <summary>展开更多</summary>
 
+* [`差异化`](#差异化)
 * [`常用配置`](#配置)
 * [`webpack加载流程`](#webpack加载流程)
 * [`webpack-3.8.1`](#webpack-3.8.1)
 * [`webpack4`](#webpack4)
-* [`开发调试`](#开发调试)
+* [`plugin`](#plugin)
 * [`中间缓存`](#中间缓存)
 * [`bundle`](#bundle)
 * [`scope hoisting`](#scopeHoisting)
 * [`code split`](#codesplit)
 * [`tree shaking`](#treeshaking)
 * [`tapable`](#tapable)
+* [`plugin`](#plugin)
 * [`loader`](#loader)
 * [`热更新`](#热更新)
 * [`其他`](#其他)
 
 </details>
+
+## 差异化
+
+### webpack与grunt、gulp的不同
+
+**grunt、gulp**
+
+> grunt、gulp是基于任务运行工具，打造工作流
+> 可以插入各种个性化工具，执行自定义任务
+
+**webpack**
+
+> webpack基于模块打包的工具
+
+### webpack与rollup、parcel的不同
+
+**webpack**
+
+大型项目构建
+
+**rollup**
+
+基础库、插件，集成打包
+
+
+**parcel**
+
+简单项目，生态较差
+
+---
 
 ## 配置
 
@@ -179,36 +211,48 @@ splitChunks: {
 ## webpack-3.8.1解析
 
 - 主体
-    - 支持webpack([conf1, conf2], callback)
-    - webpackOptionsValidationErrors
-      - 使用ajv校验options的json格式
-    - Compiler
-      - 编译器，生命周期会触发n多hooks...，插件要在不同hooks中做些callback
-    - WebpackOptionsDefaulter
-      - 填充默认配置项
-    - NodeEnvironmentPlugin
-      - 绑定文件内容变更的监控（输入、输出、监听、缓存）
-    - compiler.apply.apply(compiler, options.plugins)
-      - 执行plugins
-    - WebpackOptionsApply
-      - 定义打包出来的模板
-        - JsonpTemplatePlugin
-          - this-compilation
-        - FunctionModulePlugin
-          - compilation
-        - NodeSourcePlugin
-          - compilation
-          - after-resolvers
-        - LoaderTargetPlugin
-          - compilation
-          - normal-module-loader
-        - EntryOptionPlugin
-          - entry-option
-        - ...
+  - 支持webpack([conf1, conf2], callback)
+  - webpackOptionsValidationErrors
+    - 使用ajv校验options的json格式
+  - Compiler
+    - 编译器，生命周期会触发n多hooks...，插件要在不同hooks中做些callback
+  - WebpackOptionsDefaulter
+    - 填充默认配置项
+  - NodeEnvironmentPlugin
+    - 绑定文件内容变更的监控（输入、输出、监听、缓存）
+  - compiler.apply.apply(compiler, options.plugins)
+    - 执行plugins
+  - WebpackOptionsApply
+    - 定义打包出来的模板
+      - JsonpTemplatePlugin
+        - this-compilation
+      - FunctionModulePlugin
+        - compilation
+      - NodeSourcePlugin
+        - compilation
+        - after-resolvers
+      - LoaderTargetPlugin
+        - compilation
+        - normal-module-loader
+      - EntryOptionPlugin
+        - entry-option
+      - ...
 
 ---
 
-## 开发调试
+## plugin
+
+> apply
+> 插件初始化操作
+>
+> compiler
+> webpack初始化，返回的就是一个compiler对象
+> 内部包含hooks、compilation和finalcallback回调
+>
+> compilation
+> 针对四种template的具体处理
+> 内部包含hooks、和template处理
+
 
 ### 调试
 ```js
@@ -245,8 +289,23 @@ class CopyrightWebpackPlugin {
 }
 
 module.exports = CopyrightWebpackPlugin;
-
 ```
+
+### template
+> 四种template
+> 每个template处理都包含hooks和render处理
+
+- mainTemplate
+  * 处理入口文件的module
+- chunkTemplate
+  * 处理非首屏、需要异步加载的module
+- moduleTemplate
+  * 处理所有模块的生成
+- HotUpdateChunkTemplate
+  * 热更新模块的处理
+
+### tapable
+不同种类的hook
 
 ### plugin学习
 
@@ -310,7 +369,7 @@ mainTemplate.hooks.hash -> tap("SetVarMainTemplatePlugin", hash => {
 ### loader开发
 // TODO
 
-### 热更新
+### 热更新操作
 
 #### 组件、css
 - webpack.HotModuleReplacementPlugin
@@ -441,7 +500,7 @@ cache-loader也可用于其他缓存
 [参考](https://juejin.im/entry/5b63eb8bf265da0f98317441)
 [webpack4的24个实例](https://juejin.im/post/5cae0f616fb9a068a93f0613?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-1)
 
-### 基本流程
+### 流程图
 ![流程](https://www.processon.com/view/5cbd0db6e4b085d0107f438c)
 
 ### 相比webpack3
@@ -449,6 +508,22 @@ cache-loader也可用于其他缓存
 * 4支持了读取npm依赖的module字段，es6module
 * 2、3的摇树会判断，如果方法有入参，或操纵了window，则不会摇掉，因为这些函数有副作用
   4的摇树默认会摇掉，如果sideEffect置为false，则不摇
+
+### 流程简述
+- 初始化参数
+- 开始编译
+  * 根据初始化参数，加载所需插件
+- 确定入口
+  * 解析entry，做不同文件打包
+- 编译模块
+  * 从入口文件触发，根据配置的loaders，从后往前执行模块编译，递归此步骤直至所有模块都被编译
+- 完成编译
+  * 根据上一步编译结果，明确各模块之间的依赖关系
+- 输出资源
+  * 将文件组装成一个个chunk，再把chunk转换成文件输出
+  * 修改文件前的最后机会
+- 输出完成
+  * fs.writeFile
 
 ### sideEffects
 import {a} from xx -> import {a} from xx/a
@@ -849,6 +924,10 @@ __webpack_require__
 
 ## loader
 
+- 单一转译原则
+- this.async(): 生成callback函数，callback输出转译的内容
+- this.cacheable(): 直接透传缓存文件
+
 ### less-loader
 - 使用@functions做px<->rem转换
   * ```js
@@ -902,11 +981,11 @@ __webpack_require__
 ---
 
 ## 热更新
-- 利用webpack-dev-server（express），建立HMR server
-- 页面和HMR server建立websocket通信
-- webpack编译生成的新代码，通过HMR server发送给页面
-- 页面根据socket获取的chunk头进行比较，获知需要更新的模块
-- 模块根据module.hot.accpet，判断能否更新，若无法更新，强刷页面
+1. 利用webpack-dev-server（express），建立HMR server
+2. 页面dev-server/client和HMR server建立websocket通信
+3. webpack编译生成的新代码，通过HMR server发送给页面
+4. 页面根据socket获取的chunk头进行比较，获知需要更新的模块
+5. 模块根据module.hot.accpet，判断能否更新，若无法更新，强刷页面
 
 
 
