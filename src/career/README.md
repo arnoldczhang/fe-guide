@@ -425,7 +425,7 @@ import module1 from 'module1'
 ---
 
 ## 设计模式
-[设计模式](https://segmentfault.com/a/1190000018879929?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
+[设计模式](https://www.w3cschool.cn/zobyhd/pyunfozt.html)
 ![技术全局视角](./技术全局视角.jpeg)
 
 ---
