@@ -287,6 +287,7 @@ module.exports = {
 
 #### debug
 ```js
+// 字母、数字转16进制
 const hashid = this.input.replace(/[^a-z0-9]+/gi, m =>
   Buffer.from(m).toString("hex")
 );
@@ -300,6 +301,8 @@ const data = '...';
 hashid.update(data);
 return hashid.digest('hex');
 ```
+
+字符编码可[参考](../node/README.md#字符编码encoding)
 
 ---
 
