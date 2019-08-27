@@ -241,13 +241,16 @@ node11以后
 [参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/7)
 
 ### 总结
-- 一次事件循环：同步任务 -> 宏任务 -> 微任务 -> render
+- 宏任务是宏任务 + 微任务统称，即微任务队列包含在当前宏任务内
+- 一次事件循环：同步任务 -> 一个宏任务 -> 微任务 -> render
 - 即使是立即resolve/reject，then还是微任务
 - 微任务中嵌套的微任务，仍然会在当前事件循环中执行完，
   也即是说，微任务无限嵌套微任务会导致未响应，因为页面一直没有render
 - 每个宏任务执行完都会判断，是否有微任务，有就执行，
   也即是说，宏任务无限嵌套宏任务，不会导致未响应，因为会检查微任务&触发render
 - await是generator + promise的语法糖，类似Promise执行方式，[参考](../fe-interview/src/common.md#模拟async/await)例
+- 目前试下来，setTimeout(1)效果等同setTimeout(0)
+
   ```js
   await console.log(1);
   console.log(2);

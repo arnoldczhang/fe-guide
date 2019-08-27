@@ -42,7 +42,6 @@
 * [`求数组交集`](#求数组交集)
 * [`Promise.prototype.finally`](#Promise.prototype.finally)
 * [`es6->es5`](#es6->es5)
-* [`webpack热更新`](#webpack热更新)
 * [`字符串中查找字符串位置`](#字符串中查找字符串位置)
 * [`forVSforEach`](#forVSforEach)
 * [`proxy`](#proxy)
@@ -60,6 +59,11 @@
 * [`Promise.all实现`](#Promise.all实现)
 * [`jsbridge`](#jsbridge)
 * [`前端监控&异常捕获`](#前端监控&异常捕获)
+
+**构建/打包**
+
+* [`webpack热更新`](#webpack热更新)
+* [`webpack的hashid规则`](#webpack的hashid规则)
 
 **框架**
 
@@ -2321,6 +2325,9 @@ bind(thisObj, ...args)
 ### 性能优化
 [参考](../../js&browser/性能优化.md#面试回答)
 
+---
 
+### webpack的hashid规则
+[参考](../../webpack/README.md#hash)
 
 

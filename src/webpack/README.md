@@ -202,9 +202,104 @@ splitChunks: {
 ```
 
 ### hash
-- hash：跟整个项目的构建相关，构建生成的文件hash值都是一样的，只要项目里有文件更改，整个项目构建的hash值都会更改。
-- chunkhash：根据不同的入口文件(Entry)进行依赖文件解析、构建对应的chunk，生成对应的hash值。
-- contenthash：由文件内容产生的hash值，内容不同产生的contenthash值也不一样。
+
+> hash形式共分为三种
+
+#### hash
+- 跟整个项目的构建相关，构建生成的文件hash值都是一样的
+- 只要项目里有文件更改，整个项目构建的hash值都会更改
+
+```js
+const path = require('path');
+
+module.exports = {
+  entry:{
+    main: './index.js',
+    vender:['./a.js','./b.js']
+  },
+  output:{
+    path:path.join(__dirname, '/dist/js'),
+    filename: 'bundle.[name].[hash].js',
+  },
+}
+```
+
+输出
+```text
+=> bundle.main.abc.js
+=> bundle.vender.abc.js
+```
+
+#### chunkhash
+
+- 根据不同的入口文件(Entry)进行依赖文件解析、构建对应的chunk，生成对应的hash值
+- 利用chunkhash，公共库可以选择单独打包，只要文件内容不变，chunkhash不变
+
+```js
+const extractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
+
+module.exports = {
+  // entry同上
+  // ...
+  output:{
+    path:path.join(__dirname, '/dist/js'),
+    filename: 'bundle.[name].[chunkhash].js',
+  },
+  plugins:[
+    new extractTextPlugin('../css/bundle.[name].[chunkhash].css'),
+  ],
+}
+```
+
+输出
+```text
+=> bundle.main.aaaaaaaaa.js
+=> bundle.vender.bbbbbbbbbb.js
+=> bundle.main.aaaaaaaaa.css
+```
+
+#### contenthash
+
+- 由文件内容产生的hash值，内容不同产生的contenthash值也不一样
+
+上例中，由于index.js引用了index.css，所以index.js有变动，index.css即使没有变动,
+打包出的文件，hash值也会变化，这时候就需要用到contenthash
+
+const extractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
+  
+module.exports = {
+  // entry同上
+  // ...
+  output:{
+    path:path.join(__dirname, '/dist/js'),
+    filename: 'bundle.[name].[chunkhash].js',
+  },
+  plugins:[
+    // 设置css的hashid跟其content走
+    new extractTextPlugin('../css/bundle.[name].[contenthash].css'),
+  ]
+}
+```
+
+> hash生成规则分为两种
+
+#### debug
+```js
+const hashid = this.input.replace(/[^a-z0-9]+/gi, m =>
+  Buffer.from(m).toString("hex")
+);
+```
+
+#### crypto
+```js
+// algorithm分'sha256','sha512'
+const hashid = require("crypto").createHash(algorithm);
+const data = '...';
+hashid.update(data);
+return hashid.digest('hex');
+```
 
 ---
 
