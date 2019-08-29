@@ -29,6 +29,7 @@
     "prepare": "echo 'prepare'",
     "precommit": "echo 'precommit'",
     "postcommit": "echo 'postcommit'",
+    "postreceive": "echo 'postreceive'",
     "reactopt": "node node_modules/reactopt/main.js",
     "start": "node bin.js",
     "webpack": "webpack",
