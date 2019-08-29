@@ -26,7 +26,7 @@
     "postinstall": "echo 'postinstall'",
     "prepublish": "echo 'prepublish'",
     "prepare": "echo 'prepare'",
-    "precommit": "lint-staged",
+    "precommit": "echo 'precommmmmmit' && lint-staged",
     "reactopt": "node node_modules/reactopt/main.js",
     "start": "node bin.js",
     "webpack": "webpack",
