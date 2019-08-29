@@ -20,16 +20,20 @@
         "git add"
     ]
   },
+  "husky": {
+    "hooks": {
+      "pre-install": "echo 'preinstall'",
+      "install": "echo 'install'",
+      "post-install": "echo 'postinstall'",
+      "pre-publish": "echo 'prepublish'",
+      "prepare": "echo 'prepare'",
+      "pre-commit": "echo 'precommit'",
+      "post-commit": "echo 'postcommit'",
+      "post-receive": "echo 'postreceive'",
+    }
+  },
   "scripts": {
     "lint:fix": "eslint . --fix",
-    "preinstall": "echo 'preinstall'",
-    "install": "echo 'install'",
-    "postinstall": "echo 'postinstall'",
-    "prepublish": "echo 'prepublish'",
-    "prepare": "echo 'prepare'",
-    "precommit": "echo 'precommit'",
-    "postcommit": "echo 'postcommit'",
-    "postreceive": "echo 'postreceive'",
     "reactopt": "node node_modules/reactopt/main.js",
     "start": "node bin.js",
     "webpack": "webpack",
