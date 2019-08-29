@@ -21,7 +21,7 @@
     }
   },
   "lint-staged": {
-    "src/test/src/test.js": [
+    "src/test/**/*.js": [
         "eslint --fix",
         "git add"
     ]
@@ -33,7 +33,6 @@
     "postinstall": "echo 'postinstall'",
     "prepublish": "echo 'prepublish'",
     "prepare": "echo 'prepare'",
-    "precommit": "echo 'precommmmmmit' && lint-staged",
     "reactopt": "node node_modules/reactopt/main.js",
     "start": "node bin.js",
     "webpack": "webpack",
