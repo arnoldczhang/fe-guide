@@ -15,7 +15,7 @@
     ]
   },
   "lint-staged": {
-    "src/test/**/*.js": [
+    "src/**/*.js": [
         "eslint --fix",
         "git add"
     ]
@@ -27,7 +27,7 @@
       "post-install": "echo 'postinstall'",
       "pre-publish": "echo 'prepublish'",
       "prepare": "echo 'prepare'",
-      "pre-commit": "echo 'precommit'",
+      "pre-commit": "lint-staged",
       "post-commit": "echo 'postcommit'",
       "post-receive": "echo 'postreceive'",
     }
