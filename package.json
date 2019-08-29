@@ -14,12 +14,19 @@
       "@babel/preset-react"
     ]
   },
+  "lint-staged": {
+    "src/test/src/test.js": [
+        "eslint --fix",
+        "git add"
+    ]
+  },
   "scripts": {
     "preinstall": "echo 'preinstall'",
     "install": "echo 'install'",
     "postinstall": "echo 'postinstall'",
     "prepublish": "echo 'prepublish'",
     "prepare": "echo 'prepare'",
+    "precommit": "lint-staged",
     "reactopt": "node node_modules/reactopt/main.js",
     "start": "node bin.js",
     "webpack": "webpack",
