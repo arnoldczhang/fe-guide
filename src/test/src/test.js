@@ -262,5 +262,5 @@ console.log(Buffer.from('b').toString("hex"));
 console.log(require("crypto").createHash('sha256').update(('aaa')).digest('hex'));
 
 const { aa } = require("crypto");
-aa.aa();
+aa.aaa();
 

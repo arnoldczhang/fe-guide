@@ -14,6 +14,12 @@
       "@babel/preset-react"
     ]
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint:fix",
+      "pre-push": "npm run lint:fix",
+    }
+  },
   "lint-staged": {
     "src/test/src/test.js": [
         "eslint --fix",
@@ -21,6 +27,7 @@
     ]
   },
   "scripts": {
+    "lint:fix": "eslint . --fix",
     "preinstall": "echo 'preinstall'",
     "install": "echo 'install'",
     "postinstall": "echo 'postinstall'",
