@@ -14,12 +14,6 @@
       "@babel/preset-react"
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint:fix",
-      "pre-push": "npm run lint:fix",
-    }
-  },
   "lint-staged": {
     "src/test/**/*.js": [
         "eslint --fix",
@@ -33,6 +27,8 @@
     "postinstall": "echo 'postinstall'",
     "prepublish": "echo 'prepublish'",
     "prepare": "echo 'prepare'",
+    "precommit": "echo 'precommit'",
+    "postcommit": "echo 'postcommit'",
     "reactopt": "node node_modules/reactopt/main.js",
     "start": "node bin.js",
     "webpack": "webpack",
