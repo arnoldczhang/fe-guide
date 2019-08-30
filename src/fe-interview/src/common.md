@@ -78,6 +78,7 @@
 * [`vue生命周期`](#vue生命周期)
 * [`异步请求`](#异步请求)
 * [`reduxVSmobx`](#reduxVSmobx)
+* [`reducer每次都要生成新state`](#reducer每次都要生成新state)
 
 **node**
 
@@ -2215,5 +2216,15 @@ bind(thisObj, ...args)
 
 ### webpack的hashid规则
 [参考](../../webpack/README.md#hash)
+
+---
+
+### reducer每次都要生成新state
+- redux通过比较对象的引用来判断是否同一个对象
+- 如果是，则继续使用旧的state，页面不会有任何的变化
+- 所以每次要Object.assign新对象
+
+
+
 
 
