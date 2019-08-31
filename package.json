@@ -29,7 +29,7 @@
       "prepare": "echo 'prepare'",
       "pre-commit": "lint-staged",
       "post-commit": "echo 'postcommit'",
-      "post-receive": "echo 'postreceive'",
+      "post-receive": "echo 'postreceive'"
     }
   },
   "scripts": {
