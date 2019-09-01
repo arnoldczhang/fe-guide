@@ -39,6 +39,7 @@ Function.prototype.bind2 = function(thisObj = window) {
   function fnn() {
     return fn.apply(this instanceof fnn ? this : thisObj, args.concat(...arguments));
   };
+  // bind后的新函数，如果做实例化，this还是指向原函数
   function fo(){};
   fo.prototype = fn.prototype;
   fnn.prototype = new fo;
