@@ -27,18 +27,20 @@ Symbol | 返回一个新的 Symbol 对象 |
 Object | 返回一个新的 直接将Object返回|
 
 ### OwnPropertyKeys
-  - 声明变量keys值为一个空列表（List类型）
-  - 把每个Number类型的属性，按数值大小升序排序，并依次添加到keys中
-  - 把每个String类型的属性，按创建时间升序排序，并依次添加到keys中
-  - 把每个Symbol类型的属性，按创建时间升序排序，并依次添加到keys中
-  - 将keys返回（return keys）
+- 声明变量keys值为一个空列表（List类型）
+- 把每个Number类型的属性，按数值大小升序排序，并依次添加到keys中
+- 把每个String类型的属性，按创建时间升序排序，并依次添加到keys中
+- 把每个Symbol类型的属性，按创建时间升序排序，并依次添加到keys中
+- 将keys返回（return keys）
 
-## 适用性
-  1. Object.entries
-  2. Object.values
-  3. for...in循环
-  4. Object.getOwnPropertyNames
-  5. Reflect.ownKeys（除此不过滤Symbol类型）
+## 获取对象属性方式的对比
+
+| 方式 | 继承属性 | 不可枚举属性 | Symbol |
+| --- | -----: | :----: | :----: | :----: | :----: |
+| for...in |  √ | × | × |
+| Reflect.ownKeys | × | √ | √ |
+| Object.getOwnPropertyNames | × | √ | × |
+| Object.keys | × | × | × |
 
 ## 结论
   - 如果对象的属性类型是数字，字符与Symbol混合的，那么返回顺序永远是数字在前，然后是字符串，最后是Symbol

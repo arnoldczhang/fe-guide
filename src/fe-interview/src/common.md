@@ -53,6 +53,8 @@
 * [`原型链的理解`](#原型链的理解)
 * [`参数传递`](#参数传递)
 * [`eventTarget`](#eventTarget)
+* [`对象属性枚举`](#对象属性枚举)
+* [`appendVSappendChild`](#appendVSappendChild)
 
 **进阶js**
 
@@ -2294,4 +2296,18 @@ vue 1/2
 ### 浏览器跨域
 [参考](../../http/跨域.md)
 
+---
 
+### 对象属性枚举
+[参考](../../js&browser/Object.keys.md#获取对象属性方式的对比)
+
+---
+
+### appendVSappendChild
+
+#### append
+- 能插入节点或字符串
+- 在 `with` 中被特殊处理，不生效
+
+#### appendChild
+- 只能插节点
