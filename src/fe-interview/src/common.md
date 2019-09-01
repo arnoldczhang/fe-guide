@@ -52,6 +52,7 @@
 * [`懒加载`](#懒加载)
 * [`原型链的理解`](#原型链的理解)
 * [`参数传递`](#参数传递)
+* [`eventTarget`](#eventTarget)
 
 **进阶js**
 
@@ -79,6 +80,7 @@
 * [`异步请求`](#异步请求)
 * [`reduxVSmobx`](#reduxVSmobx)
 * [`reducer每次都要生成新state`](#reducer每次都要生成新state)
+* [`mv*`](#mv*)
 
 **node**
 
@@ -2224,7 +2226,61 @@ bind(thisObj, ...args)
 - 如果是，则继续使用旧的state，页面不会有任何的变化
 - 所以每次要Object.assign新对象
 
+---
 
+### eventTarget
+- target
+- currentTarget
+- relatedTarget
+
+#### relatedTarget
+[参考](https://www.cnblogs.com/rubylouvre/p/7384375.html)
+
+在做mouseenter与mouseleave的兼容时，我们需要用到事件对象的`relatedTarget`属性
+
+```js
+function getRelatedTarget(e) {
+    var t = e.relatedTarget
+    if (t) {
+        return t
+    }
+    return e.fromElement === e.target ?
+        e.toElement :
+        e.fromElement;
+}
+String("mouseenter,mouseleave").replace(/\w+/g, function (type) {
+    eventHooks[type] = function (dom) {
+        var eventType = type === "mouseenter" ? "mouseover" : "mouseout";
+        addEvent(dom, eventType, function (e) {
+            var t = getRelatedTarget(e)
+            if (!t || (t !== dom && !dom.contains(t))) {
+                dispatchEvent(e, type, true);
+            }
+        });
+    };
+});
+```
+
+---
+
+### mv*
+[参考](https://juejin.im/post/5cd8a7c1f265da037a3d0992#heading-7)
+
+#### mvvm
+vue 1/2
+
+#### mvc
+- react + redux
+- ng2
+
+#### mvp
+![mvp](./mvp.PNG)
+
+- mvc的改良
+- view不依赖model，纯组件化处理
+- presenter比较厚
+- model变动后，通过观察者模式通知presenter
+- 如果有view更新，也需要presenter调用view更新接口
 
 
 
