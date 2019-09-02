@@ -55,6 +55,7 @@
 * [`eventTarget`](#eventTarget)
 * [`对象属性枚举`](#对象属性枚举)
 * [`appendVSappendChild`](#appendVSappendChild)
+* [`passive`](#passive)
 
 **进阶js**
 
@@ -1258,9 +1259,8 @@ for (let i = 0; i< 10; i++){
 - float 浮动
 - position不为relative和static
 - overflow 不为 visiable
-- display 为表格布局或者弹性布局
-- 行内块元素
-- 网格布局
+- display 为table、flex、grid
+- 行内块元素inline-block
 - contain值为layout、content或 strict的元素
 
 #### 特性
@@ -2028,11 +2028,13 @@ intersectionObserver
 ---
 
 ### 闭包
-能够访问自由变量的函数
-
-自由变量 = 非函数局部变量 + 非函数入参
-
-上下文已经销毁，但是作用域链还在，所以能取到
+>
+> 能够访问`自由变量`的函数
+>
+> 自由变量 = 非函数局部变量 + 非函数入参
+>
+> 上下文已经销毁，但是作用域链还在，所以能取到
+>
 
 参考[执行上下文](../js&browser/并发模型-event_loop.md#执行上下文)
 
@@ -2112,8 +2114,9 @@ data[i]Context = {
 ---
 
 ### bind
-
-bind(thisObj, ...args)
+>
+> bind(thisObj, ...args)
+>
 
 [参考](./call&apply.js)
 
@@ -2311,3 +2314,12 @@ vue 1/2
 
 #### appendChild
 - 只能插节点
+
+---
+
+### passive
+[参考](../../js&browser/现代浏览器.md#passive)
+
+---
+
+

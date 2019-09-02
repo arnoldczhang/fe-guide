@@ -229,13 +229,16 @@
 
 ## http1.1
 
-对比http1.0，新增如下特性：
+对比`http1.0`，新增如下特性：
 - 缓存处理
 - 带宽优化
 - 长连接
 
-### 缓存处理扩展
-Entity tag，If-Unmodified-Since, If-Match, If-None-Match
+### 缓存处理
+- Entity tag
+- If-Unmodified-Since
+- If-Match
+- If-None-Match
 
 缓存字段[参考](../js&browser/页面过程与浏览器缓存.md#缓存分类)
 
@@ -267,11 +270,14 @@ Entity tag，If-Unmodified-Since, If-Match, If-None-Match
 * HTTP 1.0 风格的 Expires 响应头
 * Last-Modified响应头
 
+>
 > 可缓存时长
+>
 > 可缓存时长1小时（22 - 12） * 0.1
+>
 > 注：浏览器差异导致缓存时长不同
 
-```text
+```
 HTTP/2 200
 Date: Wed, 27 Mar 2019 22:00:00 GMT
 Last-Modified: Wed, 27 Mar 2019 12:00:00 GMT
