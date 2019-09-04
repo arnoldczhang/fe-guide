@@ -3,16 +3,16 @@ const {
   DEFAULT_CONFIG_FILE,
   DEFAULT_JS,
   DEFAULT_WXSS,
-  ROOT,
   SKELETON_DEFAULT_WXSS_FILE,
   SKELETON_DEFAULT_JS_FILE,
   SKELETON_RELATIVE,
-  SKELETON_ROOT,
-  SRC,
+  WXSS_BG_GREY,
+  updateBgWxss,
   updateDefaultWxss,
 } = require('./config');
 const { init: updateLogger } = require('./utils/log');
 const { assertOptions } = require('./utils/assert');
+const { getRelativePath } = require('./utils/dir');
 const {
   genNewComponent,
   genResourceFile,
@@ -38,6 +38,7 @@ const run = (options: any = {}): void => {
     defaultBg,
     tplWxss,
     subPackage,
+    defaultGrey,
   } = options;
   const srcPath = inputDir ? join(root, inputDir) : `${root}/src`;
   const outputPath = outDir ? `${join(root, outDir)}${SKELETON_RELATIVE}` : `${srcPath}${SKELETON_RELATIVE}`;
@@ -114,6 +115,10 @@ const run = (options: any = {}): void => {
     updateDefaultWxss(animation);
   }
 
+  // insert default grey background
+  if (defaultGrey) {
+    updateBgWxss(WXSS_BG_GREY, defaultGrey);
+  }
   // global wxss
   genResourceFile(
     `${outputPath}${SKELETON_DEFAULT_WXSS_FILE}`,
@@ -137,6 +142,7 @@ run.defaultConfigName = DEFAULT_CONFIG_FILE;
 run.test = {
   filterUsableSelectors,
   treewalk,
+  getRelativePath,
 };
 
 module.exports = run;

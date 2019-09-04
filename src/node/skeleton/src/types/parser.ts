@@ -20,6 +20,10 @@ export interface INpmOptions {
   deleteUnused?: boolean;
   // add default-bg to element which has only one textnode child
   defaultBg?: boolean;
+  // config the global grey
+  defaultGrey?: string;
+  // fix template wxss and generate a normal wxss;
+  tplWxss?: boolean;
   // sub package pages
   subPackage?: IPack[];
 }

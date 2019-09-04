@@ -308,6 +308,7 @@ export const getExecWxml = (
     let scanning: boolean = true;
     const isVisibleStyle: boolean = isIfAll($1) || isHidden($1);
 
+    // wx:if or wx:elif or wx:else or hidden
     if (isVisibleStyle) {
       if (isPage) {
         result = `${$1}${$2}\{\{$\{${$3}\}\}\}${$4}`;

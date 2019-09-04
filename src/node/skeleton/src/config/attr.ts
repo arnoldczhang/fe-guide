@@ -60,6 +60,8 @@ export const ATTR_MARGIN_LEFT = `${PRE}-margin-left`;
 
 export const ATTR_MARGIN_RIGHT = `${PRE}-margin-right`;
 
+export const ATTR_RADIUS = `${PRE}-radius`;
+
 export const SHINE_STYLE = 'shine';
 
 export const JELLY_STYLE = 'jelly';

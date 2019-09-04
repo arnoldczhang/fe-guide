@@ -317,3 +317,23 @@ export const triggerReplaceAction = (
   ast.tag = value;
   ast.attr = {};
 };
+
+export const triggerBorderRadiusAction = (
+  ast: IAst,
+  options: IPath,
+  result: ICO,
+  value: string,
+  klass: string[],
+): void => (
+  triggerCustomAction(
+    ast,
+    options,
+    result,
+    value,
+    klass, {
+      type: 'border-radius',
+      midTag: 'rd',
+      name: '圆角',
+      action: replaceLengthSymbol,
+    })
+);

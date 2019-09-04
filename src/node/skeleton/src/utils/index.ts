@@ -281,7 +281,7 @@ export const ensureAndInsertWxss = (
 ): void => {
   if (exists(src)) {
     ensure(dest);
-    write(dest, insertInitialWxss(`@import "${getRelativePath(src, dest)}";`));
+    write(dest, insertInitialWxss(`@import '${getRelativePath(src, dest)}';`));
   }
 };
 

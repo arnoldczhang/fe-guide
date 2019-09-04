@@ -1,6 +1,7 @@
 import { animationStyle, ICO } from '../types';
 import { getRelativePath } from '../utils';
 import { isStr } from '../utils/assert';
+import { isColor } from '../utils/reg';
 import { JELLY_STYLE, PRE, SHINE_STYLE } from './attr';
 import {
   SKELETON_DEFAULT_JS_FILE,
@@ -69,7 +70,7 @@ export const wx: ICO = new Proxy({}, {
 });
 
 // wxss
-export const COMP_WXSS = `@import "${SKELETON_DEFAULT_WXSS}";`;
+export const COMP_WXSS = `@import '${SKELETON_DEFAULT_WXSS}';`;
 
 export const WXSS_BG_GREY = `${PRE}-default-grey`;
 
@@ -103,6 +104,15 @@ DEFAULT_WXSS.set(WXSS_BG_LIGHT_GREY, `
   color: #fdfdfd!important;
 `);
 
+export const updateBgWxss = (
+  key: string,
+  color: string,
+) => {
+  if (isColor(color)) {
+    DEFAULT_WXSS.set([key], `background: ${color}!important; color: ${color}!important;`);
+  }
+};
+
 export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): void => {
   if (isStr(styles)) {
     styles = [styles as animationStyle];
@@ -135,8 +145,6 @@ export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): vo
       case JELLY_STYLE:
         DEFAULT_WXSS.set(WXSS_BG_GREY, `
         position: relative;
-        background: #f4f4f4!important;
-        color: #f4f4f4!important;
         overflow: hidden;
         outline: none;
         border: none;

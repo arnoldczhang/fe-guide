@@ -6,6 +6,14 @@ import { identity } from "./dir";
 // =========== //
 // === test === //
 // =========== //
+export const isColor = (input: string): boolean => (
+  /^(?:#[a-zA-Z0-9]{3,6}|rgba?|hsla?|[a-zA-Z])/.test(input)
+);
+
+export const isWxml = (input: string): boolean => (
+  /\.wxml$/.test(input)
+);
+
 export const isNpmComponent = (path: string): boolean => (
   /^~@/.test(path)
 );
@@ -147,7 +155,7 @@ export const removeComment = (file: string): string => (
 );
 
 export const removeBlankAndWxVariable = (input: string): string => (
-  input.replace(/(?:\n|\t|^ +| +$|\{\{[^\{\}]*\}\})/g, '')
+  input.replace(/(?:^\s+|\s+$|^ +| +$|\{\{[^\{\}]*\}\})/g, '')
 );
 
 // rgb(0, 0, 0)
