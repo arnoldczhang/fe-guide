@@ -28,7 +28,7 @@ Object | 返回一个新的 直接将Object返回|
 
 ### OwnPropertyKeys
 - 声明变量keys值为一个空列表（List类型）
-- 把每个Number类型的属性，按数值大小升序排序，并依次添加到keys中
+- 把每个Number类型的属性，按数值从大到小，并依次添加到keys中
 - 把每个String类型的属性，按创建时间升序排序，并依次添加到keys中
 - 把每个Symbol类型的属性，按创建时间升序排序，并依次添加到keys中
 - 将keys返回（return keys）
