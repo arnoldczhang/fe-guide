@@ -24,6 +24,7 @@
 * [`quic`](#quic)
 * [`https`](#https)
 * [`osl`](#osl)
+* [`协议层次`](#协议层次)
 * [`常用端口`](#常用端口)
 * [`常用状态码`](#常用状态码)
 
@@ -587,5 +588,14 @@ Open System Interconnection 开放式系统互联
   * 用户未被认证
 405 - method not allowed
 
+---
 
+## 协议层次
+
+### 传输层
+- tcp
+- udp
+
+### 应用层
+- http
 
