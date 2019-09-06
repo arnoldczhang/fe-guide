@@ -56,7 +56,9 @@ const run = (options: any = {}): void => {
     p: string = pagePath,
     c: string = compPath,
     subPageRoot?: string,
+    independent?: boolean,
   ): any => ({
+    globalOutputPath: outputPath,
     root,
     srcPath: s,
     outputPath: o,
@@ -78,6 +80,7 @@ const run = (options: any = {}): void => {
     ignoreTags: ignore,
     treeshake,
     subPageRoot,
+    independent,
   });
 
   // update main page logger
@@ -92,7 +95,7 @@ const run = (options: any = {}): void => {
   // gen sub page files
   if (Array.isArray(subPackage)) {
     subPackage.forEach((sub: any) => {
-      const { root: subRoot, page: subPage } = sub;
+      const { root: subRoot, page: subPage, independent } = sub;
       const subSrc = join(srcPath, subRoot);
       const subOut = outDir
         ? `${join(root, outDir, subRoot)}${SKELETON_RELATIVE}`
@@ -103,10 +106,21 @@ const run = (options: any = {}): void => {
       // update sub page logger
       updateLogger(pageCollection);
       subPageWxml.forEach((wxml: string): void => {
-        const pageOptions: any = getPageOptions(subSrc, subOut, subPagePath, subCompPath, srcPath);
+        const pageOptions: any = getPageOptions(
+          subSrc,
+          subOut,
+          subPagePath,
+          subCompPath,
+          srcPath,
+          independent,
+        );
         genNewComponent(wxml, pageOptions);
       });
       pageCollection.push(...subPageWxml);
+
+      if (independent) {
+        // TODO independent subPackage should not depend on commone wxss/js in mainPackage
+      }
     });
   }
 
@@ -126,7 +140,10 @@ const run = (options: any = {}): void => {
   );
 
   // global js
-  genResourceFile(`${outputPath}${SKELETON_DEFAULT_JS_FILE}`, DEFAULT_JS);
+  genResourceFile(
+    `${outputPath}${SKELETON_DEFAULT_JS_FILE}`,
+    DEFAULT_JS,
+  );
 
   // remove unused template/component
   if (!watch && deleteUnused) {

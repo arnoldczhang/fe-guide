@@ -51,6 +51,7 @@ export interface IPath {
   defaultBg?: boolean;
   // fix errors like `tag`, `id` selectors in template wxss
   tplWxss?: boolean;
+  // see INpmOptions `deleteUnused`
   deleteUnused?: boolean;
   // cach componet dest path
   wxComponentInfo?: Set<string>;
@@ -70,12 +71,20 @@ export interface IPath {
   skeletonKeys?: Set<string>;
   // cach global style map
   wxssInfo?: Map<string, string>;
+  // `console.log` info or not
   verbose?: boolean;
+  // see INpmOptions `treeshake`
   treeshake?: boolean;
   isPage?: boolean;
+  // see INpmOptions `ignore`
   ignoreTags?: string[];
   // sub page root, in order to find the components` dir used in sub page
   subPageRoot?: string;
+  // is independent subPage or not
+  // see https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/independent.html
+  independent?: boolean;
+  // global outputPath
+  globalOutputPath?: string;
 }
 
 export enum animationStyle {

@@ -14,6 +14,8 @@ export const WX_FOR = 'wx:for';
 
 export const WX_FOR_INDEX = 'wx:for-index';
 
+export const WX_FOR_ITEM = 'wx:for-item';
+
 export const WX_KEY = 'wx:key';
 
 export const WX_HIDDEN = 'hidden';

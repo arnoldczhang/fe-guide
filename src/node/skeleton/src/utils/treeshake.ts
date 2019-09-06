@@ -382,7 +382,7 @@ export const wxmlTreeShake = (
   const result = transform(jsContent as string) || {};
   const { ast } = result;
   let maxDiff: number[] = [];
-  traverse(ast, {
+  traverse(ast as any, {
     ObjectProperty(path: NodePath) {
       const node: ICO = path.node;
       const { key, value } = node;

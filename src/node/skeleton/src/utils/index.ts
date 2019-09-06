@@ -150,11 +150,21 @@ export const parseFile = (
  */
 export const insertInitialWxss = (
   template: string,
+  dest: string,
+  options: IPath,
   wxss = COMP_WXSS,
-): string => (
-  `${template}
-${wxss}`
-);
+): string => {
+  const {
+    independent,
+    subPageRoot,
+  } = options;
+
+  if (subPageRoot && !independent) {
+    wxss = `@import '${getRelativePath(`${options.globalOutputPath}/skeleton.wxss`, dest)}'`;
+  }
+  return `${template}
+${wxss}`;
+};
 
 /**
  * getJsonValue
@@ -281,7 +291,7 @@ export const ensureAndInsertWxss = (
 ): void => {
   if (exists(src)) {
     ensure(dest);
-    write(dest, insertInitialWxss(`@import '${getRelativePath(src, dest)}';`));
+    write(dest, insertInitialWxss(`@import '${getRelativePath(src, dest)}';`, dest, options));
   }
 };
 
@@ -447,7 +457,7 @@ export const insertPageWxss = (
   ast.stylesheet.rules = treeshake ? styleTreeShake(rules, options) : rules;
 
   if (hasPageStyle) {
-    write(dest, insertInitialWxss(`${css.stringify(ast)}`));
+    write(dest, insertInitialWxss(`${css.stringify(ast)}`, dest, options));
   } else {
     ensureAndInsertWxss(src, dest, options);
   }
@@ -462,7 +472,13 @@ export const genNewComponent = (
   srcWxml: string,
   options: IPath,
 ): void => {
-  const { outputPath, srcPath, deleteUnused, usingComponentKeys, usingTemplateKeys } = options;
+  const {
+    outputPath,
+    srcPath,
+    deleteUnused,
+    usingComponentKeys,
+    usingTemplateKeys,
+  } = options;
   const relativePath: string = srcWxml.replace(srcPath, '');
   const srcWxss: string = modifySuffix(srcWxml, 'wxss');
   const srcJson: string = modifySuffix(srcWxml, 'json');
@@ -481,7 +497,7 @@ export const genNewComponent = (
   // gen js
   const destJs: string = `${outputPath}${modifySuffix(relativePath, 'js')}`;
   ensure(destJs);
-  write(destJs, getCompJs(outputPath, destJs));
+  write(destJs, getCompJs(outputPath, destJs, options));
 
   // clear unused component in json file
   if (deleteUnused) {

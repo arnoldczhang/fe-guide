@@ -199,7 +199,7 @@ export const parseFromCustomAttr = (
   const { attr } = ast;
   if (!attr) { return ast; }
   const result: ICO = {};
-  const attrKeys = keys(attr);
+  let attrKeys = keys(attr);
   const exceptKeys: string[] = [];
   for (let key, value, klass, i = 0; i < attrKeys.length; i += 1) {
     key = attrKeys[i];
@@ -229,8 +229,9 @@ export const parseFromCustomAttr = (
         ast.child = [];
         break;
       case ATTR_REPLACE:
-        triggerReplaceAction(ast, value);
-        return ast;
+        attrKeys = Object.keys(triggerReplaceAction(ast, value));
+        i = 0;
+        break;
       case ATTR_PADDING:
         triggerPaddingAction(ast, options, result, value, klass);
         break;
@@ -560,10 +561,13 @@ export const parseFromJSON = (
   const dest: string = getDir(destFile);
   const { root, compPath, subPageRoot, outputPath } = options;
   const rootSrcPath = subPageRoot || options.srcPath;
+  const backRE = /^\.{2}\//;
+
   keys(json).forEach((key: string): void => {
     let pathValue: string = json[key];
     let [srcJs, destJs, srcWxml, destWxml, srcWxss, destWxss, srcJson, destJson] = Array(10);
     try {
+      // @npm/xxx
       if (isNpmComponent(pathValue)) {
         pathValue = pathValue.slice(1);
         srcJs = pathResolve.sync(pathValue, { basedir: root });
@@ -580,16 +584,34 @@ export const parseFromJSON = (
         json[key] = `${getRelativePath(destRoot, destFile)}/${srcJsName}`;
       } else {
         const isRootStyle = /^\//.test(pathValue);
+        let srcPre;
+        let destPre;
         if (isRootStyle) {
           pathValue = pathValue.slice(1);
+          srcPre = rootSrcPath;
+          destPre = outputPath;
+        } else {
+          srcPre = src;
+          destPre = dest;
         }
-        let srcPath: string = resolve(isRootStyle ? rootSrcPath : src, pathValue);
-        let destPath: string = resolve(isRootStyle ? outputPath : dest, pathValue);
+        let srcPath: string = resolve(srcPre, pathValue);
+        let destPath: string = resolve(destPre, pathValue);
+
         // fix: avoid compiling skeleton to skeleton
         if (srcPath.includes(outputPath)) {
           delete json[key];
           skeletonKeys.add(key);
           return;
+        }
+
+        // fix: if component, located in main package, is used in subpackage,
+        // this may be resolved to a out of bound path
+        if (subPageRoot) {
+          while (!destPath.includes(outputPath) && backRE.test(pathValue)) {
+            pathValue = pathValue.replace(backRE, '');
+            destPath = resolve(destPre, pathValue);
+            json[key] = pathValue;
+          }
         }
 
         try {
@@ -633,7 +655,7 @@ export const parseFromJSON = (
 
       // gen component-js
       ensure(destJs);
-      write(destJs, getCompJs(outputPath, destJs));
+      write(destJs, getCompJs(outputPath, destJs, options));
 
       // TODO copy Components.properties to destJs with babel
     }

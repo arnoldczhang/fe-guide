@@ -1,4 +1,4 @@
-import { animationStyle, ICO } from '../types';
+import { animationStyle, ICO, IPath } from '../types';
 import { getRelativePath } from '../utils';
 import { isStr } from '../utils/assert';
 import { isColor } from '../utils/reg';
@@ -176,7 +176,18 @@ export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): vo
 export const getCompJs = (
   output: string,
   dest: string,
+  options: IPath,
 ): string => {
+  const {
+    globalOutputPath,
+    subPageRoot,
+    independent,
+  } = options;
+
+  // if is a subpackage not-dependent, reuse the `skeleton.js` in main package
+  if (subPageRoot && !independent) {
+    output = globalOutputPath || output;
+  }
   const relativePath = getRelativePath(`${output}/${SKELETON_DEFAULT_JS_FILE}`, dest);
   return `Component({...require('${relativePath}')});`;
 };

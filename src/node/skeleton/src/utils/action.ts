@@ -1,4 +1,36 @@
-import { KLASS, PRE, WXSS_BG_DARK_GREY, WXSS_BG_GREY, WXSS_BG_LIGHT_GREY } from "../config";
+import {
+  ATTR_BG,
+  ATTR_CLEAR,
+  ATTR_DARK_BG,
+  ATTR_FOR,
+  ATTR_HEIGHT,
+  ATTR_LIGHT_BG,
+  ATTR_MARGIN,
+  ATTR_MARGIN_BOTTOM,
+  ATTR_MARGIN_LEFT,
+  ATTR_MARGIN_RIGHT,
+  ATTR_MARGIN_TOP,
+  ATTR_PADDING,
+  ATTR_PADDING_BOTTOM,
+  ATTR_PADDING_LEFT,
+  ATTR_PADDING_RIGHT,
+  ATTR_PADDING_TOP,
+  ATTR_RADIUS,
+  ATTR_REMOVE,
+  ATTR_REPEAT,
+  ATTR_REPLACE,
+  ATTR_SHOW,
+  ATTR_WIDTH,
+  KLASS,
+  PRE,
+  WX_FOR,
+  WX_FOR_INDEX,
+  WX_FOR_ITEM,
+  WX_KEY,
+  WXSS_BG_DARK_GREY,
+  WXSS_BG_GREY,
+  WXSS_BG_LIGHT_GREY,
+} from "../config";
 import { IAst, ICO, IPath } from "../types";
 import { isArr } from "./assert";
 import Logger from './log';
@@ -6,6 +38,38 @@ import { appendUniq } from "./random";
 import { replaceColorSymbol, replaceLengthSymbol, trim } from "./reg";
 
 const logger = Logger.getInstance();
+
+const allAttrs = [
+  ATTR_BG,
+  ATTR_CLEAR,
+  ATTR_DARK_BG,
+  ATTR_FOR,
+  ATTR_HEIGHT,
+  ATTR_LIGHT_BG,
+  ATTR_MARGIN,
+  ATTR_MARGIN_BOTTOM,
+  ATTR_MARGIN_LEFT,
+  ATTR_MARGIN_RIGHT,
+  ATTR_MARGIN_TOP,
+  ATTR_PADDING,
+  ATTR_PADDING_BOTTOM,
+  ATTR_PADDING_LEFT,
+  ATTR_PADDING_RIGHT,
+  ATTR_PADDING_TOP,
+  ATTR_RADIUS,
+  ATTR_REMOVE,
+  ATTR_REPEAT,
+  ATTR_REPLACE,
+  ATTR_SHOW,
+  ATTR_WIDTH,
+];
+
+const forAttrs = [
+  WX_FOR,
+  WX_FOR_INDEX,
+  WX_FOR_ITEM,
+  WX_KEY,
+];
 
 export const triggerCustomAction = (
   ast: IAst,
@@ -310,12 +374,24 @@ export const triggerLightBgAction = (
   triggerBgAction(ast, options, result, value, klass, WXSS_BG_LIGHT_GREY);
 };
 
+const replaceAttrs = allAttrs
+  .filter((attr: string) => attr !== ATTR_REPLACE)
+  .concat(forAttrs);
+
 export const triggerReplaceAction = (
   ast: IAst,
   value: string,
-): void => {
+): ICO => {
   ast.tag = value;
-  ast.attr = {};
+  const { attr } = ast;
+  const result: ICO = {};
+  Object.keys(attr).forEach((key: string) => {
+    if (replaceAttrs.includes(key)) {
+      result[key] = attr[key];
+    }
+  });
+  ast.attr = result;
+  return result;
 };
 
 export const triggerBorderRadiusAction = (
