@@ -1,4 +1,3 @@
-
 const { isArray } = Array;
 const isObject = input => input && typeof input === 'object';
 
