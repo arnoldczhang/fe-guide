@@ -29,7 +29,7 @@
 
 ## 参数
 * --async-stack-traces
-  - 示例：node --async-stack-traces index.js
+  - 示例：`node --async-stack-traces index.js`
   - 异步堆栈跟踪
 
 ---
@@ -47,7 +47,7 @@
 - [检查库的两个版本间的diff](https://diff.intrinsic.com/)
 - [npm源管理工具-nrm/yrm](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 - [搭建私有npm工具-verdaccio](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
-  * ```js
+  * ```
     npm install -g verdaccio
 
     verdaccio
@@ -152,8 +152,6 @@
 #### 解析顺序
 
 ![require加载机制](./require加载机制.png)
-
----
 
 1. 系统缓存
   - 模块被执行之后会会进行缓存
