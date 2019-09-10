@@ -33,6 +33,7 @@
 * [`contextAPI`](#contextAPI)
 * [`rn`](#rn)
 * [`interview`](#interview)
+* [`优化指南`](#优化指南)
 
 </details>
 
@@ -459,5 +460,139 @@ while (当前还有空闲时间 && 下一个节点不为空) {
 
 ## interview
 [react的304道题](https://github.com/semlinker/reactjs-interview-questions)
+
+---
+
+## 优化指南
+[参考](https://mp.weixin.qq.com/s/R2oGuX-WT8Muwiur8vo0qw)
+
+### React.Fragment
+>
+> 作用：
+>
+> 1. 用于包裹组件中的子节点，但是不产生额外节点
+>
+
+```js
+// 正常用法
+class Columns extends React.Component {
+  render() {
+    return (
+      <React.Fragment>
+        <td>column one</td>
+        <td>column two</td>
+      </React.Fragment>
+    );
+  }
+}
+
+// 简洁用法
+class Columns extends React.Component {
+  render() {
+    return (
+      <>
+        <td>Hello</td>
+        <td>World</td>
+      </>
+    );
+  }
+}
+```
+
+### React.lazy
+>
+> 作用：
+>
+> 1. 只有当组件需要渲染时才会加载组件
+> 2. 必须使用`import()`加载
+> 3. 返回值必须是`Promise`，加载的是`export default`
+>
+
+```js
+const OtherComponent = React.lazy(() => import('./OtherComponent'));
+
+function MyComponent() {
+  return (
+    <div>
+      <OtherComponent />
+    </div>
+  );
+}
+```
+
+### React.suspense
+>
+> 作用：
+>
+> 1. `React.lazy`加载前，需要类似【加载中】的状态展示，可用`suspense`
+> 2. `suspense`里可以套多个`React.lazy`
+> 3. 加载态放在`fallback`属性里
+>
+
+```js
+const OtherComponent = React.lazy(() => import('./OtherComponent'));
+const AnotherComponent = React.lazy(() => import('./AnotherComponent'));
+
+function MyComponent() {
+  return (
+    <div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <section>
+          <OtherComponent />
+          <AnotherComponent />
+        </section>
+      </Suspense>
+    </div>
+  );
+}
+```
+
+### shouldComponentUpdate
+>
+> 自定义比较`props`和`state`，避免组件无意义render
+>
+
+### React.PureComponent
+>
+> 浅比较`props`和`state`
+>
+
+### React.memo
+>
+> 描述：
+> 1. 高阶组件，类似`React.PureComponent`
+> 2. 默认也只做浅比较，不过可以传入自定义比较函数
+>
+
+```js
+const MyComponent = ({user}) =>{
+    const {name, occupation} = user;
+    return (
+        <div>
+            <h4>{name}</h4>
+            <p>{occupation}</p>
+        </div>
+    )
+}
+// 比较函数
+function areEqual(prevProps, nextProps) {
+  /*
+  如果把 nextProps 传入 render 方法的返回结果与
+  将 prevProps 传入 render 方法的返回结果一致则返回 true，
+  否则返回 false
+  */
+}
+export default React.memo(MyComponent, areEqual);
+```
+
+### 虚拟列表
+- react-window
+- react-virtualized
+
+---
+
+
+
+
 
 
