@@ -14,6 +14,7 @@
 <details>
 <summary>展开更多</summary>
 
+* [`概念`](#概念)
 * [`javascript并发模型`](#javascript并发模型)
 * [`执行上下文和作用域链`](#执行上下文和作用域链)
 * [`Event Loop`](#事件循环（Event Loop）)
@@ -23,6 +24,10 @@
 
 </details>
 
+## 概念
+- js线程与GUI线程互斥
+
+---
 
 ## javascript并发模型
 - Event Loop - 事件循环
@@ -207,13 +212,7 @@ node11以后
 
 - - -
 
-## Web APIs
-前端：浏览器、node环境
-- setTimeout
-
-- - -
-
-## Render Step
+## RenderStep
 - Structure - 构建 DOM 树的结构
 - Layout - 确认每个 DOM 的大致位置（排版）
 - Paint - 绘制每个 DOM 具体的内容（绘制）
@@ -222,9 +221,9 @@ node11以后
 
 #### 特性
 - 由系统来决定回调函数的执行时机，
-  比如屏幕刷新率是75Hz，则间隔就变成13.3ms，60Hz对应16ms
+  比如屏幕刷新率是 75Hz，则间隔就变成 13.3ms，60Hz 对应 16ms
 - 屏幕刷新间隔只会执行一次
-- 页面处于未激活状态时，requestAnimation将停止，再次激活，从上次状态恢复
+- 页面处于未激活状态时，requestAnimation 将停止，再次激活，从上次状态恢复
 
 #### 取消动画合并
 - 嵌套requestAnimationFrame
