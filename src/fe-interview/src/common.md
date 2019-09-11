@@ -715,7 +715,7 @@ Promise.all2 = function(promises) {
 };
 ```
 
---
+---
 
 ### 数组扁平化flattenArray
 
@@ -752,7 +752,7 @@ var flattenArray = (arr) => {
 ### 数组去重uniq
 - Set
   ```js
-  [new Set(...arr)]
+  const uniqArr = [...new Set(arr)];
   ```
 - indexOf
 - includes
@@ -958,12 +958,12 @@ function upper(arr = []) {
 
 // 方式二：邪道
 // Array.prototype.flat才刚到提案（chrome69支持）
-Array.from(new Set(arr.flat(Infinity))).sort((a,b)=>{ return a-b})；
+Array.from(new Set(arr.flat(Infinity))).sort((a,b)=>{ return a-b});
 
 
 
 // 方式三：妖道
-Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
+Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b});
 ```
 
 ---
@@ -974,7 +974,8 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
 ---
 
 ### http2多路复用
-- 同一域名下所有通信都在单个连接上完成，消除因多个TCP连接带来的延时和内存消耗
+- 同一域名下所有通信都在单个TCP连接上完成
+- 消除因多个TCP连接带来的延时和内存消耗
 - 单个连接上的请求可以并行交错，互不影响
 
 ---
