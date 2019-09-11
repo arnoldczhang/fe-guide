@@ -655,7 +655,7 @@ Open System Interconnection 开放式系统互联
 > 分为多种协议模型，如下图：
 >
 
-![协议模型](TCP/IP协议模型.png)
+![协议模型](./TCP-IP协议模型.png)
 
 ### 传输层
 - tcp
