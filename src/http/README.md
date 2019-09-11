@@ -630,6 +630,7 @@ Open System Interconnection 开放式系统互联
 
 ## 常用端口
 80 - 网页用
+
 8080 - 同80
 
 ---
@@ -657,10 +658,12 @@ Open System Interconnection 开放式系统互联
 
 ![协议模型](./TCP-IP协议模型.png)
 
+### 应用层
+- http
+- dns域名系统
+
 ### 传输层
 - tcp
 - udp
 
-### 应用层
-- http
 

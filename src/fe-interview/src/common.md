@@ -310,7 +310,6 @@ const count = arr.reduce((t, c) => {
 - 设置弹性盒对象扩展比
 - 如果子元素的宽度和小于父容器，则剩余空间根据flex-grow瓜分
 - 默认0，即剩余空间宽度瓜分到0，到当前子元素
-- 
 
 **flex**
 
@@ -540,7 +539,7 @@ const resize = (size) => {
 #### DOMContentLoaded
 - HTML5事件
 - 初始的HTML文件被完整读取时触发
-- 异步加载的css，不会影响DOMContentLoaded
+- 异步加载的 css，不会影响 DOMContentLoaded
 
 **几种说法**
 
@@ -557,7 +556,7 @@ const resize = (size) => {
 - 只存在css 或 js加载在css之前，DOMContentLoaded不需要等css加载完才触发
 - 存在css和js 或 js加载在css后面，DOMContentLoaded需要等css和js都加载完才触发
 
-我的实验：chrome76
+说法四：我的实验（chrome76）
 - 无论js是否存在，或js和css位置关系如何，都会影响DOMContentLoaded触发
 
 #### onload
@@ -580,9 +579,7 @@ onDoingthing冒泡阶段触发
 
 **隐式转换**
 
-=》[Symbol.toPrimitive]/valueOf / toString
-
-#### 方式1
+#### 方式1-Symbol.toPrimitive
 ```js
 // 闭包
 var a = {
@@ -594,7 +591,7 @@ var a = {
 };
 ```
 
-#### 方式2
+#### 方式2-valueOf
 ```js
 // proxy
 var a = new Proxy({}, {
@@ -605,7 +602,7 @@ var a = new Proxy({}, {
 });
 ```
 
-#### 方式3
+#### 方式3-toString
 ```js
 // 对象
 var a = {
@@ -621,7 +618,7 @@ var a = {
 };
 ```
 
-#### 方式4
+#### 方式4-邪道
 ```js
 // arr.join = arr.shift
 var arr = [1, 2, 3];
@@ -855,7 +852,7 @@ function dts(node) {
 ![广度优先](./广度优先.png)
 
 ```js
-// 正常操作
+// 正常操作push/shift
 function wts(node) {
   const list = [];
   list.push(node);
@@ -1010,7 +1007,7 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
 ### react的setState变更的同/异步
 [参考](https://github.com/sisterAn/blog/issues/26)
 
-- react自身引发的事件处理（onClick，componentWillMount等），异步执行
+- react自身引发的事件处理（onClick，componentWillMount等），即合成时间，这时候异步执行
 - 此外的调用（addEventListener、setTimeout等），同步执行
 
 #### 原因
