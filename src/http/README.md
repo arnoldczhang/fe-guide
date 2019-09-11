@@ -15,7 +15,7 @@
 
 * [`tcp`](#tcp)
 * [`udp`](#udp)
-* [`requestHeader`](#requestHeader)
+* [`request header`](#requestHeader)
 * [`http1.0`](#http1.0)
 * [`http1.1`](#http1.1)
 * [`spdy`](#spdy)
@@ -249,8 +249,8 @@
 
 - private：客户端可以缓存
   * 走浏览器自己的缓存策略
-  * 比如Expires = 当前时间(Date - Last-Modified) * 10%（下面有举例）
-- public：客户端和代理服务器都可缓存
+  * 比如 `Expires = 当前时间(Date - Last-Modified) * 10%`（下面有举例）
+- public：客户端和代理服务器、其他客户端都可共享缓存
   * 包括中间节点的proxy
 - max-age=xxx：缓存的内容将在 xxx 秒后失效
 - no-cache：需要使用协商缓存来验证缓存数据
@@ -268,13 +268,13 @@
   Cache-Control: max-age=86400, must-revalidate
   ```
 
-### 资源缓存几种方式
+#### 资源缓存几种方式
 * HTTP 1.1 风格的Cache-Control 响应头中的 max-age指令
 * HTTP 1.0 风格的 Expires 响应头
 * Last-Modified响应头
 
 >
-> 可缓存时长
+> Cach-Control: private 可缓存时长
 >
 > 可缓存时长1小时（22 - 12） * 0.1
 >
@@ -293,20 +293,20 @@ range，请求资源一部分（206），支持断点续传
 
 检查服务器是否支持：Content-Range
 
-### 错误通知
+#### 错误通知
 
 新增状态码
 - 303：明确表示客户端应当采用get方法获取资源
 - 307：不会把POST转为GET
 
-### host处理
+#### host处理
 一台服务器，多个server，同一个ip
 
 ### 长连接
 一次tcp串行发送多个http请求（keep-alive）
 
 ### 缓存字段
-- ![缓存字段](缓存字段.jpg)
+![缓存字段](缓存字段.jpg)
 
 ---
 
@@ -321,24 +321,72 @@ range，请求资源一部分（206），支持断点续传
 ## http2.0
 [HTTP/2.0相比1.0有哪些重大改进](https://www.zhihu.com/question/34074946)
 
-- 多路复用
-  * 同个域名只需要占用一个 TCP 连接
-  * 同一个tcp连接上并行请求任意数量的双向交换消息
-  * 减轻服务端负载
-  * ![多路复用](多路复用.png)
-- 二进制分帧
-  * 将首部信息和请求体，采用二进制编码封装进HEADER和BODY frame
-  * ![二进制分帧](二进制分帧.png)
-  * css sprites优势荡然无存
-- 首部压缩
-  * 客户端和服务器端使用“首部表”来跟踪和存储之前发送的键-值对
-  * 相同的数据，不再通过每次请求和响应发送
-  * 每个新的首部键-值对要么被追加到当前表的末尾，要么替换表中之前的值
-- 服务端推送
-  * 服务端可以主动把JS和CSS文件推送给客户端，而不需要客户端解析HTML时再发送这些请求
-  * 遵守同源策略
-  * 如果资源已经被浏览器缓存，浏览器可以通过发送RST_STREAM帧来拒收
-  * prefetch
+### 多路复用
+* 同个域名只需要占用一个 TCP 连接
+* 同一个tcp连接上并行请求任意数量的双向交换消息
+* 减轻服务端负载
+* ![多路复用](多路复用.png)
+
+### 二进制分帧
+* 将首部信息和请求体，采用二进制编码封装进HEADER和BODY frame
+* ![二进制分帧](二进制分帧.png)
+* css sprites优势荡然无存
+
+### 首部压缩
+* 客户端和服务器端使用`首部表`”`来跟踪和存储之前发送的键-值对
+* 相同的数据，不再每次请求和响应都发送
+* 每个新的首部键-值对要么被追加到当前表的末尾，要么替换表中之前的值
+
+### 服务端推送
+[阮一峰参考](http://www.ruanyifeng.com/blog/2018/03/http2_server_push.html)
+* 服务端可以主动把JS和CSS文件推送给客户端，不需要客户端解析HTML时再请求
+* 遵守同源策略
+* 如果资源已经被浏览器缓存，浏览器可以通过发送 RST_STREAM 帧来拒收
+* prefetch
+
+#### nginx配置
+
+**普通配置**
+
+```
+location / {
+  root   /usr/share/nginx/html;
+  index  index.html index.htm;
+  http2_push /style.css;
+  http2_push /example.png;
+}
+```
+
+**问题**
+
+- 如果客户端已有缓存，重复推送是带宽浪费
+- 即使推送成功，浏览器也会优先使用本地缓存
+- 建议做成只对首次访问的用户推送（比如用cookie判断）
+
+**改进的配置**
+
+```
+server {
+    listen 443 ssl http2 default_server;
+
+    ssl_certificate ssl/certificate.pem;
+    ssl_certificate_key ssl/key.pem;
+
+    root /var/www/html;
+    http2_push_preload on;
+
+    location = /demo.html {
+        add_header Set-Cookie "session=1";
+        add_header Link $resources;
+    }
+}
+
+
+map $http_cookie $resources {
+    "~*session=1" "";
+    default "</style.css>; as=style; rel=preload";
+}
+```
 
 ### spdy与http 2.0区别
 - HTTP2.0 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS
@@ -415,8 +463,20 @@ range，请求资源一部分（206），支持断点续传
   - DNS 解析到 IP 后，需要完成三次握手建立 TCP 连接。
 7. 发起 OCSP 请求，获取响应。耗时一个 RTT。
 8. 完全握手阶段二，耗时一个 RTT 及计算时间。
-  - 完全握手阶段二主要是密钥协商。
+  - 主要是密钥协商。
 9. 完全握手结束后，浏览器和服务器之间进行应用层（也就是 HTTP）数据传输。
+
+**简化上述过程**
+
+1. http请求
+2. http重定向https
+3. https请求
+4. 密钥/算法协商
+5. CA证书DNS解析
+6. CA证书请求
+7. CA证书可用性校验（OCSP）
+8. 密钥/算法协商结束
+9. 数据传输
 
 **并非所有请求（0.01%）都要增加7个RTT，需要满足**
 
@@ -431,14 +491,14 @@ range，请求资源一部分（206），支持断点续传
 ### 加密方式
 > 非对称加密 + 对称加密
 >
-> https在第一次握手使用非对称加密，同时会保存通信的秘钥
+> https在第一次握手使用非对称加密，同时会保存通信的密钥到本地
 >
 > 之后的通信，数据加密走的都是对称加密
 >
-> 因为服务器为每个客户端维护一个session ID，通过session ID可以找到对应的秘钥
+> 因为服务器为每个客户端维护一个session ID，通过session ID可以找到对应密钥
 
 #### 对称加密
-- 通信双方都各自持有同一个密钥，且没有别人知道
+- 通信双方都各自持有同一个密钥，且没有第三者知道
 - 双方通信都是用这个密钥加密
 
 #### 非对称加密
@@ -465,7 +525,7 @@ range，请求资源一部分（206），支持断点续传
 - 服务端A用自己私钥解密B返的随机数，也就获取了客户端B的密钥
 - 以后A和B的数据通信都通过这个密钥加密
 
-密钥，也就是 Session Ticket
+密钥，也就是`Session Ticket`
 
 #### 非对称vs对称的劣势
 - cpu消耗大，计算量占单次tls握手时间的90%
@@ -490,18 +550,18 @@ range，请求资源一部分（206），支持断点续传
 - hash后能得到固定长度的信息（比如md5后，固定128位）
 - 证书信息一般都比较长，非对称加密比较耗时
 
-**证书制作**
+**证书制作过程**
 
 - 服务端A，将自己的公钥key发给CA，申请证书
 - CA对服务端A的公钥key做hash处理
 - CA对hash后的值用私钥加密，得到数字签名
-- 证书明文（公钥） + 数字签名 = 数字证书，颁发给网站
+- 证书明文（公钥key） + 数字签名 = 数字证书，颁发给网站
 
 **鉴别真伪**
 
-- 客户端B向服务端A请求时，A返回的是数字证书（证书明文（公钥A） + 数字签名S）
+- 客户端B向服务端A请求时，A返回的是数字证书（证书明文 + 数字签名S）
 - 客户端B用CA证书的对应公钥解密数字签名S，得到S'
-- 客户端B用CA证书的hash算法，对公钥A做hash处理，得到A'
+- 客户端B用CA证书的hash算法，对证书明文做hash处理，得到A'
 - 如果A' === S'，说明服务端A的证书有效
 - 之后就是非对称加密的过程
 
@@ -523,8 +583,8 @@ range，请求资源一部分（206），支持断点续传
 ### 校验证书合法性
 - 校验证书的颁发机构是否受客户端信任
 - 通过 CRL（证书吊销列表，Certificate Revocation List）或OCSP（在线证书状态协议，Online Certificate Status Protocol）的方式校验证书是否被吊销
-  * CRL需要经常在客户端下载最新版，所以比较繁琐
-  * OCSP会在访问服务器时，自动请求一个证书状态的信息
+  * CRL 需要经常在客户端下载最新版，所以比较繁琐
+  * OCSP 会在访问服务器时，自动请求一个证书状态的信息
 - 对比系统时间，校验证书是否在有效期内
 - 通过校验对方是否存在证书的私钥，判断证书的网站域名是否与证书颁发的域名一致
 
@@ -591,6 +651,11 @@ Open System Interconnection 开放式系统互联
 ---
 
 ## 协议层次
+>
+> 分为多种协议模型，如下图：
+>
+
+![协议模型](TCP/IP协议模型.png)
 
 ### 传输层
 - tcp
