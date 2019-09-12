@@ -57,6 +57,7 @@
 * [`appendVSappendChild`](#appendVSappendChild)
 * [`passive`](#passive)
 * [`解构赋值`](#解构赋值)
+* [`URLSearchParams`](#URLSearchParams)
 
 **进阶js**
 
@@ -76,6 +77,7 @@
 * [`vue/react中key的作用`](#vue/react中key的作用)
 * [`react的setState变更的同/异步`](#react的setState变更的同/异步)
 * [`redux和vuex`](#redux和vuex)
+* [`reducer每次都要生成新state`](#reducer每次都要生成新state)
 * [`VirtualDom对比原生DOM处理`](#VirtualDom对比原生DOM处理)
 * [`JSpring的vnode解析`](#JSpring的vnode解析)
 * [`Vue的父组件和子组件生命周期钩子执行顺序`](#Vue的父组件和子组件生命周期钩子执行顺序)
@@ -84,7 +86,6 @@
 * [`vue生命周期`](#vue生命周期)
 * [`异步请求`](#异步请求)
 * [`reduxVSmobx`](#reduxVSmobx)
-* [`reducer每次都要生成新state`](#reducer每次都要生成新state)
 * [`mv*`](#mv*)
 * [`react优化指南`](#react优化指南)
 
@@ -543,20 +544,20 @@ const resize = (size) => {
 
 **几种说法**
 
-说法一：js高程
+> 说法一：js高程
 - 形成完整dom树后触发
 - 不理会js、css、图片等资源文件
 
-说法二：普遍观点
+> 说法二：普遍观点
 - 等待js的下载 + 加载
 - 不理会css、图片、iframe等的加载
 
-说法三：较权威的观点
+> 说法三：较权威的观点
 [css加载](https://segmentfault.com/a/1190000018130499)
 - 只存在css 或 js加载在css之前，DOMContentLoaded不需要等css加载完才触发
 - 存在css和js 或 js加载在css后面，DOMContentLoaded需要等css和js都加载完才触发
 
-说法四：我的实验（chrome76）
+> 说法四：我的实验（chrome76）
 - 无论js是否存在，或js和css位置关系如何，都会影响DOMContentLoaded触发
 
 #### onload
@@ -1077,18 +1078,18 @@ Object.prototype.toString.call
 - 判断是否是数组 [Object array]
 
 instanceof
-- 判断对象的原型链中是不是能找到类型的prototype
+- 判断对象的原型链中是不是能找到类型的 prototype
 
- Array.isArray
- - 能检测出Iframes，而instanceof不行
-  ```js
-  xArray = window.frames[window.frames.length-1].Array;
-  var arr = new xArray(1,2,3); // [1,2,3]
+Array.isArray
+- 能检测出 Iframes，而 instanceof 不行
+```js
+xArray = window.frames[window.frames.length-1].Array;
+var arr = new xArray(1,2,3); // [1,2,3]
 
-  Array.isArray(arr);  // true
-  Object.prototype.toString.call(arr); // true
-  arr instanceof Array; // false
-  ```
+Array.isArray(arr);  // true
+Object.prototype.toString.call(arr); // true
+arr instanceof Array; // false
+```
 
 ---
 
@@ -1120,9 +1121,9 @@ instanceof
 #### 如何减少触发
 - transform代替top
 - visibility代替display：none
-- 避免使用tabel（通常要花3倍于同等元素的时间）
+- 避免使用table（通常要花3倍于同等元素的时间）
 - 避免多次样式嵌套
-- 动画效果尽量加载absolute或fixed元素上
+- 动画效果尽量加载`absolute`或`fixed`元素上
 - 使用GPU加速
 - 频繁重绘或回流的单拉一个图层，例will-change
 
@@ -2512,4 +2513,13 @@ class URLSearchParams {
 
 ### react优化指南
 [参考](../../react/README.md)
+
+---
+
+### URLSearchParams
+- URLSearchParams 接口定义了一些实用的方法来处理 URL 的查询字符串
+- 一个实现了 URLSearchParams 的对象可以直接用在 for...of 结构中
+
+
+
 

@@ -182,11 +182,11 @@ js被解析和执行环境的抽象概念
 
 libuv引擎中的事件循环（宏任务）分为 6 个阶段：
 
-* timers: 执行setTimeout和setInterval中到期的callback。
-* I/O callback: 上一轮循环中少数的callback会放在这一阶段执行。
+* timers: 执行 setTimeout 和 setInterval 中到期的 callback。
+* I/O callback: 上一轮循环中少数的 callback 会放在这一阶段执行。
 * idle, prepare: 仅在内部使用。
-* poll: 最重要的阶段，执行pending callback，在适当的情况下会阻塞在这个阶段。
-* check: 执行setImmediate（setImmediate()是将事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行setImmediate指定的回调函数）的callback。
+* poll: 最重要的阶段，执行 pending callback，在适当的情况下会阻塞在这个阶段。
+* check: 执行 setImmediate（`setImmediate`是将事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行setImmediate指定的回调函数）的callback。
 * close callbacks: 执行close事件的callback，例如socket.on('close'[,fn])或者http.server.on('close, fn)。
 
 #### 执行顺序区别

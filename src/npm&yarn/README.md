@@ -173,34 +173,36 @@ yarn：直接输出安装结果，报错日志清晰
 ## npm安装原理
 1. preinstall
 2. 确定首层依赖模块
-  - dependencies
-  - devDependencies
+  - `dependencies`
+  - `devDependencies`
 3. 获取模块
-  - package.json拿version、resolved等字段
-  - 根据resolved到本地找缓存，没有再从仓库下载
+  - package.json 拿`version`、`resolved`等字段
+  - 根据`resolved`到本地找缓存，没有再从仓库下载
   - 查找当前模块是否有依赖，有的话回到1
 4. 模块扁平化
   - 所有模块放到根节点（npm3加入的dedupe）
-  - semver兼容，semver对应一段版本允许的范围
+  - semver 兼容，semver 对应一段版本允许的范围
   - 当发现有重复模块时，则将其丢弃（由于存在版本兼容范围，所以不一定要版本完全一致）
 6. 执行工程自身生命周期
   - install
 7. postinstall + prepublish + prepare
 
 ### npm模块安装机制
-查询node_modules是否已存在
+查询 node_modules 是否已存在
 -  存在，不重新安装
 - 不存在
-  + npm向registery查询模块压缩包网址
+  + npm 向 registery 查询模块压缩包网址
   + 下载到根目录的.npm里
-  + 解压到当前目录的node_modules
+  + 解压到当前目录的 node_modules
 
 ### npm2安装机制
 ![npm2](npm2.png)
+
 弊端：相同模块大量冗余
 
 ### npm3安装机制
 ![npm3](npm3对比npm2.png)
+
 弊端：相同模块部分冗余，如下图：
 ![npm3模块冗余](npm3模块冗余.png)
 
