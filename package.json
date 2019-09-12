@@ -112,7 +112,8 @@
     "test": "mocha && npm run test-only",
     "test-only": "ava",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "commit": "npx git-cz"
   },
   "ava": {
     "files": [

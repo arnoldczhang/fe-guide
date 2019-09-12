@@ -57,8 +57,7 @@
     - 技术选型、架构设计
     - js/css模块化：cmd/amd/es6 module
     - 构建优化、定制规范、分治系统、性能优化、CI/CD、日志监控、系统测试
-    - 组件化开发与资源管理：分治
-  参考https://github.com/fouber/blog/issues/10，
+    - 组件化开发与资源管理：分治参考https://github.com/fouber/blog/issues/10，
   * 带人：疑问式引导
 2. 独立做事。当你的一技之长达到一定深度的时候，需要开始思考如何独立做事。
   * 技术主管后考虑
