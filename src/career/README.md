@@ -83,7 +83,8 @@
 ---
 
 ## 架构设计
-参考[大型项目前端架构](https://juejin.im/post/5cea1f705188250640005472)
+- [大型项目前端架构](https://juejin.im/post/5cea1f705188250640005472)
+- [团队规范](https://juejin.im/post/5d3a7134f265da1b5d57f1ed)
 
 ### 基建
 - 代码仓库（自建gitlab）
