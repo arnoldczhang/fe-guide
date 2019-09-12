@@ -1339,13 +1339,13 @@ var a = 10;
 ```js
 // Promise
 const sleep = time => {
-  return new Promise(resolve => setTimeout(resolve,time))
+  return new Promise(resolve => setTimeout(resolve, time))
 }
 sleep(1000).then(()=>{
   console.log(1)
 })
 
-//Generator
+// Generator
 function* sleepGenerator(time) {
   yield new Promise(function(resolve,reject){
     setTimeout(resolve,time);
@@ -1353,7 +1353,7 @@ function* sleepGenerator(time) {
 }
 sleepGenerator(1000).next().value.then(()=>{console.log(1)})
 
-//async
+// async
 function sleep(time) {
   return new Promise(resolve => setTimeout(resolve,time))
 }
@@ -1367,13 +1367,13 @@ output();
 //ES5
 function sleep(callback,time) {
   if(typeof callback === 'function')
-    setTimeout(callback,time)
+    setTimeout(callback, time)
 }
 
 function output(){
   console.log(1);
 }
-sleep(output,1000);
+sleep(output, 1000);
 ```
 
 ---
