@@ -304,6 +304,42 @@ return hashid.digest('hex');
 
 字符编码可[参考](../node/README.md#字符编码encoding)
 
+
+### mpa配置
+
+```
+├── README.md
+├── app // 开发源代码目录
+│   ├── assets // 资源目录
+│   │   ├── images
+│   │   └── styles
+│   │       ├── common.less
+│   └── pages // 多页面入口目录
+│       ├── entry1
+│       │   ├── index.html
+│       │   ├── index.js
+│       │   ├── index.less
+│       └── entry2
+│           ├── index.html
+│           ├── index.js
+│           └── index.less
+├── configs // webpack配置文件目录
+│   ├── env.js
+│   ├── module.js
+│   ├── optimization.js
+│   ├── plugins.js
+│   ├── webpack.config.babel.js
+│   └── webpackDevServer.config.babel.js
+├── dist // 打包输出目录
+├── package.json
+├── scripts // 启动和打包脚本
+│   ├── build.js
+│   ├── devServer.js
+│   └── start.js
+├── yarn-error.log
+├── yarn.lock
+```
+
 ---
 
 ## webpack-3.8.1解析
