@@ -116,6 +116,8 @@
 * [`性能优化`](#性能优化)
 * [`cssom`](#cssom)
 * [`浏览器跨域`](#浏览器跨域)
+* [`如何判断对象是否被GC`](#如何判断对象是否被GC)
+* [`get和post区别`](#get和post区别)
 
 **算法**
 
@@ -803,7 +805,7 @@ var flattenArray = (arr) => {
 - key不可遍历（同样的，可遍历就会受垃圾回收的影响，返回值有不确定性）
 - set/delete
 
-例
+例：
 
 ```js
 // 将元素存至WeakMap，在其被卸载时，自动垃圾回收
@@ -889,9 +891,9 @@ function vs class
 ---
 
 ### setTimeout、Promise、Async/Await区别
-- setTimeout属于宏任务
-- Promise本身是同步的立即执行函数，Promise.then属于微任务
-- async方法执行时，遇到await会立即执行表达式，表达式之后的代码放到微任务执行
+- setTimeout 属于宏任务
+- Promise 本身是同步的立即执行函数，Promise.then 属于微任务
+- async 方法执行时，遇到 await 会立即执行表达式，表达式之后的代码放到微任务执行
 
 ---
 
@@ -1058,7 +1060,6 @@ class Example extends React.Component {
 
 // 答案
 0 0 2 3
-
 ```
 
 ---
@@ -1517,7 +1518,7 @@ LazyMan.prototype = {
 function solution(arr1, ...rest) {
     const temp = new Set(arr1);
     const res = new Set();
-    arr2.forEach(item => temp.has(item) && res.add(item));
+    rest.forEach(item => temp.has(item) && res.add(item));
     return Array.from(res);
 }
 ```
@@ -2519,6 +2520,19 @@ class URLSearchParams {
 ### URLSearchParams
 - URLSearchParams 接口定义了一些实用的方法来处理 URL 的查询字符串
 - 一个实现了 URLSearchParams 的对象可以直接用在 for...of 结构中
+
+---
+
+### 如何判断对象是否被GC
+1. Chrome-Memory
+2. 对象操作前，记录一次快照
+3. 对象解除引用后，点击GC，再次记录快照
+4. 对比前后对象分配内存大小
+
+---
+
+### get和post区别
+[参考](../../js&browser/页面过程与浏览器缓存.md#GETvsPOST)
 
 
 

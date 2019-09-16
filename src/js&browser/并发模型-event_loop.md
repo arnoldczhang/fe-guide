@@ -203,16 +203,24 @@ node11以后
 - - -
 
 ## 任务队列（task）
-- macrotask(宏任务) `task`，包含：
-  * 整体代码script
-  * setTimeout（标准4ms），setInterval，setImmediate（node）
-  * I/O
-  * UI交互事件
-  * postMessage（MessageChannel）
-- microtask(微任务) `job`，包含：
-  * Promise
-  * process.nextTick（node）
-  * MutaionObserver
+
+### macrotask(宏任务) `task`
+
+**真正的异步**
+
+* 整体代码script
+* setTimeout（标准4ms），setInterval，setImmediate（node）
+* I/O
+* UI交互事件
+* postMessage（MessageChannel）
+
+### microtask(微任务) `job`
+
+**未来情况的相应行为**
+
+* Promise
+* process.nextTick（node）
+* MutaionObserver
 
 - - -
 
