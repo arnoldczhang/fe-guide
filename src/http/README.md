@@ -448,13 +448,14 @@ map $http_cookie $resources {
 
 ## https
 [深入了解https](https://zhuanlan.zhihu.com/p/43789231)
-
+>
 > https
+>
 > 相当于http + tls安全层（比http至少多2次tls的RTT）
 > 
 > 耗时影响，主要在于：
 >
-> 1. 议交互所增加的网络 RTT(round trip time)
+> 1. 交互所增加的网络 RTT(round trip time)
 > 2. 加解密相关的计算耗时
 
 ### 与http的区别
