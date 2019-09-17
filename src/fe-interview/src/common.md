@@ -4,98 +4,154 @@
 - [基础20题](https://mp.weixin.qq.com/s/ViucwxvZg-g_YsHxN1PiAA)
 - [前端100问](https://juejin.im/post/5d23e750f265da1b855c7bbe?utm_source=gold_browser_extension#heading-2)
 - [前端必学](https://juejin.im/post/5d387f696fb9a07eeb13ea60?utm_source=gold_browser_extension)
+- [react](https://github.com/xiaomuzhu/front-end-interview/blob/master/docs/guide/react.md)
 
 ## 目录
 <details>
 <summary>展开更多</summary>
 
+**基础js**
+
 * [`==和===`](#==和===)
 * [`[]==![]`](#[]==![])
 * [`let、const以及var的区别`](#let、const以及var的区别)
-* [`flex布局`](#flex布局)
 * [`this`](#this)
 * [`函数声明&变量声明`](#函数声明&变量声明)
 * [`统计数组成员重复个数`](#统计数组成员重复个数)
-* [`vue/react中key的作用`](#vue/react中key的作用)
 * [`setTimeout原理`](#setTimeout原理)
 * [`onload/DOMContentLoaded`](#onload/DOMContentLoaded)
 * [`事件触发过程`](#事件触发过程)
-* [`flex属性`](#flex属性)
-* [`响应式方案`](#响应式方案)
 * [`a==1&&a==2&&a==3`](#a==1&&a==2&&a==3)
-* [`隐藏页面元素`](#隐藏页面元素)
-* [`Promise.all实现`](#Promise.all实现)
 * [`执行上下文和作用域链`](#执行上下文和作用域链)
 * [`节流&防抖`](#节流&防抖)
 * [`flattenArray`](#flattenArray)
 * [`数组去重uniq`](#数组去重uniq)
 * [`何为可迭代对象`](#何为可迭代对象)
 * [`Set、Map、WeakSet和WeakMap的区别`](#Set、Map、WeakSet和WeakMap的区别)
-* [`深度优先和广度优先`](#深度优先和广度优先)
 * [`es5/es6继承的区别`](#es5/es6继承的区别)
 * [`setTimeout、Promise、Async/Await区别`](#setTimeout、Promise、Async/Await区别)
 * [`模拟async&await`](#模拟async&await)
-* [`同/异任务`](#同/异任务)
-* [`算法题`](#算法题)
-* [`如何实现一个new`](#如何实现一个new)
-* [`http2多路复用`](#http2多路复用)
-* [`描述网页从输入url到渲染的过程`](#描述网页从输入url到渲染的过程)
-* [`TCP三次握手&四次挥手的理解`](#TCP三次握手&四次挥手的理解)
-* [`react的setState变更的同/异步`](#react的setState变更的同/异步)
-* [`npm模块安装机制`](#npm模块安装机制)
 * [`判断数组方法的区别`](#判断数组方法的区别)
-* [`重绘和回流`](#重绘和回流)
-* [`发布订阅VS观察者模式`](#发布订阅VS观察者模式)
-* [`redux和vuex`](#redux和vuex)
-* [`浏览器和Node事件循环的区别`](#浏览器和Node事件循环的区别)
-* [`前端中的模块化开发`](#前端中的模块化开发)
-* [`cookie和token都存放在header中，为什么不会劫持token`](#cookie和token都存放在header中，为什么不会劫持token)
-* [`如何实现token加密`](#如何实现token加密)
 * [`setTimeout输出0-9改法`](#setTimeout输出0-9改法)
-* [`VirtualDom对比原生DOM处理`](#VirtualDom对比原生DOM处理)
-* [`浏览器缓存读取规则`](#浏览器缓存读取规则)
-* [`BFC`](#BFC)
+* [`闭包`](#闭包)
+* [`bind`](#bind)
 * [`作用域`](#作用域)
 * [`实现sleep`](#实现sleep)
-* [`https`](#https)
-* [`埋点请求用1x1图片`](#埋点请求用1x1图片)
-* [`css布局`](#css布局)
-* [`排序`](#排序)
 * [`class/function`](#class/function)
-* [`display/opacity/visibility`](#display/opacity/visibility)
 * [`普通函数/箭头函数`](#普通函数/箭头函数)
 * [`求数组交集`](#求数组交集)
 * [`Promise.prototype.finally`](#Promise.prototype.finally)
 * [`es6->es5`](#es6->es5)
-* [`retina屏1px问题`](#retina屏1px问题)
-* [`webpack热更新`](#webpack热更新)
 * [`字符串中查找字符串位置`](#字符串中查找字符串位置)
 * [`forVSforEach`](#forVSforEach)
 * [`proxy`](#proxy)
-* [`JSpring的vnode解析`](#JSpring的vnode解析)
 * [`取arr[0]和arr[100000]区别`](#取arr[0]和arr[100000]区别)
-* [`Vue的父组件和子组件生命周期钩子执行顺序`](#Vue的父组件和子组件生命周期钩子执行顺序)
 * [`中文输入防抖`](#中文输入防抖)
-* [`react里的link和a的区别`](#react里的link和a的区别)
-* [`验证url合法性`](#验证url合法性)
-* [`vue在v-for时给每项元素绑定事件需要用事件代理吗?`](#vue在v-for时给每项元素绑定事件需要用事件代理吗?)
-* [`反爬虫技术`](#反爬虫技术)
-* [`逆序数字（递归实现）`](#逆序数字（递归实现）)
 * [`正则引擎`](#正则引擎)
-* [`node异步错误捕获`](#node异步错误捕获)
-* [`css影响页面加载`](#css影响页面加载)
 * [`BOMvsDOMvsHTML5`](#BOMvsDOMvsHTML5)
+* [`懒加载`](#懒加载)
+* [`原型链的理解`](#原型链的理解)
+* [`参数传递`](#参数传递)
+* [`eventTarget`](#eventTarget)
+* [`对象属性枚举`](#Object.keys)
+* [`appendVSappendChild`](#appendVSappendChild)
+* [`passive`](#passive)
+* [`解构赋值`](#解构赋值)
+* [`URLSearchParams`](#URLSearchParams)
+
+**进阶js**
+
+* [`如何实现一个new`](#如何实现一个new)
+* [`Promise.all实现`](#Promise.all实现)
+* [`jsbridge`](#jsbridge)
+* [`前端监控&异常捕获`](#前端监控&异常捕获)
+* [`如何实现URLSearchParams`](#如何实现URLSearchParams)
+
+**构建/打包**
+
+* [`webpack热更新`](#webpack热更新)
+* [`webpack的hashid规则`](#webpack的hashid规则)
+
+**框架**
+
+* [`vue/react中key的作用`](#vue/react中key的作用)
+* [`react的setState变更的同/异步`](#react的setState变更的同/异步)
+* [`redux和vuex`](#redux和vuex)
+* [`reducer每次都要生成新state`](#reducer每次都要生成新state)
+* [`VirtualDom对比原生DOM处理`](#VirtualDom对比原生DOM处理)
+* [`JSpring的vnode解析`](#JSpring的vnode解析)
+* [`Vue的父组件和子组件生命周期钩子执行顺序`](#Vue的父组件和子组件生命周期钩子执行顺序)
+* [`react里的link和a的区别`](#react里的link和a的区别)
+* [`vue在v-for时给每项元素绑定事件需要用事件代理吗?`](#vue在v-for时给每项元素绑定事件需要用事件代理吗?)
+* [`vue生命周期`](#vue生命周期)
+* [`异步请求`](#异步请求)
+* [`reduxVSmobx`](#reduxVSmobx)
+* [`mv*`](#mv*)
+* [`react优化指南`](#react优化指南)
+
+**node**
+
+* [`npm模块安装机制`](#npm模块安装机制)
+* [`前端中的模块化开发`](#前端中的模块化开发)
+* [`浏览器和Node事件循环的区别`](#浏览器和Node事件循环的区别)
+* [`node异步错误捕获`](#node异步错误捕获)
+
+**浏览器**
+
+* [`同/异任务`](#同/异任务)
+* [`http2多路复用`](#http2多路复用)
+* [`描述网页从输入url到渲染的过程`](#描述网页从输入url到渲染的过程)
+* [`TCP三次握手&四次挥手的理解`](#TCP三次握手&四次挥手的理解)
+* [`重绘和回流`](#重绘和回流)
+* [`cookie和token都存放在header中，为什么不会劫持token`](#cookie和token都存放在header中，为什么不会劫持token)
+* [`如何实现token加密`](#如何实现token加密)
+* [`浏览器缓存读取规则`](#浏览器缓存读取规则)
+* [`https`](#https)
+* [`埋点请求用1x1图片`](#埋点请求用1x1图片)
+* [`验证url合法性`](#验证url合法性)
+* [`反爬虫技术`](#反爬虫技术)
+* [`jsonp`](#jsonp)
+* [`浏览器页面资源加载过程与优化`](#浏览器页面资源加载过程与优化)
+* [`域名收敛`](#域名收敛)
+* [`性能优化`](#性能优化)
+* [`cssom`](#cssom)
+* [`浏览器跨域`](#浏览器跨域)
+* [`如何判断对象是否被GC`](#如何判断对象是否被GC)
+* [`get和post区别`](#get和post区别)
+
+**算法**
+
+* [`算法题`](#算法题)
+* [`深度优先和广度优先`](#深度优先和广度优先)
+* [`发布订阅VS观察者模式`](#发布订阅VS观察者模式)
+* [`排序`](#排序)
+* [`逆序数字（递归实现）`](#逆序数字（递归实现）)
+* [`红黑树`](#红黑树)
+* [`判断属性继承自哪个原型`](#判断属性继承自哪个原型)
+
+**css**
+
+* [`flex属性`](#flex属性)
+* [`响应式方案`](#响应式方案)
+* [`隐藏页面元素`](#隐藏页面元素)
+* [`BFC`](#BFC)
+* [`css布局`](#css布局)
+* [`display/opacity/visibility`](#display/opacity/visibility)
+* [`retina屏1px问题`](#retina屏1px问题)
+* [`css影响页面加载`](#css影响页面加载)
 * [`white-space/word-break/word-wrap`](#white-space/word-break/word-wrap)
 * [`z-index`](#z-index)
 * [`CSS性能优化`](#CSS性能优化)
-* [`jsonp`](#jsonp)
-* [`浏览器页面资源加载过程与优化`](#浏览器页面资源加载过程与优化)
-* [`懒加载`](#懒加载)
 * [`css布局`](#css布局)
 * [`文档流`](#文档流)
 * [`清除浮动`](#清除浮动)
-* [`jsbridge`](#jsbridge)
-* [`前端监控&异常捕获`](#前端监控&异常捕获)
+
+**html**
+
+* [`doctype`](#doctype)
+* [`src和href`](#src和href)
+* [`实现一个轮播组件`](#实现一个轮播组件)
+* [`rel属性`](#rel属性)
 
 </details>
 
@@ -107,7 +163,7 @@
   * 判断比较的是否是 null 或者是 undefined, 如果是, 返回 true；
   * 判断其中一方是否为 boolean, 如果是, 将 boolean 转为 number 再进行判断；
   * 判断两者类型是否为 string 和 number, 如果是, 将字符串转换成 number；
-判断其中一方是否为 object 且另一方为 string、number 或者 symbol , 如果是, 将 object   * 转为原始类型再进行判断。
+  * 判断其中一方是否为 object 且另一方为 string、number 或者 symbol , 如果是, 将 object   * 转为原始类型再进行判断。
 
 ---
 
@@ -133,9 +189,10 @@ Number([]) === 0
 
 - var会变量提升
 - var可重复声明
-- let、const声明在块级作用域，var声明在局部/全局作用域
--  let、const存在暂时性死区
-  * 暂时性死区的本质就是，只要一进入当前作用域，所要使用的变量就已经存在了，但是不可获取，只有等到声明变量的那一行代码出现，才可以获取和使用该变量
+- let、const 声明在块级作用域，var 声明在局部/全局作用域
+- let、const 存在暂时性死区
+  * 暂时性死区的本质就是，只要一进入当前作用域，所要使用的变量就已经存在了，
+    但是不可获取，只有等到声明变量的那一行代码出现，才可以获取和使用该变量
   * ```js
     typeof x; // ReferenceError(暂时性死区，抛错)
     let x;
@@ -143,9 +200,20 @@ Number([]) === 0
     typeof y; // 值是 undefined, 不会报错
     ```
 
+#### 问题
+Q: const 一个对象，对象 key 对应的 value 为什么能改
+A: const 不允许修改声明绑定，允许修改值
+
 ---
 
 ### 函数声明&变量声明
+
+#### js引擎工作方式
+- 解析代码，获取被声明的变量（var、function）
+- 按行执行
+- 变量提升
+
+#### 提升顺序
 - 函数会首先被提升，然后才是变量
 - 换言之，无论两者（书面上）的声明顺序如何，优先读取到的是函数声明
 - 原因如下
@@ -155,7 +223,9 @@ Number([]) === 0
 
 **创建过程**
 
-1. 初始化arguments对象，及形参
+这里可以[参考](../../js&browser/并发模型-event_loop.md#执行上下文和作用域链)
+
+1. 初始化 arguments 对象，及形参
 2. 扫描函数声明，并进行处理
   - 如果该函数名在变量对象中已存在，则覆盖已存在的函数引用
 3. 扫描变量声明，并进行处理
@@ -210,7 +280,6 @@ const count = arr.reduce((t, c) => {
     return t;
 }, {});
 // count => { 0: 1, 1: 2, 2: 3 }
-
 ```
 
 ---
@@ -244,7 +313,6 @@ const count = arr.reduce((t, c) => {
 - 设置弹性盒对象扩展比
 - 如果子元素的宽度和小于父容器，则剩余空间根据flex-grow瓜分
 - 默认0，即剩余空间宽度瓜分到0，到当前子元素
-- 
 
 **flex**
 
@@ -474,24 +542,24 @@ const resize = (size) => {
 #### DOMContentLoaded
 - HTML5事件
 - 初始的HTML文件被完整读取时触发
-- 异步加载的css，不会影响DOMContentLoaded
+- 异步加载的 css，不会影响 DOMContentLoaded
 
 **几种说法**
 
-说法一：js高程
+> 说法一：js高程
 - 形成完整dom树后触发
 - 不理会js、css、图片等资源文件
 
-说法二：普遍观点
+> 说法二：普遍观点
 - 等待js的下载 + 加载
 - 不理会css、图片、iframe等的加载
 
-说法三：较权威的观点
+> 说法三：较权威的观点
 [css加载](https://segmentfault.com/a/1190000018130499)
 - 只存在css 或 js加载在css之前，DOMContentLoaded不需要等css加载完才触发
 - 存在css和js 或 js加载在css后面，DOMContentLoaded需要等css和js都加载完才触发
 
-我的实验：chrome76
+> 说法四：我的实验（chrome76）
 - 无论js是否存在，或js和css位置关系如何，都会影响DOMContentLoaded触发
 
 #### onload
@@ -514,9 +582,7 @@ onDoingthing冒泡阶段触发
 
 **隐式转换**
 
-=》[Symbol.toPrimitive]/valueOf / toString
-
-#### 方式1
+#### 方式1-Symbol.toPrimitive
 ```js
 // 闭包
 var a = {
@@ -528,7 +594,7 @@ var a = {
 };
 ```
 
-#### 方式2
+#### 方式2-valueOf
 ```js
 // proxy
 var a = new Proxy({}, {
@@ -539,7 +605,7 @@ var a = new Proxy({}, {
 });
 ```
 
-#### 方式3
+#### 方式3-toString
 ```js
 // 对象
 var a = {
@@ -555,7 +621,7 @@ var a = {
 };
 ```
 
-#### 方式4
+#### 方式4-邪道
 ```js
 // arr.join = arr.shift
 var arr = [1, 2, 3];
@@ -572,7 +638,7 @@ arr.join = arr.shift;
 
 #### 视觉隐藏
 - position: fixed; top:-9999px;
-- transform: scale(0);
+- transform: scale(0, 0);
 - transform: translateX(-9999px);
 - transform: rotateX(90deg);
 - width: 0;
@@ -586,40 +652,7 @@ arr.join = arr.shift;
 ---
 
 ### 执行上下文和作用域链
-
-#### 执行上下文
-js被解析和执行环境的抽象概念
-
-- 全局执行上下文
-- 函数执行上下文
-  * 创建对象、函数
-  * 作用域链
-  * this
-
-#### 作用域链
-- 作用域在函数定义时就决定了
-- 作用域的工作模型，分两种
-  1. 词法（静态）作用域（js是这种）
-  2. 动态作用域
-    * bash脚本
-
-**作用域**
-
-- 全局作用域
-- 函数作用域
-- 块级作用域
-
-**任务队列**
-
-先进先出
-
-**执行栈**
-
-即js调用栈，具有 LIFO (后进先出) 结构
-
-**作用域链**
-
-![作用域链](./作用域链.jpg)
+[参考](../js&browser/并发模型-event_loop.md#执行上下文和作用域链)
 
 ---
 
@@ -685,7 +718,7 @@ Promise.all2 = function(promises) {
 };
 ```
 
---
+---
 
 ### 数组扁平化flattenArray
 
@@ -722,7 +755,7 @@ var flattenArray = (arr) => {
 ### 数组去重uniq
 - Set
   ```js
-  [new Set(...arr)]
+  const uniqArr = [...new Set(arr)];
   ```
 - indexOf
 - includes
@@ -756,8 +789,9 @@ var flattenArray = (arr) => {
 - add/delete
 
 #### WeakSet
-- 成员不能重复
-- 成员必须是对象（可存DOM引用）
+- 成员必须是引用
+- 成员是弱引用，不会影响垃圾回收（对象被回收后，成员自动移除）
+- 不能重复
 - 不可遍历
 - add/delete
 
@@ -766,9 +800,24 @@ var flattenArray = (arr) => {
 - set/delete
 
 #### WeakMap
-- 不可遍历
-- 键值是对象
+- key必须是引用（可存DOM引用）
+- key是弱引用，不会影响垃圾回收（对象被回收后，key自动移除）
+- key不可遍历（同样的，可遍历就会受垃圾回收的影响，返回值有不确定性）
 - set/delete
+
+例：
+
+```js
+// 将元素存至WeakMap，在其被卸载时，自动垃圾回收
+let wm = new WeakMap(), element = document.querySelector(".element");
+wm.set(element, "data");
+
+let value = wm.get(elemet);
+console.log(value); // data
+
+element.parentNode.removeChild(element);
+element = null;
+```
 
 ---
 
@@ -779,9 +828,48 @@ var flattenArray = (arr) => {
 - 类似树的先序遍历
 - 从邻接节点出发，优先遍历子节点
 
+![深度优先](./深度优先.png)
+
+```js
+// children逆序push，while-pop出来
+// 能保证节点原来的顺位
+function dts(node) {
+  const list = [];
+  list.push(node);
+  while (list.length) {
+    const item = list.pop();
+    console.log(item.value);
+    if (item.children && item.children.length) {
+      for (let i = item.children.length - 1; i >= 0; i -= 1) {
+        list.push(item.children[i]);
+      }
+    }
+  }
+};
+```
+
 #### 广度优先
 - 优先访问当前节点的邻接节点
 - 当没有邻接节点时，另选一个未被访问的节点，重复上述过程
+
+![广度优先](./广度优先.png)
+
+```js
+// 正常操作push/shift
+function wts(node) {
+  const list = [];
+  list.push(node);
+  while (list.length) {
+    const item = list.shift();
+    console.log(item.value);
+    if (item.children && item.children.length) {
+      for (let i = 0; i < item.children.length; i += 1) {
+        list.push(item.children[i]);
+      }
+    }
+  }
+};
+```
 
 ---
 
@@ -803,9 +891,9 @@ function vs class
 ---
 
 ### setTimeout、Promise、Async/Await区别
-- setTimeout属于宏任务
-- Promise本身是同步的立即执行函数，Promise.then属于微任务
-- async方法执行时，遇到await会立即执行表达式，表达式之后的代码放到微任务执行
+- setTimeout 属于宏任务
+- Promise 本身是同步的立即执行函数，Promise.then 属于微任务
+- async 方法执行时，遇到 await 会立即执行表达式，表达式之后的代码放到微任务执行
 
 ---
 
@@ -873,12 +961,12 @@ function upper(arr = []) {
 
 // 方式二：邪道
 // Array.prototype.flat才刚到提案（chrome69支持）
-Array.from(new Set(arr.flat(Infinity))).sort((a,b)=>{ return a-b})；
+Array.from(new Set(arr.flat(Infinity))).sort((a,b)=>{ return a-b});
 
 
 
 // 方式三：妖道
-Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
+Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b});
 ```
 
 ---
@@ -889,7 +977,8 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
 ---
 
 ### http2多路复用
-- 同一域名下所有通信都在单个连接上完成，消除因多个TCP连接带来的延时和内存消耗
+- 同一域名下所有通信都在单个TCP连接上完成
+- 消除因多个TCP连接带来的延时和内存消耗
 - 单个连接上的请求可以并行交错，互不影响
 
 ---
@@ -922,8 +1011,8 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b})
 ### react的setState变更的同/异步
 [参考](https://github.com/sisterAn/blog/issues/26)
 
-- react自身引发的事件处理（onClick，componentWillMount等），异步执行
-- 此外的调用（addEventLister、setTimeout等），同步执行
+- react自身引发的事件处理（onClick，componentWillMount等），即合成时间，这时候异步执行
+- 此外的调用（addEventListener、setTimeout等），同步执行
 
 #### 原因
 - 同/异步处理受isBatchingUpdates影响，默认isBatchingUpdates=false，也就是同步执行
@@ -971,7 +1060,6 @@ class Example extends React.Component {
 
 // 答案
 0 0 2 3
-
 ```
 
 ---
@@ -991,18 +1079,18 @@ Object.prototype.toString.call
 - 判断是否是数组 [Object array]
 
 instanceof
-- 判断对象的原型链中是不是能找到类型的prototype
+- 判断对象的原型链中是不是能找到类型的 prototype
 
- Array.isArray
- - 能检测出Iframes，而instanceof不行
-  ```js
-  xArray = window.frames[window.frames.length-1].Array;
-  var arr = new xArray(1,2,3); // [1,2,3]
+Array.isArray
+- 能检测出 Iframes，而 instanceof 不行
+```js
+xArray = window.frames[window.frames.length-1].Array;
+var arr = new xArray(1,2,3); // [1,2,3]
 
-  Array.isArray(arr);  // true
-  Object.prototype.toString.call(arr); // true
-  arr instanceof Array; // false
-  ```
+Array.isArray(arr);  // true
+Object.prototype.toString.call(arr); // true
+arr instanceof Array; // false
+```
 
 ---
 
@@ -1034,9 +1122,9 @@ instanceof
 #### 如何减少触发
 - transform代替top
 - visibility代替display：none
-- 避免使用tabel（通常要花3倍于同等元素的时间）
+- 避免使用table（通常要花3倍于同等元素的时间）
 - 避免多次样式嵌套
-- 动画效果尽量加载absolute或fixed元素上
+- 动画效果尽量加载`absolute`或`fixed`元素上
 - 使用GPU加速
 - 频繁重绘或回流的单拉一个图层，例will-change
 
@@ -1160,7 +1248,7 @@ for (let i = 0; i< 10; i++){
 ### VirtualDom对比原生DOM处理
 [参考](../../career/README.md#框架对比)
 
-- diff+部分渲染 和 innerHTML改动的比较
+- diff + 部分渲染 和 innerHTML 改动的比较
 - 无法得出客观结论，因时制宜
 
 ---
@@ -1177,9 +1265,8 @@ for (let i = 0; i< 10; i++){
 - float 浮动
 - position不为relative和static
 - overflow 不为 visiable
-- display 为表格布局或者弹性布局
-- 行内块元素
-- 网格布局
+- display 为table、flex、grid
+- 行内块元素inline-block
 - contain值为layout、content或 strict的元素
 
 #### 特性
@@ -1189,9 +1276,17 @@ for (let i = 0; i< 10; i++){
 - 形成了BFC的区域不会与float box重叠
 - 计算BFC高度时，浮动元素也参与计算
 
-#### 解决问题
-- 清除浮动
-- 防止同一 BFC 容器中的相邻元素间的外边距重叠问题
+#### 存在意义
+
+**清除浮动**
+
+- 如果父元素内都是浮动元素，那父元素宽高都是0
+- 利用BFC清除浮动，可以正常获取父元素宽高
+
+**防止相邻元素间的外边距塌陷问题**
+
+- 在标准文档流中，块级标签之间竖直方向的margin，默认以大的为准
+- 利用BFC可以修复这种现象，上下元素的margin都会有效
 
 #### 其他术语
 
@@ -1245,13 +1340,13 @@ var a = 10;
 ```js
 // Promise
 const sleep = time => {
-  return new Promise(resolve => setTimeout(resolve,time))
+  return new Promise(resolve => setTimeout(resolve, time))
 }
 sleep(1000).then(()=>{
   console.log(1)
 })
 
-//Generator
+// Generator
 function* sleepGenerator(time) {
   yield new Promise(function(resolve,reject){
     setTimeout(resolve,time);
@@ -1259,7 +1354,7 @@ function* sleepGenerator(time) {
 }
 sleepGenerator(1000).next().value.then(()=>{console.log(1)})
 
-//async
+// async
 function sleep(time) {
   return new Promise(resolve => setTimeout(resolve,time))
 }
@@ -1273,69 +1368,20 @@ output();
 //ES5
 function sleep(callback,time) {
   if(typeof callback === 'function')
-    setTimeout(callback,time)
+    setTimeout(callback, time)
 }
 
 function output(){
   console.log(1);
 }
-sleep(output,1000);
+sleep(output, 1000);
 ```
 
 ---
 
 ### https
-[http](../../http/README.md)
-[参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/74)
-
-https = http + tls安全层（比http多了2次tls的RTT）
-
-#### 与http的区别
-- https需要证书
-- http是明文传输，https会用tls加密传输
-- http80端口，https443端口
-
-#### 加密方式
-
-**非对称加密**
-
-- 服务端A，将公钥发送给客户端B
-- 客户端B产生一个秘钥，用服务端A的公钥加密，返给服务端A
-- 服务端A用自己私钥解密B返的信息，获取客户端B的秘钥
-- 以后A和B的数据通信都通过这个秘钥加密
-
-#### 风险
-
-**中间人攻击**
-
-- 中间人拦截A的公钥，替换成自己的公钥
-- B不清楚公钥的所属，用中间人公钥加密，返给中间人
-- 中间人拦截，用自己私钥解密
-
-#### 证书的作用
-
-**证书制作**
-
-- 服务端A，将自己的公钥key发给证书颁发机构，申请证书
-- 证书机构有自己的公私钥，用自己的私钥加密A的公钥key + 服务端网址生成证书签名
-- 打包成证书返给A
-
-**鉴别真伪**
-
-- 客户端B向服务端A请求时，A返回的是证书（不再是自己的公钥）
-- B根据证书对应机构的公钥，解密出证书签名
-- B使用同样规则，生成自己的证书签名，两者对比一致，说明证书有效
-- B用机构的公钥，解密出A的公钥，之后就是非对称加密的过程
-
-证书签名由服务端网址生成，中间人无法获取、攻击
-
-#### 校验证书合法性
-- 校验证书的颁发机构是否受客户端信任
-- 通过 CRL（证书吊销列表，Certificate Revocation List）或OCSP（在线证书状态协议，Online Certificate Status Protocol）的方式校验证书是否被吊销
-  * CRL需要经常在客户端下载最新版，所以比较繁琐
-  * OCSP会在访问服务器时，自动请求一个证书状态的信息
-- 对比系统时间，校验证书是否在有效期内
-- 通过校验对方是否存在证书的私钥，判断证书的网站域名是否与证书颁发的域名一致
+- [https](../../http/README.md#https)
+- [百度-https参考手册](https://developer.baidu.com/resources/online/doc/security/https-pratice-1.html)
 
 ---
 
@@ -1472,7 +1518,7 @@ LazyMan.prototype = {
 function solution(arr1, ...rest) {
     const temp = new Set(arr1);
     const res = new Set();
-    arr2.forEach(item => temp.has(item) && res.add(item));
+    rest.forEach(item => temp.has(item) && res.add(item));
     return Array.from(res);
 }
 ```
@@ -1547,7 +1593,7 @@ https://jsperf.com
 
 ### JSpring的vnode解析
 - html -> vobj
-  ```json
+  ```
   {
     tagName : tagName,
 		staticAttrs : staticAttrs,
@@ -1584,6 +1630,16 @@ https://jsperf.com
     data,
     children: []
   }
+  ```
+- vnode -> element
+  ```js
+  const fragment = document[NodeFn[nodeType]].bind(null, tagName);
+  fragment.appendChild(element1);
+  // ...
+  ```
+- render
+  ```js
+  this.container.appendChild(fragment);
   ```
 
 ---
@@ -1822,42 +1878,51 @@ function handle(req, res) {
 ---
 
 ### CSS性能优化
-- 内联首屏关键css
+
+#### 内联首屏关键css
   * 【<14.6kb，[tcp连接](https://tylercipriani.com/blog/2016/09/25/the-14kb-in-the-tcp-initial-window/)单次往返最大数据量】
-- 文件压缩
-- 去除无用css
-- 有效使用选择器
-  * css选择器从右向左解析
-  * 现代浏览器对不同选择器的解析已做了优化，差别很小
-  * 避免嵌套过深
-  * 避免标签+id混用
-  * 避免通配符
-  * 维持可读性
-- 异步加载css
-  * js动态建link
-  * link的media设为不匹配的媒体类型，加载完后改回正确类型
-    ```html
-    <link rel="stylesheet" href="mystyles.css" media="noexist" onload="this.media='all'">
-    ```
-  * link的ref设为alternate可选样式表
-    ```html
-    <link rel="alternate stylesheet" href="mystyles.css" onload="this.rel='stylesheet'">
-    ```
-  * link的ref设为preload，as设为style
-    + html标准规范，目前尚有兼容性问题
-    + 相比上两种方式，能更早加载css
-    ```html
-    <link rel="preload" href="mystyles.css" as="style" onload="this.rel='stylesheet'">
-    ```
-- 避免昂贵属性
-  * box-shadow
-  * border-radius
-  * filter
-  * opacity
-  * :nth-child
-- 优化重绘重排
-- 避免@import
-  * 破坏了浏览器并行下载
+
+#### 文件压缩
+
+#### 去除无用css
+
+#### 有效使用选择器
+- css选择器从右向左解析
+- 现代浏览器对不同选择器的解析已做了优化，差别很小
+- 避免嵌套过深
+- 避免标签+id混用
+- 避免通配符
+- 维持可读性
+
+#### 异步加载css
+- js动态建link
+- link的media设为不匹配的媒体类型，加载完后改回正确类型
+  ```html
+  <link rel="stylesheet" href="mystyles.css" media="noexist" onload="this.media='all'">
+  ```
+- link的ref设为alternate可选样式表
+  ```html
+  <link rel="alternate stylesheet" href="mystyles.css" onload="this.rel='stylesheet'">
+  ```
+- link的ref设为preload，as设为style
+  + html标准规范，目前尚有兼容性问题
+  + 优先级会强行提到`highest`
+  + 相比上两种方式，能更早加载css
+  ```html
+  <link rel="preload" href="mystyles.css" as="style" onload="this.rel='stylesheet'">
+  ```
+
+#### 避免昂贵属性
+- box-shadow
+- border-radius
+- filter
+- opacity
+- :nth-child
+
+#### 优化重绘重排
+
+####避免@import
+- 破坏了浏览器并行下载
 
 ---
 
@@ -1926,8 +1991,8 @@ intersectionObserver
 ---
 
 ### 文档流
-将窗体自上而下分成一行一行，并在每行中按从左至右依次排放元素，
-称为文档流
+> 将窗体自上而下分成一行一行，并在每行中按从左至右依次排放元素，
+> 称为文档流
 
 **脱离文档流**
 
@@ -1946,7 +2011,7 @@ intersectionObserver
     content: "";
     display: block;
     height: 0;
-    clear:both;
+    clear: both;
     visibility: hidden;
   }
   ```
@@ -1979,12 +2044,495 @@ intersectionObserver
 ### 前端监控&异常捕获
 [参考](../../career/前端埋点和监控方案.md)
 
+---
 
+### 红黑树
 
+---
 
+### 闭包
+>
+> 能够访问`自由变量`的函数
+>
+> 自由变量 = 非函数局部变量 + 非函数入参
+>
+> 上下文已经销毁，但是作用域链还在，所以能取到
+>
 
+参考[执行上下文](../js&browser/并发模型-event_loop.md#执行上下文)
 
+#### 示例:执行上下文
+```js
+// 普通循环方法执行
+var data = [];
 
+for (var i = 0; i < 3; i++) {
+  data[i] = function () {
+    console.log(i);
+  };
+}
+
+data[0](); // 3
+
+/*
+globalContext = {
+  VO: {
+    data: [fn, fn, fn],
+    i: 3,
+  },
+}
+
+data[i]Context = {
+  AO: {
+    arguments: {
+      length: 0,
+    },
+  },
+  Scope: [AO, globalContext.VO],
+}
+*/
+
+// 闭包循环方法执行
+var data = [];
+
+for (var i = 0; i < 3; i++) {
+  data[i] = (function (i) {
+        return function(){
+            console.log(i);
+        }
+  })(i);
+}
+
+data[0](); // 0
+
+/*
+globalContext = {
+  VO: {
+    data: [fn, fn, fn],
+    i: 3,
+  },
+}
+
+匿名[i]Context = {
+  AO: {
+    arguments: {
+      0: 0,
+      length: 1,
+    },
+    i: 0,
+  },
+  Scope: [AO, globalContext.VO],
+}
+data[i]Context = {
+  AO: {
+    arguments: {
+      length: 0,
+    },
+  },
+  Scope: [AO, 匿名Context.VO, globalContext.VO],
+}
+ */
+```
+
+---
+
+### bind
+>
+> bind(thisObj, ...args)
+>
+
+[参考](./call&apply.js)
+
+- thisObj绑定一次有效
+- 作为constructor时，绑定的thisObj无效
+
+---
+
+### doctype
+[参考](../../html/README.md#doctype)
+
+---
+
+### src和href
+[参考](../../html/README.md#doctype#src和href)
+
+---
+
+### 原型链的理解
+- 原型对象
+  > protptype：所有创建的对象都会共享此原型链
+- 原型链
+  > __proto__：对象的__proto__都会指向构造函数的prototype
+
+---
+
+### 参数传递
+函数/方法调用的参数有三种形式：
+
+- 值传递
+  * 基本类型
+- 引用传递
+- 共享传递
+  * 对象的浅拷贝
+
+---
+
+### 域名收敛
+[dns解析](../../js&browser/页面过程与浏览器缓存.md#dns)
+
+---
+
+### vue生命周期
+- beforeCreate: 组件实例被创建之初，组件的属性生效之前
+- created: 组件实例已经完全创建，属性也绑定，但真实dom还没有生成，$el还不可用
+- beforeMount: 在挂载开始之前被调用：相关的 render 函数首次被调用
+- mounted: el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子
+- beforeUpdate: 组件数据更新之前调用，发生在虚拟 DOM 打补丁之前
+- update: 组件数据更新之后
+- activited: keep-alive专属，组件被激活时调用
+- deadctivated: keep-alive专属，组件被销毁时调用
+- beforeDestory: 组件销毁前调用
+- destoryed: 组件销毁后调用
+
+---
+
+### 异步请求
+
+#### vue
+- created
+- mounted
+
+#### react
+- componentDidmount
+
+注：17后，componentWillMount被废弃，改为UNSAFE_componentWillMount
+
+---
+
+### reduxVSmobx
+
+**store**
+
+- redux是单一store，由顶层Provider保存
+- mobx的数据分散在多个store
+
+**数据类型**
+
+- redux保存纯数据
+- mobx保存getter/setter
+
+**不变性**
+
+- redux数据不变性，只能读取，无法直接修改
+- mobx数据可直接修改
+
+**调试**
+
+- redux方便，纯函数定位明确
+- mobx有vue的缺点
+
+---
+
+### 实现一个轮播组件
+- 节点复用
+  * 总共只保持3个banner，滑动时判断方向，预设前后两张图片
+- 图片压缩
+- 图片懒加载
+
+---
+
+### 性能优化
+[参考](../../js&browser/性能优化.md#面试回答)
+
+---
+
+### webpack的hashid规则
+[参考](../../webpack/README.md#hash)
+
+---
+
+### reducer每次都要生成新state
+- redux通过比较对象的引用来判断是否同一个对象
+- 如果是，则继续使用旧的state，页面不会有任何的变化
+- 所以每次要Object.assign新对象
+
+---
+
+### eventTarget
+- target
+- currentTarget
+- relatedTarget
+
+#### relatedTarget
+[参考](https://www.cnblogs.com/rubylouvre/p/7384375.html)
+
+在做mouseenter与mouseleave的兼容时，我们需要用到事件对象的`relatedTarget`属性
+
+```js
+function getRelatedTarget(e) {
+    var t = e.relatedTarget
+    if (t) {
+        return t
+    }
+    return e.fromElement === e.target ?
+        e.toElement :
+        e.fromElement;
+}
+String("mouseenter,mouseleave").replace(/\w+/g, function (type) {
+    eventHooks[type] = function (dom) {
+        var eventType = type === "mouseenter" ? "mouseover" : "mouseout";
+        addEvent(dom, eventType, function (e) {
+            var t = getRelatedTarget(e)
+            if (!t || (t !== dom && !dom.contains(t))) {
+                dispatchEvent(e, type, true);
+            }
+        });
+    };
+});
+```
+
+---
+
+### mv*
+[参考](https://juejin.im/post/5cd8a7c1f265da037a3d0992#heading-7)
+
+#### mvvm
+vue 1/2
+
+#### mvc
+- react + redux
+- ng2
+
+#### mvp
+![mvp](./mvp.PNG)
+
+- mvc的改良
+- view不依赖model，纯组件化处理
+- presenter比较厚
+- model变动后，通过观察者模式通知presenter
+- 如果有view更新，也需要presenter调用view更新接口
+
+---
+
+### cssom
+[参考](../../js&browser/页面过程与浏览器缓存.md#CSSOM)
+
+---
+
+### 浏览器跨域
+[参考](../../http/跨域.md)
+
+---
+
+### Object.keys
+[参考](../../js&browser/Object.keys.md#获取对象属性方式的对比)
+
+---
+
+### appendVSappendChild
+
+#### append
+- 能插入节点或字符串
+- 在 `with` 中被特殊处理，不生效
+
+#### appendChild
+- 只能插节点
+
+---
+
+### passive
+[参考](../../js&browser/现代浏览器.md#passive)
+
+---
+
+### 解构赋值
+
+也有这种用法，不报错
+
+```js
+var obj = { a: 1 };
+var { b = a, a} = obj;
+b; // undefined
+a; // 1
+```
+
+---
+
+### rel属性
+[参考](../../html/README.md)
+
+---
+
+### 判断属性继承自哪个原型
+
+> 要求
+```
+const foo = {a: 1}
+
+const bar = Object.create(foo)
+bar.b = 2
+
+const baz = Object.create(bar)
+baz.c = 3
+
+console.log(findPrototypeByProperty(baz, "c") === baz) // true
+console.log(findPrototypeByProperty(baz, "b") === bar) // true
+console.log(findPrototypeByProperty(baz, "a") === foo) // true
+```
+
+> 解答
+```js
+function findPrototypeByProperty(obj, name) {
+  do {
+    if (obj.hasOwnProperty(name)) {
+      return obj;
+    }
+  } while(obj = Object.getPrototypeOf(obj))
+};
+```
+
+---
+
+### 如何实现URLSearchParams
+
+> 要求
+```js
+searchParams = new URLSearchParams("foo=1&bar=2") 
+
+// 构造函数也支持传入一个包含参数键值对的对象
+searchParams = new URLSearchParams({foo: "1", bar: "2"})
+
+// 实例支持 get()、set()、has()、append() 四个方法
+console.log(searchParams.get("foo")) // "1"
+searchParams.set("foo", "10") 
+console.log(searchParams.has("bar")) // true
+searchParams.append("foo", "100") 
+
+// 实例支持 toString() 方法
+console.log(searchParams.toString()) // "foo=10&bar=2&foo=100"
+
+// 实例支持 for-of 迭代
+for(const [key, value] of searchParams) {
+  console.log([key, value])
+  // ["foo", "10"]
+  // ["bar", "2"]
+  // ["foo", "100"]
+}
+```
+
+> 解答
+```js
+class URLSearchParams {
+  constructor(search) {
+    this.search = search;
+    this.init();
+  }
+
+  init() {
+    const type = typeof this.search;
+    if (type === 'string') {
+      this.searchObj = this.convert2Obj();
+    } else if (type === 'object') {
+      this.searchObj = this.search;
+      this.search = this.convert2Str();
+    } else {
+      throw new Error('search must be string or object');
+    }
+  }
+
+  get(key) {
+    return this.searchObj[key];
+  }
+  
+  set(key, value) {
+    this.searchObj[key] = value;
+    this.search = this.convert2Str();
+  }
+  
+  has(key) {
+    return key in this.searchObj;
+  }
+  
+  append(key, value) {
+    if (key in this.searchObj) {
+      const val = this.searchObj[key];
+      if (Array.isArray(val)) {
+        val.push(value);
+        this.searchObj[key] = val;
+      } else {
+        this.searchObj[key] = [val, value];
+      }
+      this.search = this.convert2Str();
+    }
+  }
+  
+
+  convert2Obj(search = this.search) {
+    const arr = search.split('&');
+    const result = {};
+    arr.forEach((v) => {
+      const [ key, value ] = v.split('=');
+      if (key) {
+        if (key in result) {
+          result[key] = Array.isArray(result[key]) ? result[key].concat(value) : [result[key], value];
+        } else {
+          result[key] = value;
+        }
+      }
+    });
+    return result;
+  }
+
+  convert2Str(obj = this.searchObj) {
+    return Object.keys(obj).reduce((key, res) => {
+      const value = obj[key];
+      if (Array.isArray(value)) {
+        res += value.map(val => `&${key}=${val}`).join('');
+      } else {
+        res += `&${key}=${value}`;
+      }
+      return res;
+    }, '');
+  }
+
+  [Symbol.iterator]() {
+    const arr = Object.entries(this.searchObj);
+    let index = 0;
+		return {
+			next: () => {
+				return {
+					value: arr[index],
+					done: index++ >= arr.length,
+				};
+			},
+		};
+	}
+}
+```
+
+---
+
+### react优化指南
+[参考](../../react/README.md)
+
+---
+
+### URLSearchParams
+- URLSearchParams 接口定义了一些实用的方法来处理 URL 的查询字符串
+- 一个实现了 URLSearchParams 的对象可以直接用在 for...of 结构中
+
+---
+
+### 如何判断对象是否被GC
+1. Chrome-Memory
+2. 对象操作前，记录一次快照
+3. 对象解除引用后，点击GC，再次记录快照
+4. 对比前后对象分配内存大小
+
+---
+
+### get和post区别
+[参考](../../js&browser/页面过程与浏览器缓存.md#GETvsPOST)
 
 
 

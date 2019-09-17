@@ -14,8 +14,9 @@
 <details>
 <summary>展开更多</summary>
 
+* [`概念`](#概念)
 * [`javascript并发模型`](#javascript并发模型)
-* [`Call Stack`](#调用栈（Call Stack）)
+* [`执行上下文和作用域链`](#执行上下文和作用域链)
 * [`Event Loop`](#事件循环（Event Loop）)
 * [`task`](#任务队列（task）)
 * [`await`](#await)
@@ -23,6 +24,10 @@
 
 </details>
 
+## 概念
+- js线程与GUI线程互斥
+
+---
 
 ## javascript并发模型
 - Event Loop - 事件循环
@@ -33,11 +38,11 @@
 
 - - -
 
-## 调用栈（Call Stack）
+## 执行上下文和作用域链
 * 函数被调用
 * 创建执行上下文
-    * a) 作用域链
-    * b) 变量、函数和参数
+    * a) 词法环境（LexicalEnviroment，以前叫VO）：变量、函数和参数
+    * b) 作用域链：Scope
     * c) this
 * 开始执行（在执行上下文上）
     * ...
@@ -47,6 +52,89 @@
     * ...
 * 执行完成，往上一层 执行上下文  返回数据
 * 从执行上下文栈pop出一个新的执行上下文执行
+
+### 执行上下文
+
+```js
+
+// 全局
+globalContext = {
+    VO: [global],
+    Scope: [globalContext.VO],
+    this: globalContext.VO
+}
+
+// 示例方法
+var scope = "global scope";
+function checkscope(){
+    var scope = "local scope";
+    function f(){
+        return scope;
+    }
+    return f;
+}
+
+var foo = checkscope();
+foo();
+​
+// f
+fContext = {
+    AO: {
+        arguments: {
+          length: 0,
+        },
+    },
+    Scope: [AO, checkscopeContext.VO, globalContext.VO],
+    this: undefined
+}
+
+```
+
+js被解析和执行环境的抽象概念
+
+- 全局执行上下文
+- 函数执行上下文
+  * 创建对象、函数
+  * 作用域链
+  * this
+
+### this
+- **在代码执行时确定**
+- 箭头函数在声明时确定
+
+### 作用域链
+>
+> 可执行上下文中的词法环境中含有外部词法环境的引用，
+>
+> 我们可以通过这个引用获取外部词法环境的变量、声明等，
+>
+> 这些引用串联起来一直指向全局的词法环境，因此形成了作用域链
+
+- **作用域在函数定义时决定**
+- 作用域的工作模型，分两种
+  1. 词法（静态）作用域（js是这种）
+  2. 动态作用域
+    * bash脚本
+
+**作用域**
+
+- 全局作用域
+- 函数作用域
+- 块级作用域
+
+**作用域链**
+
+![作用域链](./作用域链.jpg)
+
+### 执行执行次序
+
+**EventLoop**
+
+先进先出
+
+**执行栈**
+
+即js调用栈，具有 LIFO (后进先出) 结构
 
 - - -
 
@@ -93,21 +181,21 @@
 ![node环境-事件循环](node环境-事件循环.png)
 
 libuv引擎中的事件循环（宏任务）分为 6 个阶段：
-* timers: 执行setTimeout和setInterval中到期的callback。
-* I/O callback: 上一轮循环中少数的callback会放在这一阶段执行。
+
+* timers: 执行 setTimeout 和 setInterval 中到期的 callback。
+* I/O callback: 上一轮循环中少数的 callback 会放在这一阶段执行。
 * idle, prepare: 仅在内部使用。
-* poll: 最重要的阶段，执行pending callback，在适当的情况下会阻塞在这个阶段。
-* check: 执行setImmediate(setImmediate()是将事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行setImmediate指定的回调函数)的callback。
+* poll: 最重要的阶段，执行 pending callback，在适当的情况下会阻塞在这个阶段。
+* check: 执行 setImmediate（`setImmediate`是将事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行setImmediate指定的回调函数）的callback。
 * close callbacks: 执行close事件的callback，例如socket.on('close'[,fn])或者http.server.on('close, fn)。
 
 #### 执行顺序区别
-
 ![浏览器和node的eventLoop](./浏览器和node的eventLoop.png)
 
 node10以前
-- 执行一个阶段的所有任务
+- 执行宏任务一个阶段的所有任务
 - 执行nextTick队列里面的内容
-- 然后执行完微任务队列的内容
+- 执行微任务队列的内容
 
 node11以后
 和浏览器的行为统一了，都是每执行一个宏任务就执行完微任务队列
@@ -115,39 +203,48 @@ node11以后
 - - -
 
 ## 任务队列（task）
-- macrotask(宏任务) `task`，包含：
-  * 整体代码script
-  * setTimeout（标准4ms），setInterval，setImmediate（node）
-  * I/O
-  * UI交互事件
-  * postMessage（MessageChannel）
-- microtask(微任务) `job`，包含：
-  * Promise
-  * process.nextTick（node）
-  * MutaionObserver
+
+### macrotask(宏任务) `task`
+
+**真正的异步**
+
+* 整体代码script
+* setTimeout（标准4ms），setInterval，setImmediate（node）
+* I/O
+* UI交互事件
+* postMessage（MessageChannel）
+
+### microtask(微任务) `job`
+
+**未来情况的相应行为**
+
+* Promise
+* process.nextTick（node）
+* MutaionObserver
 
 - - -
 
-## Web APIs
-前端：浏览器、node环境
-- setTimeout
-
-- - -
-
-## Render Step
+## RenderStep
 - Structure - 构建 DOM 树的结构
 - Layout - 确认每个 DOM 的大致位置（排版）
 - Paint - 绘制每个 DOM 具体的内容（绘制）
 
-## 取消动画合并
+### requestAnimationFrame
+
+#### 特性
+- 由系统来决定回调函数的执行时机，
+  比如屏幕刷新率是 75Hz，则间隔就变成 13.3ms，60Hz 对应 16ms
+- 屏幕刷新间隔只会执行一次
+- 页面处于未激活状态时，requestAnimation 将停止，再次激活，从上次状态恢复
+
+#### 取消动画合并
 - 嵌套requestAnimationFrame
 - box.offsetWidth // 获取排版样式来打断渲染
 
-## requestAnimationFrame和setTimeout的区别
+#### 和setTimeout的区别
 - setTimeout加入Event Loop，requestAnimationFrame加入渲染队列
 - 单位时间，setTimeout会执行多次，requestAnimationFrame严格遵守【执行一次渲染一次】
 - setTimeout(callback, 1000 / 60)可以模拟requestAnimationFrame，但不适合
-
 
 - - -
 
@@ -155,13 +252,16 @@ node11以后
 [参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/7)
 
 ### 总结
-- 一次事件循环：同步任务 -> 宏任务 -> 微任务 -> render
+- 宏任务是宏任务 + 微任务统称，即微任务队列包含在当前宏任务内
+- 一次事件循环：同步任务 -> 一个宏任务 -> 微任务 -> render
 - 即使是立即resolve/reject，then还是微任务
 - 微任务中嵌套的微任务，仍然会在当前事件循环中执行完，
   也即是说，微任务无限嵌套微任务会导致未响应，因为页面一直没有render
 - 每个宏任务执行完都会判断，是否有微任务，有就执行，
   也即是说，宏任务无限嵌套宏任务，不会导致未响应，因为会检查微任务&触发render
 - await是generator + promise的语法糖，类似Promise执行方式，[参考](../fe-interview/src/common.md#模拟async/await)例
+- 目前试下来，setTimeout(1)效果等同setTimeout(0)
+
   ```js
   await console.log(1);
   console.log(2);
@@ -271,14 +371,19 @@ async function f() {
   console.log('ok')
 }
 
-// 也表示
+// 即为
 function f() {
   return RESOLVE(p).then(() => {
     console.log('ok')
   })
 }
-
 ```
+
+> chrome73之前
+> 不判断p是否是promise，会创建3个promise转换
+
+> chrome73（金丝雀）中做了改动
+> 如果p已经是promise，则不会再创建Promise包装器
 
 ### 深入理解
 - ![await](await.jpg)

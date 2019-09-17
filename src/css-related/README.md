@@ -176,6 +176,7 @@ document.link.disabled = false;
 ### z-index
 [参考](https://juejin.im/post/5ba4efe36fb9a05cf52ac192?utm_source=gold_browser_extension)
 [参考2](https://juejin.im/post/5b876f86518825431079ddd6)
+[移动端性能优化-层级](https://fed.taobao.org/blog/2016/04/26/performance-composite/)
 
 - 层叠上下文
 - 层叠等级
@@ -214,6 +215,49 @@ document.link.disabled = false;
   * 父级以上元素层叠等级
   * HTML中顺序
   * 层叠顺序
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      .box1, .box2 {
+        position: relative;
+        z-index: 0;
+      }
+      .child1 {
+        width: 200px;
+        height: 100px;
+        background: #168bf5;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+      }
+      .child2 {
+        width: 100px;
+        height: 200px;
+        background: #32c292;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+      }
+    </style>
+    </head>
+    
+    <body>
+      <div class="box1">
+        <div class="child1">child1</div>
+      </div>
+    
+      <div class="box2">
+        <div class="child2">child2</div>
+      </div>
+    </body>
+</html>
+```
 
 #### z-index
 正整数、负整数、0、auto，默认auto
@@ -881,9 +925,8 @@ border: 0 - 边框宽度为0，会渲染，占内存
 ## 答疑
 
 ### 为什么CSS选择器是从右向左匹配
+- 从右向左能减少浪费在失败查找上的时间
 - CSS中更多的选择器是不会匹配的，所以在考虑性能问题时，需要考虑的是如何在选择器不匹配时提升效率。
-- 从右向左匹配就是为了达成这一目的的，通过这一策略能够使得CSS选择器在不匹配的时候效率更高。
-- 这样想来，在匹配时多耗费一些性能也能够想的通了。
 
 ### css为什么不要用@import
 - 阻塞浏览器的并行下载，强行变成串行

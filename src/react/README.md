@@ -33,6 +33,7 @@
 * [`contextAPI`](#contextAPI)
 * [`rn`](#rn)
 * [`interview`](#interview)
+* [`优化指南`](#优化指南)
 
 </details>
 
@@ -87,7 +88,7 @@ class ExampleComponent extends React.Component {
 - 自顶向下递归解析，生成虚拟节点
 - 通过diff算法，生成变更patch
 - patch放到更新队列
-- 无法中断，直到整棵虚拟节点树解析完成，才会将线程交给渲染引擎
+- 无法中断，直到整棵虚拟节点树解析完成，将线程交给渲染引擎
 
 ### diff策略
 1. 针对input、option、select、textarea做了特殊处理
@@ -115,7 +116,16 @@ class ExampleComponent extends React.Component {
 - alternate: current-tree <==> workInProgress-tree对应的fiber
 
 ### first-render
+
+**调用过程**
+
 ![first render](../mobx/react16-init.png)
+
+**动画演示**
+
+图中垂直方向是sibling的关系
+
+![fiber遍历过程](./fiber遍历过程（动画）.gif)
 
 1. render阶段
   * React.createElement创建element-tree
@@ -131,6 +141,8 @@ class ExampleComponent extends React.Component {
   * perform work
     + 构造workInProgress-tree
     + current指向新的fiber
+  * begin work
+    + 返回指向要在循环中处理的下一个子节点的指针或 null
 3. reconcile阶段
   * reconcilation
     + 遍历fibers，diff出effectlist（各种变更信息）给commit阶段
@@ -140,6 +152,13 @@ class ExampleComponent extends React.Component {
 
 ### diff策略
 reconcileChildFibers
+
+#### 简易流程
+- 首次渲染创建current树
+- 处理变更时，创建workInProgress树
+- 所有操作在workInProgress树进行
+- 操作完，将workInProgress树变更反应到页面上
+- workInProgess树替换current树
 
 #### 判断fiber类型
 - text节点
@@ -184,6 +203,8 @@ reconcileChildFibers
 - react16将渲染阶段分为三段（render，diff，commit）
 - fiber是链表形式
 - 每个fiber有expirationTime、优先级（用于在commit阶段做时间分片渲染）
+
+**注：一开始用的 Priority，后来改为 expirationTime， 之后又改为递减的 expirationTime**
 
 ### 一些问题
 
@@ -384,7 +405,8 @@ class Fiber {
 - 返回return节点，重复siblings
 - 直至root
 
-[Fiber遍历图](./Fiber遍历图.jpg)
+![Fiber遍历图](./Fiber遍历图.jpg)
+![Fiber遍历动画图](./fiber遍历过程（动画）.gif)
 
 **伪代码**
 
@@ -438,5 +460,139 @@ while (当前还有空闲时间 && 下一个节点不为空) {
 
 ## interview
 [react的304道题](https://github.com/semlinker/reactjs-interview-questions)
+
+---
+
+## 优化指南
+[参考](https://mp.weixin.qq.com/s/R2oGuX-WT8Muwiur8vo0qw)
+
+### React.Fragment
+>
+> 作用：
+>
+> 1. 用于包裹组件中的子节点，但是不产生额外节点
+>
+
+```js
+// 正常用法
+class Columns extends React.Component {
+  render() {
+    return (
+      <React.Fragment>
+        <td>column one</td>
+        <td>column two</td>
+      </React.Fragment>
+    );
+  }
+}
+
+// 简洁用法
+class Columns extends React.Component {
+  render() {
+    return (
+      <>
+        <td>Hello</td>
+        <td>World</td>
+      </>
+    );
+  }
+}
+```
+
+### React.lazy
+>
+> 作用：
+>
+> 1. 只有当组件需要渲染时才会加载组件
+> 2. 必须使用`import()`加载
+> 3. 返回值必须是`Promise`，加载的是`export default`
+>
+
+```js
+const OtherComponent = React.lazy(() => import('./OtherComponent'));
+
+function MyComponent() {
+  return (
+    <div>
+      <OtherComponent />
+    </div>
+  );
+}
+```
+
+### React.suspense
+>
+> 作用：
+>
+> 1. `React.lazy`加载前，需要类似【加载中】的状态展示，可用`suspense`
+> 2. `suspense`里可以套多个`React.lazy`
+> 3. 加载态放在`fallback`属性里
+>
+
+```js
+const OtherComponent = React.lazy(() => import('./OtherComponent'));
+const AnotherComponent = React.lazy(() => import('./AnotherComponent'));
+
+function MyComponent() {
+  return (
+    <div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <section>
+          <OtherComponent />
+          <AnotherComponent />
+        </section>
+      </Suspense>
+    </div>
+  );
+}
+```
+
+### shouldComponentUpdate
+>
+> 自定义比较`props`和`state`，避免组件无意义render
+>
+
+### React.PureComponent
+>
+> 浅比较`props`和`state`
+>
+
+### React.memo
+>
+> 描述：
+> 1. 高阶组件，类似`React.PureComponent`
+> 2. 默认也只做浅比较，不过可以传入自定义比较函数
+>
+
+```js
+const MyComponent = ({user}) =>{
+    const {name, occupation} = user;
+    return (
+        <div>
+            <h4>{name}</h4>
+            <p>{occupation}</p>
+        </div>
+    )
+}
+// 比较函数
+function areEqual(prevProps, nextProps) {
+  /*
+  如果把 nextProps 传入 render 方法的返回结果与
+  将 prevProps 传入 render 方法的返回结果一致则返回 true，
+  否则返回 false
+  */
+}
+export default React.memo(MyComponent, areEqual);
+```
+
+### 虚拟列表
+- react-window
+- react-virtualized
+
+---
+
+
+
+
 
 

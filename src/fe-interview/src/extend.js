@@ -36,3 +36,21 @@ console.log(childInstance);
 ChildKlass.sayWord(childInstance);
 
 
+//=============================
+
+// 解法2: 寄生组合式继承
+// 1. 创建空函数，修改原型为Parent.prototype，返回实例化结果
+// 2. 结果的constructor指向Child
+// 3. Child的原型指向实例化结果
+function getProto(proto) {
+  function F() {};
+  F.prototype = proto;
+  return new F();
+};
+
+function extend2(Child, Parent) {
+  const parent = getProto(Parent);
+  parent.constructor = Child;
+  Child.prototype = parent;
+};
+

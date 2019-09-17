@@ -308,6 +308,7 @@ export const getExecWxml = (
     let scanning: boolean = true;
     const isVisibleStyle: boolean = isIfAll($1) || isHidden($1);
 
+    // wx:if or wx:elif or wx:else or hidden
     if (isVisibleStyle) {
       if (isPage) {
         result = `${$1}${$2}\{\{$\{${$3}\}\}\}${$4}`;
@@ -381,7 +382,7 @@ export const wxmlTreeShake = (
   const result = transform(jsContent as string) || {};
   const { ast } = result;
   let maxDiff: number[] = [];
-  traverse(ast, {
+  traverse(ast as any, {
     ObjectProperty(path: NodePath) {
       const node: ICO = path.node;
       const { key, value } = node;

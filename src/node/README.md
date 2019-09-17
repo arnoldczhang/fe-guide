@@ -23,12 +23,13 @@
 * [`进程线程`](#进程线程)
 * [`手动打包指南`](#手动打包指南)
 * [`库源码解析`](#库源码解析)
+* [`其他`](#其他)
 
 </details>
 
 ## 参数
 * --async-stack-traces
-  - 示例：node --async-stack-traces index.js
+  - 示例：`node --async-stack-traces index.js`
   - 异步堆栈跟踪
 
 ---
@@ -46,7 +47,7 @@
 - [检查库的两个版本间的diff](https://diff.intrinsic.com/)
 - [npm源管理工具-nrm/yrm](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 - [搭建私有npm工具-verdaccio](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
-  * ```js
+  * ```
     npm install -g verdaccio
 
     verdaccio
@@ -151,8 +152,6 @@
 #### 解析顺序
 
 ![require加载机制](./require加载机制.png)
-
----
 
 1. 系统缓存
   - 模块被执行之后会会进行缓存
@@ -619,6 +618,22 @@ uglify-js
 ### ws
 [ws](https://github.com/websockets/ws)
 [WebSocket协议以及ws源码分析](https://juejin.im/post/5ce8976151882533441ecc20?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+
+---
+
+## 其他
+
+### 字符编码encoding
+- ascii: 仅适用于 7 位 ASCII 数据。此编码速度很快，如果设置则会剥离高位。
+- utf8: 多字节编码的 Unicode 字符。许多网页和其他文档格式都使用 UTF-8。
+- utf16le: 2 或 4 个字节，小端序编码的 Unicode 字符。支持代理对（U+10000 至 U+10FFFF）。
+- ucs2: 'utf16le' 的别名。
+- base64: Base64 编码。当从字符串创建 Buffer 时，此编码也会正确地接受 RFC 4648 第 5 节中指定的 “URL 和文件名安全字母”。
+- latin1: 一种将 Buffer 编码成单字节编码字符串的方法（由 RFC 1345 中的 IANA 定义，第 63 页，作为 Latin-1 的补充块和 C0/C1 控制码）。
+- binary: 'latin1' 的别名。
+- hex: 将每个字节编码成两个十六进制的字符。
+
+---
 
 
 

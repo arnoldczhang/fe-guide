@@ -18,6 +18,7 @@ import {
   ATTR_PADDING_LEFT,
   ATTR_PADDING_RIGHT,
   ATTR_PADDING_TOP,
+  ATTR_RADIUS,
   ATTR_REMOVE,
   ATTR_REPEAT,
   ATTR_REPLACE,
@@ -52,6 +53,7 @@ import {
 import { CF, IAst, ICO, IPath } from '../types';
 import {
   triggerBgAction,
+  triggerBorderRadiusAction,
   triggerDarkBgAction,
   triggerHeightAction,
   triggerLightBgAction,
@@ -115,6 +117,7 @@ import {
   isIf,
   isKlass,
   isNpmComponent,
+  isWxml,
   removeBlankAndWxVariable,
   replaceColorSymbol,
   replaceLengthSymbol,
@@ -125,8 +128,9 @@ import { cachKlassStruct } from './treeshake';
 const {
   keys,
 } = Object;
-const emptyNode = {};
 const logger = Logger.getInstance();
+
+const getEmptyNode = () => ({});
 
 /**
  * parseAsTreeNode
@@ -158,7 +162,7 @@ const parseFromConfig = (
 ): IAst => {
   const { ignoreTags } = options;
   if (ignoreTags && ignoreTags.includes(ast.tag)) {
-    return emptyNode;
+    return getEmptyNode();
   }
   return ast;
 };
@@ -180,9 +184,6 @@ export const parseFromNode = (
     return ast;
   }
   ast.text = removeBlankAndWxVariable(text);
-  if (!ast.text) {
-    return emptyNode;
-  }
   return ast;
 };
 
@@ -198,7 +199,7 @@ export const parseFromCustomAttr = (
   const { attr } = ast;
   if (!attr) { return ast; }
   const result: ICO = {};
-  const attrKeys = keys(attr);
+  let attrKeys = keys(attr);
   const exceptKeys: string[] = [];
   for (let key, value, klass, i = 0; i < attrKeys.length; i += 1) {
     key = attrKeys[i];
@@ -223,13 +224,14 @@ export const parseFromCustomAttr = (
         exceptKeys.push(WX_ELIF, WX_ELSE);
         break;
       case ATTR_REMOVE:
-        return emptyNode;
+        return getEmptyNode();
       case ATTR_CLEAR:
         ast.child = [];
         break;
       case ATTR_REPLACE:
-        triggerReplaceAction(ast, value);
-        return ast;
+        attrKeys = Object.keys(triggerReplaceAction(ast, value));
+        i = 0;
+        break;
       case ATTR_PADDING:
         triggerPaddingAction(ast, options, result, value, klass);
         break;
@@ -275,6 +277,9 @@ export const parseFromCustomAttr = (
       case ATTR_LIGHT_BG:
         triggerLightBgAction(ast, options, result, value, klass);
         break;
+      case ATTR_RADIUS:
+        triggerBorderRadiusAction(ast, options, result, value, klass);
+        break;
       default:
         if (!has(key, result) && !exceptKeys.includes(key)) {
           result[key] = value;
@@ -311,7 +316,7 @@ export const parseFromAttr = (
       // hidden
       case treeshake && isHidden(key):
         if (!isFalsy(pureValue)) {
-          return emptyNode;
+          return getEmptyNode();
         }
         result[key] = value;
         break;
@@ -319,7 +324,7 @@ export const parseFromAttr = (
       // if this value eq false remove this element
       case treeshake && isIf(key):
         if (isFalsy(pureValue)) {
-          return emptyNode;
+          return getEmptyNode();
         }
         result[key] = value;
         break;
@@ -328,7 +333,7 @@ export const parseFromAttr = (
       // else modify this attribute from `wx:elif` to `wx:if`
       case treeshake && isElif(key):
         if (isFalsy(pureValue)) {
-          return emptyNode;
+          return getEmptyNode();
         } else if (isTrue(pureValue)) {
           result[WX_HIDDEN] = '{{false}}';
           result[WX_IF] = '{{true}}';
@@ -343,12 +348,22 @@ export const parseFromAttr = (
       case treeshake && isElse(key):
         let tmpSibling = sibling || {};
         if (!tmpSibling.node || !is(tmpSibling.node, ELEMENT_TAG)) {
-          tmpSibling = tmpSibling.sibling || {};
+          const preSibling = tmpSibling.sibling || {};
+          // fix: find sibling by index of parent
+          if (!preSibling.parent) {
+            const { parent } = tmpSibling;
+            if (parent) {
+              const tmpIndex = parent.child.indexOf(tmpSibling);
+              tmpSibling = parent.child[tmpIndex - 1] || {};
+            }
+          } else {
+            tmpSibling = preSibling;
+          }
         }
         const { node } = tmpSibling;
         const interceptValue = tmpSibling.attr && interceptWxVariable(tmpSibling.attr[WX_IF]);
         if (node && tmpSibling.attr && !isFalsy(interceptValue)) {
-          return emptyNode;
+          return getEmptyNode();
         } else if (is(interceptValue, void 0)) {
           break;
         } else {
@@ -441,8 +456,13 @@ export const parseFromTag = (
     // <import />
     case is(tag, IMPORT_TAG):
       if (attr && attr.src) {
-        const srcWxml: string = resolve(protoPath, attr.src);
-        const destWxml: string = resolve(mainPath, attr.src);
+        let srcWxml: string = resolve(protoPath, attr.src);
+        let destWxml: string = resolve(mainPath, attr.src);
+        // fix: fill the omitted fileName
+        if (!isWxml(srcWxml)) {
+          srcWxml = `${srcWxml}/index.wxml`;
+          destWxml = `${destWxml}/index.wxml`;
+        }
         if (watch || !hasCach(destWxml, PATH)) {
           const srcWxss: string = modifySuffix(srcWxml, 'wxss');
           const destWxss: string = modifySuffix(destWxml, 'wxss');
@@ -494,11 +514,11 @@ export const parseFromTag = (
       break;
     // remove <wxs />
     case is(tag, WXS_TAG):
-      return emptyNode;
+      return getEmptyNode();
     // ignore skeleton tag
     // fix: compiling skeleton to skeleton
     case skeletonKeys.has(tag):
-      return emptyNode;
+      return getEmptyNode();
     // if comp is used in pages, keep it
     case usingComponentKeys.has(tag):
       clearUsedComp(tag, options);
@@ -541,10 +561,13 @@ export const parseFromJSON = (
   const dest: string = getDir(destFile);
   const { root, compPath, subPageRoot, outputPath } = options;
   const rootSrcPath = subPageRoot || options.srcPath;
+  const backRE = /^\.{2}\//;
+
   keys(json).forEach((key: string): void => {
     let pathValue: string = json[key];
     let [srcJs, destJs, srcWxml, destWxml, srcWxss, destWxss, srcJson, destJson] = Array(10);
     try {
+      // @npm/xxx
       if (isNpmComponent(pathValue)) {
         pathValue = pathValue.slice(1);
         srcJs = pathResolve.sync(pathValue, { basedir: root });
@@ -561,16 +584,34 @@ export const parseFromJSON = (
         json[key] = `${getRelativePath(destRoot, destFile)}/${srcJsName}`;
       } else {
         const isRootStyle = /^\//.test(pathValue);
+        let srcPre;
+        let destPre;
         if (isRootStyle) {
           pathValue = pathValue.slice(1);
+          srcPre = rootSrcPath;
+          destPre = outputPath;
+        } else {
+          srcPre = src;
+          destPre = dest;
         }
-        let srcPath: string = resolve(isRootStyle ? rootSrcPath : src, pathValue);
-        let destPath: string = resolve(isRootStyle ? outputPath : dest, pathValue);
+        let srcPath: string = resolve(srcPre, pathValue);
+        let destPath: string = resolve(destPre, pathValue);
+
         // fix: avoid compiling skeleton to skeleton
         if (srcPath.includes(outputPath)) {
           delete json[key];
           skeletonKeys.add(key);
           return;
+        }
+
+        // fix: if component, located in main package, is used in subpackage,
+        // this may be resolved to a out of bound path
+        if (subPageRoot) {
+          while (!destPath.includes(outputPath) && backRE.test(pathValue)) {
+            pathValue = pathValue.replace(backRE, '');
+            destPath = resolve(destPre, pathValue);
+            json[key] = pathValue;
+          }
         }
 
         try {
@@ -614,7 +655,7 @@ export const parseFromJSON = (
 
       // gen component-js
       ensure(destJs);
-      write(destJs, getCompJs(outputPath, destJs));
+      write(destJs, getCompJs(outputPath, destJs, options));
 
       // TODO copy Components.properties to destJs with babel
     }

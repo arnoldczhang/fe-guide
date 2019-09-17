@@ -57,8 +57,7 @@
     - 技术选型、架构设计
     - js/css模块化：cmd/amd/es6 module
     - 构建优化、定制规范、分治系统、性能优化、CI/CD、日志监控、系统测试
-    - 组件化开发与资源管理：分治
-  参考https://github.com/fouber/blog/issues/10，
+    - 组件化开发与资源管理：分治参考https://github.com/fouber/blog/issues/10，
   * 带人：疑问式引导
 2. 独立做事。当你的一技之长达到一定深度的时候，需要开始思考如何独立做事。
   * 技术主管后考虑
@@ -84,7 +83,8 @@
 ---
 
 ## 架构设计
-参考[大型项目前端架构](https://juejin.im/post/5cea1f705188250640005472)
+- [大型项目前端架构](https://juejin.im/post/5cea1f705188250640005472)
+- [团队规范](https://juejin.im/post/5d3a7134f265da1b5d57f1ed)
 
 ### 基建
 - 代码仓库（自建gitlab）
@@ -425,7 +425,7 @@ import module1 from 'module1'
 ---
 
 ## 设计模式
-[设计模式](https://segmentfault.com/a/1190000018879929?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
+[设计模式](https://www.w3cschool.cn/zobyhd/pyunfozt.html)
 ![技术全局视角](./技术全局视角.jpeg)
 
 ---

@@ -1,8 +1,8 @@
 
 ## 参考
-  - mdn：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy
-  - 阮一峰：http://es6.ruanyifeng.com/#docs/proxy
-  - InterviewMap：https://github.com/InterviewMap/InterviewMap/blob/master/Framework/framework-zh.md
+- mdn：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+- 阮一峰：http://es6.ruanyifeng.com/#docs/proxy
+- InterviewMap：https://github.com/InterviewMap/InterviewMap/blob/master/Framework/framework-zh.md
 
 ## 示例
 ```js
