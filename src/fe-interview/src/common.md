@@ -1248,7 +1248,7 @@ for (let i = 0; i< 10; i++){
 ### VirtualDom对比原生DOM处理
 [参考](../../career/README.md#框架对比)
 
-- diff+部分渲染 和 innerHTML改动的比较
+- diff + 部分渲染 和 innerHTML 改动的比较
 - 无法得出客观结论，因时制宜
 
 ---
