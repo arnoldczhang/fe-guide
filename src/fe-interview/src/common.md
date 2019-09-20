@@ -58,6 +58,7 @@
 * [`passive`](#passive)
 * [`解构赋值`](#解构赋值)
 * [`URLSearchParams`](#URLSearchParams)
+* [`创建n个有值元素的数组`](#创建n个有值元素的数组)
 
 **进阶js**
 
@@ -2534,6 +2535,12 @@ class URLSearchParams {
 ### get和post区别
 [参考](../../js&browser/页面过程与浏览器缓存.md#GETvsPOST)
 
+---
 
-
+### 创建n个有值元素的数组
+- for循环直接撸
+- [...Array(n)].map(() => ...)
+- Array.from({ length: n }, (_, i) => ...)
+- Array(n).fill(...)
+- [generator](../../meta-programming/README.md#Generator)
 

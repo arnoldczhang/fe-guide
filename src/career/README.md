@@ -421,6 +421,7 @@ import module1 from 'module1'
 
 ## 快速开发
 [vue企业级开发](https://mp.weixin.qq.com/s/g6D5b_YilzLeBH3pdjRnww)
+[single-spa](https://single-spa.js.org/docs/starting-from-scratch.html)
 
 ---
 

@@ -10,6 +10,8 @@
 
 * [`Symbol`](#Symbol)
 * [`Proxy`](#Proxy)
+* [`Generator`](#Generator)
+* [`Refelct`](#Refelct)
 * [`ditto`](#ditto)
 
 </details>
@@ -364,4 +366,49 @@ c.d.forEach(() => {
   // ...
 });
 ```
+
+---
+
+## Generator
+- `...`: 相当于调用`Symbol.iterator`
+- `yield*`: 迭代展开
+
+### 生成器
+
+```js
+// 简易版
+function* initializer(n, mapFunc = v => v) {
+  for (let i = 0; i < n; i += 1) {
+    yield mapFunc(i, n);
+  }
+};
+
+// 生成升序数组
+const arr = [...initializer(10)]; // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+const arr2 = [...initializer(10, v => v * 2)]; // [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+```
+
+```js
+// 加强版
+function* initializer(n, mapFunc = v => v) {
+  const isGen = mapFunc.constructor.name === 'GeneratorFunction';
+  for (let i = 0; i < n; i += 1) {
+    if (isGen) {
+      yield* mapFunc(i, n);
+    } else {
+      yield mapFunc(i, n);
+    }
+  }
+};
+
+// 生成扑克
+const pocket = [...initializer(13, function *(i) {
+  const p = i + 1;
+  yield ['♠️', p];
+  yield ['♣️', p];
+  yield ['♥️', p];
+  yield ['♦️', p];
+})];
+```
+
 
