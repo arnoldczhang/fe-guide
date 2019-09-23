@@ -49,7 +49,7 @@ function getProto(proto) {
 };
 
 function extend2(Child, Parent) {
-  const parent = getProto(Parent);
+  const parent = getProto(Parent.prototype);
   parent.constructor = Child;
   Child.prototype = parent;
 };
