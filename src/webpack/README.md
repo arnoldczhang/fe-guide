@@ -1115,11 +1115,11 @@ __webpack_require__
 ---
 
 ## 热更新
-1. 利用webpack-dev-server（express），建立HMR server
-2. 页面dev-server/client和HMR server建立websocket通信
-3. webpack编译生成的新代码，通过HMR server发送给页面
-4. 页面根据socket获取的chunk头进行比较，获知需要更新的模块
-5. 模块根据module.hot.accpet，判断能否更新，若无法更新，强刷页面
+1. 利用 webpack-dev-server（express），建立 HMR server
+2. 页面 dev-server/client 和 HMR server 建立 websocket 通信
+3. webpack 编译生成的新代码，通过 HMR server 发送给页面
+4. 页面根据 socket 获取的 chunk 头进行比较，获知需要更新的模块
+5. 模块根据 module.hot.accpet，判断能否更新，若无法更新，强刷页面
 
 
 

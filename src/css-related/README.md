@@ -375,7 +375,7 @@ filter:blur（数值）
   ```
 - background-image
   * 同border-image
-- 伪类 + transform
+- 伪类 + scaleY(0.5)
   * ```css
     .border_1px:before{
       content: '';
@@ -405,7 +405,7 @@ filter:blur（数值）
       border-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' height='2px'%3E%3Crect fill='%2300b1ff' width='100%25' height='50%25'/%3E%3C/svg%3E") 2 2 stretch; }
     ```
 - 设置viewport
-- scale + ::after
+- ::after + scale
   ```css
   .scale-1px{
     position: relative;

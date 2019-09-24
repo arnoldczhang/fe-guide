@@ -261,8 +261,10 @@ var proxy = new Proxy({}, {
 });
 ```
 
-### Proxy.revoke
-可撤销代理对象
+### Proxy.revocable
+>
+> 创建一个可撤销的代理对象
+>
 ```js
 var obj = { a: 1 };
 var handlers = {
@@ -271,10 +273,10 @@ var handlers = {
     return target[key];
   },
 };
-const { proxy: pobj, revoke: prevoke } = Proxy.revocable( obj, handlers );
+const { proxy: pobj, revoke } = Proxy.revocable( obj, handlers );
 
 pobj.a; // accessing: a
-prevoke();
+revoke(); // 撤销对象代理
 pobj.a; // typeError
 ```
 

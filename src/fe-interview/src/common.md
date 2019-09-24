@@ -1541,8 +1541,8 @@ function solution(arr1, ...rest) {
 - .sort((pre, next) => pre - next)
 - var map = {};
 - .forEach((num) => {
-  map[num % 10].push(num)
-})
+    map[num % 10].push(num)
+  });
 - keys().map(key => value)
 
 ---
@@ -1554,7 +1554,7 @@ function solution(arr1, ...rest) {
 ---
 
 ### webpack热更新
-[参考](../../webpack/README.md)
+[参考](../../webpack/README.md#热更新)
 
 ---
 
@@ -1588,7 +1588,7 @@ https://jsperf.com
 ---
 
 ### proxy
-[参考](../../meta-programming/README.md)
+[参考](../../meta-programming/README.md#Proxy)
 
 ---
 
