@@ -54,7 +54,7 @@ export const assertOptions = (options: INpmOptions = {}): INpmOptions => {
   } else {
     assert(!(!isArr(ignore) && ignore), 'ignore传值异常');
   }
-  assert(!(!isArr(page) && page !== '*'), 'page传值异常');
+  assert(!(!isArr(page) && page !== '*' && page !== false), 'page传值异常');
   assert(isStr(inputDir), 'inputDir传值异常');
   assert(isStr(outDir), 'outDir传值异常');
   return options;

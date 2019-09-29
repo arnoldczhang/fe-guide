@@ -6,6 +6,10 @@ import { identity } from "./dir";
 // =========== //
 // === test === //
 // =========== //
+export const isTypescript = (input: string): boolean => (
+  /\.tsx?$/.test(input)
+);
+
 export const isColor = (input: string): boolean => (
   /^(?:#[a-zA-Z0-9]{3,6}|rgba?|hsla?|[a-zA-Z])/.test(input)
 );

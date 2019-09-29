@@ -13,7 +13,7 @@ export interface INpmOptions {
   // use wxml/wxss treeshake
   treeshake?: boolean;
   // main package pages
-  page?: string[] | string;
+  page?: string[] | string | false;
   // animation automatically add to default-bg
   animation?: string | string[];
   // remove unused components and templates
@@ -30,6 +30,13 @@ export interface INpmOptions {
 
 export interface IPack {
   root: string;
+  page: string[];
+  independent?: boolean;
+}
+
+// react options
+export interface IReactProps {
+  pageRoot: string;
   page: string[];
 }
 
@@ -85,6 +92,10 @@ export interface IPath {
   independent?: boolean;
   // global outputPath
   globalOutputPath?: string;
+  // react src page path
+  reactSrcPagePath?: string;
+  // react suffix
+  reactSuffix?: string;
 }
 
 export enum animationStyle {

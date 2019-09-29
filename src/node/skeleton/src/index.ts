@@ -15,6 +15,7 @@ const { assertOptions } = require('./utils/assert');
 const { getRelativePath } = require('./utils/dir');
 const {
   genNewComponent,
+  genNewReactComponent,
   genResourceFile,
   getPageWxml,
   removeUnused,
@@ -39,6 +40,7 @@ const run = (options: any = {}): void => {
     tplWxss,
     subPackage,
     defaultGrey,
+    react,
   } = options;
   const srcPath = inputDir ? join(root, inputDir) : `${root}/src`;
   const outputPath = outDir ? `${join(root, outDir)}${SKELETON_RELATIVE}` : `${srcPath}${SKELETON_RELATIVE}`;
@@ -87,10 +89,12 @@ const run = (options: any = {}): void => {
   updateLogger(pageCollection);
 
   // gen main page files
-  pageWxml.forEach((wxml: string): void => {
-    const pageOptions: any = getPageOptions();
-    genNewComponent(wxml, pageOptions);
-  });
+  if (pageWxml.length) {
+    pageWxml.forEach((wxml: string): void => {
+      const pageOptions: any = getPageOptions();
+      genNewComponent(wxml, pageOptions);
+    });
+  }
 
   // gen sub page files
   if (Array.isArray(subPackage)) {
@@ -102,7 +106,7 @@ const run = (options: any = {}): void => {
         : `${join(subSrc, subRoot)}${SKELETON_RELATIVE}`;
       const subPagePath = `${subOut}/pages`;
       const subCompPath = `${subOut}/components`;
-      const subPageWxml = getPageWxml(`${subSrc}/*/*.wxml`, subPage);
+      const subPageWxml = getPageWxml(`${subSrc}/!(skeleton)/**/*.wxml`, subPage);
       // update sub page logger
       updateLogger(pageCollection);
       subPageWxml.forEach((wxml: string): void => {
@@ -121,6 +125,21 @@ const run = (options: any = {}): void => {
       if (independent) {
         // TODO independent subPackage should not depend on commone wxss/js in mainPackage
       }
+    });
+  }
+
+  // react-transform
+  if (react) {
+    const {
+      pageRoot: reactPageRoot,
+      suffix = 'tsx',
+      page: reactPage = [],
+    } = react;
+    reactPage.forEach((p: string): void => {
+      const pageOptions: any = getPageOptions();
+      pageOptions.reactSrcPagePath = `${pageOptions.srcPath}/${reactPageRoot || 'pages'}`;
+      pageOptions.reactSuffix = suffix || 'tsx';
+      genNewReactComponent(p, pageOptions);
     });
   }
 

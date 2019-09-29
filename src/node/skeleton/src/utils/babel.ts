@@ -1,8 +1,25 @@
-import { BabelFileResult, transformSync, traverse } from '@babel/core';
-import { ICO } from '../types';
+import { BabelFileResult, parse, transformSync, traverse } from '@babel/core';
+import generate from '@babel/generator';
+import * as t from '@babel/types';
+import * as ts from 'typescript';
+import { IBabelConfig, ICO } from '../types';
 import Logger from './log';
 
 const logger = Logger.getInstance();
+
+export const babelConfig: IBabelConfig = {
+  presets: [
+    ['@babel/env', {
+      modules: 'commonjs',
+    }],
+    "@babel/react",
+  ],
+  plugins: [
+    ['@babel/plugin-transform-runtime', {
+      regenerator: true,
+    }],
+  ],
+};
 
 export const toBufferString = (input: Buffer | string) => {
   if (input instanceof Buffer) {
@@ -20,11 +37,12 @@ export const transform = (
   options: ICO = {},
 ): BabelFileResult => {
   input = toBufferString(input);
+  const { config } = options;
   if (typeof input === 'string') {
     try {
       return transformSync(input, {
         ast: true,
-        code: false,
+        code: true,
         babelrc: false,
         configFile: false,
         presets: [
@@ -44,6 +62,24 @@ export const transform = (
   }
 };
 
+export const ts2js = (input = ''): string => {
+  let result = '';
+  try {
+    result = ts.transpile(input, {
+      jsx: ts.JsxEmit.Preserve,
+      target: ts.ScriptTarget.ESNext,
+      importHelpers: true,
+      noEmitHelpers: true,
+    });
+  } catch (err) {
+    logger.warn(err);
+  }
+  return result;
+};
+
+export const babelParse = parse;
+
 export {
   traverse,
+  generate,
 };

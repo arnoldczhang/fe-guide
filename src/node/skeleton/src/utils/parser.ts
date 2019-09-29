@@ -23,6 +23,7 @@ import {
   ATTR_REPEAT,
   ATTR_REPLACE,
   ATTR_SHOW,
+  ATTR_TEXT,
   ATTR_WIDTH,
   BUTTON_TAG,
   COMP_JS,
@@ -280,6 +281,10 @@ export const parseFromCustomAttr = (
       case ATTR_RADIUS:
         triggerBorderRadiusAction(ast, options, result, value, klass);
         break;
+      case ATTR_TEXT:
+        // TODO do nothing when is text now
+        result[key] = value;
+        break;
       default:
         if (!has(key, result) && !exceptKeys.includes(key)) {
           result[key] = value;
@@ -524,9 +529,16 @@ export const parseFromTag = (
       clearUsedComp(tag, options);
       break;
     default:
+      // single element is filled with default bgcolor
       if (defaultBg && hasOnlyTextChild(ast)) {
         if (!attr) {
           ast.attr = {};
+        }
+
+        // won`t add default bgcolor when is text node
+        if (ATTR_TEXT in ast.attr) {
+          delete ast.attr[ATTR_TEXT];
+          break;
         }
         ast.attr[KLASS] = appendUniq(klass, WXSS_BG_GREY);
       }

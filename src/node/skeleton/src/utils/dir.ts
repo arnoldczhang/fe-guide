@@ -8,8 +8,11 @@ import { isArr } from './assert';
  */
 export const getPageWxml = (
   path: string,
-  reg?: string | string[] | RegExp,
+  reg?: string | string[] | RegExp | false,
 ): string[] => {
+  if (Object.is(reg, false)) {
+    return [];
+  }
   reg = reg || /pages\/([^\/]+)\/\1\.wxml$/;
   if (isArr(reg)) {
     reg = reg.map((r: string) => /.wxml$/.test(r) ? r : `${r.replace(/\.[^\.\\\/]+$/, '')}.wxml`);

@@ -1,7 +1,7 @@
 import * as css from 'css';
 import { html2json, json2html } from 'html2json';
 import { DomElement, DomHandler, Parser } from 'htmlparser2';
-import { join } from 'path';
+import { join, resolve as pathResolve } from 'path';
 import {
   COMP_JS,
   COMP_JSON,
@@ -13,7 +13,7 @@ import {
   TEXT,
 } from '../config';
 import { COMMENT_TAG, IMPORT_TAG, INCLUDE_TAG, RULE_TAG, TEMPLATE_TAG } from '../config/tag';
-import { IAst, ICO, IComp, IPath, IUnused } from '../types';
+import { IAst, ICO, IComp, IPath, IReactProps, IUnused } from '../types';
 import { is, isArr } from './assert';
 import {
   hasCach,
@@ -43,6 +43,7 @@ import {
   getTemplateIs,
   getTemplateName,
   isGenWxss,
+  isTypescript,
   matchIdStyle,
   removeComment,
   replacePseudo,
@@ -50,6 +51,7 @@ import {
   withoutPageSelector,
 } from './reg';
 
+import { babelParse, ts2js } from './babel';
 import { Comp } from './klass';
 import Logger from './log';
 import { styleTreeShake, wxmlTreeShake } from './treeshake';
@@ -700,6 +702,31 @@ export const removeImportedWxss = (
     });
     remove(src);
   }
+};
+
+/**
+ * genNewReactComponent
+ * @param page
+ * @param options
+ */
+export const genNewReactComponent = (
+  page: string,
+  options: IPath,
+): void => {
+  const { reactSrcPagePath, reactSuffix } = options;
+  const pagePath = `${pathResolve(reactSrcPagePath, page)}.${reactSuffix}`;
+  const file = read(pagePath);
+  compileReactFile(pagePath, file as string);
+};
+
+export const compileReactFile = (
+  pagePath: string,
+  input: string,
+): void => {
+  if (isTypescript(pagePath)) {
+    input = ts2js(input);
+  }
+  babelParse(input);
 };
 
 export {
