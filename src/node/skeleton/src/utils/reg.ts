@@ -6,8 +6,20 @@ import { identity } from "./dir";
 // =========== //
 // === test === //
 // =========== //
+export const hasSuffix = (input: string): boolean => (
+  /\.[a-zA-Z]+$/.test(input)
+);
+
+export const isRelativePath = (input: string): boolean => (
+  /^\.\.?\//.test(input)
+);
+
 export const isTypescript = (input: string): boolean => (
   /\.tsx?$/.test(input)
+);
+
+export const isCompMethod = (input: string): boolean => (
+  /^component(?:Will|Did)/.test(input)
 );
 
 export const isColor = (input: string): boolean => (

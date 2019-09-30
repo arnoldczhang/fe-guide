@@ -1,13 +1,13 @@
-import { BabelFileResult, parse, transformSync, traverse } from '@babel/core';
+import { BabelFileResult, parse, TransformOptions, transformSync, traverse } from '@babel/core';
 import generate from '@babel/generator';
 import * as t from '@babel/types';
 import * as ts from 'typescript';
-import { IBabelConfig, ICO } from '../types';
+import { ICO } from '../types';
 import Logger from './log';
 
 const logger = Logger.getInstance();
 
-export const babelConfig: IBabelConfig = {
+export const babelConfig: TransformOptions = {
   presets: [
     ['@babel/env', {
       modules: 'commonjs',

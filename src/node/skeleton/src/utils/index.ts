@@ -1,3 +1,5 @@
+import { NodePath } from "@babel/traverse";
+import * as t from "@babel/types";
 import * as css from 'css';
 import { html2json, json2html } from 'html2json';
 import { DomElement, DomHandler, Parser } from 'htmlparser2';
@@ -15,6 +17,13 @@ import {
 import { COMMENT_TAG, IMPORT_TAG, INCLUDE_TAG, RULE_TAG, TEMPLATE_TAG } from '../config/tag';
 import { IAst, ICO, IComp, IPath, IReactProps, IUnused } from '../types';
 import { is, isArr } from './assert';
+import {
+  babelConfig,
+  babelParse,
+  generate,
+  traverse,
+  ts2js,
+} from './babel';
 import {
   hasCach,
   setCach,
@@ -37,7 +46,15 @@ import {
   remove,
   write,
 } from './fs';
-import { parseAsTreeNode, parseFromJSON } from './parser';
+import { Comp } from './klass';
+import Logger from './log';
+import {
+  parseAsTreeNode,
+  parseFromClassMethod,
+  parseFromImportDeclaration,
+  parseFromJSON,
+  parseFromJSXElement,
+} from './parser';
 import {
   addSuffixWxss,
   getTemplateIs,
@@ -50,10 +67,6 @@ import {
   splitWith,
   withoutPageSelector,
 } from './reg';
-
-import { babelParse, ts2js } from './babel';
-import { Comp } from './klass';
-import Logger from './log';
 import { styleTreeShake, wxmlTreeShake } from './treeshake';
 
 const {
@@ -713,20 +726,35 @@ export const genNewReactComponent = (
   page: string,
   options: IPath,
 ): void => {
-  const { reactSrcPagePath, reactSuffix } = options;
-  const pagePath = `${pathResolve(reactSrcPagePath, page)}.${reactSuffix}`;
-  const file = read(pagePath);
-  compileReactFile(pagePath, file as string);
+  const file = read(page);
+  const code = compile2ReactCode(page, file as string, options);
 };
 
-export const compileReactFile = (
+/**
+ * compile2ReactCode
+ * @param pagePath
+ * @param input
+ * @param options
+ */
+export const compile2ReactCode = (
   pagePath: string,
   input: string,
-): void => {
+  options: IPath,
+): string => {
   if (isTypescript(pagePath)) {
     input = ts2js(input);
   }
-  babelParse(input);
+  const ast = babelParse(input, babelConfig);
+  const importMap = new Map();
+  traverse(ast, {
+    JSXElement: parseFromJSXElement,
+    ClassMethod: parseFromClassMethod,
+    ImportDeclaration(p: NodePath<t.ImportDeclaration>) {
+      return parseFromImportDeclaration(p, pagePath, options, importMap);
+    },
+  });
+  const { code } = generate(ast);
+  return code;
 };
 
 export {

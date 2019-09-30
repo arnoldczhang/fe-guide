@@ -46,6 +46,7 @@ export interface IPath {
   protoPath?: string;
   mainPath?: string;
   outputPath?: string;
+  outputPagePath?: string;
   mainFilePath?: string;
   pagePath?: string;
   compPath?: string;

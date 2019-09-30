@@ -52,20 +52,13 @@ const run = (options: any = {}): void => {
   const globalTemplateMap: Map<string, string> = new Map();
   const globalComponentSet: Set<string> = new Set();
 
-  const getPageOptions = (
-    s: string = srcPath,
-    o: string = outputPath,
-    p: string = pagePath,
-    c: string = compPath,
-    subPageRoot?: string,
-    independent?: boolean,
-  ): any => ({
+  const getPageOptions = (): any => ({
     globalOutputPath: outputPath,
     root,
-    srcPath: s,
-    outputPath: o,
-    pagePath: p,
-    compPath: c,
+    srcPath,
+    outputPath,
+    pagePath,
+    compPath,
     deleteUnused,
     watch,
     tplWxss,
@@ -81,8 +74,6 @@ const run = (options: any = {}): void => {
     verbose: true,
     ignoreTags: ignore,
     treeshake,
-    subPageRoot,
-    independent,
   });
 
   // update main page logger
@@ -110,14 +101,13 @@ const run = (options: any = {}): void => {
       // update sub page logger
       updateLogger(pageCollection);
       subPageWxml.forEach((wxml: string): void => {
-        const pageOptions: any = getPageOptions(
-          subSrc,
-          subOut,
-          subPagePath,
-          subCompPath,
-          srcPath,
-          independent,
-        );
+        const pageOptions: any = getPageOptions();
+        pageOptions.srcPath = subSrc;
+        pageOptions.outputPath = subOut;
+        pageOptions.pagePath = subPagePath;
+        pageOptions.compPath = subCompPath;
+        pageOptions.subPageRoot = srcPath;
+        pageOptions.independent = independent;
         genNewComponent(wxml, pageOptions);
       });
       pageCollection.push(...subPageWxml);
@@ -131,14 +121,27 @@ const run = (options: any = {}): void => {
   // react-transform
   if (react) {
     const {
-      pageRoot: reactPageRoot,
+      root: reactRoot = '',
+      pageRoot: reactPageRoot = 'pages',
       suffix = 'tsx',
+      targetSuffix = 'jsx',
       page: reactPage = [],
     } = react;
-    reactPage.forEach((p: string): void => {
-      const pageOptions: any = getPageOptions();
-      pageOptions.reactSrcPagePath = `${pageOptions.srcPath}/${reactPageRoot || 'pages'}`;
-      pageOptions.reactSuffix = suffix || 'tsx';
+    const pageOptions: any = getPageOptions();
+    const subSrc = join(srcPath, reactRoot);
+    const subOut = outDir
+      ? `${join(root, outDir, reactRoot)}${SKELETON_RELATIVE}`
+      : `${join(subSrc, reactRoot)}${SKELETON_RELATIVE}`;
+    const subPagePath = `${subOut}/${reactPageRoot}`;
+    const reactPageFile = getPageWxml(
+      `${subSrc}/${reactPageRoot}/**/*.${suffix}`,
+      reactPage,
+      suffix,
+    );
+    reactPageFile.forEach((p: string): void => {
+      pageOptions.srcPath = subSrc;
+      pageOptions.outputPath = subOut;
+      pageOptions.outputPagePath = `${subPagePath}/${reactPage}.${targetSuffix}`;
       genNewReactComponent(p, pageOptions);
     });
   }

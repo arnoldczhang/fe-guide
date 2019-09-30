@@ -65,12 +65,3 @@ export interface IComp {
 export type ICach = ICO & Partial<{
   [PATH]: ICO;
 }>;
-
-export interface IBabelConfig {
-  ast?: boolean;
-  code?: boolean;
-  babelrc?: boolean;
-  configFile?: boolean;
-  presets?: Array<string | any[]>;
-  plugins?: Array<string | any[]>;
-}

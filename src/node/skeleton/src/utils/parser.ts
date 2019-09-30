@@ -1,3 +1,5 @@
+import { NodePath } from '@babel/traverse';
+import * as t from "@babel/types";
 import { join, resolve } from 'path';
 import * as pathResolve from 'resolve';
 import { isString } from 'util';
@@ -72,6 +74,7 @@ import {
   triggerWidthAction,
 } from './action';
 import { has, is, isArr, isFalsy, isStr, isTrue } from './assert';
+import { analyzeShow } from './ast';
 import {
   hasCach,
   setCach,
@@ -79,6 +82,7 @@ import {
 import {
   getDir,
   getFileName,
+  getFoldPath,
   getRelativePath,
 } from './dir';
 import {
@@ -108,9 +112,11 @@ import {
 } from './random';
 import {
   getTemplateName,
+  hasSuffix,
   hasWxVariable,
   interceptWxVariable,
   isBindEvent,
+  isCompMethod,
   isElif,
   isElse,
   isHidden,
@@ -118,6 +124,7 @@ import {
   isIf,
   isKlass,
   isNpmComponent,
+  isRelativePath,
   isWxml,
   removeBlankAndWxVariable,
   replaceColorSymbol,
@@ -673,6 +680,62 @@ export const parseFromJSON = (
     }
   });
   return json;
+};
+
+export const parseFromJSXElement = (
+  p: NodePath<t.JSXElement>,
+): void => {
+  const { node } = p;
+  const { openingElement } = node;
+  const { attributes } = openingElement;
+  if (attributes.length) {
+    attributes.forEach((attribute: t.JSXAttribute, i: number) => {
+      const attrName = attribute.name && attribute.name.name;
+      switch (attrName) {
+        case ATTR_SHOW:
+          analyzeShow(p, attribute, i, attributes);
+          break;
+        default:
+          break;
+      }
+    });
+    openingElement.attributes = attributes.filter((v) => v);
+  }
+};
+
+export const parseFromClassMethod = (
+  p: NodePath<t.ClassMethod>,
+): void => {
+  const { node } = p;
+  const { key } = node;
+  if (isCompMethod((key as any).name || '')) {
+    p.remove();
+  }
+};
+
+export const parseFromImportDeclaration = (
+  p: NodePath<t.ImportDeclaration>,
+  pagePath: string,
+  options: IPath,
+  map: Map<string, NodePath<t.ImportDeclaration>>,
+): void => {
+  const { node } = p;
+  const { source, specifiers } = node;
+  const { value } = source;
+  const { outputPagePath } = options;
+  if (isRelativePath(value)) {
+    debugger;
+    let importPath = resolve(getFoldPath(pagePath), value);
+    if (!hasSuffix(importPath)) {
+      if (exists(`${importPath}.tsx`)) {
+        importPath = `${importPath}.tsx`;
+      } else {
+        importPath = `${importPath}/index.tsx`;
+      }
+    }
+    getRelativePath(outputPagePath, importPath);
+  }
+  // source.value
 };
 
 /**

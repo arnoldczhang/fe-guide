@@ -9,13 +9,14 @@ import { isArr } from './assert';
 export const getPageWxml = (
   path: string,
   reg?: string | string[] | RegExp | false,
+  suffix = 'wxml',
 ): string[] => {
   if (Object.is(reg, false)) {
     return [];
   }
-  reg = reg || /pages\/([^\/]+)\/\1\.wxml$/;
+  reg = reg || new RegExp(`pages\\/([^\\/]+)\\/\\1\\.${suffix}$`);
   if (isArr(reg)) {
-    reg = reg.map((r: string) => /.wxml$/.test(r) ? r : `${r.replace(/\.[^\.\\\/]+$/, '')}.wxml`);
+    reg = reg.map((r: string) => new RegExp(`.${suffix}$`).test(r) ? r : `${r.replace(/\.[^\.\\\/]+$/, '')}.${suffix}`);
     reg = new RegExp(`(?:${reg.join('|')})$`);
   } else if (reg === '*') {
     reg = /[\s\S]*/;
@@ -78,3 +79,6 @@ export const getSplitDir = (path: string): string[] => getDir(path).split('/').f
 export const modifySuffix = (file: string, suffix: string): string => file.replace(/(\.)[^\.]+$/, `$1${suffix}`);
 
 export const addSuffix = (file: string, suffix: string): string => `${file}.${suffix}`;
+
+export const getFoldPath = (file: string): string =>
+  file.substr(0, file.length - getFileName(file).length);
