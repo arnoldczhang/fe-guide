@@ -6,6 +6,14 @@ import { identity } from "./dir";
 // =========== //
 // === test === //
 // =========== //
+export const isSkeleton = (input: string): boolean => (
+  new RegExp(`\\/${SKELETON}\\/`).test(input)
+);
+
+export const isEvent = (input: string): boolean => (
+  /^on[A-Z]\w+/.test(input)
+);
+
 export const hasSuffix = (input: string): boolean => (
   /\.[a-zA-Z]+$/.test(input)
 );
@@ -127,6 +135,10 @@ export const splitWxAttrs = (input: string): string[] => (
 // page#aa.bb:focus
 export const matchIdStyle = (key: string): any[] | null => (
   key.match(/(?:^([\.\-\w]+)*(#[^#\.\:]+)([\.\-\w]+)*(\:\:?[a-z]+)?$)/)
+);
+
+export const matchCallExpression = (input: string): string[] => (
+  input.match(/this\.(\w+)/g) || []
 );
 
 // ============== //

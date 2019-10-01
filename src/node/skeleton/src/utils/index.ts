@@ -54,6 +54,7 @@ import {
   parseFromImportDeclaration,
   parseFromJSON,
   parseFromJSXElement,
+  parseFromVariableDeclaration,
 } from './parser';
 import {
   addSuffixWxss,
@@ -745,15 +746,26 @@ export const compile2ReactCode = (
     input = ts2js(input);
   }
   const ast = babelParse(input, babelConfig);
-  const importMap = new Map();
+  const importMap: Map<any[], NodePath<t.ImportDeclaration | t.VariableDeclaration>> = new Map();
+  const methodMap: Map<string, NodePath<t.ClassMethod>> = new Map();
+  const skeletonSet: Set<string> = new Set();
+  const defaultArgs = [pagePath, options, importMap, skeletonSet];
   traverse(ast, {
-    JSXElement: parseFromJSXElement,
-    ClassMethod: parseFromClassMethod,
+    ClassMethod(p: NodePath<t.ClassMethod>) {
+      return parseFromClassMethod(p, options, methodMap);
+    },
+    JSXElement(p: NodePath<t.JSXElement>) {
+      return parseFromJSXElement.apply(this, [p, ...defaultArgs, methodMap]);
+    },
     ImportDeclaration(p: NodePath<t.ImportDeclaration>) {
-      return parseFromImportDeclaration(p, pagePath, options, importMap);
+      return parseFromImportDeclaration.apply(this, [p, ...defaultArgs]);
+    },
+    VariableDeclaration(p: NodePath<t.VariableDeclaration>) {
+      return parseFromVariableDeclaration.apply(this, [p, ...defaultArgs]);
     },
   });
   const { code } = generate(ast);
+  debugger;
   return code;
 };
 

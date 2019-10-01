@@ -4,7 +4,7 @@ import Logger from './log';
 
 const logger = Logger.getInstance();
 
-export const analyzeShow = (
+export const parseAstShow = (
   p: NodePath<t.JSXElement>,
   attribute: t.JSXAttribute,
   index: number,

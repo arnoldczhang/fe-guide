@@ -138,12 +138,16 @@ const run = (options: any = {}): void => {
       reactPage,
       suffix,
     );
+
     reactPageFile.forEach((p: string): void => {
+      // update sub page logger
+      updateLogger(pageCollection);
       pageOptions.srcPath = subSrc;
       pageOptions.outputPath = subOut;
       pageOptions.outputPagePath = `${subPagePath}/${reactPage}.${targetSuffix}`;
       genNewReactComponent(p, pageOptions);
     });
+    pageCollection.push(...reactPageFile);
   }
 
   // insert animation

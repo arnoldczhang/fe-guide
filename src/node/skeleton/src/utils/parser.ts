@@ -2,6 +2,7 @@ import { NodePath } from '@babel/traverse';
 import * as t from "@babel/types";
 import { join, resolve } from 'path';
 import * as pathResolve from 'resolve';
+import { createExpressionWithTypeArguments } from 'typescript';
 import { isString } from 'util';
 import {
   ATTR_BG,
@@ -74,16 +75,19 @@ import {
   triggerWidthAction,
 } from './action';
 import { has, is, isArr, isFalsy, isStr, isTrue } from './assert';
-import { analyzeShow } from './ast';
+import { parseAstShow } from './ast';
+import { generate } from './babel';
 import {
   hasCach,
   setCach,
 } from './cach';
 import {
+  findTsFileByPath,
   getDir,
   getFileName,
   getFoldPath,
   getRelativePath,
+  removeSuffix,
 } from './dir';
 import {
   copy,
@@ -119,13 +123,16 @@ import {
   isCompMethod,
   isElif,
   isElse,
+  isEvent,
   isHidden,
   isId,
   isIf,
   isKlass,
   isNpmComponent,
   isRelativePath,
+  isSkeleton,
   isWxml,
+  matchCallExpression,
   removeBlankAndWxVariable,
   replaceColorSymbol,
   replaceLengthSymbol,
@@ -682,60 +689,197 @@ export const parseFromJSON = (
   return json;
 };
 
+/**
+ * parseFromJSXElement
+ * @param p
+ */
 export const parseFromJSXElement = (
   p: NodePath<t.JSXElement>,
+  pagePath: string,
+  options: IPath,
+  map: Map<any[], NodePath<any>>,
+  set: Set<string>,
+  methodMap: Map<string, NodePath<t.ClassMethod>>,
 ): void => {
   const { node } = p;
   const { openingElement } = node;
-  const { attributes } = openingElement;
-  if (attributes.length) {
-    attributes.forEach((attribute: t.JSXAttribute, i: number) => {
-      const attrName = attribute.name && attribute.name.name;
-      switch (attrName) {
-        case ATTR_SHOW:
-          analyzeShow(p, attribute, i, attributes);
-          break;
-        default:
-          break;
+  const { attributes, name } = openingElement as any;
+  if (name && name.name) {
+    if (set.has(name.name)) {
+      p.remove();
+      const { parentPath } = p;
+      if (t.isReturnStatement(parentPath)) {
+        parentPath.remove();
       }
+    }
+  }
+  if (attributes.length) {
+    attributes.forEach((
+      a: t.JSXAttribute,
+      i: number,
+      innerAttributes: t.JSXAttribute[],
+    ) => {
+      parseFromAstAttr(i, innerAttributes, p, methodMap);
+      parseFromAstCustomAttr(i, innerAttributes, p);
     });
-    openingElement.attributes = attributes.filter((v) => v);
+    openingElement.attributes = attributes.filter((v: t.JSXAttribute | null) => v);
   }
 };
 
+/**
+ * parseFromAstCustomAttr
+ * @param index
+ * @param attributes
+ * @param p
+ */
+export const parseFromAstCustomAttr = (
+  index: number,
+  attributes: t.JSXAttribute[],
+  p: NodePath<t.JSXElement>,
+): void => {
+  const attribute = attributes[index];
+  const attrName = attribute.name ? attribute.name.name : '';
+  switch (attrName) {
+    case ATTR_SHOW:
+      parseAstShow(p, attribute, index, attributes);
+      break;
+    default:
+      break;
+  }
+};
+
+export const parseFromAstAttr = (
+  index: number,
+  attributes: t.JSXAttribute[],
+  p: NodePath<t.JSXElement>,
+  map: Map<string, NodePath<t.ClassMethod>>,
+): void => {
+  const attribute = attributes[index];
+  const attrName = String(attribute.name ? attribute.name.name : '');
+  switch (true) {
+    case isEvent(attrName):
+      const { code } = generate(attribute as babel.types.Node);
+      const methods = matchCallExpression(code).map((val: string) => val.replace(/this/, ''));
+      methods.forEach((method: string) => {
+      });
+      attributes[index] = null;
+      break;
+    default:
+      break;
+  }
+};
+
+/**
+ * parseFromClassMethod
+ * @param p
+ */
 export const parseFromClassMethod = (
   p: NodePath<t.ClassMethod>,
+  options: IPath,
+  map: Map<string, NodePath<t.ClassMethod>>,
 ): void => {
   const { node } = p;
   const { key } = node;
-  if (isCompMethod((key as any).name || '')) {
+  const { name = '' } = key as any;
+  if (isCompMethod(name)) {
     p.remove();
+  } else {
+    map.set(name, p);
   }
 };
 
+/**
+ * parseFromImportDeclaration
+ * @param p
+ * @param pagePath
+ * @param options
+ * @param map
+ */
 export const parseFromImportDeclaration = (
   p: NodePath<t.ImportDeclaration>,
   pagePath: string,
   options: IPath,
-  map: Map<string, NodePath<t.ImportDeclaration>>,
+  map: Map<any[], NodePath<any>>,
+  set: Set<string>,
 ): void => {
   const { node } = p;
-  const { source, specifiers } = node;
-  const { value } = source;
+  const { source, specifiers = [] } = node;
+  let { value } = source;
   const { outputPagePath } = options;
   if (isRelativePath(value)) {
-    debugger;
-    let importPath = resolve(getFoldPath(pagePath), value);
-    if (!hasSuffix(importPath)) {
-      if (exists(`${importPath}.tsx`)) {
-        importPath = `${importPath}.tsx`;
-      } else {
-        importPath = `${importPath}/index.tsx`;
+    const foldPath = getFoldPath(pagePath);
+    const importPath = findTsFileByPath(resolve(foldPath, value));
+    value = source.value = removeSuffix(getRelativePath(importPath, outputPagePath));
+  }
+  const mapKey = specifiers.reduce((result = [], specifier) => {
+    const { local } = specifier;
+    const { name } = local;
+    if (name) {
+      if (t.isImportDefaultSpecifier(specifier)) {
+        result.push(name);
+      } else if (t.isImportSpecifier(specifier)) {
+        if (Array.isArray(result[0])) {
+          result[0].push(name);
+        } else {
+          result.unshift([name]);
+        }
       }
     }
-    getRelativePath(outputPagePath, importPath);
+    return result;
+  }, []);
+
+  if (mapKey.length) {
+    if (isSkeleton(value)) {
+      p.remove();
+      set.add(mapKey.toString());
+      return;
+    }
+    map.set(mapKey, p);
   }
-  // source.value
+};
+
+/**
+ * parseFromVariableDeclaration
+ * @param p
+ * @param pagePath
+ * @param options
+ * @param map
+ */
+export const parseFromVariableDeclaration = (
+  p: NodePath <t.VariableDeclaration>,
+  pagePath: string,
+  options: IPath,
+  map: Map<any[], NodePath<any> | false>,
+  set: Set<string>,
+): void => {
+  const { node } = p;
+  const { declarations = [] } = node;
+  if (declarations.length === 1) {
+    const [declaration] = declarations;
+    const { init = {}, id = {} } = declaration as any;
+    if (!init) {
+      return;
+    }
+    const { callee = {}, arguments: args } = init;
+    if (callee && callee.name === 'require') {
+      let { value } = args[0];
+      const { outputPagePath } = options;
+      if (isRelativePath(value)) {
+        const foldPath = getFoldPath(pagePath);
+        const importPath = findTsFileByPath(resolve(foldPath, value));
+        value = args[0].value = removeSuffix(getRelativePath(importPath, outputPagePath));
+      }
+
+      if (id.name) {
+        if (isSkeleton(value)) {
+          p.remove();
+          set.add(id.name);
+          return;
+        }
+        map.set([id.name], p);
+      }
+    }
+  }
 };
 
 /**
