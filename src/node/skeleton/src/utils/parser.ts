@@ -737,7 +737,10 @@ export const parseFromAstCustomAttr = (
   attributes: t.JSXAttribute[],
   p: NodePath<t.JSXElement>,
 ): void => {
-  const attribute = attributes[index];
+  const attribute: t.JSXAttribute | null = attributes[index];
+  if (!attribute) {
+    return;
+  }
   const attrName = attribute.name ? attribute.name.name : '';
   switch (attrName) {
     case ATTR_SHOW:
@@ -755,12 +758,20 @@ export const parseFromAstAttr = (
   map: Map<string, NodePath<t.ClassMethod>>,
 ): void => {
   const attribute = attributes[index];
+  if (!attribute) {
+    return;
+  }
   const attrName = String(attribute.name ? attribute.name.name : '');
   switch (true) {
     case isEvent(attrName):
-      const { code } = generate(attribute as babel.types.Node);
-      const methods = matchCallExpression(code).map((val: string) => val.replace(/this/, ''));
-      methods.forEach((method: string) => {
+      const { code } = generate(attribute.value as babel.types.Node);
+      const methods = matchCallExpression(code);
+      methods.forEach((methodName: string) => {
+        const nodePath: NodePath<t.ClassMethod> | void = map.get(methodName);
+        if (nodePath) {
+          nodePath.remove();
+          map.delete(methodName);
+        }
       });
       attributes[index] = null;
       break;

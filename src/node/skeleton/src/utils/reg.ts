@@ -138,8 +138,10 @@ export const matchIdStyle = (key: string): any[] | null => (
 );
 
 export const matchCallExpression = (input: string): string[] => (
-  input.match(/this\.(\w+)/g) || []
-);
+  input.match(/\b(?:(?:this|that|self)\.|)(\w+)/g) || []
+).map((inp: string): string => (
+  inp.replace(/^(?:this|that|self)\.(\w+)/, '$1')
+));
 
 // ============== //
 // === replace === //
