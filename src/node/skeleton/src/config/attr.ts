@@ -6,6 +6,8 @@ export const WX_IF = 'wx:if';
 
 export const KLASS = 'class';
 
+export const KLASS_NAME = 'className';
+
 export const WX_ELSE = 'wx:else';
 
 export const WX_ELIF = 'wx:elif';

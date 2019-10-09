@@ -2,7 +2,7 @@ import { NodePath } from '@babel/traverse';
 import * as t from "@babel/types";
 import { join, resolve } from 'path';
 import * as pathResolve from 'resolve';
-import { createExpressionWithTypeArguments } from 'typescript';
+import { createExpressionWithTypeArguments, transform } from 'typescript';
 import { isString } from 'util';
 import {
   ATTR_BG,
@@ -75,8 +75,8 @@ import {
   triggerWidthAction,
 } from './action';
 import { has, is, isArr, isFalsy, isStr, isTrue } from './assert';
-import { parseAstShow } from './ast';
-import { generate } from './babel';
+import { parseAstBg, parseAstShow } from './ast';
+import { babelConfig, babelParse, generate, transform as babelTransform } from './babel';
 import {
   hasCach,
   setCach,
@@ -121,6 +121,7 @@ import {
   interceptWxVariable,
   isBindEvent,
   isCompMethod,
+  isCssFile,
   isElif,
   isElse,
   isEvent,
@@ -131,6 +132,7 @@ import {
   isNpmComponent,
   isRelativePath,
   isSkeleton,
+  isSkeletonStyle,
   isWxml,
   matchCallExpression,
   removeBlankAndWxVariable,
@@ -720,7 +722,7 @@ export const parseFromJSXElement = (
       innerAttributes: t.JSXAttribute[],
     ) => {
       parseFromAstAttr(i, innerAttributes, p, methodMap);
-      parseFromAstCustomAttr(i, innerAttributes, p);
+      parseFromAstCustomAttr(i, innerAttributes, p, options);
     });
     openingElement.attributes = attributes.filter((v: t.JSXAttribute | null) => v);
   }
@@ -736,6 +738,7 @@ export const parseFromAstCustomAttr = (
   index: number,
   attributes: t.JSXAttribute[],
   p: NodePath<t.JSXElement>,
+  options: IPath,
 ): void => {
   const attribute: t.JSXAttribute | null = attributes[index];
   if (!attribute) {
@@ -744,7 +747,14 @@ export const parseFromAstCustomAttr = (
   const attrName = attribute.name ? attribute.name.name : '';
   switch (attrName) {
     case ATTR_SHOW:
-      parseAstShow(p, attribute, index, attributes);
+      parseAstShow(p, attribute, index, attributes, options);
+      break;
+    case ATTR_BG:
+      parseAstBg(p, attribute, index, attributes, options);
+      break;
+    case ATTR_LIGHT_BG:
+      break;
+    case ATTR_DARK_BG:
       break;
     default:
       break;
@@ -816,11 +826,19 @@ export const parseFromImportDeclaration = (
   const { node } = p;
   const { source, specifiers = [] } = node;
   let { value } = source;
-  const { outputPagePath } = options;
+  const { outputPagePath, globalScssPath } = options;
   if (isRelativePath(value)) {
     const foldPath = getFoldPath(pagePath);
     const importPath = findTsFileByPath(resolve(foldPath, value));
-    value = source.value = removeSuffix(getRelativePath(importPath, outputPagePath));
+    const relativePath = getRelativePath(importPath, outputPagePath);
+    const cssFlag = isCssFile(relativePath);
+    value = source.value = !cssFlag ? removeSuffix(relativePath) : relativePath;
+    // insert skeleton.scss after any .scss
+    if (cssFlag && !isSkeletonStyle(relativePath)) {
+      const styleCode = `import '${getRelativePath(globalScssPath, outputPagePath)}'`;
+      const styleAst = babelParse(styleCode, babelConfig);
+      p.insertAfter(styleAst);
+    }
   }
   const mapKey = specifiers.reduce((result = [], specifier) => {
     const { local } = specifier;
@@ -866,7 +884,7 @@ export const parseFromVariableDeclaration = (
   const { node } = p;
   const { declarations = [] } = node;
   if (declarations.length === 1) {
-    const [declaration] = declarations;
+    const [ declaration ] = declarations;
     const { init = {}, id = {} } = declaration as any;
     if (!init) {
       return;

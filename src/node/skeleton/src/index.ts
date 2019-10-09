@@ -4,6 +4,7 @@ const {
   DEFAULT_JS,
   DEFAULT_WXSS,
   SKELETON_DEFAULT_WXSS_FILE,
+  SKELETON_DEFAULT_SCSS_FILE,
   SKELETON_DEFAULT_JS_FILE,
   SKELETON_RELATIVE,
   WXSS_BG_GREY,
@@ -48,6 +49,8 @@ const run = (options: any = {}): void => {
   const pageCollection = [...pageWxml];
   const pagePath = `${outputPath}/pages`;
   const compPath = `${outputPath}/components`;
+  const globalWxssPath = `${outputPath}${SKELETON_DEFAULT_WXSS_FILE}`;
+  const globalScssPath = `${outputPath}${SKELETON_DEFAULT_SCSS_FILE}`;
   const globalWxssMap = new Map();
   const globalTemplateMap: Map<string, string> = new Map();
   const globalComponentSet: Set<string> = new Set();
@@ -74,6 +77,8 @@ const run = (options: any = {}): void => {
     verbose: true,
     ignoreTags: ignore,
     treeshake,
+    globalWxssPath,
+    globalScssPath,
   });
 
   // update main page logger
@@ -160,10 +165,12 @@ const run = (options: any = {}): void => {
     updateBgWxss(WXSS_BG_GREY, defaultGrey);
   }
   // global wxss
-  genResourceFile(
-    `${outputPath}${SKELETON_DEFAULT_WXSS_FILE}`,
-    transMap2Style(DEFAULT_WXSS, globalWxssMap),
-  );
+  const mapStyle = transMap2Style(DEFAULT_WXSS, globalWxssMap);
+  genResourceFile(globalWxssPath, mapStyle);
+
+  if (react) {
+    genResourceFile(globalScssPath, mapStyle);
+  }
 
   // global js
   genResourceFile(

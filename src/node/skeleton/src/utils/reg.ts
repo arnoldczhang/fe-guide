@@ -10,6 +10,10 @@ export const isSkeleton = (input: string): boolean => (
   new RegExp(`\\/${SKELETON}\\/`).test(input)
 );
 
+export const isSkeletonStyle = (input: string): boolean => (
+  new RegExp(`${SKELETON}\\.(?:s?css|less|w?xss|sass)$`).test(input)
+);
+
 export const isEvent = (input: string): boolean => (
   /^on[A-Z]\w+/.test(input)
 );
@@ -20,6 +24,10 @@ export const hasSuffix = (input: string): boolean => (
 
 export const isRelativePath = (input: string): boolean => (
   /^\.\.?\//.test(input)
+);
+
+export const isCssFile = (input: string): boolean => (
+  /\.(?:s?css|less|w?xss|sass)$/.test(input)
 );
 
 export const isTypescript = (input: string): boolean => (

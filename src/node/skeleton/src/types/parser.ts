@@ -93,6 +93,10 @@ export interface IPath {
   independent?: boolean;
   // global outputPath
   globalOutputPath?: string;
+  // global skeleton.wxss file path
+  globalWxssPath?: string;
+  // global skeleton.scss file path
+  globalScssPath?: string;
   // react src page path
   reactSrcPagePath?: string;
   // react suffix
