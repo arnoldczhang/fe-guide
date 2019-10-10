@@ -145,7 +145,7 @@ const run = (options: any = {}): void => {
     );
 
     reactPageFile.forEach((p: string): void => {
-      // update sub page logger
+      // update subpage logger
       updateLogger(pageCollection);
       pageOptions.srcPath = subSrc;
       pageOptions.outputPath = subOut;

@@ -40,6 +40,7 @@ import {
   KLASS,
   PATH,
   PRE,
+  R2X_TAG,
   ROOT_TAG,
   TEMPLATE_TAG,
   TEXT,
@@ -75,8 +76,36 @@ import {
   triggerWidthAction,
 } from './action';
 import { has, is, isArr, isFalsy, isStr, isTrue } from './assert';
-import { parseAstBg, parseAstShow } from './ast';
-import { babelConfig, babelParse, generate, transform as babelTransform } from './babel';
+import {
+  parseAstBg,
+  parseAstClear,
+  parseAstDarkBg,
+  parseAstFor,
+  parseAstHeight,
+  parseAstKlass,
+  parseAstLightBg,
+  parseAstMargin,
+  parseAstMarginBottom,
+  parseAstMarginLeft,
+  parseAstMarginRight,
+  parseAstMarginTop,
+  parseAstPadding,
+  parseAstPaddingBottom,
+  parseAstPaddingLeft,
+  parseAstPaddingRight,
+  parseAstPaddingTop,
+  parseAstRadius,
+  parseAstRemove,
+  parseAstReplace,
+  parseAstShow,
+  parseAstWidth,
+} from './ast';
+import {
+  babelConfig,
+  babelParse,
+  generate,
+  transform as babelTransform,
+} from './babel';
 import {
   hasCach,
   setCach,
@@ -694,27 +723,64 @@ export const parseFromJSON = (
 /**
  * parseFromJSXElement
  * @param p
+ * @param pagePath
+ * @param options
+ * @param map
+ * @param set
+ * @param methodMap
  */
 export const parseFromJSXElement = (
   p: NodePath<t.JSXElement>,
   pagePath: string,
   options: IPath,
   map: Map<any[], NodePath<any>>,
-  set: Set<string>,
+  skeletonSet: Set<string>,
   methodMap: Map<string, NodePath<t.ClassMethod>>,
 ): void => {
   const { node } = p;
-  const { openingElement } = node;
+  const { defaultBg } = options;
+  const { openingElement, children } = node;
   const { attributes, name } = openingElement as any;
+
   if (name && name.name) {
-    if (set.has(name.name)) {
+    const openName = name.name;
+    if (skeletonSet.has(openName)) {
       p.remove();
       const { parentPath } = p;
       if (t.isReturnStatement(parentPath)) {
         parentPath.remove();
       }
+      return;
+    }
+
+    if (!R2X_TAG[openName]) {
+      // self-config component
+      const mapKey = [...map.keys()];
+      let selfPath;
+      mapKey.some((key: string[] | string[][]) => {
+        const match = key.includes(openName) || key[0].includes(openName);
+        if (match) {
+          selfPath = map.get(key);
+          return true;
+        }
+        return false;
+      });
+      // TODO
+      debugger;
+      // selfPath;
+      // resolve;
     }
   }
+
+  if (
+    defaultBg
+      && children.length === 0
+      || (children.length === 1
+      && t.isJSXText(children[0]))
+  ) {
+    parseAstKlass(WXSS_BG_GREY, attributes);
+  }
+
   if (attributes.length) {
     attributes.forEach((
       a: t.JSXAttribute,
@@ -733,6 +799,7 @@ export const parseFromJSXElement = (
  * @param index
  * @param attributes
  * @param p
+ * @param options
  */
 export const parseFromAstCustomAttr = (
   index: number,
@@ -753,14 +820,75 @@ export const parseFromAstCustomAttr = (
       parseAstBg(p, attribute, index, attributes, options);
       break;
     case ATTR_LIGHT_BG:
+      parseAstLightBg(p, attribute, index, attributes, options);
       break;
     case ATTR_DARK_BG:
+      parseAstDarkBg(p, attribute, index, attributes, options);
+      break;
+    case ATTR_HEIGHT:
+      parseAstHeight(p, attribute, index, attributes, options);
+      break;
+    case ATTR_WIDTH:
+      parseAstWidth(p, attribute, index, attributes, options);
+      break;
+    case ATTR_PADDING:
+      parseAstPadding(p, attribute, index, attributes, options);
+      break;
+    case ATTR_PADDING_BOTTOM:
+      parseAstPaddingBottom(p, attribute, index, attributes, options);
+      break;
+    case ATTR_PADDING_LEFT:
+      parseAstPaddingLeft(p, attribute, index, attributes, options);
+      break;
+    case ATTR_PADDING_RIGHT:
+      parseAstPaddingRight(p, attribute, index, attributes, options);
+      break;
+    case ATTR_PADDING_TOP:
+      parseAstPaddingTop(p, attribute, index, attributes, options);
+      break;
+    case ATTR_MARGIN:
+      parseAstMargin(p, attribute, index, attributes, options);
+      break;
+    case ATTR_MARGIN_BOTTOM:
+      parseAstMarginBottom(p, attribute, index, attributes, options);
+      break;
+    case ATTR_MARGIN_LEFT:
+      parseAstMarginLeft(p, attribute, index, attributes, options);
+      break;
+    case ATTR_MARGIN_RIGHT:
+      parseAstMarginRight(p, attribute, index, attributes, options);
+      break;
+    case ATTR_MARGIN_TOP:
+      parseAstMarginTop(p, attribute, index, attributes, options);
+      break;
+    case ATTR_CLEAR:
+      parseAstClear(p, attribute, index, attributes, options);
+      break;
+    case ATTR_REMOVE:
+      parseAstRemove(p, attribute, index, attributes, options);
+      break;
+    case ATTR_RADIUS:
+      parseAstRadius(p, attribute, index, attributes, options);
+      break;
+    case ATTR_REPLACE:
+      parseAstReplace(p, attribute, index, attributes, options);
+      break;
+    case ATTR_REPEAT:
+    case ATTR_FOR:
+      parseAstFor(p, attribute, index, attributes, options);
       break;
     default:
       break;
   }
 };
 
+/**
+ * parseFromAstAttr
+ * @param index
+ * @param attributes
+ * @param p
+ * @param map
+ */
 export const parseFromAstAttr = (
   index: number,
   attributes: t.JSXAttribute[],
@@ -793,6 +921,8 @@ export const parseFromAstAttr = (
 /**
  * parseFromClassMethod
  * @param p
+ * @param options
+ * @param map
  */
 export const parseFromClassMethod = (
   p: NodePath<t.ClassMethod>,
@@ -815,6 +945,7 @@ export const parseFromClassMethod = (
  * @param pagePath
  * @param options
  * @param map
+ * @param set
  */
 export const parseFromImportDeclaration = (
   p: NodePath<t.ImportDeclaration>,
@@ -825,21 +956,27 @@ export const parseFromImportDeclaration = (
 ): void => {
   const { node } = p;
   const { source, specifiers = [] } = node;
-  let { value } = source;
+  const { value } = source;
   const { outputPagePath, globalScssPath } = options;
   if (isRelativePath(value)) {
     const foldPath = getFoldPath(pagePath);
     const importPath = findTsFileByPath(resolve(foldPath, value));
     const relativePath = getRelativePath(importPath, outputPagePath);
+    // skip skeleton.scss
+    if (isSkeletonStyle(relativePath)) {
+      return;
+    }
     const cssFlag = isCssFile(relativePath);
-    value = source.value = !cssFlag ? removeSuffix(relativePath) : relativePath;
-    // insert skeleton.scss after any .scss
-    if (cssFlag && !isSkeletonStyle(relativePath)) {
+    source.value = !cssFlag ? removeSuffix(relativePath) : relativePath;
+    // FIXME r2x may not support import multiple .scss files
+    // insert global skeleton.scss after any .scss
+    if (cssFlag) {
       const styleCode = `import '${getRelativePath(globalScssPath, outputPagePath)}'`;
       const styleAst = babelParse(styleCode, babelConfig);
       p.insertAfter(styleAst);
     }
   }
+
   const mapKey = specifiers.reduce((result = [], specifier) => {
     const { local } = specifier;
     const { name } = local;
@@ -873,6 +1010,7 @@ export const parseFromImportDeclaration = (
  * @param pagePath
  * @param options
  * @param map
+ * @param set
  */
 export const parseFromVariableDeclaration = (
   p: NodePath <t.VariableDeclaration>,

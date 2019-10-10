@@ -729,6 +729,10 @@ export const genNewReactComponent = (
 ): void => {
   const file = read(page);
   const code = compile2ReactCode(page, file as string, options);
+  const { outputPagePath } = options;
+  debugger;
+  ensure(outputPagePath);
+  write(outputPagePath, code);
 };
 
 /**
@@ -765,7 +769,6 @@ export const compile2ReactCode = (
     },
   });
   const { code } = generate(ast);
-  debugger;
   return code;
 };
 
