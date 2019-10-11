@@ -101,6 +101,10 @@ export interface IPath {
   reactSrcPagePath?: string;
   // react suffix
   reactSuffix?: string;
+  // cach resolved custom-component in one page/component
+  resolvedReactCompKey?: Set<string>;
+  // cach react componet dest path
+  reactComponentInfo?: Set<string>;
 }
 
 export enum animationStyle {

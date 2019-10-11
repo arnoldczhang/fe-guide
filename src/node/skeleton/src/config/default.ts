@@ -104,6 +104,11 @@ DEFAULT_WXSS.set(WXSS_BG_LIGHT_GREY, `
   color: #fdfdfd!important;
 `);
 
+/**
+ * updateBgWxss
+ * @param key
+ * @param color
+ */
 export const updateBgWxss = (
   key: string,
   color: string,
@@ -113,6 +118,10 @@ export const updateBgWxss = (
   }
 };
 
+/**
+ * updateDefaultWxss
+ * @param styles
+ */
 export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): void => {
   if (isStr(styles)) {
     styles = [styles as animationStyle];
@@ -173,6 +182,12 @@ export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): vo
   });
 };
 
+/**
+ * getCompJs
+ * @param output
+ * @param dest
+ * @param options
+ */
 export const getCompJs = (
   output: string,
   dest: string,

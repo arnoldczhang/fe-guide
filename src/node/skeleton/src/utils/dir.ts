@@ -89,14 +89,19 @@ export const getFoldPath = (file: string): string =>
 
 export const findTsFileByPath = (dir: string): string => {
   if (!hasSuffix(dir)) {
-    if (exists(`${dir}.tsx`)) {
-      dir = `${dir}.tsx`;
-    } else if (exists(`${dir}.ts`)) {
-      dir = `${dir}.ts`;
-    } else if (exists(`${dir}/index.tsx`)) {
-      dir = `${dir}/index.tsx`;
-    } else {
-      dir = `${dir}/index.ts`;
+    switch (true) {
+      case exists(`${dir}.tsx`):
+        dir = `${dir}.tsx`;
+        break;
+      case exists(`${dir}.ts`):
+        dir = `${dir}.ts`;
+        break;
+      case exists(`${dir}/index.tsx`):
+        dir = `${dir}/index.tsx`;
+        break;
+      default:
+        dir = `${dir}/index.ts`;
+        break;
     }
   }
   return dir;

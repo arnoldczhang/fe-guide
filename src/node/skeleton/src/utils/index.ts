@@ -60,7 +60,9 @@ import {
   addSuffixWxss,
   getTemplateIs,
   getTemplateName,
+  hasSuffix,
   isGenWxss,
+  isRelativePath,
   isTypescript,
   matchIdStyle,
   removeComment,
@@ -730,9 +732,60 @@ export const genNewReactComponent = (
   const file = read(page);
   const code = compile2ReactCode(page, file as string, options);
   const { outputPagePath } = options;
-  debugger;
   ensure(outputPagePath);
   write(outputPagePath, code);
+};
+
+/**
+ * genNewReactCustomComponent
+ * @param compName
+ * @param map
+ * @param options
+ */
+export const genNewReactCustomComponent = (
+  compName: string,
+  map: Map<any[], [NodePath<any>, string]>,
+  options: IPath,
+): void => {
+  const {
+    outputPagePath,
+    outputPath,
+    reactComponentInfo,
+    resolvedReactCompKey,
+  } = options;
+  const mapKey = [...map.keys()];
+  let compPathInfo: [NodePath<any>, string];
+  mapKey.some((key: string[]) => {
+    const match = key.includes(compName) || key[0].includes(compName);
+    if (match) {
+      compPathInfo = map.get(key);
+      return true;
+    }
+    return false;
+  });
+  const [ast, originCompPath] = compPathInfo;
+  const { node: { source } } = ast;
+  // if the path of custom-component is from `node_modules`,
+  // just append to `outputPath`
+  const basePath = isRelativePath(source.value) ? outputPagePath : outputPath;
+  let newCompPath = pathResolve(basePath, source.value);
+  if (!hasSuffix(newCompPath)) {
+    newCompPath = `${newCompPath}.jsx`;
+  }
+  source.value = getRelativePath(newCompPath, outputPagePath);
+  // check if custom-component is in cach
+  if (!reactComponentInfo.has(originCompPath)) {
+    reactComponentInfo.add(originCompPath);
+    resolvedReactCompKey.add(compName);
+    genNewReactComponent(originCompPath, Object.create(options, {
+      resolvedReactCompKey: {
+        value: new Set(),
+      },
+      outputPagePath: {
+        value: newCompPath,
+      },
+    }));
+  }
 };
 
 /**
@@ -749,11 +802,12 @@ export const compile2ReactCode = (
   if (isTypescript(pagePath)) {
     input = ts2js(input);
   }
-  const ast = babelParse(input, babelConfig);
+  const ast = babelParse(input, babelConfig) as any;
   const importMap: Map<any[], NodePath<t.ImportDeclaration | t.VariableDeclaration>> = new Map();
   const methodMap: Map<string, NodePath<t.ClassMethod>> = new Map();
   const skeletonSet: Set<string> = new Set();
   const defaultArgs = [pagePath, options, importMap, skeletonSet];
+  ast.comments = [];
   traverse(ast, {
     ClassMethod(p: NodePath<t.ClassMethod>) {
       return parseFromClassMethod(p, options, methodMap);

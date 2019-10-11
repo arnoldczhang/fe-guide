@@ -40,8 +40,8 @@ import {
   KLASS,
   PATH,
   PRE,
-  R2X_TAG,
   ROOT_TAG,
+  TARO_TAG,
   TEMPLATE_TAG,
   TEXT,
   TPL_TAG,
@@ -132,6 +132,7 @@ import {
   clearUsedTpl,
   ensureAndInsertWxml,
   ensureAndInsertWxss,
+  genNewReactCustomComponent,
   hasOnlyTextChild,
   modifySuffix,
   updateTemplateInfo,
@@ -733,12 +734,12 @@ export const parseFromJSXElement = (
   p: NodePath<t.JSXElement>,
   pagePath: string,
   options: IPath,
-  map: Map<any[], NodePath<any>>,
+  map: Map<any[], [NodePath<any>, string]>,
   skeletonSet: Set<string>,
   methodMap: Map<string, NodePath<t.ClassMethod>>,
 ): void => {
   const { node } = p;
-  const { defaultBg } = options;
+  const { defaultBg, resolvedReactCompKey } = options;
   const { openingElement, children } = node;
   const { attributes, name } = openingElement as any;
 
@@ -753,30 +754,17 @@ export const parseFromJSXElement = (
       return;
     }
 
-    if (!R2X_TAG[openName]) {
-      // self-config component
-      const mapKey = [...map.keys()];
-      let selfPath;
-      mapKey.some((key: string[] | string[][]) => {
-        const match = key.includes(openName) || key[0].includes(openName);
-        if (match) {
-          selfPath = map.get(key);
-          return true;
-        }
-        return false;
-      });
-      // TODO
-      debugger;
-      // selfPath;
-      // resolve;
+    // custom-component
+    if (!TARO_TAG[openName] && !resolvedReactCompKey.has(openName)) {
+      genNewReactCustomComponent(openName as string, map, options);
     }
   }
 
+  // if is empty element or has only one text child
   if (
     defaultBg
-      && children.length === 0
-      || (children.length === 1
-      && t.isJSXText(children[0]))
+      && (children.length === 0
+        || children.every((child) => t.isJSXText(child)))
   ) {
     parseAstKlass(WXSS_BG_GREY, attributes);
   }
@@ -951,32 +939,39 @@ export const parseFromImportDeclaration = (
   p: NodePath<t.ImportDeclaration>,
   pagePath: string,
   options: IPath,
-  map: Map<any[], NodePath<any>>,
+  map: Map<string[], [NodePath<any>, string]>,
   set: Set<string>,
 ): void => {
+  let absoluteImportPath;
   const { node } = p;
-  const { source, specifiers = [] } = node;
+  const { leadingComments, source, specifiers = [] } = node;
   const { value } = source;
-  const { outputPagePath, globalScssPath } = options;
+  const { outputPagePath, globalScssPath, root } = options;
+
   if (isRelativePath(value)) {
     const foldPath = getFoldPath(pagePath);
-    const importPath = findTsFileByPath(resolve(foldPath, value));
-    const relativePath = getRelativePath(importPath, outputPagePath);
+    absoluteImportPath = findTsFileByPath(resolve(foldPath, value));
+    const relativeImportPath = getRelativePath(absoluteImportPath, outputPagePath);
     // skip skeleton.scss
-    if (isSkeletonStyle(relativePath)) {
+    if (isSkeletonStyle(relativeImportPath)) {
       return;
     }
-    const cssFlag = isCssFile(relativePath);
-    source.value = !cssFlag ? removeSuffix(relativePath) : relativePath;
-    // FIXME r2x may not support import multiple .scss files
+    const cssFlag = isCssFile(relativeImportPath);
+    source.value = !cssFlag ? removeSuffix(relativeImportPath) : relativeImportPath;
     // insert global skeleton.scss after any .scss
     if (cssFlag) {
       const styleCode = `import '${getRelativePath(globalScssPath, outputPagePath)}'`;
       const styleAst = babelParse(styleCode, babelConfig);
       p.insertAfter(styleAst);
     }
+  } else {
+    try {
+      absoluteImportPath = pathResolve.sync(value, { basedir: root });
+    } catch (err) {
+      logger.warn(err.message);
+    }
   }
-
+  // combine importName
   const mapKey = specifiers.reduce((result = [], specifier) => {
     const { local } = specifier;
     const { name } = local;
@@ -994,13 +989,19 @@ export const parseFromImportDeclaration = (
     return result;
   }, []);
 
+  // cach import infomation
   if (mapKey.length) {
     if (isSkeleton(value)) {
       p.remove();
       set.add(mapKey.toString());
       return;
     }
-    map.set(mapKey, p);
+    map.set(mapKey, [p, absoluteImportPath || value]);
+  }
+
+  // remove comments
+  if (leadingComments && leadingComments.length) {
+    node.leadingComments = [];
   }
 };
 
@@ -1020,7 +1021,7 @@ export const parseFromVariableDeclaration = (
   set: Set<string>,
 ): void => {
   const { node } = p;
-  const { declarations = [] } = node;
+  const { trailingComments, declarations = [] } = node;
   if (declarations.length === 1) {
     const [ declaration ] = declarations;
     const { init = {}, id = {} } = declaration as any;
@@ -1033,8 +1034,8 @@ export const parseFromVariableDeclaration = (
       const { outputPagePath } = options;
       if (isRelativePath(value)) {
         const foldPath = getFoldPath(pagePath);
-        const importPath = findTsFileByPath(resolve(foldPath, value));
-        value = args[0].value = removeSuffix(getRelativePath(importPath, outputPagePath));
+        const absoluteImportPath = findTsFileByPath(resolve(foldPath, value));
+        value = args[0].value = removeSuffix(getRelativePath(absoluteImportPath, outputPagePath));
       }
 
       if (id.name) {
@@ -1046,6 +1047,11 @@ export const parseFromVariableDeclaration = (
         map.set([id.name], p);
       }
     }
+  }
+
+  // remove comments
+  if (trailingComments && trailingComments.length) {
+    node.trailingComments = [];
   }
 };
 

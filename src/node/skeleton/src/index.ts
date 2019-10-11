@@ -54,6 +54,7 @@ const run = (options: any = {}): void => {
   const globalWxssMap = new Map();
   const globalTemplateMap: Map<string, string> = new Map();
   const globalComponentSet: Set<string> = new Set();
+  const globalReactComponentSet: Set<string> = new Set();
 
   const getPageOptions = (): any => ({
     globalOutputPath: outputPath,
@@ -71,6 +72,8 @@ const run = (options: any = {}): void => {
     wxssInfo: globalWxssMap,
     wxTemplateInfo: globalTemplateMap,
     wxComponentInfo: globalComponentSet,
+    reactComponentInfo: globalReactComponentSet,
+    resolvedReactCompKey: new Set(),
     usingTemplateKeys: new Map(),
     usingComponentKeys: new Map(),
     skeletonKeys: new Set(),
@@ -164,10 +167,16 @@ const run = (options: any = {}): void => {
   if (defaultGrey) {
     updateBgWxss(WXSS_BG_GREY, defaultGrey);
   }
+
   // global wxss
   const mapStyle = transMap2Style(DEFAULT_WXSS, globalWxssMap);
-  genResourceFile(globalWxssPath, mapStyle);
 
+  //
+  if (page || subPackage) {
+    genResourceFile(globalWxssPath, mapStyle);
+  }
+
+  // if has react page, generate a new global scss
   if (react) {
     genResourceFile(globalScssPath, mapStyle);
   }

@@ -24,7 +24,7 @@ export const TEXT: string = 'text';
 
 export const ROOT_TAG: string = 'root';
 
-export const R2X_TAG: ICO = {
+export const TARO_TAG: ICO = {
   View: 1,
   Block: 1,
   Image: 1,

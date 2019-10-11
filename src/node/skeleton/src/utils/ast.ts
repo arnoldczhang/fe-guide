@@ -428,7 +428,7 @@ export const parseAstKlass = (
   index?: number,
 ): void => {
   let klassAttr = attributes.find((attr: t.JSXAttribute): boolean => (
-    attr.name && attr.name.name === KLASS_NAME
+    attr && attr.name && attr.name.name === KLASS_NAME
   ));
 
   if (!klassAttr) {
