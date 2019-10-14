@@ -9,6 +9,9 @@ var promise = new Promise(function (resolve, reject) {
   resolve(...);
   reject(...);
 });
+
+
+也可以[参考](https: //mp.weixin.qq.com/s?__biz=MzA5NzkwNDk3MQ==&mid=2650590415&idx=1&sn=c95b0ee26a2602ac0f53701b8fb888f2&chksm=8891dcebbfe655fd50338afb6fe890f356e9e080a93349069a5a23be6fdfd16849fb9c2598dc&scene=38#wechat_redirect)
  */
 ;(function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(global) :

@@ -257,6 +257,6 @@
 //     }
 //   });
 
-console.log(Buffer.from('1').toString("hex"));
-console.log(Buffer.from('b').toString("hex"));
-console.log(require("crypto").createHash('sha256').update(('aaa')).digest('hex'));
+// console.log(Buffer.from('1').toString("hex"));
+// console.log(Buffer.from('b').toString("hex"));
+// console.log(require("crypto").createHash('sha256').update(('aaa')).digest('hex'));
