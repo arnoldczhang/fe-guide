@@ -2,9 +2,10 @@ import { NodePath } from '@babel/traverse';
 import * as t from "@babel/types";
 import { KLASS_NAME, PRE, WXSS_BG_DARK_GREY, WXSS_BG_GREY, WXSS_BG_LIGHT_GREY } from '../config';
 import { ICO, IPath } from '../types';
+import { is } from './assert';
 import { babelConfig, babelParse, generate, traverse } from './babel';
 import Logger from './log';
-import { replaceColorSymbol, replaceLengthSymbol } from './reg';
+import { hasDefaultBg, removeDefaultBg, replaceColorSymbol, replaceLengthSymbol } from './reg';
 
 const logger = Logger.getInstance();
 
@@ -428,7 +429,7 @@ export const parseAstKlass = (
   index?: number,
 ): void => {
   let klassAttr = attributes.find((attr: t.JSXAttribute): boolean => (
-    attr && attr.name && attr.name.name === KLASS_NAME
+    attr && attr.name && is(attr.name.name, KLASS_NAME)
   ));
 
   if (!klassAttr) {
@@ -567,4 +568,42 @@ export const parseAstFor = (
   const len = Math.max(Number(value.value - 1), 0) || 0;
   attributes[index] = null;
   p.insertAfter(new Array(len).fill(node));
+};
+
+/**
+ * parseAstText
+ * @param p
+ * @param attribute
+ * @param index
+ * @param attributes
+ * @param options
+ */
+export const parseAstText = (
+  p: NodePath<t.JSXElement>,
+  attribute: t.JSXAttribute,
+  index: number,
+  attributes: t.JSXAttribute[],
+  options: IPath,
+): void => {
+  const klassAttr = attributes.find((attr: t.JSXAttribute): boolean => (
+    attr && attr.name && is(attr.name.name, KLASS_NAME)
+  ));
+
+  if (klassAttr) {
+    if (t.isStringLiteral(klassAttr.value)) {
+      klassAttr.value.value = removeDefaultBg(klassAttr.value.value);
+    } else if (t.isJSXExpressionContainer(klassAttr.value)) {
+      const { expression } = klassAttr.value;
+      const { quasis } = expression as t.TemplateLiteral;
+      if (quasis) {
+        const rawValue = quasis.map((quasi) => quasi.value.raw.trim());
+        rawValue.forEach((raw: string, idx: number): void => {
+          if (hasDefaultBg(raw)) {
+            quasis[idx].value.raw = removeDefaultBg(quasis[idx].value.raw);
+          }
+        });
+      }
+    }
+  }
+  attributes[index] = null;
 };

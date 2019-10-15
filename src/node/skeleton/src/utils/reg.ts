@@ -1,4 +1,4 @@
-import { SKELETON } from "../config/dir";
+import { SKELETON, WXSS_BG_GREY } from "../config";
 import { CF } from "../types";
 import { isStr } from "./assert";
 import { identity } from "./dir";
@@ -6,6 +6,10 @@ import { identity } from "./dir";
 // =========== //
 // === test === //
 // =========== //
+export const hasDefaultBg = (input: string): boolean => (
+  new RegExp(`\\b${WXSS_BG_GREY.replace(/\-/g, '\\-')}\\b`).test(input)
+);
+
 export const isSkeleton = (input: string): boolean => (
   new RegExp(`\\/${SKELETON}\\/`).test(input)
 );
@@ -154,6 +158,12 @@ export const matchCallExpression = (input: string): string[] => (
 // ============== //
 // === replace === //
 // ============== //
+export const removeDefaultBg = (
+  input: string,
+): string => (
+  input.replace(new RegExp(`\\b${WXSS_BG_GREY.replace(/\-/g, '\\-')}\\b`, 'g'), '')
+);
+
 export const replaceWith = (
   input: string,
   reg: RegExp | string = /\s+/,

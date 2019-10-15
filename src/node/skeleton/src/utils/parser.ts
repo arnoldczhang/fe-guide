@@ -38,6 +38,7 @@ import {
   INCLUDE_TAG,
   JSON_CONFIG,
   KLASS,
+  KLASS_NAME,
   PATH,
   PRE,
   ROOT_TAG,
@@ -98,6 +99,7 @@ import {
   parseAstRemove,
   parseAstReplace,
   parseAstShow,
+  parseAstText,
   parseAstWidth,
 } from './ast';
 import {
@@ -741,8 +743,9 @@ export const parseFromJSXElement = (
   const { node } = p;
   const { defaultBg, resolvedReactCompKey } = options;
   const { openingElement, children } = node;
-  const { attributes, name } = openingElement as any;
+  const { name } = openingElement as any;
 
+  // remove skeleton element
   if (name && name.name) {
     const openName = name.name;
     if (skeletonSet.has(openName)) {
@@ -753,23 +756,11 @@ export const parseFromJSXElement = (
       }
       return;
     }
-
-    // custom-component
-    if (!TARO_TAG[openName] && !resolvedReactCompKey.has(openName)) {
-      genNewReactCustomComponent(openName as string, map, options);
-    }
+    parseFromAstTag(p, map, options);
   }
 
-  // if is empty element or has only one text child
-  if (
-    defaultBg
-      && (children.length === 0
-        || children.every((child) => t.isJSXText(child)))
-  ) {
-    parseAstKlass(WXSS_BG_GREY, attributes);
-  }
-
-  if (attributes.length) {
+  const { attributes } = openingElement;
+  if (attributes && attributes.length) {
     attributes.forEach((
       a: t.JSXAttribute,
       i: number,
@@ -861,12 +852,71 @@ export const parseFromAstCustomAttr = (
     case ATTR_REPLACE:
       parseAstReplace(p, attribute, index, attributes, options);
       break;
+    case ATTR_TEXT:
+      parseAstText(p, attribute, index, attributes, options);
+      break;
     case ATTR_REPEAT:
     case ATTR_FOR:
       parseAstFor(p, attribute, index, attributes, options);
       break;
     default:
       break;
+  }
+};
+
+export const parseFromAstTag = (
+  p: NodePath<t.JSXElement>,
+  map: Map<any[], [NodePath<any>, string]>,
+  options: IPath,
+): void => {
+  const { resolvedReactCompKey, defaultBg } = options;
+  const { node } = p;
+  const { openingElement, closingElement, children } = node;
+  const { name } = openingElement as any;
+  let { attributes = [] } = openingElement as any;
+  const openName = name.name;
+
+  switch (true) {
+    // parse <Image> to <View>
+    case is(openName, TARO_TAG.Image):
+      (openingElement.name as t.JSXIdentifier).name = TARO_TAG.View;
+      if (closingElement) {
+        (closingElement.name as t.JSXIdentifier).name = TARO_TAG.View;
+      }
+      attributes = attributes.map((attribute: t.JSXAttribute) => {
+        const klassAttr = attribute && attribute.name
+          && is(attribute.name.name, KLASS_NAME);
+        if (klassAttr) {
+          return attribute;
+        }
+        return null;
+      });
+      parseAstKlass(WXSS_BG_GREY, attributes);
+      openingElement.attributes = attributes;
+      return;
+    // parse custom-component
+    default:
+      if (!TARO_TAG[openName] && !resolvedReactCompKey.has(openName)) {
+        genNewReactCustomComponent(openName as string, map, options);
+        return;
+      }
+      break;
+  }
+
+  // when to add default background
+  // 1. element has no child
+  // 2. element`s children is all JSXText
+  // 3. element is <Text />
+  const defaultBgElement = defaultBg
+    && (
+      children.length === 0
+        || children.every((child) => t.isJSXText(child))
+        || is(openName, TARO_TAG.Text)
+    );
+
+  // if is empty element or has only one text child
+  if (defaultBgElement) {
+    parseAstKlass(WXSS_BG_GREY, attributes);
   }
 };
 
