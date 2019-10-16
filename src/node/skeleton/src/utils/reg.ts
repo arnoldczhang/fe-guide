@@ -158,6 +158,9 @@ export const matchCallExpression = (input: string): string[] => (
 // ============== //
 // === replace === //
 // ============== //
+export const removeStartEndBrace = (input: string): string => (
+  input.replace(/^\{([\s\S]*)\}$/, '$1')
+);
 export const removeDefaultBg = (
   input: string,
 ): string => (

@@ -741,7 +741,6 @@ export const parseFromJSXElement = (
   methodMap: Map<string, NodePath<t.ClassMethod>>,
 ): void => {
   const { node } = p;
-  const { defaultBg, resolvedReactCompKey } = options;
   const { openingElement, children } = node;
   const { name } = openingElement as any;
 
@@ -756,7 +755,6 @@ export const parseFromJSXElement = (
       }
       return;
     }
-    parseFromAstTag(p, map, options);
   }
 
   const { attributes } = openingElement;
@@ -765,12 +763,13 @@ export const parseFromJSXElement = (
       a: t.JSXAttribute,
       i: number,
       innerAttributes: t.JSXAttribute[],
-    ) => {
+    ): void => {
       parseFromAstAttr(i, innerAttributes, p, methodMap);
       parseFromAstCustomAttr(i, innerAttributes, p, options);
     });
     openingElement.attributes = attributes.filter((v: t.JSXAttribute | null) => v);
   }
+  parseFromAstTag(p, map, options);
 };
 
 /**
@@ -871,7 +870,10 @@ export const parseFromAstTag = (
 ): void => {
   const { resolvedReactCompKey, defaultBg } = options;
   const { node } = p;
-  const { openingElement, closingElement, children } = node;
+  if (!node) {
+    return;
+  }
+  const { openingElement, closingElement, children } = node as t.JSXElement;
   const { name } = openingElement as any;
   let { attributes = [] } = openingElement as any;
   const openName = name.name;

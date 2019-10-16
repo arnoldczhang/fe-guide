@@ -269,14 +269,14 @@
 #### Cach-Control
 
 - private：客户端可以缓存
-  * 走浏览器自己的缓存策略
-  * 比如 `Expires = 当前时间(Date - Last-Modified) * 10%`（下面有举例）
-- public：客户端和代理服务器、其他客户端都可共享缓存
+  * 执行浏览器自己的缓存策略，无法在用户间共享
+  * 比如 Expires = 当前时间(Date - Last-Modified) * 10%（下面有举例）
+- public：默认值，客户端和代理服务器、其他客户端都可共享缓存
   * 包括中间节点的proxy
 - max-age=xxx：缓存的内容将在 xxx 秒后失效
 - no-cache：需要使用协商缓存来验证缓存数据
 - no-store：所有内容都不会缓存，强缓存、协商缓存都不会触发
-- s-maxage：仅在代理服务器（比如CDN）有效，优先级高于max-age
+- s-maxage：仅在代理服务器（比如CDN）有效，优先级高于max-age，即使更新了CDN的内容，浏览器也不会请求
 - max-stale：能容忍的最大过期时间
 - min-fresh：能够容忍的最小新鲜度
 - stale-while-revalidate：如果缓存过期了，仍然会使用，并同时在后台请求新鲜的资源，供下次使用（chrome75以上支持）

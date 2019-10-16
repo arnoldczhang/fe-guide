@@ -5,7 +5,7 @@ import { ICO, IPath } from '../types';
 import { is } from './assert';
 import { babelConfig, babelParse, generate, traverse } from './babel';
 import Logger from './log';
-import { hasDefaultBg, removeDefaultBg, replaceColorSymbol, replaceLengthSymbol } from './reg';
+import { hasDefaultBg, removeDefaultBg, removeStartEndBrace, replaceColorSymbol, replaceLengthSymbol } from './reg';
 
 const logger = Logger.getInstance();
 
@@ -438,15 +438,34 @@ export const parseAstKlass = (
       t.stringLiteral(klass),
     );
     attributes.push(klassAttr);
-  } else if (t.isStringLiteral(klassAttr.value)) {
-    klassAttr.value.value += klassAttr.value.value.indexOf(klass) === -1 ? ` ${klass}` : '';
-  } else if (t.isJSXExpressionContainer(klassAttr.value)) {
-    const { expression } = klassAttr.value;
-    const { quasis } = expression as t.TemplateLiteral;
-    if (quasis) {
-      const rawValue = quasis.map((quasi) => quasi.value.raw.trim());
-      if (!rawValue.includes(klass)) {
-        quasis[Math.max(quasis.length - 1, 0)].value.raw += ` ${klass}`;
+  } else {
+    const klassValue = klassAttr.value;
+    if (t.isStringLiteral(klassValue)) {
+      klassValue.value += klassValue.value.indexOf(klass) === -1 ? ` ${klass}` : '';
+    } else if (t.isJSXExpressionContainer(klassValue)) {
+      const { expression = {} } = klassValue;
+      // { 'aa' + (condition ? 'bb' : 'cc') }
+      // { condition ? 'aa' : 'bb' }
+      if (t.isBinaryExpression(expression) || t.isConditionalExpression(expression)) {
+        let { code } = generate(klassValue as any);
+        if (!hasDefaultBg(code)) {
+          code = `((${removeStartEndBrace(code)}) + ' ${klass}')`;
+          const {
+            program: {
+              body,
+            },
+          } = babelParse(code, babelConfig) as any;
+          klassValue.expression = body[0].expression;
+        }
+      // { 'aa ${bb} cc' }
+      } else {
+        const { quasis } = expression as t.TemplateLiteral;
+        if (quasis) {
+          const rawValue = quasis.map((quasi) => quasi.value.raw.trim());
+          if (!rawValue.includes(klass)) {
+            quasis[Math.max(quasis.length - 1, 0)].value.raw += ` ${klass}`;
+          }
+        }
       }
     }
   }
@@ -563,10 +582,36 @@ export const parseAstFor = (
   attributes: t.JSXAttribute[],
   options: IPath,
 ): void => {
+  attributes[index] = null;
   const { value } = attribute as any;
   const { node } = p;
-  const len = Math.max(Number(value.value - 1), 0) || 0;
-  attributes[index] = null;
+  const inputNum = value.expression ? value.expression.value : value.value;
+  const len = Math.max(Number(inputNum - 1), 0) || 0;
+  let { parentPath } = p;
+  const parentIsCallExpression = parentPath
+    && parentPath.parentPath
+    && (t.isCallExpression(parentPath = parentPath.parentPath)
+      || (t.isBlockStatement(parentPath)
+        && parentPath.parentPath
+        && parentPath.parentPath.parentPath
+        && t.isCallExpression(parentPath = parentPath.parentPath.parentPath)));
+
+  // if like this `sth.map(() => <Element skull-for="3"/>)`
+  if (parentIsCallExpression) {
+    const { node: parentNode } = parentPath;
+    const {
+      callee: {
+        object = {},
+        property = {},
+      },
+    } = parentNode as any;
+    if (is(property.name, 'map')) {
+      object.name = `[${new Array(len + 1).fill(0)}]`;
+      return;
+    }
+  }
+
+  // if is plain element, just repeat
   p.insertAfter(new Array(len).fill(node));
 };
 

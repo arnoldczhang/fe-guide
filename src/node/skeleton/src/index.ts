@@ -171,21 +171,21 @@ const run = (options: any = {}): void => {
   // global wxss
   const mapStyle = transMap2Style(DEFAULT_WXSS, globalWxssMap);
 
-  //
+  // if `page` option exist
   if (page || subPackage) {
     genResourceFile(globalWxssPath, mapStyle);
+
+    // global js
+    genResourceFile(
+      `${outputPath}${SKELETON_DEFAULT_JS_FILE}`,
+      DEFAULT_JS,
+    );
   }
 
   // if has react page, generate a new global scss
   if (react) {
     genResourceFile(globalScssPath, mapStyle);
   }
-
-  // global js
-  genResourceFile(
-    `${outputPath}${SKELETON_DEFAULT_JS_FILE}`,
-    DEFAULT_JS,
-  );
 
   // remove unused template/component
   if (!watch && deleteUnused) {
