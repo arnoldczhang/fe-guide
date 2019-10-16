@@ -881,6 +881,7 @@ export const parseFromAstTag = (
   switch (true) {
     // parse <Image> to <View>
     case is(openName, TARO_TAG.Image):
+    case is(openName, TARO_TAG.Button):
       (openingElement.name as t.JSXIdentifier).name = TARO_TAG.View;
       if (closingElement) {
         (closingElement.name as t.JSXIdentifier).name = TARO_TAG.View;

@@ -446,7 +446,12 @@ export const parseAstKlass = (
       const { expression = {} } = klassValue;
       // { 'aa' + (condition ? 'bb' : 'cc') }
       // { condition ? 'aa' : 'bb' }
-      if (t.isBinaryExpression(expression) || t.isConditionalExpression(expression)) {
+      // {classname}
+      if (
+        t.isBinaryExpression(expression)
+          || t.isConditionalExpression(expression)
+          || t.isIdentifier(expression)
+      ) {
         let { code } = generate(klassValue as any);
         if (!hasDefaultBg(code)) {
           code = `((${removeStartEndBrace(code)}) + ' ${klass}')`;

@@ -150,9 +150,17 @@ const run = (options: any = {}): void => {
     reactPageFile.forEach((p: string): void => {
       // update subpage logger
       updateLogger(pageCollection);
+      let relativePage;
+      reactPage.some((rp: string) => {
+        if (p.indexOf(`${rp}.`) > -1) {
+          relativePage = rp;
+          return true;
+        }
+        return false;
+      });
       pageOptions.srcPath = subSrc;
       pageOptions.outputPath = subOut;
-      pageOptions.outputPagePath = `${subPagePath}/${reactPage}.${targetSuffix}`;
+      pageOptions.outputPagePath = `${subPagePath}/${relativePage}.${targetSuffix}`;
       genNewReactComponent(p, pageOptions);
     });
     pageCollection.push(...reactPageFile);

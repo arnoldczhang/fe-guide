@@ -763,6 +763,12 @@ export const genNewReactCustomComponent = (
     }
     return false;
   });
+
+  if (!compPathInfo) {
+    logger.warn(`can't find customer-component ${compName}`);
+    return;
+  }
+
   const [ast, originCompPath] = compPathInfo;
   const { node: { source } } = ast;
   // if the path of custom-component is from `node_modules`,
