@@ -2,7 +2,7 @@ import { NodePath } from '@babel/traverse';
 import * as t from "@babel/types";
 import { KLASS_NAME, PRE, WXSS_BG_DARK_GREY, WXSS_BG_GREY, WXSS_BG_LIGHT_GREY } from '../config';
 import { ICO, IPath } from '../types';
-import { is } from './assert';
+import { childHas, is } from './assert';
 import { babelConfig, babelParse, generate, traverse } from './babel';
 import Logger from './log';
 import { hasDefaultBg, removeDefaultBg, removeStartEndBrace, replaceColorSymbol, replaceLengthSymbol } from './reg';
@@ -467,8 +467,10 @@ export const parseAstKlass = (
         const { quasis } = expression as t.TemplateLiteral;
         if (quasis) {
           const rawValue = quasis.map((quasi) => quasi.value.raw.trim());
-          if (!rawValue.includes(klass)) {
-            quasis[Math.max(quasis.length - 1, 0)].value.raw += ` ${klass}`;
+          if (!childHas(rawValue, klass)) {
+            const lastIndex = Math.max(quasis.length - 1, 0);
+            const lastQuasi = quasis[lastIndex].value;
+            lastQuasi.raw = lastQuasi.raw ? `${lastQuasi.raw} ${klass}` : klass;
           }
         }
       }

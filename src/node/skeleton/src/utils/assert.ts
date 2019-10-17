@@ -6,6 +6,22 @@ export const is = (val: any, ...args: any[]): boolean => (
 
 export const has = (key: string | number, obj: ICO): boolean => key in obj;
 
+export const childHas = (
+  arr: string[],
+  word: string,
+  callback?: CF,
+): boolean => (
+  arr.some((item: string): boolean => {
+    if (item.indexOf(word) > -1) {
+      if (callback) {
+        callback(item);
+      }
+      return true;
+    }
+    return false;
+  })
+);
+
 export const isType = (val: any, type: string): boolean => typeof val === type;
 
 export const isFunc = (val: any): boolean => isType(val, 'function');
