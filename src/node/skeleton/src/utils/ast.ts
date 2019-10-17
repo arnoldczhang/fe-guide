@@ -605,17 +605,29 @@ export const parseAstFor = (
   if (parentIsCallExpression) {
     const { node: parentNode } = parentPath;
     const {
-      callee: {
-        object = {},
-        property = {},
-      },
+      callee,
     } = parentNode as any;
+    const {
+      object = {},
+      property = {},
+    } = callee;
+
+    // if is wrapped with xxx.map(() => ...)
     if (is(property.name, 'map')) {
-      object.name = `[${new Array(len + 1).fill(0)}]`;
+      const replaceValue = `[${new Array(len + 1).fill('""')}]`;
+      // xx.map(...)
+      if (t.isIdentifier(object)) {
+        object.name = replaceValue;
+      // xx.oo.map(...)
+      } else if (t.isMemberExpression(object)) {
+        callee.object = {
+          name: replaceValue,
+          type: "Identifier",
+        };
+      }
       return;
     }
   }
-
   // if is plain element, just repeat
   p.insertAfter(new Array(len).fill(node));
 };
