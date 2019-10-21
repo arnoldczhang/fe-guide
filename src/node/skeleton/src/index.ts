@@ -84,124 +84,139 @@ const run = (options: any = {}): void => {
     globalScssPath,
   });
 
-  // update main page logger
-  updateLogger(pageCollection);
-
-  // gen main page files
-  if (pageWxml.length) {
-    pageWxml.forEach((wxml: string): void => {
+  const buildReact = (): void => {
+    if (react) {
+      const {
+        root: reactRoot = '',
+        pageRoot: reactPageRoot = 'pages',
+        suffix = 'tsx',
+        targetSuffix = 'jsx',
+        page: reactPage = [],
+      } = react;
       const pageOptions: any = getPageOptions();
-      genNewComponent(wxml, pageOptions);
-    });
-  }
-
-  // gen sub page files
-  if (Array.isArray(subPackage)) {
-    subPackage.forEach((sub: any) => {
-      const { root: subRoot, page: subPage, independent } = sub;
-      const subSrc = join(srcPath, subRoot);
+      const subSrc = join(srcPath, reactRoot);
       const subOut = outDir
-        ? `${join(root, outDir, subRoot)}${SKELETON_RELATIVE}`
-        : `${join(subSrc, subRoot)}${SKELETON_RELATIVE}`;
-      const subPagePath = `${subOut}/pages`;
-      const subCompPath = `${subOut}/components`;
-      const subPageWxml = getPageWxml(`${subSrc}/!(skeleton)/**/*.wxml`, subPage);
-      // update sub page logger
-      updateLogger(pageCollection);
-      subPageWxml.forEach((wxml: string): void => {
-        const pageOptions: any = getPageOptions();
+        ? `${join(root, outDir, reactRoot)}${SKELETON_RELATIVE}`
+        : `${join(subSrc, reactRoot)}${SKELETON_RELATIVE}`;
+      const subPagePath = `${subOut}/${reactPageRoot}`;
+      const reactPageFile = getPageWxml(
+        `${subSrc}/${reactPageRoot}/**/*.${suffix}`,
+        reactPage,
+        suffix,
+      );
+
+      reactPageFile.forEach((p: string): void => {
+        // update subpage logger
+        updateLogger(pageCollection);
+        let relativePage;
+        reactPage.some((rp: string) => {
+          if (p.indexOf(`${rp}.`) > -1) {
+            relativePage = rp;
+            return true;
+          }
+          return false;
+        });
         pageOptions.srcPath = subSrc;
         pageOptions.outputPath = subOut;
-        pageOptions.pagePath = subPagePath;
-        pageOptions.compPath = subCompPath;
-        pageOptions.subPageRoot = srcPath;
-        pageOptions.independent = independent;
+        pageOptions.outputPagePath = `${subPagePath}/${relativePage}.${targetSuffix}`;
+        genNewReactComponent(p, pageOptions);
+      });
+      pageCollection.push(...reactPageFile);
+    }
+  };
+
+  const buildSubpage = (): void => {
+    if (Array.isArray(subPackage)) {
+      subPackage.forEach((sub: any) => {
+        const { root: subRoot, page: subPage, independent } = sub;
+        const subSrc = join(srcPath, subRoot);
+        const subOut = outDir
+          ? `${join(root, outDir, subRoot)}${SKELETON_RELATIVE}`
+          : `${join(subSrc, subRoot)}${SKELETON_RELATIVE}`;
+        const subPagePath = `${subOut}/pages`;
+        const subCompPath = `${subOut}/components`;
+        const subPageWxml = getPageWxml(`${subSrc}/!(skeleton)/**/*.wxml`, subPage);
+        // update sub page logger
+        updateLogger(pageCollection);
+        subPageWxml.forEach((wxml: string): void => {
+          const pageOptions: any = getPageOptions();
+          pageOptions.srcPath = subSrc;
+          pageOptions.outputPath = subOut;
+          pageOptions.pagePath = subPagePath;
+          pageOptions.compPath = subCompPath;
+          pageOptions.subPageRoot = srcPath;
+          pageOptions.independent = independent;
+          genNewComponent(wxml, pageOptions);
+        });
+        pageCollection.push(...subPageWxml);
+
+        if (independent) {
+          // TODO independent subPackage should not depend on commone wxss/js in mainPackage
+        }
+      });
+    }
+  };
+
+  const buildPage = (): void => {
+    if (pageWxml.length) {
+      pageWxml.forEach((wxml: string): void => {
+        const pageOptions: any = getPageOptions();
         genNewComponent(wxml, pageOptions);
       });
-      pageCollection.push(...subPageWxml);
+    }
+  };
 
-      if (independent) {
-        // TODO independent subPackage should not depend on commone wxss/js in mainPackage
-      }
-    });
-  }
+  const updateOptionStyle = (): void => {
+    // insert animation
+    if (animation) {
+      updateDefaultWxss(animation);
+    }
 
-  // react-transform
-  if (react) {
-    const {
-      root: reactRoot = '',
-      pageRoot: reactPageRoot = 'pages',
-      suffix = 'tsx',
-      targetSuffix = 'jsx',
-      page: reactPage = [],
-    } = react;
-    const pageOptions: any = getPageOptions();
-    const subSrc = join(srcPath, reactRoot);
-    const subOut = outDir
-      ? `${join(root, outDir, reactRoot)}${SKELETON_RELATIVE}`
-      : `${join(subSrc, reactRoot)}${SKELETON_RELATIVE}`;
-    const subPagePath = `${subOut}/${reactPageRoot}`;
-    const reactPageFile = getPageWxml(
-      `${subSrc}/${reactPageRoot}/**/*.${suffix}`,
-      reactPage,
-      suffix,
-    );
+    // insert default grey background
+    if (defaultGrey) {
+      updateBgWxss(WXSS_BG_GREY, defaultGrey);
+    }
+  };
 
-    reactPageFile.forEach((p: string): void => {
-      // update subpage logger
-      updateLogger(pageCollection);
-      let relativePage;
-      reactPage.some((rp: string) => {
-        if (p.indexOf(`${rp}.`) > -1) {
-          relativePage = rp;
-          return true;
-        }
-        return false;
+  const buildGlobalResource = (): void => {
+    // global wxss
+    const mapStyle = transMap2Style(DEFAULT_WXSS, globalWxssMap);
+
+    // if `page` option exist
+    if (page || subPackage) {
+      genResourceFile(globalWxssPath, mapStyle);
+
+      // global js
+      genResourceFile(
+        `${outputPath}${SKELETON_DEFAULT_JS_FILE}`,
+        DEFAULT_JS,
+      );
+    }
+
+    // if has react page, generate a new global scss
+    if (react) {
+      genResourceFile(globalScssPath, mapStyle);
+    }
+  };
+
+  const buildDone = (): void => {
+    // remove unused template/component
+    if (!watch && deleteUnused) {
+      removeUnused({
+        template: globalTemplateMap,
+        component: globalComponentSet,
       });
-      pageOptions.srcPath = subSrc;
-      pageOptions.outputPath = subOut;
-      pageOptions.outputPagePath = `${subPagePath}/${relativePage}.${targetSuffix}`;
-      genNewReactComponent(p, pageOptions);
-    });
-    pageCollection.push(...reactPageFile);
-  }
+    }
+  };
 
-  // insert animation
-  if (animation) {
-    updateDefaultWxss(animation);
-  }
-
-  // insert default grey background
-  if (defaultGrey) {
-    updateBgWxss(WXSS_BG_GREY, defaultGrey);
-  }
-
-  // global wxss
-  const mapStyle = transMap2Style(DEFAULT_WXSS, globalWxssMap);
-
-  // if `page` option exist
-  if (page || subPackage) {
-    genResourceFile(globalWxssPath, mapStyle);
-
-    // global js
-    genResourceFile(
-      `${outputPath}${SKELETON_DEFAULT_JS_FILE}`,
-      DEFAULT_JS,
-    );
-  }
-
-  // if has react page, generate a new global scss
-  if (react) {
-    genResourceFile(globalScssPath, mapStyle);
-  }
-
-  // remove unused template/component
-  if (!watch && deleteUnused) {
-    removeUnused({
-      template: globalTemplateMap,
-      component: globalComponentSet,
-    });
-  }
+  // main
+  updateLogger(pageCollection);
+  buildPage();
+  buildSubpage();
+  buildReact();
+  updateOptionStyle();
+  buildGlobalResource();
+  buildDone();
 };
 
 run.defaultConfigName = DEFAULT_CONFIG_FILE;
