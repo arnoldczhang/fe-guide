@@ -266,6 +266,7 @@ module.exports = {
 上例中，由于index.js引用了index.css，所以index.js有变动，index.css即使没有变动,
 打包出的文件，hash值也会变化，这时候就需要用到contenthash
 
+```js
 const extractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
   
@@ -283,7 +284,7 @@ module.exports = {
 }
 ```
 
-> hash生成规则分为两种
+> hash 生成规则分为两种
 
 #### debug
 ```js

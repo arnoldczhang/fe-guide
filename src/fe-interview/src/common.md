@@ -758,7 +758,7 @@ var flattenArray = (arr) => {
   ```js
   const uniqArr = [...new Set(arr)];
   ```
-- indexOf
+- indexOf+Object
 - includes
 - Map
 - indexOf(i, step) === lastIndexOf(i)
