@@ -6,7 +6,8 @@
 - https://juejin.im/entry/59082301a22b9d0065f1a186
 - [深入浏览器事件循环](https://zhuanlan.zhihu.com/p/45111890)
 - [Tasks, microtasks](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)
-- ![运行机制](2954145-5bb92d1fbdb9df41.png)
+
+![运行机制](2954145-5bb92d1fbdb9df41.png)
 
 - - -
 
@@ -15,12 +16,13 @@
 <summary>展开更多</summary>
 
 * [`概念`](#概念)
-* [`javascript并发模型`](#javascript并发模型)
+* [`并发模型`](#javascript并发模型)
 * [`执行上下文和作用域链`](#执行上下文和作用域链)
-* [`Event Loop`](#事件循环（Event Loop）)
-* [`task`](#任务队列（task）)
+* [`事件循环`](#EventLoop)
+* [`任务队列`](#task)
+* [`回调队列`](#CallQueue)
 * [`await`](#await)
-* [`例子`](#交互事件触发)
+* [`一些题目`](#交互事件触发)
 
 </details>
 
@@ -138,13 +140,13 @@ js被解析和执行环境的抽象概念
 
 - - -
 
-## 回调队列（Call Queue）
+## CallQueue
 - 有序的函数队列
 - 异步函数进入调用栈之前，必须通过回调队列
 
 ---
 
-## 事件循环（Event Loop）
+## EventLoop
 - 检查调用栈是否空闲，如果是且回调队列里有某个函数，
   则将其从回调队列移入调用栈执行
 
@@ -202,11 +204,11 @@ node11以后
 
 - - -
 
-## 任务队列（task）
+## task
 
 ### macrotask(宏任务) `task`
 
-**真正的异步**
+> 真正的异步
 
 * 整体代码script
 * setTimeout（标准4ms），setInterval，setImmediate（node）
@@ -216,7 +218,7 @@ node11以后
 
 ### microtask(微任务) `job`
 
-**未来情况的相应行为**
+> 未来情况的相应行为
 
 * Promise
 * process.nextTick（node）
@@ -362,8 +364,11 @@ console.log('script end')
 ---
 
 ## await
-通常你会将一个 Promise 传给 await，但实际上你可以 await 任意的 JavaScript 值。
-如果 await 之后的表达式的值不是 promise，则将其转换为 promise
+>
+> 通常你会将一个 Promise 传给 await，但实际上你可以 await 任意的 JavaScript 值。
+>
+> 如果 await 之后的表达式的值不是 promise，则将其转换为 promise
+>
 
 ```js
 async function f() {
