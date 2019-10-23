@@ -10,6 +10,8 @@
 
 * [`Symbol`](#Symbol)
 * [`Proxy`](#Proxy)
+* [`Generator`](#Generator)
+* [`Refelct`](#Refelct)
 * [`ditto`](#ditto)
 
 </details>
@@ -259,8 +261,10 @@ var proxy = new Proxy({}, {
 });
 ```
 
-### Proxy.revoke
-可撤销代理对象
+### Proxy.revocable
+>
+> 创建一个可撤销的代理对象
+>
 ```js
 var obj = { a: 1 };
 var handlers = {
@@ -269,10 +273,10 @@ var handlers = {
     return target[key];
   },
 };
-const { proxy: pobj, revoke: prevoke } = Proxy.revocable( obj, handlers );
+const { proxy: pobj, revoke } = Proxy.revocable( obj, handlers );
 
 pobj.a; // accessing: a
-prevoke();
+revoke(); // 撤销对象代理
 pobj.a; // typeError
 ```
 
@@ -364,4 +368,49 @@ c.d.forEach(() => {
   // ...
 });
 ```
+
+---
+
+## Generator
+- `...`: 相当于调用`Symbol.iterator`
+- `yield*`: 迭代展开
+
+### 生成器
+
+```js
+// 简易版
+function* initializer(n, mapFunc = v => v) {
+  for (let i = 0; i < n; i += 1) {
+    yield mapFunc(i, n);
+  }
+};
+
+// 生成升序数组
+const arr = [...initializer(10)]; // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+const arr2 = [...initializer(10, v => v * 2)]; // [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+```
+
+```js
+// 加强版
+function* initializer(n, mapFunc = v => v) {
+  const isGen = mapFunc.constructor.name === 'GeneratorFunction';
+  for (let i = 0; i < n; i += 1) {
+    if (isGen) {
+      yield* mapFunc(i, n);
+    } else {
+      yield mapFunc(i, n);
+    }
+  }
+};
+
+// 生成扑克
+const pocket = [...initializer(13, function *(i) {
+  const p = i + 1;
+  yield ['♠️', p];
+  yield ['♣️', p];
+  yield ['♥️', p];
+  yield ['♦️', p];
+})];
+```
+
 

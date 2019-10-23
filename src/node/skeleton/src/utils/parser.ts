@@ -1,5 +1,8 @@
+import { NodePath } from '@babel/traverse';
+import * as t from "@babel/types";
 import { join, resolve } from 'path';
 import * as pathResolve from 'resolve';
+import { createExpressionWithTypeArguments, transform } from 'typescript';
 import { isString } from 'util';
 import {
   ATTR_BG,
@@ -23,6 +26,7 @@ import {
   ATTR_REPEAT,
   ATTR_REPLACE,
   ATTR_SHOW,
+  ATTR_TEXT,
   ATTR_WIDTH,
   BUTTON_TAG,
   COMP_JS,
@@ -34,9 +38,11 @@ import {
   INCLUDE_TAG,
   JSON_CONFIG,
   KLASS,
+  KLASS_NAME,
   PATH,
   PRE,
   ROOT_TAG,
+  TARO_TAG,
   TEMPLATE_TAG,
   TEXT,
   TPL_TAG,
@@ -72,13 +78,47 @@ import {
 } from './action';
 import { has, is, isArr, isFalsy, isStr, isTrue } from './assert';
 import {
+  parseAstBg,
+  parseAstClear,
+  parseAstDarkBg,
+  parseAstFor,
+  parseAstHeight,
+  parseAstKlass,
+  parseAstLightBg,
+  parseAstMargin,
+  parseAstMarginBottom,
+  parseAstMarginLeft,
+  parseAstMarginRight,
+  parseAstMarginTop,
+  parseAstPadding,
+  parseAstPaddingBottom,
+  parseAstPaddingLeft,
+  parseAstPaddingRight,
+  parseAstPaddingTop,
+  parseAstRadius,
+  parseAstRemove,
+  parseAstReplace,
+  parseAstShow,
+  parseAstText,
+  parseAstWidth,
+} from './ast';
+import {
+  babelConfig,
+  babelParse,
+  generate,
+  transform as babelTransform,
+} from './babel';
+import {
   hasCach,
   setCach,
 } from './cach';
 import {
+  findTsFileByPath,
   getDir,
   getFileName,
+  getFoldPath,
   getRelativePath,
+  removeSuffix,
 } from './dir';
 import {
   copy,
@@ -94,6 +134,7 @@ import {
   clearUsedTpl,
   ensureAndInsertWxml,
   ensureAndInsertWxss,
+  genNewReactCustomComponent,
   hasOnlyTextChild,
   modifySuffix,
   updateTemplateInfo,
@@ -107,17 +148,25 @@ import {
 } from './random';
 import {
   getTemplateName,
+  hasSuffix,
   hasWxVariable,
   interceptWxVariable,
   isBindEvent,
+  isCompMethod,
+  isCssFile,
   isElif,
   isElse,
+  isEvent,
   isHidden,
   isId,
   isIf,
   isKlass,
   isNpmComponent,
+  isRelativePath,
+  isSkeleton,
+  isSkeletonStyle,
   isWxml,
+  matchCallExpression,
   removeBlankAndWxVariable,
   replaceColorSymbol,
   replaceLengthSymbol,
@@ -279,6 +328,10 @@ export const parseFromCustomAttr = (
         break;
       case ATTR_RADIUS:
         triggerBorderRadiusAction(ast, options, result, value, klass);
+        break;
+      case ATTR_TEXT:
+        // TODO do nothing when is text now
+        result[key] = value;
         break;
       default:
         if (!has(key, result) && !exceptKeys.includes(key)) {
@@ -524,9 +577,16 @@ export const parseFromTag = (
       clearUsedComp(tag, options);
       break;
     default:
+      // single element is filled with default bgcolor
       if (defaultBg && hasOnlyTextChild(ast)) {
         if (!attr) {
           ast.attr = {};
+        }
+
+        // won`t add default bgcolor when is text node
+        if (ATTR_TEXT in ast.attr) {
+          delete ast.attr[ATTR_TEXT];
+          break;
         }
         ast.attr[KLASS] = appendUniq(klass, WXSS_BG_GREY);
       }
@@ -661,6 +721,391 @@ export const parseFromJSON = (
     }
   });
   return json;
+};
+
+/**
+ * parseFromJSXElement
+ * @param p
+ * @param pagePath
+ * @param options
+ * @param map
+ * @param set
+ * @param methodMap
+ */
+export const parseFromJSXElement = (
+  p: NodePath<t.JSXElement>,
+  pagePath: string,
+  options: IPath,
+  map: Map<any[], [NodePath<any>, string]>,
+  skeletonSet: Set<string>,
+  methodMap: Map<string, NodePath<t.ClassMethod>>,
+): void => {
+  const { node } = p;
+  const { openingElement, children } = node;
+  const { name } = openingElement as any;
+
+  // remove skeleton element
+  if (name && name.name) {
+    const openName = name.name;
+    if (skeletonSet.has(openName)) {
+      p.remove();
+      const { parentPath } = p;
+      if (t.isReturnStatement(parentPath)) {
+        parentPath.remove();
+      }
+      return;
+    }
+  }
+
+  const { attributes } = openingElement;
+  if (attributes && attributes.length) {
+    attributes.forEach((
+      a: t.JSXAttribute,
+      i: number,
+      innerAttributes: t.JSXAttribute[],
+    ): void => {
+      parseFromAstAttr(i, innerAttributes, p, methodMap);
+      parseFromAstCustomAttr(i, innerAttributes, p, options);
+    });
+    openingElement.attributes = attributes.filter((v: t.JSXAttribute | null) => v);
+  }
+  parseFromAstTag(p, map, options);
+};
+
+/**
+ * parseFromAstCustomAttr
+ * @param index
+ * @param attributes
+ * @param p
+ * @param options
+ */
+export const parseFromAstCustomAttr = (
+  index: number,
+  attributes: t.JSXAttribute[],
+  p: NodePath<t.JSXElement>,
+  options: IPath,
+): void => {
+  const attribute: t.JSXAttribute | null = attributes[index];
+  if (!attribute) {
+    return;
+  }
+  const attrName = attribute.name ? attribute.name.name : '';
+  switch (attrName) {
+    case ATTR_SHOW:
+      parseAstShow(p, attribute, index, attributes, options);
+      break;
+    case ATTR_BG:
+      parseAstBg(p, attribute, index, attributes, options);
+      break;
+    case ATTR_LIGHT_BG:
+      parseAstLightBg(p, attribute, index, attributes, options);
+      break;
+    case ATTR_DARK_BG:
+      parseAstDarkBg(p, attribute, index, attributes, options);
+      break;
+    case ATTR_HEIGHT:
+      parseAstHeight(p, attribute, index, attributes, options);
+      break;
+    case ATTR_WIDTH:
+      parseAstWidth(p, attribute, index, attributes, options);
+      break;
+    case ATTR_PADDING:
+      parseAstPadding(p, attribute, index, attributes, options);
+      break;
+    case ATTR_PADDING_BOTTOM:
+      parseAstPaddingBottom(p, attribute, index, attributes, options);
+      break;
+    case ATTR_PADDING_LEFT:
+      parseAstPaddingLeft(p, attribute, index, attributes, options);
+      break;
+    case ATTR_PADDING_RIGHT:
+      parseAstPaddingRight(p, attribute, index, attributes, options);
+      break;
+    case ATTR_PADDING_TOP:
+      parseAstPaddingTop(p, attribute, index, attributes, options);
+      break;
+    case ATTR_MARGIN:
+      parseAstMargin(p, attribute, index, attributes, options);
+      break;
+    case ATTR_MARGIN_BOTTOM:
+      parseAstMarginBottom(p, attribute, index, attributes, options);
+      break;
+    case ATTR_MARGIN_LEFT:
+      parseAstMarginLeft(p, attribute, index, attributes, options);
+      break;
+    case ATTR_MARGIN_RIGHT:
+      parseAstMarginRight(p, attribute, index, attributes, options);
+      break;
+    case ATTR_MARGIN_TOP:
+      parseAstMarginTop(p, attribute, index, attributes, options);
+      break;
+    case ATTR_CLEAR:
+      parseAstClear(p, attribute, index, attributes, options);
+      break;
+    case ATTR_REMOVE:
+      parseAstRemove(p, attribute, index, attributes, options);
+      break;
+    case ATTR_RADIUS:
+      parseAstRadius(p, attribute, index, attributes, options);
+      break;
+    case ATTR_REPLACE:
+      parseAstReplace(p, attribute, index, attributes, options);
+      break;
+    case ATTR_TEXT:
+      parseAstText(p, attribute, index, attributes, options);
+      break;
+    case ATTR_REPEAT:
+    case ATTR_FOR:
+      parseAstFor(p, attribute, index, attributes, options);
+      break;
+    default:
+      break;
+  }
+};
+
+export const parseFromAstTag = (
+  p: NodePath<t.JSXElement>,
+  map: Map<any[], [NodePath<any>, string]>,
+  options: IPath,
+): void => {
+  const { resolvedReactCompKey, defaultBg } = options;
+  const { node } = p;
+  if (!node) {
+    return;
+  }
+  const { openingElement, closingElement, children } = node as t.JSXElement;
+  const { name } = openingElement as any;
+  let { attributes = [] } = openingElement as any;
+  const openName = name.name;
+
+  switch (true) {
+    // parse <Image> to <View>
+    case is(openName, TARO_TAG.Image):
+    case is(openName, TARO_TAG.Button):
+      (openingElement.name as t.JSXIdentifier).name = TARO_TAG.View;
+      if (closingElement) {
+        (closingElement.name as t.JSXIdentifier).name = TARO_TAG.View;
+      }
+      attributes = attributes.map((attribute: t.JSXAttribute) => {
+        const klassAttr = attribute && attribute.name
+          && is(attribute.name.name, KLASS_NAME);
+        if (klassAttr) {
+          return attribute;
+        }
+        return null;
+      });
+      parseAstKlass(WXSS_BG_GREY, attributes);
+      openingElement.attributes = attributes;
+      return;
+    // parse custom-component
+    default:
+      if (!TARO_TAG[openName] && !resolvedReactCompKey.has(openName)) {
+        genNewReactCustomComponent(openName as string, map, options);
+        return;
+      }
+      break;
+  }
+
+  // when to add default background
+  // 1. element has no child
+  // 2. element`s children is all JSXText
+  // 3. element is <Text />
+  const defaultBgElement = defaultBg
+    && (
+      children.length === 0
+        || children.every((child) => t.isJSXText(child))
+        || is(openName, TARO_TAG.Text)
+    );
+
+  // if is empty element or has only one text child
+  if (defaultBgElement) {
+    parseAstKlass(WXSS_BG_GREY, attributes);
+  }
+};
+
+/**
+ * parseFromAstAttr
+ * @param index
+ * @param attributes
+ * @param p
+ * @param map
+ */
+export const parseFromAstAttr = (
+  index: number,
+  attributes: t.JSXAttribute[],
+  p: NodePath<t.JSXElement>,
+  map: Map<string, NodePath<t.ClassMethod>>,
+): void => {
+  const attribute = attributes[index];
+  if (!attribute) {
+    return;
+  }
+  const attrName = String(attribute.name ? attribute.name.name : '');
+  switch (true) {
+    case isEvent(attrName):
+      const { code } = generate(attribute.value as babel.types.Node);
+      const methods = matchCallExpression(code);
+      methods.forEach((methodName: string) => {
+        const nodePath: NodePath<t.ClassMethod> | void = map.get(methodName);
+        if (nodePath) {
+          nodePath.remove();
+          map.delete(methodName);
+        }
+      });
+      attributes[index] = null;
+      break;
+    default:
+      break;
+  }
+};
+
+/**
+ * parseFromClassMethod
+ * @param p
+ * @param options
+ * @param map
+ */
+export const parseFromClassMethod = (
+  p: NodePath<t.ClassMethod>,
+  options: IPath,
+  map: Map<string, NodePath<t.ClassMethod>>,
+): void => {
+  const { node } = p;
+  const { key } = node;
+  const { name = '' } = key as any;
+  if (isCompMethod(name)) {
+    p.remove();
+  } else {
+    map.set(name, p);
+  }
+};
+
+/**
+ * parseFromImportDeclaration
+ * @param p
+ * @param pagePath
+ * @param options
+ * @param map
+ * @param set
+ */
+export const parseFromImportDeclaration = (
+  p: NodePath<t.ImportDeclaration>,
+  pagePath: string,
+  options: IPath,
+  map: Map<string[], [NodePath<any>, string]>,
+  set: Set<string>,
+): void => {
+  let absoluteImportPath;
+  const { node } = p;
+  const { leadingComments, source, specifiers = [] } = node;
+  const { value } = source;
+  const { outputPagePath, globalScssPath, root } = options;
+
+  if (isRelativePath(value)) {
+    const foldPath = getFoldPath(pagePath);
+    absoluteImportPath = findTsFileByPath(resolve(foldPath, value));
+    const relativeImportPath = getRelativePath(absoluteImportPath, outputPagePath);
+    // skip skeleton.scss
+    if (isSkeletonStyle(relativeImportPath)) {
+      return;
+    }
+    const cssFlag = isCssFile(relativeImportPath);
+    source.value = !cssFlag ? removeSuffix(relativeImportPath) : relativeImportPath;
+    // insert global skeleton.scss after any .scss
+    if (cssFlag) {
+      const styleCode = `import '${getRelativePath(globalScssPath, outputPagePath)}'`;
+      const styleAst = babelParse(styleCode, babelConfig);
+      p.insertAfter(styleAst);
+    }
+  } else {
+    try {
+      absoluteImportPath = pathResolve.sync(value, { basedir: root });
+    } catch (err) {
+      logger.warn(err.message);
+    }
+  }
+  // combine importName
+  const mapKey = specifiers.reduce((result = [], specifier) => {
+    const { local } = specifier;
+    const { name } = local;
+    if (name) {
+      if (t.isImportDefaultSpecifier(specifier)) {
+        result.push(name);
+      } else if (t.isImportSpecifier(specifier)) {
+        if (Array.isArray(result[0])) {
+          result[0].push(name);
+        } else {
+          result.unshift([name]);
+        }
+      }
+    }
+    return result;
+  }, []);
+
+  // cach import infomation
+  if (mapKey.length) {
+    if (isSkeleton(value)) {
+      p.remove();
+      set.add(mapKey.toString());
+      return;
+    }
+    map.set(mapKey, [p, absoluteImportPath || value]);
+  }
+
+  // remove comments
+  if (leadingComments && leadingComments.length) {
+    node.leadingComments = [];
+  }
+};
+
+/**
+ * parseFromVariableDeclaration
+ * @param p
+ * @param pagePath
+ * @param options
+ * @param map
+ * @param set
+ */
+export const parseFromVariableDeclaration = (
+  p: NodePath <t.VariableDeclaration>,
+  pagePath: string,
+  options: IPath,
+  map: Map<any[], NodePath<any> | false>,
+  set: Set<string>,
+): void => {
+  const { node } = p;
+  const { trailingComments, declarations = [] } = node;
+  if (declarations.length === 1) {
+    const [ declaration ] = declarations;
+    const { init = {}, id = {} } = declaration as any;
+    if (!init) {
+      return;
+    }
+    const { callee = {}, arguments: args } = init;
+    if (callee && callee.name === 'require') {
+      let { value } = args[0];
+      const { outputPagePath } = options;
+      if (isRelativePath(value)) {
+        const foldPath = getFoldPath(pagePath);
+        const absoluteImportPath = findTsFileByPath(resolve(foldPath, value));
+        value = args[0].value = removeSuffix(getRelativePath(absoluteImportPath, outputPagePath));
+      }
+
+      if (id.name) {
+        if (isSkeleton(value)) {
+          p.remove();
+          set.add(id.name);
+          return;
+        }
+        map.set([id.name], p);
+      }
+    }
+  }
+
+  // remove comments
+  if (trailingComments && trailingComments.length) {
+    node.trailingComments = [];
+  }
 };
 
 /**

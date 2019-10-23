@@ -1,7 +1,9 @@
+import { NodePath } from "@babel/traverse";
+import * as t from "@babel/types";
 import * as css from 'css';
 import { html2json, json2html } from 'html2json';
 import { DomElement, DomHandler, Parser } from 'htmlparser2';
-import { join } from 'path';
+import { join, resolve as pathResolve } from 'path';
 import {
   COMP_JS,
   COMP_JSON,
@@ -13,8 +15,15 @@ import {
   TEXT,
 } from '../config';
 import { COMMENT_TAG, IMPORT_TAG, INCLUDE_TAG, RULE_TAG, TEMPLATE_TAG } from '../config/tag';
-import { IAst, ICO, IComp, IPath, IUnused } from '../types';
+import { IAst, ICO, IComp, IPath, IReactProps, IUnused } from '../types';
 import { is, isArr } from './assert';
+import {
+  babelConfig,
+  babelParse,
+  generate,
+  traverse,
+  ts2js,
+} from './babel';
 import {
   hasCach,
   setCach,
@@ -37,21 +46,30 @@ import {
   remove,
   write,
 } from './fs';
-import { parseAsTreeNode, parseFromJSON } from './parser';
+import { Comp } from './klass';
+import Logger from './log';
+import {
+  parseAsTreeNode,
+  parseFromClassMethod,
+  parseFromImportDeclaration,
+  parseFromJSON,
+  parseFromJSXElement,
+  parseFromVariableDeclaration,
+} from './parser';
 import {
   addSuffixWxss,
   getTemplateIs,
   getTemplateName,
+  hasSuffix,
   isGenWxss,
+  isRelativePath,
+  isTypescript,
   matchIdStyle,
   removeComment,
   replacePseudo,
   splitWith,
   withoutPageSelector,
 } from './reg';
-
-import { Comp } from './klass';
-import Logger from './log';
 import { styleTreeShake, wxmlTreeShake } from './treeshake';
 
 const {
@@ -700,6 +718,118 @@ export const removeImportedWxss = (
     });
     remove(src);
   }
+};
+
+/**
+ * genNewReactComponent
+ * @param page
+ * @param options
+ */
+export const genNewReactComponent = (
+  page: string,
+  options: IPath,
+): void => {
+  const file = read(page);
+  const code = compile2ReactCode(page, file as string, options);
+  const { outputPagePath } = options;
+  ensure(outputPagePath);
+  write(outputPagePath, code);
+};
+
+/**
+ * genNewReactCustomComponent
+ * @param compName
+ * @param map
+ * @param options
+ */
+export const genNewReactCustomComponent = (
+  compName: string,
+  map: Map<any[], [NodePath<any>, string]>,
+  options: IPath,
+): void => {
+  const {
+    outputPagePath,
+    outputPath,
+    reactComponentInfo,
+    resolvedReactCompKey,
+  } = options;
+  const mapKey = [...map.keys()];
+  let compPathInfo: [NodePath<any>, string];
+  mapKey.some((key: string[]) => {
+    const match = key.includes(compName) || key[0].includes(compName);
+    if (match) {
+      compPathInfo = map.get(key);
+      return true;
+    }
+    return false;
+  });
+
+  if (!compPathInfo) {
+    logger.warn(`can't find customer-component ${compName}`);
+    return;
+  }
+
+  const [ast, originCompPath] = compPathInfo;
+  const { node: { source } } = ast;
+  // if the path of custom-component is from `node_modules`,
+  // just append to `outputPath`
+  const basePath = isRelativePath(source.value) ? outputPagePath : outputPath;
+  let newCompPath = pathResolve(basePath, source.value);
+  if (!hasSuffix(newCompPath)) {
+    newCompPath = `${newCompPath}.jsx`;
+  }
+  source.value = getRelativePath(newCompPath, outputPagePath);
+  // check if custom-component is in cach
+  if (!reactComponentInfo.has(originCompPath)) {
+    reactComponentInfo.add(originCompPath);
+    resolvedReactCompKey.add(compName);
+    genNewReactComponent(originCompPath, Object.create(options, {
+      resolvedReactCompKey: {
+        value: new Set(),
+      },
+      outputPagePath: {
+        value: newCompPath,
+      },
+    }));
+  }
+};
+
+/**
+ * compile2ReactCode
+ * @param pagePath
+ * @param input
+ * @param options
+ */
+export const compile2ReactCode = (
+  pagePath: string,
+  input: string,
+  options: IPath,
+): string => {
+  if (isTypescript(pagePath)) {
+    input = ts2js(input);
+  }
+  const ast = babelParse(input, babelConfig) as any;
+  const importMap: Map<any[], NodePath<t.ImportDeclaration | t.VariableDeclaration>> = new Map();
+  const methodMap: Map<string, NodePath<t.ClassMethod>> = new Map();
+  const skeletonSet: Set<string> = new Set();
+  const defaultArgs = [pagePath, options, importMap, skeletonSet];
+  ast.comments = [];
+  traverse(ast, {
+    ClassMethod(p: NodePath<t.ClassMethod>) {
+      return parseFromClassMethod(p, options, methodMap);
+    },
+    JSXElement(p: NodePath<t.JSXElement>) {
+      return parseFromJSXElement.apply(this, [p, ...defaultArgs, methodMap]);
+    },
+    ImportDeclaration(p: NodePath<t.ImportDeclaration>) {
+      return parseFromImportDeclaration.apply(this, [p, ...defaultArgs]);
+    },
+    VariableDeclaration(p: NodePath<t.VariableDeclaration>) {
+      return parseFromVariableDeclaration.apply(this, [p, ...defaultArgs]);
+    },
+  });
+  const { code } = generate(ast);
+  return code;
 };
 
 export {

@@ -1,4 +1,4 @@
-// 解法1
+// 解法1：Object.create
 function extend(Parent) {
   function F(...args) {
     Parent.apply(this, args);
@@ -49,8 +49,9 @@ function getProto(proto) {
 };
 
 function extend2(Child, Parent) {
-  const parent = getProto(Parent);
+  const parent = getProto(Parent.prototype);
   parent.constructor = Child;
-  Child.prototype = parent;
+  Object.setPrototypeOf(Child.prototype, parent);
+  Child.__proto__ = Parent;
 };
 

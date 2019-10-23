@@ -269,14 +269,14 @@
 #### Cach-Control
 
 - private：客户端可以缓存
-  * 走浏览器自己的缓存策略
-  * 比如 `Expires = 当前时间(Date - Last-Modified) * 10%`（下面有举例）
-- public：客户端和代理服务器、其他客户端都可共享缓存
+  * 执行浏览器自己的缓存策略，无法在用户间共享
+  * 比如 Expires = 当前时间(Date - Last-Modified) * 10%（下面有举例）
+- public：默认值，客户端和代理服务器、其他客户端都可共享缓存
   * 包括中间节点的proxy
 - max-age=xxx：缓存的内容将在 xxx 秒后失效
 - no-cache：需要使用协商缓存来验证缓存数据
 - no-store：所有内容都不会缓存，强缓存、协商缓存都不会触发
-- s-maxage：仅在代理服务器（比如CDN）有效，优先级高于max-age
+- s-maxage：仅在代理服务器（比如CDN）有效，优先级高于max-age，即使更新了CDN的内容，浏览器也不会请求
 - max-stale：能容忍的最大过期时间
 - min-fresh：能够容忍的最小新鲜度
 - stale-while-revalidate：如果缓存过期了，仍然会使用，并同时在后台请求新鲜的资源，供下次使用（chrome75以上支持）
@@ -341,6 +341,8 @@ range，请求资源一部分（206），支持断点续传
 
 ## http2.0
 [HTTP/2.0相比1.0有哪些重大改进](https://www.zhihu.com/question/34074946)
+
+![http2对比](./http2对比.png)
 
 ### 多路复用
 * 同个域名只需要占用一个 TCP 连接
@@ -413,16 +415,27 @@ map $http_cookie $resources {
 - HTTP2.0 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS
 - HTTP2.0 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DEFLATE
 
+### http2.0的缺点
+
+**TCP 以及 TCP+TLS 建立连接的延时**
+
+* 三次握手需要1.5个rtt
+* 建立tls（1.2或1.3），需要1-2个rtt
+
 ---
 
 ## quic
-- 基于UDP
-- 通过减少往返次数，以缩短连接建立时间
-- 使用一种新的ACK确认机制（包含了NACK），达到更好的拥塞控制
-- 多路复用，并解决HTTP/2队头阻塞问题，即一个流的TCP包丢失导致所有流都暂停组装。在QUIC里面，一个流的包丢失只会影响当前流，不会影响其它流。
+> 基于UDP
+
+### 特点
+- 类似TCP的流量控制、传输可靠性的功能（包括数据包重传、拥塞控制以及其他一些TCP中存在的特性）
+- 快速握手（通过减少往返次数，以缩短连接建立时间）
+- 安全加密，集成TLS加密（基于TLS1.3），减少RTT
+- 多路复用，并解决HTTP/2队头阻塞问题（即一个流的TCP包丢失导致所有流都暂停组装。在QUIC里面，一个流的包丢失只会影响当前流，不会影响其它流）
 - 使用FEC（前向纠错）恢复丢失的包，以减少超时重传
 - 使用一个随机数标志一个连接，取代传统IP + 端口号的方式，使得切换网络环境如从4G到wifi仍然能使用之前的连接。
-- ![quic](rtt对比.png)
+
+![quic](rtt对比.png)
 
 ### 对比http/https/quic
 - ![tls](协议层次.png)
@@ -430,6 +443,9 @@ map $http_cookie $resources {
 ---
 
 ## http3.0
+
+![http3对比](./http3对比.png)
+
 - 基于UDP协议的QUIC
 - 加密认证的报文
   * TCP 协议头部
@@ -448,13 +464,14 @@ map $http_cookie $resources {
 
 ## https
 [深入了解https](https://zhuanlan.zhihu.com/p/43789231)
-
+>
 > https
+>
 > 相当于http + tls安全层（比http至少多2次tls的RTT）
 > 
 > 耗时影响，主要在于：
 >
-> 1. 议交互所增加的网络 RTT(round trip time)
+> 1. 交互所增加的网络 RTT(round trip time)
 > 2. 加解密相关的计算耗时
 
 ### 与http的区别

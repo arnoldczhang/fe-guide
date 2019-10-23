@@ -13,7 +13,7 @@ export interface INpmOptions {
   // use wxml/wxss treeshake
   treeshake?: boolean;
   // main package pages
-  page?: string[] | string;
+  page?: string[] | string | false;
   // animation automatically add to default-bg
   animation?: string | string[];
   // remove unused components and templates
@@ -31,6 +31,13 @@ export interface INpmOptions {
 export interface IPack {
   root: string;
   page: string[];
+  independent?: boolean;
+}
+
+// react options
+export interface IReactProps {
+  pageRoot: string;
+  page: string[];
 }
 
 export interface IPath {
@@ -39,6 +46,7 @@ export interface IPath {
   protoPath?: string;
   mainPath?: string;
   outputPath?: string;
+  outputPagePath?: string;
   mainFilePath?: string;
   pagePath?: string;
   compPath?: string;
@@ -85,6 +93,18 @@ export interface IPath {
   independent?: boolean;
   // global outputPath
   globalOutputPath?: string;
+  // global skeleton.wxss file path
+  globalWxssPath?: string;
+  // global skeleton.scss file path
+  globalScssPath?: string;
+  // react src page path
+  reactSrcPagePath?: string;
+  // react suffix
+  reactSuffix?: string;
+  // cach resolved custom-component in one page/component
+  resolvedReactCompKey?: Set<string>;
+  // cach react componet dest path
+  reactComponentInfo?: Set<string>;
 }
 
 export enum animationStyle {

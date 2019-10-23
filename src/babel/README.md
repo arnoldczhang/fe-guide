@@ -23,11 +23,11 @@
 </details>
 
 ## 起源
-* acorn只提供基本的解析ast的能力，遍历还需要配套的acorn-travesal
-* babylon fork了acorn项目，做了改造
-* babel使用babylon作为解析ast的工具
-* recast内部的parser可以基于babylon、babel、acorn做选择
-* esprima类似babel，不过支持tokenize将代码转成数组形式
+* `acorn`只提供基本的解析ast的能力，遍历还需要配套的`acorn-travesal`
+* `babylon`fork了 acorn 项目，做了改造
+* `babel`使用`babylon`作为解析 ast 的工具
+* `recast`内部的 parser 可以基于 babylon、babel、acorn 做选择
+* `esprima`类似`babel`，不过支持 tokenize 将代码转成数组形式
 
 ---
 

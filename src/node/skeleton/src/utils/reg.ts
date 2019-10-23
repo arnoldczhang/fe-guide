@@ -1,4 +1,4 @@
-import { SKELETON } from "../config/dir";
+import { SKELETON, WXSS_BG_GREY } from "../config";
 import { CF } from "../types";
 import { isStr } from "./assert";
 import { identity } from "./dir";
@@ -6,6 +6,42 @@ import { identity } from "./dir";
 // =========== //
 // === test === //
 // =========== //
+export const hasDefaultBg = (input: string): boolean => (
+  new RegExp(`\\b${WXSS_BG_GREY.replace(/\-/g, '\\-')}\\b`).test(input)
+);
+
+export const isSkeleton = (input: string): boolean => (
+  new RegExp(`\\/${SKELETON}\\/`).test(input)
+);
+
+export const isSkeletonStyle = (input: string): boolean => (
+  new RegExp(`${SKELETON}\\.(?:s?css|less|w?xss|sass)$`).test(input)
+);
+
+export const isEvent = (input: string): boolean => (
+  /^on[A-Z]\w+/.test(input)
+);
+
+export const hasSuffix = (input: string): boolean => (
+  /\.[a-zA-Z]+$/.test(input)
+);
+
+export const isRelativePath = (input: string): boolean => (
+  /^\.\.?\//.test(input)
+);
+
+export const isCssFile = (input: string): boolean => (
+  /\.(?:s?css|less|w?xss|sass)$/.test(input)
+);
+
+export const isTypescript = (input: string): boolean => (
+  /\.tsx?$/.test(input)
+);
+
+export const isCompMethod = (input: string): boolean => (
+  /^component(?:Will|Did)/.test(input)
+);
+
 export const isColor = (input: string): boolean => (
   /^(?:#[a-zA-Z0-9]{3,6}|rgba?|hsla?|[a-zA-Z])/.test(input)
 );
@@ -113,9 +149,24 @@ export const matchIdStyle = (key: string): any[] | null => (
   key.match(/(?:^([\.\-\w]+)*(#[^#\.\:]+)([\.\-\w]+)*(\:\:?[a-z]+)?$)/)
 );
 
+export const matchCallExpression = (input: string): string[] => (
+  input.match(/\b(?:(?:this|that|self)\.|)(\w+)/g) || []
+).map((inp: string): string => (
+  inp.replace(/^(?:this|that|self)\.(\w+)/, '$1')
+));
+
 // ============== //
 // === replace === //
 // ============== //
+export const removeStartEndBrace = (input: string): string => (
+  input.replace(/^\{([\s\S]*)\}$/, '$1')
+);
+export const removeDefaultBg = (
+  input: string,
+): string => (
+  input.replace(new RegExp(`\\b${WXSS_BG_GREY.replace(/\-/g, '\\-')}\\b`, 'g'), '')
+);
+
 export const replaceWith = (
   input: string,
   reg: RegExp | string = /\s+/,

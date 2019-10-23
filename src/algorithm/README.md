@@ -6,7 +6,23 @@
   - [数据结构Array、HashMap 与 List(原文)](https://www.zcfy.cc/article/data-structures-for-beginners-arrays-hashmaps-and-lists)
   - [logN的由来](n.bing.com/?toHttps=1&redig=54178BEC83A640CE878C8B4736F9C008)
   - [各种算法结构演示](https://visualgo.net/zh)
-  - [前端算法](https://juejin.im/post/5d5b307b5188253da24d3cd1?utm_source=gold_browser_extension)
+  - [前端算法-git](https://juejin.im/post/5d5b307b5188253da24d3cd1?utm_source=gold_browser_extension)
+  - [前端算法-docs](http://www.conardli.top/docs/dataStructure/%E4%BA%8C%E5%8F%89%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C.html#%E6%A0%91%E6%9F%A5%E6%89%BE)
+
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`时间复杂度`](#时间复杂度)
+* [`二叉树`](#二叉树)
+* [`链表`](#链表)
+* [`数组`](#数组)
+* [`堆`](#堆)
+* [`哈希表`](#哈希表)
+* [`栈和队列`](#栈和队列)
+* [`字符串`](#字符串)
+
+</details>
 
 ## 时间复杂度
 
@@ -31,6 +47,196 @@
 
 ### 复杂度对比
 O(1)<O(logn)<O(n)<O(nlogn)<O(n²)<O(n³)<O(2ⁿ)<O(n!)
+
+---
+
+## 二叉树
+详见[二叉树](./二叉树.js)
+
+### 概念
+1. 每个节点最多有两个子树
+2. 第n层最多有2^n个节点
+3. n层最多有2^0 + 2^1 + ... + 2^n = 2^n+1 - 1个节点
+
+### 结构
+```js
+class Node {
+  constructor(data, left, right) {}
+}
+
+class Tree {
+  constructor(root) {}
+  // 根据【概念2】插入节点
+  insert(node) {}
+  // 获取最左子节点
+  getMin() {}
+  // 获取最右子节点
+  getMax() {}
+  // 查找特定node
+  getNode(data, node) {}
+  // 获取特定节点的深度（左、右子树的最大深度）
+  getDeep(node, deep) {}
+}
+```
+
+### 查找
+
+#### 树查找
+
+```js
+function getNode(data, node) {
+  while (1) {
+    if (!node) {
+      return null;
+    }
+
+    const { data: d, left, right } = node;
+    if (data === d) {
+      return node;
+    } else if (data > d) {
+      node = right;
+    } else {
+      node = left;
+    }
+  }
+};
+```
+
+#### 二分查找
+
+```js
+function binarySearch(target, list, start = 0, end = list.length) {
+  while(1) {
+    if (start > end) {
+      return -1;
+    }
+    const mid = Math.floor((start + end) / 2);
+    const value = list[mid];
+    if (target === value) {
+      return mid;
+    } else if (target > value) {
+      start = mid + 1;
+    } else {
+      end = mid - 1;
+    }
+  }
+};
+```
+
+### 遍历
+
+**二叉树节点访问顺序**
+
+![二叉树节点访问顺序](./二叉树节点访问顺序.png)
+
+三种遍历方法(人工)得到的结果分别是：
+
+先序：1 2 4 6 7 8 3 5
+中序：4 7 6 8 2 1 3 5
+后序：7 8 6 4 2 5 3 1
+
+#### 先序遍历
+考察到一个节点后，即刻输出该节点的值，并继续遍历其左右子树。(根左右)
+
+![先序遍历](./先序遍历.png)
+
+[参考](#先序遍历实现)
+
+#### 中序遍历
+考察到一个节点后，将其暂存，遍历完左子树后，再输出该节点的值，然后遍历右子树。(左根右)
+
+[参考](#中序遍历实现)
+
+#### 后序遍历
+考察到一个节点后，将其暂存，遍历完左右子树后，再输出该节点的值。(左右根)
+
+[参考](#后序遍历实现)
+
+### 类型
+
+### 对称二叉树
+
+### 平衡二叉树
+
+---
+
+## 链表
+
+### 概念
+- 用一组任意存储的单元来存储线性表的数据元素
+- 一个对象存储着本身的值和下一个元素的地址
+
+### 结构
+[参考](./链表.js)
+---
+
+## 实现
+
+### 先序遍历实现
+```js
+var preorderTraversal = function (root) {
+  const result = [];
+  const stack = [];
+  let current = root;
+  while (current || stack.length > 0) {
+    while (current) {
+      result.push(current.val);
+      stack.push(current);
+      current = current.left;
+    }
+    current = stack.pop();
+    current = current.right;
+  }
+  return result;
+};
+```
+
+### 中序遍历实现
+```js
+var inorderTraversal = function (root) {
+  const result = [];
+  const stack = [];
+  let current = root;
+  while (current || stack.length > 0) {
+    // 左子树优先入栈
+    while (current) {
+      stack.push(current);
+      current = current.left;
+    }
+    current = stack.pop();
+    result.push(current.val);
+    // 右节点再入栈
+    current = current.right;
+  }
+  return result;
+};
+```
+
+### 后序遍历实现
+```js
+var postorderTraversal = function (root) {
+  const result = [];
+  const stack = [];
+  let last = null; // 标记上一个访问的节点
+  let current = root;
+  while (current || stack.length > 0) {
+    while (current) {
+      stack.push(current);
+      current = current.left;
+    }
+    current = stack[stack.length - 1];
+    if (!current.right || current.right == last) {
+      current = stack.pop();
+      result.push(current.val);
+      last = current;
+      current = null; // 继续弹栈
+    } else {
+      current = current.right;
+    }
+  }
+  return result;
+}
+```
 
 
 

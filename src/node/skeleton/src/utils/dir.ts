@@ -1,5 +1,7 @@
 import * as glob from 'glob';
 import { isArr } from './assert';
+import { exists } from './fs';
+import { hasSuffix } from './reg';
 
 /**
  * getPageWxml
@@ -8,11 +10,15 @@ import { isArr } from './assert';
  */
 export const getPageWxml = (
   path: string,
-  reg?: string | string[] | RegExp,
+  reg?: string | string[] | RegExp | false,
+  suffix = 'wxml',
 ): string[] => {
-  reg = reg || /pages\/([^\/]+)\/\1\.wxml$/;
+  if (Object.is(reg, false)) {
+    return [];
+  }
+  reg = reg || new RegExp(`pages\\/([^\\/]+)\\/\\1\\.${suffix}$`);
   if (isArr(reg)) {
-    reg = reg.map((r: string) => /.wxml$/.test(r) ? r : `${r.replace(/\.[^\.\\\/]+$/, '')}.wxml`);
+    reg = reg.map((r: string) => new RegExp(`.${suffix}$`).test(r) ? r : `${r.replace(/\.[^\.\\\/]+$/, '')}.${suffix}`);
     reg = new RegExp(`(?:${reg.join('|')})$`);
   } else if (reg === '*') {
     reg = /[\s\S]*/;
@@ -40,17 +46,17 @@ export const getDir = (
 
 /**
  * getRelativePath
- * @param src
- * @param dest
+ * @param srcPath
+ * @param mainPath
  */
-export const getRelativePath = (src: string, dest: string) => {
-  const fileName = getFileName(src);
-  const srcArr: string[] = getSplitDir(src);
-  const destArr: string[] = getSplitDir(dest);
-  const srcLen = srcArr.length;
-  const destLen = destArr.length;
-  let index = 0;
-  const lenCount = Math.min(srcLen, destLen);
+export const getRelativePath = (srcPath: string, mainPath: string) => {
+  const fileName: string = getFileName(srcPath);
+  const srcArr: string[] = getSplitDir(srcPath);
+  const destArr: string[] = getSplitDir(mainPath);
+  const srcLen: number = srcArr.length;
+  const destLen: number = destArr.length;
+  let index: number = 0;
+  const lenCount: number = Math.min(srcLen, destLen);
 
   while (index < lenCount) {
     if (srcArr[index] !== destArr[index]) {
@@ -75,3 +81,28 @@ export const getSplitDir = (path: string): string[] => getDir(path).split('/').f
 export const modifySuffix = (file: string, suffix: string): string => file.replace(/(\.)[^\.]+$/, `$1${suffix}`);
 
 export const addSuffix = (file: string, suffix: string): string => `${file}.${suffix}`;
+
+export const removeSuffix = (file: string): string => file.replace(/(\.)[^\.]+$/, '');
+
+export const getFoldPath = (file: string): string =>
+  file.substr(0, file.length - getFileName(file).length);
+
+export const findTsFileByPath = (dir: string): string => {
+  if (!hasSuffix(dir)) {
+    switch (true) {
+      case exists(`${dir}.tsx`):
+        dir = `${dir}.tsx`;
+        break;
+      case exists(`${dir}.ts`):
+        dir = `${dir}.ts`;
+        break;
+      case exists(`${dir}/index.tsx`):
+        dir = `${dir}/index.tsx`;
+        break;
+      default:
+        dir = `${dir}/index.ts`;
+        break;
+    }
+  }
+  return dir;
+};

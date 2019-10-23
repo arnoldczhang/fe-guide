@@ -257,6 +257,31 @@
 //     }
 //   });
 
-console.log(Buffer.from('1').toString("hex"));
-console.log(Buffer.from('b').toString("hex"));
-console.log(require("crypto").createHash('sha256').update(('aaa')).digest('hex'));
+// console.log(Buffer.from('1').toString("hex"));
+// console.log(Buffer.from('b').toString("hex"));
+// console.log(require("crypto").createHash('sha256').update(('aaa')).digest('hex'));
+
+
+var JavaScriptObfuscator = require('javascript-obfuscator');
+
+var obfuscationResult = JavaScriptObfuscator.obfuscate(
+  `
+        (function(){
+            var variable1 = '5' - 3;
+            var variable2 = '5' + 3;
+            var variable3 = '5' + - '2';
+            var variable4 = ['10','10','10','10','10'].map(parseInt);
+            var variable5 = 'foo ' + 1 + 1;
+            console.log(variable1);
+            console.log(variable2);
+            console.log(variable3);
+            console.log(variable4);
+            console.log(variable5);
+        })();
+    `, {
+    compact: false,
+    controlFlowFlattening: true
+  }
+);
+
+console.log(obfuscationResult.getObfuscatedCode());

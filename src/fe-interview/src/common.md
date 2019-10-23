@@ -58,6 +58,7 @@
 * [`passive`](#passive)
 * [`解构赋值`](#解构赋值)
 * [`URLSearchParams`](#URLSearchParams)
+* [`创建n个有值元素的数组`](#创建n个有值元素的数组)
 
 **进阶js**
 
@@ -757,7 +758,7 @@ var flattenArray = (arr) => {
   ```js
   const uniqArr = [...new Set(arr)];
   ```
-- indexOf
+- indexOf+Object
 - includes
 - Map
 - indexOf(i, step) === lastIndexOf(i)
@@ -1540,8 +1541,8 @@ function solution(arr1, ...rest) {
 - .sort((pre, next) => pre - next)
 - var map = {};
 - .forEach((num) => {
-  map[num % 10].push(num)
-})
+    map[num % 10].push(num)
+  });
 - keys().map(key => value)
 
 ---
@@ -1553,7 +1554,7 @@ function solution(arr1, ...rest) {
 ---
 
 ### webpack热更新
-[参考](../../webpack/README.md)
+[参考](../../webpack/README.md#热更新)
 
 ---
 
@@ -1587,7 +1588,7 @@ https://jsperf.com
 ---
 
 ### proxy
-[参考](../../meta-programming/README.md)
+[参考](../../meta-programming/README.md#Proxy)
 
 ---
 
@@ -2534,6 +2535,12 @@ class URLSearchParams {
 ### get和post区别
 [参考](../../js&browser/页面过程与浏览器缓存.md#GETvsPOST)
 
+---
 
-
+### 创建n个有值元素的数组
+- for循环直接撸
+- [...Array(n)].map(() => ...)
+- Array.from({ length: n }, (_, i) => ...)
+- Array(n).fill(...)
+- [generator](../../meta-programming/README.md#Generator)
 

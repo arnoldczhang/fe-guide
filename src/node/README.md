@@ -23,6 +23,7 @@
 * [`进程线程`](#进程线程)
 * [`手动打包指南`](#手动打包指南)
 * [`库源码解析`](#库源码解析)
+* [`库开发模式`](#库开发模式)
 * [`其他`](#其他)
 
 </details>
@@ -68,6 +69,8 @@
 - [pipeline-stream](https://nodejs.org/dist/latest-v10.x/docs/api/stream.html#stream_stream_pipeline_streams_callback)
 - [性能诊断node-clinic](https://github.com/nearform/node-clinic)
 - [压测autocannon](https://github.com/mcollina/autocannon)
+- [jest可视化-majestic](https://github.com/Raathigesh/majestic)
+- [在线查看npm包文件-npmview](https://npmview.now.sh/)
 
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
@@ -618,6 +621,84 @@ uglify-js
 ### ws
 [ws](https://github.com/websockets/ws)
 [WebSocket协议以及ws源码分析](https://juejin.im/post/5ce8976151882533441ecc20?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+
+### EventEmitter
+
+```js
+function EventEmitter() {
+  EventEmitter.init.call(this);
+};
+
+EventEmitter.init = function init(){
+  if (this.__events = undefined
+    || this._events === Object.getPrototypeOf(this)._events) {
+    this._events = {};
+  }
+};
+
+//默认设置最大监听数
+EventEmitter.defaultMaxListeners = 10;
+EventEmitter.prototype.on =
+EventEmitter.prototype.addEventListener = function add(type, listener, flag) {
+
+};
+
+EventEmitter.prototype.emit = function emit(type, listener, flag) {
+  this._events.forEach();
+};
+
+EventEmitter.prototype.once = function once(type, listener, flag) {
+};
+
+EventEmitter.prototype.off =
+EventEmitter.prototype.removeEventListener = function remove(type, listener, flag) {
+};
+```
+
+#### 知识点
+
+**监听函数的执行顺序**
+
+同步，但是函数内部可以包含异步代码
+
+**事件循环中的事件产生/触发**
+
+![事件循环](./事件循环.png)
+
+产生：异步调用会将请求加入到线程池，线程池的I/O操作执行完，添加事件到事件循环中
+
+触发：事件循环取出请求对象，执行其回调函数
+
+**异常处理**
+
+```js
+const events = require('events');
+const emitter = new events.EventEmitter();
+emitter.emit('error');
+```
+
+**修改EventEmitter最大可监听数**
+
+- 默认10
+- 即使超过，listener也会执行，只是会有warning
+- 可以用`emitter.setMaxListeners`设置
+
+**应用场景**
+
+- try...catch无法捕获到错误时
+
+---
+
+## 库开发模式
+
+### TDD
+> Test-driven development 即测试驱动的开发模式
+>
+> 创造一个新语法，可以先在测试用例先写上这个语法，通过执行测试命令
+>
+> 通过报错堆栈一步步解决问题。
+>
+> 这种方式开发可以让测试覆盖率更高，目的更专注，更容易保障代码质量。
 
 ---
 

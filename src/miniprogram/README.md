@@ -3,6 +3,7 @@
 ## 参考
 - [小程序底层框架](https://www.kancloud.cn/tatahy/weixin/710883)
 - [原理](https://www.cnblogs.com/freeliver54/p/9024999.html)
+- [白皮书](https://www.w3.org/TR/2019/WD-mini-app-white-paper-20190912/)
 
 ## 目录
 <details>
@@ -255,7 +256,5 @@ decoded = JSON.parse(decoded);
  */
 console.log(decoded);
 ```
-
-
 
 

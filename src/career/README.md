@@ -30,6 +30,7 @@
 * [`依赖管理`](#依赖管理)
 * [`无障碍`](#无障碍)
 * [`设计模式`](#设计模式)
+* [`代码保护`](#代码保护)
 * [`快速开发`](#快速开发)
 * [`产品相关`](#产品相关)
 * [`视觉设计相关`](#视觉设计相关)
@@ -421,12 +422,23 @@ import module1 from 'module1'
 
 ## 快速开发
 [vue企业级开发](https://mp.weixin.qq.com/s/g6D5b_YilzLeBH3pdjRnww)
+[single-spa](https://single-spa.js.org/docs/starting-from-scratch.html)
 
 ---
 
 ## 设计模式
 [设计模式](https://www.w3cschool.cn/zobyhd/pyunfozt.html)
 ![技术全局视角](./技术全局视角.jpeg)
+
+---
+
+## 代码保护
+- [参考](https://juejin.im/post/5d89e996e51d453bc64802c0)
+
+[js混淆器](https://github.com/javascript-obfuscator/javascript-obfuscator)
+
+[字节码编译器](https://github.com/OsamaAbbas/bytenode)
+
 
 ---
 

@@ -6,7 +6,9 @@
 - https://juejin.im/entry/59082301a22b9d0065f1a186
 - [深入浏览器事件循环](https://zhuanlan.zhihu.com/p/45111890)
 - [Tasks, microtasks](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)
-- ![运行机制](2954145-5bb92d1fbdb9df41.png)
+- [一次搞懂系列](https://mp.weixin.qq.com/s?__biz=MzA5NzkwNDk3MQ==&mid=2650590471&idx=1&sn=eb38606d9fbcf91e443cf5ca063fa89c&chksm=8891dd23bfe654350263cc4c534b775e22f3795581695d220691516b194aef6ee15479c23436&scene=38#wechat_redirect)
+
+![运行机制](2954145-5bb92d1fbdb9df41.png)
 
 - - -
 
@@ -15,12 +17,14 @@
 <summary>展开更多</summary>
 
 * [`概念`](#概念)
-* [`javascript并发模型`](#javascript并发模型)
+* [`并发模型`](#javascript并发模型)
 * [`执行上下文和作用域链`](#执行上下文和作用域链)
-* [`Event Loop`](#事件循环（Event Loop）)
-* [`task`](#任务队列（task）)
+* [`事件循环`](#EventLoop)
+* [`事件表`](#EventTable)
+* [`任务队列`](#task)
+* [`回调队列`](#CallQueue)
 * [`await`](#await)
-* [`例子`](#交互事件触发)
+* [`一些题目`](#交互事件触发)
 
 </details>
 
@@ -30,8 +34,9 @@
 ---
 
 ## javascript并发模型
-- Event Loop - 事件循环
 - Call Stack - 调用栈
+- Event Loop - 事件循环
+- Event Table - 事件表
 - Call/task Queue - 回调（又称任务）队列
 - Render Step - 渲染节奏
 - Web APIs - 宿主环境
@@ -87,7 +92,6 @@ fContext = {
     Scope: [AO, checkscopeContext.VO, globalContext.VO],
     this: undefined
 }
-
 ```
 
 js被解析和执行环境的抽象概念
@@ -124,7 +128,7 @@ js被解析和执行环境的抽象概念
 
 **作用域链**
 
-![作用域链](./作用域链.jpg)
+![作用域链](../fe-interview/src/作用域链.jpg)
 
 ### 执行执行次序
 
@@ -138,75 +142,90 @@ js被解析和执行环境的抽象概念
 
 - - -
 
-## 回调队列（Call Queue）
+## CallQueue
+- `回调队列`
 - 有序的函数队列
 - 异步函数进入调用栈之前，必须通过回调队列
 
 ---
 
-## 事件循环（Event Loop）
-- 检查调用栈是否空闲，如果是且回调队列里有某个函数，
-  则将其从回调队列移入调用栈执行
+## EventLoop
+- 检查调用栈是否空闲，如果是且`回调队列`里有某个函数，则将其从`回调队列`移入`调用栈`执行
 
 ### 浏览器环境
 ![任务队列](68747470733a2f2f736661756c742d696d6167652e62302e7570616979756e2e636f6d2f3134392f3930352f313439393035313630392d356138616434376663653736345f61727469636c6578.png)
 
-* 每个线程都有自己的event loop
-* 浏览器可以有多个event loop，browsing contexts和web workers就是相互独立的
-* 简略循环过程（script -> 清空微任务 -> 宏任务 -> 清空微任务 -> render -> 宏任务 -> 清空微任务 -> render ->...）
-  - [示意图](./event_loop.jpeg)
-* 完整循环过程
-  1. 从macrotask队列选择一个最老的task，如果没有，则执行microtask
-  2. 将上面这个task设置为【正在运行的task】
-  3. Run: 运行被选择的task
-  4. 将【正在运行的task】置为null
-  5. 从macrotask队列里移除前边运行的task
-  6. 执行microtasks任务检查点
-    1. 将microtask checkpoint的flag设为true。
-    2. Microtask queue handling: 如果event loop的microtask队列为空，直接跳到第八步（Done）。
-    3. 在microtask队列中选择最老的一个任务。
-    4. 将上一步选择的任务设为event loop的currently running task。
-    5. 运行选择的任务。
-    6. 将event loop的currently running task变为null。
-    7. 将前面运行的microtask从microtask队列中删除，然后返回到第二步（Microtask queue handling）。
-    8. Done: 每一个environment settings object它们的 responsible event loop就是当前的event loop，会给environment settings object发一个 rejected promises 的通知。
-    9. 清理IndexedDB的事务。
-    10. 将microtask checkpoint的flag设为flase
-  7. 更新渲染（Update the rendering）
-  8. 如果这是一个worker event loop，但是没有任务在task队列中，并且WorkerGlobalScope对象的closing标识为true，
-  则销毁event loop，中止这些步骤，然后进行 run a worker
-  9. 返回第一步
+>
+> 每个线程都有自己的event loop
+>
+> 浏览器可以有多个event loop，browsing contexts和web workers就是相互独立的
+>
+
+### 简略循环过程
+
+script -> 清空微任务 -> 宏任务 -> 清空微任务 -> render -> 宏任务 -> 清空微任务 -> render -> ...
+
+![示意图](./event_loop.jpeg)
+
+### 完整循环过程
+1. 从macrotask队列选择一个最老的task，如果没有，则执行microtask
+2. 将上面这个task设置为【正在运行的task】
+3. Run: 运行被选择的task
+4. 将【正在运行的task】置为null
+5. 从macrotask队列里移除前边运行的task
+6. 执行microtasks任务检查点
+  - 将microtask checkpoint的flag设为true。
+  - Microtask queue handling: 如果event loop的microtask队列为空，直接跳到第八步（Done）。
+  - 在microtask队列中选择最老的一个任务。
+  - 将上一步选择的任务设为event loop的currently running task。
+  - 运行选择的任务。
+  - 将event loop的currently running task变为null。
+  - 将前面运行的microtask从microtask队列中删除，然后返回到第二步（Microtask queue handling）。
+  - Done: 每一个environment settings object它们的 responsible event loop就是当前的event loop，会给environment settings object发一个 rejected promises 的通知。
+  - 清理IndexedDB的事务。
+  - 将microtask checkpoint的flag设为flase
+7. 更新渲染（Update the rendering）
+8. 如果这是一个worker event loop，但是没有任务在task队列中，并且WorkerGlobalScope对象的closing标识为true，
+则销毁event loop，中止这些步骤，然后进行 run a worker
+9. 返回第一步
 
 ### nodeVS浏览器
 ![node环境-事件循环](node环境-事件循环.png)
 
-libuv引擎中的事件循环（宏任务）分为 6 个阶段：
+`libuv`引擎中的事件循环（宏任务）分为 6 个阶段：
 
-* timers: 执行 setTimeout 和 setInterval 中到期的 callback。
-* I/O callback: 上一轮循环中少数的 callback 会放在这一阶段执行。
-* idle, prepare: 仅在内部使用。
-* poll: 最重要的阶段，执行 pending callback，在适当的情况下会阻塞在这个阶段。
-* check: 执行 setImmediate（`setImmediate`是将事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行setImmediate指定的回调函数）的callback。
-* close callbacks: 执行close事件的callback，例如socket.on('close'[,fn])或者http.server.on('close, fn)。
+* `timers`: 执行 setTimeout 和 setInterval 中到期的 callback。
+* `I/O callback`: 上一轮循环中少数的 callback 会放在这一阶段执行。
+* `idle, prepare`: 仅在内部使用。
+* `poll`: 最重要的阶段，执行 pending callback，在适当的情况下会阻塞在这个阶段。
+* `check`: 执行 setImmediate（`setImmediate`是将事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行setImmediate指定的回调函数）的callback。
+* `close callbacks`: 执行close事件的callback，例如socket.on('close'[,fn])或者http.server.on('close, fn)。
 
 #### 执行顺序区别
 ![浏览器和node的eventLoop](./浏览器和node的eventLoop.png)
 
-node10以前
+**node10以前**
 - 执行宏任务一个阶段的所有任务
 - 执行nextTick队列里面的内容
 - 执行微任务队列的内容
 
-node11以后
+**node11以后**
 和浏览器的行为统一了，都是每执行一个宏任务就执行完微任务队列
 
-- - -
+---
 
-## 任务队列（task）
+## EventTable
+![event-table](./event-table.png)
+
+---
+
+## task
+
+> 任务队列
 
 ### macrotask(宏任务) `task`
 
-**真正的异步**
+> 真正的异步
 
 * 整体代码script
 * setTimeout（标准4ms），setInterval，setImmediate（node）
@@ -216,13 +235,13 @@ node11以后
 
 ### microtask(微任务) `job`
 
-**未来情况的相应行为**
+> 未来情况的相应行为
 
 * Promise
 * process.nextTick（node）
 * MutaionObserver
 
-- - -
+---
 
 ## RenderStep
 - Structure - 构建 DOM 树的结构
@@ -246,13 +265,13 @@ node11以后
 - 单位时间，setTimeout会执行多次，requestAnimationFrame严格遵守【执行一次渲染一次】
 - setTimeout(callback, 1000 / 60)可以模拟requestAnimationFrame，但不适合
 
-- - -
+---
 
 ## 交互事件触发
 [参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/7)
 
 ### 总结
-- 宏任务是宏任务 + 微任务统称，即微任务队列包含在当前宏任务内
+- `宏任务`是`宏任务` + `微任务`统称，即微任务队列包含在当前宏任务内
 - 一次事件循环：同步任务 -> 一个宏任务 -> 微任务 -> render
 - 即使是立即resolve/reject，then还是微任务
 - 微任务中嵌套的微任务，仍然会在当前事件循环中执行完，
@@ -262,16 +281,21 @@ node11以后
 - await是generator + promise的语法糖，类似Promise执行方式，[参考](../fe-interview/src/common.md#模拟async/await)例
 - 目前试下来，setTimeout(1)效果等同setTimeout(0)
 
-  ```js
-  await console.log(1);
+**await就是promise语法糖**
+
+```js
+await console.log(1);
+console.log(2);
+
+// 也就是
+Promise.resolve(console.log(1)).then(() => {
   console.log(2);
+});
+```
 
-  // 也就是
-  Promise.resolve(console.log(1)).then(() => {
-    console.log(2);
-  });
-  ```
+例0：
 
+![事件触发例子](./事件触发.gif)
 
 例1：
 ```js
@@ -279,17 +303,13 @@ let button = document.querySelector('#button');
 
 button.addEventListener('click', function CB1() {
   console.log('Listener 1');
-
   setTimeout(() => console.log('Timeout 1'))
-
   Promise.resolve().then(() => console.log('Promise 1'))
 });
 
 button.addEventListener('click', function CB1() {
   console.log('Listener 2');
-
   setTimeout(() => console.log('Timeout 2'))
-
   Promise.resolve().then(() => console.log('Promise 2'))
 });
 
@@ -362,8 +382,11 @@ console.log('script end')
 ---
 
 ## await
-通常你会将一个 Promise 传给 await，但实际上你可以 await 任意的 JavaScript 值。
-如果 await 之后的表达式的值不是 promise，则将其转换为 promise
+>
+> 通常你会将一个 Promise 传给 await，但实际上你可以 await 任意的 JavaScript 值。
+>
+> 如果 await 之后的表达式的值不是 promise，则将其转换为 promise
+>
 
 ```js
 async function f() {

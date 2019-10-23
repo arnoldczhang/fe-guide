@@ -71,6 +71,15 @@ const forAttrs = [
   WX_KEY,
 ];
 
+/**
+ * triggerCustomAction
+ * @param ast
+ * @param option
+ * @param result
+ * @param value
+ * @param klass
+ * @param payload
+ */
 export const triggerCustomAction = (
   ast: IAst,
   option: IPath,
@@ -95,6 +104,14 @@ export const triggerCustomAction = (
   }
 };
 
+/**
+ * triggerWidthAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerWidthAction = (
   ast: IAst,
   options: IPath,
@@ -115,6 +132,14 @@ export const triggerWidthAction = (
     })
 );
 
+/**
+ * triggerHeightAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerHeightAction = (
   ast: IAst,
   options: IPath,
@@ -135,6 +160,14 @@ export const triggerHeightAction = (
     })
 );
 
+/**
+ * triggerPaddingTopAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerPaddingTopAction = (
   ast: IAst,
   options: IPath,
@@ -155,6 +188,14 @@ export const triggerPaddingTopAction = (
     })
 );
 
+/**
+ * triggerPaddingRightAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerPaddingRightAction = (
   ast: IAst,
   options: IPath,
@@ -175,6 +216,14 @@ export const triggerPaddingRightAction = (
     })
 );
 
+/**
+ * triggerPaddingBottomAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerPaddingBottomAction = (
   ast: IAst,
   options: IPath,
@@ -195,6 +244,14 @@ export const triggerPaddingBottomAction = (
     })
 );
 
+/**
+ * triggerPaddingLeftAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerPaddingLeftAction = (
   ast: IAst,
   options: IPath,
@@ -215,6 +272,14 @@ export const triggerPaddingLeftAction = (
     })
 );
 
+/**
+ * triggerPaddingAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerPaddingAction = (
   ast: IAst,
   options: IPath,
@@ -235,6 +300,14 @@ export const triggerPaddingAction = (
     })
 );
 
+/**
+ * triggerMarginTopAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerMarginTopAction = (
   ast: IAst,
   options: IPath,
@@ -255,6 +328,14 @@ export const triggerMarginTopAction = (
     })
 );
 
+/**
+ * triggerMarginRightAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerMarginRightAction = (
   ast: IAst,
   options: IPath,
@@ -275,6 +356,14 @@ export const triggerMarginRightAction = (
     })
 );
 
+/**
+ * triggerMarginBottomAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerMarginBottomAction = (
   ast: IAst,
   options: IPath,
@@ -295,6 +384,14 @@ export const triggerMarginBottomAction = (
     })
 );
 
+/**
+ * triggerMarginLeftAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerMarginLeftAction = (
   ast: IAst,
   options: IPath,
@@ -315,6 +412,14 @@ export const triggerMarginLeftAction = (
     })
 );
 
+/**
+ * triggerMarginAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerMarginAction = (
   ast: IAst,
   options: IPath,
@@ -335,6 +440,15 @@ export const triggerMarginAction = (
     })
 );
 
+/**
+ * triggerBgAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ * @param otherBg
+ */
 export const triggerBgAction = (
   ast: IAst,
   options: IPath,
@@ -354,6 +468,14 @@ export const triggerBgAction = (
   ast.attr[KLASS] = result[KLASS];
 };
 
+/**
+ * triggerDarkBgAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerDarkBgAction = (
   ast: IAst,
   options: IPath,
@@ -364,6 +486,14 @@ export const triggerDarkBgAction = (
   triggerBgAction(ast, options, result, value, klass, WXSS_BG_DARK_GREY);
 };
 
+/**
+ * triggerLightBgAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerLightBgAction = (
   ast: IAst,
   options: IPath,
@@ -378,6 +508,11 @@ const replaceAttrs = allAttrs
   .filter((attr: string) => attr !== ATTR_REPLACE)
   .concat(forAttrs);
 
+/**
+ * triggerReplaceAction
+ * @param ast
+ * @param value
+ */
 export const triggerReplaceAction = (
   ast: IAst,
   value: string,
@@ -394,6 +529,14 @@ export const triggerReplaceAction = (
   return result;
 };
 
+/**
+ * triggerBorderRadiusAction
+ * @param ast
+ * @param options
+ * @param result
+ * @param value
+ * @param klass
+ */
 export const triggerBorderRadiusAction = (
   ast: IAst,
   options: IPath,
