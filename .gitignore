@@ -4,3 +4,4 @@
 /build/
 /src/mobx/dist/
 /alipay-electron/
+yarn.lock
