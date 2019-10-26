@@ -24,7 +24,7 @@
 * [`团队规范`](#团队规范)
 * [`言谈举止`](#言谈举止)
 * [`表达观点`](#表达观点)
-* [`前端集成解决方案`](#前端集成解决方案)
+* [`前端集成解决方案🎸`](#前端集成解决方案)
 * [`前端框架对比`](#框架对比)
 * [`技术选型`](#技术选型)
 * [`依赖管理`](#依赖管理)
@@ -215,7 +215,6 @@
   - 用户输入/反馈
   - cookies
 
-
 ### UI工程要素
 [UI工程要素](https://mp.weixin.qq.com/s?__biz=MzU0Nzk1MTg5OA==&mid=2247484673&idx=1&sn=2056a95b60b9bc3b4739afc353564f7b&chksm=fb47c174cc3048623148ece520a0bc2581b100d99ea97a780b66df16dc9c6937ee8bce2c2ee2&mpshare=1&scene=2&srcid=&from=timeline&ascene=2&devicetype=androi)
 
@@ -323,9 +322,7 @@ project
 - [大型项目前端架构浅谈](https://juejin.im/post/5cea1f705188250640005472)
 - [前端集成解决方案](https://github.com/fouber/blog/issues/1)
 
-1. 开发规范
-  * 开发、部署的目录规范
-  * 编码规范
+1. [规范](#规范)
 2. 模块化开发
   * require、define
   * js方面解决独立作用域、依赖管理、api暴露、按需加载与执行、安全合并等问题
@@ -434,11 +431,8 @@ import module1 from 'module1'
 
 ## 代码保护
 - [参考](https://juejin.im/post/5d89e996e51d453bc64802c0)
-
-[js混淆器](https://github.com/javascript-obfuscator/javascript-obfuscator)
-
-[字节码编译器](https://github.com/OsamaAbbas/bytenode)
-
+- [js混淆器](https://github.com/javascript-obfuscator/javascript-obfuscator)
+- [字节码编译器](https://github.com/OsamaAbbas/bytenode)
 
 ---
 
@@ -494,5 +488,69 @@ import module1 from 'module1'
 - Q ：Question(疑问)
 - A ：Answer(解答)
 
+---
+
 ## 常识
 [5g辐射](5G辐射.md)
+
+---
+
+## 规范
+[团队规范](https://juejin.im/post/5d3a7134f265da1b5d57f1ed?utm_source=gold_browser_extension)
+
+### 工作流规范
+
+#### 开发规范
+
+**版本**
+
+[参考](../npm&yarn/README.md#版本)
+
+**版本控制**
+
+[git-flow](https://github.com/ivan-94/git-guide/blob/master/branch/gitflow.md)
+
+**提交信息**
+
+- 格式统一
+- [自动生成changelog](https://www.cnblogs.com/zivxiaowei/p/10089201.html)
+
+#### 构建规范
+
+>
+> 约定 > 配置
+>
+
+[create-react-app](https://github.com/facebook/create-react-app)
+[vue-cli3](https://cli.vuejs.org/)
+
+#### 发布规范
+
+- 代码变更
+- 提交代码变更到远程版本库
+- 程序通过CI测试(例如Travis变绿)
+- 提升package.json中的版本
+- 生成CHANGELOG
+- 提交package.json和CHANGELOG.md文件
+- 打上Tag
+- 推送
+
+#### 持续集成
+
+>
+> ‘持续’的概念，可以用于软件开发的方方面面，本质上就是把传统瀑布式的软件开发流程打碎，
+>
+> 形成一个个更小的开发闭环，持续地输出产品，同时产品也持续地给上游反馈和纠正。
+>
+
+![持续集成](./持续集成.jpg)
+
+- 尽早发现错误，快速试错。越早发现错误，处理错误的成本越低
+- 自动化工作流，减少人工干预。人类比机器容易犯错, 而且机器擅长做重复的事情
+
+#### 任务管理
+- git-issue
+- tower
+- trello
+- teambition
+

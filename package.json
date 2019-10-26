@@ -30,7 +30,8 @@
   },
   "scripts": {
     "lint:fix": "eslint . --fix",
-    "test:debug": "nodemon ./src/test/src/server.js"
+    "test:debug": "nodemon ./src/test/src/server.js",
+    "commit": "git-cz"
   },
   "ava": {
     "files": [
