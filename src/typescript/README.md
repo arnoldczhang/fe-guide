@@ -131,6 +131,53 @@ const AnimalMap: Record<AnimalType, AnimalDescription> = {
 };
 ```
 
+### 标准注释
+```ts
+/**
+ * 一个方法：生成错误提示信息
+ * 
+ * @param {string} message 提示信息，比如`you have a error`
+ * @param {number | string} code 错误码，数字和字符都行
+ * @param {string} type 类型，请写`demo1`或者`demo2`
+ * 
+ * [还不懂？点这里吧](https://www.google.com)
+ * 
+ * ```js
+ * // demo
+ * genErrMsg('demo', 10086)
+ * 
+ * ```
+ */
+export function genErrMsg (message: string, code: number | string, type?: ('demo1' | 'demo2')): string {
+    return (message || `网络繁忙，请稍候再试`) + (code ? `(${code})` : ``)
+}
+```
+
+### enum
+```ts
+enum HttpCode {
+    /** 成功 */
+    '200_OK' = 200,
+    /** 已生成了新的资源 */
+    '201_Created' = 201,
+    /** 请求稍后会被处理 */
+    '202_Accepted' = 202,
+    /** 资源已经不存在 */
+    '204_NoContent' = 204,
+    /** 被请求的资源有一系列可供选择的回馈信息 */
+    '300_MultipleChoices' = 300,
+    /** 永久性转移 */
+    '301_MovedPermanently' = 301,
+    /** 暂时性转移 */
+    '302_MoveTemporarily' = 302,
+}
+
+// 相比于普通对象map，只能用key访问value，
+// enum能同时用key和value，访问到value和key
+HttpCode['200_OK']
+HttpCode[200]
+```
+
 ---
 
 ## SOLID
