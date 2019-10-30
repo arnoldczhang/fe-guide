@@ -1,0 +1,43 @@
+// Place your key bindings in this file to override the defaultsauto[]
+[
+  {
+      "key": "ctrl+cmd+down",
+      "command": "editor.action.moveLinesDownAction",
+      "when": "editorTextFocus && !editorReadonly"
+  },
+  {
+      "key": "alt+down",
+      "command": "-editor.action.moveLinesDownAction",
+      "when": "editorTextFocus && !editorReadonly"
+  },
+  {
+      "key": "ctrl+cmd+up",
+      "command": "editor.action.moveLinesUpAction",
+      "when": "editorTextFocus && !editorReadonly"
+  },
+  {
+      "key": "alt+up",
+      "command": "-editor.action.moveLinesUpAction",
+      "when": "editorTextFocus && !editorReadonly"
+  },
+  {
+      "key": "shift+cmd+d",
+      "command": "editor.action.copyLinesDownAction",
+      "when": "editorTextFocus && !editorReadonly"
+  },
+  {
+      "key": "shift+alt+down",
+      "command": "-editor.action.copyLinesDownAction",
+      "when": "editorTextFocus && !editorReadonly"
+  },
+  {
+      "key": "shift+cmd+l",
+      "command": "editor.action.insertCursorAtEndOfEachLineSelected",
+      "when": "editorTextFocus"
+  },
+  {
+      "key": "shift+alt+i",
+      "command": "-editor.action.insertCursorAtEndOfEachLineSelected",
+      "when": "editorTextFocus"
+  }
+]
