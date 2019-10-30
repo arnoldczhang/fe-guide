@@ -243,7 +243,7 @@
     "node-less": "^1.0.0",
     "nodemon": "^1.17.5",
     "nothis": "^1.2.2",
-    "open": "^0.0.5",
+    "open": "^6.0.0",
     "phantomjs": "^2.1.7",
     "postcss-loader": "^2.0.8",
     "posthtml": "^0.11.0",
