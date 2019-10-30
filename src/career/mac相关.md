@@ -60,7 +60,12 @@ shift+cmd+.
 - source .bash_profile
 
 ### homebrew
+
+```cmd
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
 
 ### ssh-key
+```cmd
 ssh-keygen -t rsa -C "zhangcheng10682@hellobike.com"
+```
