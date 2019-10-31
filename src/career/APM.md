@@ -4,8 +4,12 @@
 
 ## 目标
 
+---
+
 ## 整体流程
 ![整体流程](apm-overall.jpg)
+
+---
 
 ## 埋点事件
 
@@ -27,6 +31,92 @@
 | PAY | 支付 | 支付按钮每次点击 | 手动 |
 | custom | 自定义埋点 | 其他类型事件 | 手动 |
 
+#### 代码示例
+
+**APP**
+
+```js
+// 微信小程序
+// 支付宝小程序
+const WrapperApp = (params = {}) => {
+  const { onLaunch, onHide } = params;
+  if (typeof onLaunch === 'function') {
+    params.onLaunch = function(options) {
+      onLaunch.call(params, options);
+      console.log('as');
+    };
+  } else {
+    params.onLaunch = function(options) {
+      console.log('as');
+    };
+  }
+
+  if (typeof onHide === 'function') {
+    params.onHide = function() {
+      onHide.call(params);
+      console.log('ad');
+    };
+  } else {
+    params.onHide = function() {
+      console.log('ad');
+    };
+  }
+  return App(params);
+};
+
+// ...
+WrapperApp({
+  onLaunch(options) {
+    console.log('as');
+  },
+  onHide() {
+    console.log('ad');
+  },
+})
+```
+
+**PAGE**
+
+```js
+// 微信小程序
+// 支付宝小程序
+const WrapperPage = (params = {}) => {
+  const { onLoad, onUnload } = params;
+  if (typeof onLoad === 'function') {
+    params.onLoad = function(options) {
+      onLoad.call(params, options);
+      console.log('pv');
+    };
+  } else {
+    params.onLoad = function(options) {
+      console.log('pv');
+    };
+  }
+
+  if (typeof onUnload === 'function') {
+    params.onUnload = function() {
+      onUnload.call(params);
+      console.log('pd');
+    };
+  } else {
+    params.onUnload = function() {
+      console.log('pd');
+    };
+  }
+  return App(params);
+};
+
+// ...
+WrapperPage({
+  onLoad(options) {
+    console.log('pv');
+  },
+  onUnload() {
+    console.log('pd');
+  },
+})
+```
+
 ### 性能埋点
 
 #### 事件解释
@@ -40,9 +130,91 @@
 
 ### 异常埋点
 
+#### onerror
 
-## 埋点时机
+```js
+// h5
+window.addEventListener('error', (...args) => {
+  console.log(args);
+});
 
+// 微信小程序
+// 支付宝小程序
+const WrapperApp = (params = {}) => {
+  const { onError } = params;
+  if (typeof onError === 'function') {
+    params.onError = function(msg) {
+      onError.call(params, msg);
+      console.log(msg);
+    };
+  } else {
+    params.onError = function(msg) {
+      console.log(msg);
+    };
+  }
+  return App(params);
+};
+
+// ...
+WrapperApp({
+  onError(msg) {
+    console.log(msg);
+  },
+});
+```
+
+#### unhandledrejection
+```js
+// h5
+window.addEventListener("unhandledrejection", function(e){
+  e.preventDefault();
+  console.log(e);
+});
+```
+
+#### reject
+```js
+Promise.reject = function reject(output) {
+  const oldReject = Promise.reject;
+  try {
+    oldReject(output);
+  } catch(err) {
+    // TODO 上报触发reject时的事件
+  }
+};
+```
+
+#### addEventListener
+```js
+// h5
+const originAddEventListener = EventTarget.prototype.addEventListener;
+EventTarget.prototype.addEventListener = function(type, listener, options) {
+  const addStack = new Error(`Event (${type})`).stack;
+  const wrappedListener = (...args) => {
+    try {
+      // 监听listener的异常
+      return listener.apply(this, args);
+    } catch(err) {
+      // 手动扩展堆栈
+      err.stack += '\n' + addStack;
+      // throw的error是同域的，可被window.onerror捕获
+      throw err;
+    }
+  };
+  return originAddEventListener.call(this, type, wrappedListener, options);
+}
+```
+
+#### custom
+```js
+try {
+  // ...
+} catch(err) {
+ throw err;
+}
+```
+
+---
 
 
 
