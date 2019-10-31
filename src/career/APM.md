@@ -7,7 +7,7 @@
 ---
 
 ## 整体流程
-![整体流程](apm-overall.jpg)
+![整体流程](http://assets.processon.com/chart_image/5dba4465e4b09df55189de17.png?_=1572512968008)
 
 ---
 
@@ -16,7 +16,7 @@
 ### 业务埋点
 
 #### 事件分类
-![分类](apm-sort.jpg)
+![分类](http://assets.processon.com/chart_image/5dba85d9e4b0ea86c41bbe0f.png?_=1572512990929)
 
 #### 事件解释
 | 类型 | 名称 | 解释 | 调用方式 |
