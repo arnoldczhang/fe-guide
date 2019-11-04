@@ -58,18 +58,21 @@
 //   ]
 // }).code);
 
-// const http = require('http');
+const http = require('http');
+const querystring = require('querystring');
 
-// http.createServer(function(req, res){//回调函数
-//   console.log(req.httpVersion);
-//   console.log(req.headers);
-//   console.log(req.method);
-//   console.log(req.url);
-//   console.log(req.trailers);
-//   console.log(req.complete);
-//   res.writeHead(200,{'Content-Type':'text/javascript'});
-//   res.end(``);
-// }).listen(8000);
+http.createServer(function(req, res){//回调函数
+  var body = "";
+  req.on('data', function (chunk) {
+      body += chunk;
+  });
+  req.on('end', function () {
+    body = querystring.parse(body);
+    res.writeHead(200,{'Content-Type':'text/javascript'});
+    console.log(body);
+    res.end();
+  });
+}).listen(8888);
 
 // demo1
 // let input = {};
@@ -262,26 +265,26 @@
 // console.log(require("crypto").createHash('sha256').update(('aaa')).digest('hex'));
 
 
-var JavaScriptObfuscator = require('javascript-obfuscator');
+// var JavaScriptObfuscator = require('javascript-obfuscator');
 
-var obfuscationResult = JavaScriptObfuscator.obfuscate(
-  `
-        (function(){
-            var variable1 = '5' - 3;
-            var variable2 = '5' + 3;
-            var variable3 = '5' + - '2';
-            var variable4 = ['10','10','10','10','10'].map(parseInt);
-            var variable5 = 'foo ' + 1 + 1;
-            console.log(variable1);
-            console.log(variable2);
-            console.log(variable3);
-            console.log(variable4);
-            console.log(variable5);
-        })();
-    `, {
-    compact: false,
-    controlFlowFlattening: true
-  }
-);
+// var obfuscationResult = JavaScriptObfuscator.obfuscate(
+//   `
+//         (function(){
+//             var variable1 = '5' - 3;
+//             var variable2 = '5' + 3;
+//             var variable3 = '5' + - '2';
+//             var variable4 = ['10','10','10','10','10'].map(parseInt);
+//             var variable5 = 'foo ' + 1 + 1;
+//             console.log(variable1);
+//             console.log(variable2);
+//             console.log(variable3);
+//             console.log(variable4);
+//             console.log(variable5);
+//         })();
+//     `, {
+//     compact: false,
+//     controlFlowFlattening: true
+//   }
+// );
 
-console.log(obfuscationResult.getObfuscatedCode());
+// console.log(obfuscationResult.getObfuscatedCode());

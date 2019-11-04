@@ -43,8 +43,7 @@
   },
   "author": "arnold",
   "license": "MIT",
-  "dependencies": {
-    "nodemon": "^1.19.4"
-  },
-  "devDependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+  }
 }
