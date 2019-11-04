@@ -23,7 +23,7 @@
 - [算法学习](./src/algorithm/README.md)
 - [babel学习](./src/babel/README.md)
 - [webpack学习](./src/webpack/README.md)
-- [健身指南](./src/keep/README.md)
+- [生活指南](./src/keep/README.md)
 - [元编程学习](./src/meta-programming/README.md)
 - [css学习](./src/css-related/README.md)
 - [node学习](./src/node/README.md)
