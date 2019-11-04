@@ -6,11 +6,11 @@
 ---
 
 ## 基本原理
-> Prometheus的基本原理是通过HTTP协议周期性抓取被监控组件的状态，任意组件只要提供对应的HTTP接口就可以接入监控。
+> Prometheus 的基本原理是通过HTTP协议周期性抓取被监控组件的状态，任意组件只要提供对应的HTTP接口就可以接入监控。
 >
 > 不需要任何SDK或者其他的集成过程。
 >
-> 这样做非常适合做虚拟化环境监控系统，比如VM、Docker、Kubernetes等。
+> 这样做非常适合做虚拟化环境监控系统，比如 VM、Docker、Kubernetes 等。
 
 ---
 
@@ -20,10 +20,10 @@
 ---
 
 ## 主要套件
-- prometheus Server 主要负责数据采集和存储，提供PromQL查询语言的支持
+- prometheus Server 主要负责数据采集和存储，提供 PromQL 查询语言的支持
 - Alertmanager 警告管理器，用来进行报警
 - PushGateway 支持临时性 Job 主动推送指标的中间网关
-- NodeExporter 可以提供 metrics 给prometheus Server
+- NodeExporter 可以提供 metrics 给 prometheus Server
 
 ---
 
