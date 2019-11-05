@@ -128,8 +128,8 @@ cat <<EOF | curl --data-binary @- http://localhost:9091/metrics/job/cqh/instance
 muscle_metric{label="gym"} 8800
 # 三大项数据 kg
 bench_press 100
-dead_lift 360
-deep_squal 60
+dead_lift 1060
+deep_squal 190
 EOF
 ```
 
