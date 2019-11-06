@@ -58,22 +58,6 @@
 //   ]
 // }).code);
 
-const http = require('http');
-const querystring = require('querystring');
-
-http.createServer(function(req, res){//回调函数
-  var body = "";
-  req.on('data', function (chunk) {
-      body += chunk;
-  });
-  req.on('end', function () {
-    body = querystring.parse(body);
-    res.writeHead(200,{'Content-Type':'text/javascript'});
-    console.log(body);
-    res.end();
-  });
-}).listen(8888);
-
 // demo1
 // let input = {};
 // let validator = {

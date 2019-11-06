@@ -82,13 +82,13 @@ docker run --name prometheus \
 -dit --network my-network \
 -d -p 9090:9090 \
 -v /Users/arnoldzhang/Documents/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
--v /Users/arnoldzhang/Documents/docker/prometheus/server/rules.yml:/etc/prometheus/rules.yml \
+-v /Users/arnoldzhang/Documents/docker/prometheus/server/:/etc/prometheus/ \
 prom/prometheus:v2.7.2
 ```
 
 `prometheus.yml`: 是 Prometheus Server 的全局配置文件，后面会给到最终版
 
-`rules.yml`: 是 Prometheus Server 的其中一个规则文件，后面会给到最终版
+`rules.yml`: 是 Prometheus Server 的其中一个规则文件，后面会给到最终版，这里为了扩展性，支持多个rules，所以只映射了rules所在路径
 
 `-dit --network my-network`: 使用我们新创建的网络`my-network`
 
