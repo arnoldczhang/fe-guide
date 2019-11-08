@@ -84,6 +84,12 @@ docker run --name prometheus \
 -v /Users/arnoldzhang/Documents/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
 -v /Users/arnoldzhang/Documents/docker/prometheus/server/:/etc/prometheus/ \
 prom/prometheus:v2.7.2
+
+docker stop prometheus
+
+docker start prometheus -a
+
+docker restart prometheus -a
 ```
 
 `prometheus.yml`: 是 Prometheus Server 的全局配置文件，后面会给到最终版
