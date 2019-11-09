@@ -68,6 +68,7 @@
   ```
 - [pipeline-stream](https://nodejs.org/dist/latest-v10.x/docs/api/stream.html#stream_stream_pipeline_streams_callback)
 - [性能诊断node-clinic](https://github.com/nearform/node-clinic)
+- [服务器性能测试-autocannon](https://github.com/mcollina/autocannon)
 - [压测autocannon](https://github.com/mcollina/autocannon)
 - [jest可视化-majestic](https://github.com/Raathigesh/majestic)
 - [在线查看npm包文件-npmview](https://npmview.now.sh/)
