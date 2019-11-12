@@ -64,6 +64,12 @@ const path = require('path');
 const request = require('request');
 const querystring = require('querystring');
 
+
+
+
+
+
+
 // http.createServer(function(req, res){//回调函数
 //   var body = "";
 //   req.on('data', function (chunk) {
@@ -77,63 +83,79 @@ const querystring = require('querystring');
 //   });
 // }).listen(8888);
 
-// 城市名-经纬
-const cities = require('./city2jw');
-// 城市名-citycode
-let cc = require('./citycode');
 
-cc = Object.keys(cc).reduce((res, name) => {
-  const re = /市$/;
-  let oldVal;
-  if (re.test(name)) {
-    oldVal = cc[name];
-    name = name.replace(re, '');
-  }
-  res[name] = oldVal || cc[name];
-  return res;
-}, {});
 
-const newCCKey = Object.keys(cc);
 
-const result = Object.keys(cities).reduce((res, name) => {
-  const oldName = name;
-  let code = cc[name];
-  if (code) {
-    res[code] = [oldName, ...cities[oldName]];
-  } else {
-    if (/地区$/.test(name)) {
-      name = name.replace(/地区$/, '');
-      code = cc[name];
-      if (code) {
-        try {
-          res[code] = [oldName, ...cities[oldName]];
-        } catch(err) {
-          debugger;
-        }
-      }
-    } else {
-      if (/州$/.test(name)) {
-        name = name.replace(/州$/, '');
-      }
-      const nameRe = new RegExp(`${name}.+$`);
-      if (!newCCKey.some((key) => {
-        if (nameRe.test(key)) {
-          res[cc[key]] = [oldName, ...cities[oldName]];
-          return true;
-        }
-        return false;
-      })) {
-        console.log(3, name);
-      }
-    }
-  }
-  return res;
-}, {});
 
-fs.writeFileSync(path.resolve(__dirname, './code2jw.js'), `
-  export default ${JSON.stringify(result)}
 
-`)
+
+
+// // 城市名-经纬
+// const cities = require('./city2jw');
+// // 城市名-citycode
+// let cc = require('./citycode');
+
+// cc = Object.keys(cc).reduce((res, name) => {
+//   const re = /市$/;
+//   let oldVal;
+//   if (re.test(name)) {
+//     oldVal = cc[name];
+//     name = name.replace(re, '');
+//   }
+//   res[name] = oldVal || cc[name];
+//   return res;
+// }, {});
+
+// const newCCKey = Object.keys(cc);
+
+// const result = Object.keys(cities).reduce((res, name) => {
+//   const oldName = name;
+//   let code = cc[name];
+//   if (code) {
+//     res[code] = [oldName, ...cities[oldName]];
+//   } else {
+//     if (/地区$/.test(name)) {
+//       name = name.replace(/地区$/, '');
+//       code = cc[name];
+//       if (code) {
+//         try {
+//           res[code] = [oldName, ...cities[oldName]];
+//         } catch(err) {
+//           debugger;
+//         }
+//       }
+//     } else {
+//       if (/州$/.test(name)) {
+//         name = name.replace(/州$/, '');
+//       }
+//       const nameRe = new RegExp(`${name}.+$`);
+//       if (!newCCKey.some((key) => {
+//         if (nameRe.test(key)) {
+//           res[cc[key]] = [oldName, ...cities[oldName]];
+//           return true;
+//         }
+//         return false;
+//       })) {
+//         console.log(3, name);
+//       }
+//     }
+//   }
+//   return res;
+// }, {});
+
+// fs.writeFileSync(path.resolve(__dirname, './code2jw.js'), `
+//   export default ${JSON.stringify(result)}
+
+// `)
+
+
+
+
+
+
+
+
+
 
 // demo1
 // let input = {};
