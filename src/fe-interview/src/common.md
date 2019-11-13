@@ -59,6 +59,7 @@
 * [`解构赋值`](#解构赋值)
 * [`URLSearchParams`](#URLSearchParams)
 * [`创建n个有值元素的数组`](#创建n个有值元素的数组)
+* [`数字转金额分割`](#数字转金额分割)
 
 **进阶js**
 
@@ -2544,3 +2545,23 @@ class URLSearchParams {
 - Array(n).fill(...)
 - [generator](../../meta-programming/README.md#Generator)
 
+---
+
+### 数字转金额分割
+
+```js
+// 正则1
+// 从头部开始，找三连数字组合外的index，插,
+// index: 1, 5, 7
+String('1234567890').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+
+// 正则2
+// 从头部开始，找三连数字组合外的第一个数字，逗号分割
+// value: 1, 4, 7 
+String('1234567890').replace(/(\d)(?=(\d{3})+\b)/g, '$1,');
+
+// 正则3
+// 同上
+String('1234567890').replace(/(\d{1,3})(?=(\d{3})+$)/g, '$1,');
+```
