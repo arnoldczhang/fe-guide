@@ -87,7 +87,37 @@ interface Person {
 }
 ```
 
-### 查找类型 + keyOf
+### keyOf
+> 获取对象所有属性名，构成联合类型
+
+```ts
+interface Itest{
+  webName:string;
+  age:number;
+  address:string
+}
+
+// 'webName' | 'age' | 'address'
+type ant=keyof Itest;
+```
+
+> 当属性名确认的情况下，也可以用 keyOf 限制属性值
+
+```ts
+interface Props {
+  foo: string;
+  [key: string]: Props[keyof Props];
+}
+
+const props: Props = {
+  foo: "bar"
+};
+
+props["foo"] = "baz"; // ok
+props["bar"] = "baz"; // error，目前看来只能是 string 类型
+```
+
+### 查找类型+keyOf
 ```ts
 interface API {
   '/user': { name: string },
@@ -98,7 +128,7 @@ const get = <URL extends keyof API>(url: URL): Promise<API[URL]> => {
 };
 ```
 
-### deepReadOnly
+### deepReadOnly+keyOf
 ```ts
 type DeepReadonly<T> = {
   readonly [P in keyof T]: DeepReadonly<T[P]>;
