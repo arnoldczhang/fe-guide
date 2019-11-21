@@ -16,6 +16,7 @@
 - [ReactFiber在并发模式下的运行机制](https://zhuanlan.zhihu.com/p/54042084)
 - [TypeScript 2.8下的终极React组件模式](https://juejin.im/post/5b07caf16fb9a07aa83f2977)
 - [create-react-app in docker](https://mherman.org/blog/dockerizing-a-react-app/)
+- [React + Typescript 工程化治理实践](https://github.com/ProtoTeam/blog/blob/master/201911/2.md)
 
 ## 目录
 <details>
@@ -34,6 +35,7 @@
 * [`rn`](#rn)
 * [`interview`](#interview)
 * [`优化指南`](#优化指南)
+* [`react+ts`](#react+ts)
 
 </details>
 
@@ -591,8 +593,40 @@ export default React.memo(MyComponent, areEqual);
 
 ---
 
+## react+ts
 
+### ESLint和Prettier
+> TSLint 在 2019 年宣布未来项目将会废弃，TS 官方推荐 ESLint 作为 Linter
 
+- @typescript-eslint/parser: 解析器
+- @typescript-eslint/eslint-plugin: 规则集
 
+#### JS+TS混合项目
+> ESLint 的 override
 
+只对 .ts 文件加入规则校验
+```json
+"overrides": [
+  {
+    "files": "**/*.ts",
+    "extends": [
+      "eslint-config-airbnb",
+      "plugin:@typescript-eslint/recommended",
+      "prettier/@typescript-eslint",
+      "prettier",
+      "prettier/react"
+    ],
+  }
+]
+```
+
+#### pre-commit hook
+
+### module
+- commonjs
+- es module
+
+### mono-repo
+
+### 单元测试-jest
 

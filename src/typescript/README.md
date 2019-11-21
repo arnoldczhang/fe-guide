@@ -149,6 +149,22 @@ namespace test {
 }
 ```
 
+### 高级类型
+
+> 条件类型
+```ts
+// T extends U ? X : Y -> 如果 T 包含 U 的所有属性，则返回 X，否则返回 Y
+function process<T extends string | null>(
+ text: T
+): T extends string ? string : null {
+ ...
+}
+
+process("foo").toUpperCase() // ok
+process().toUpperCase() // error
+
+```
+
 ### Record
 类似enum
 ```ts
