@@ -66,10 +66,6 @@ const querystring = require('querystring');
 
 
 
-
-
-
-
 // http.createServer(function(req, res){//回调函数
 //   var body = "";
 //   req.on('data', function (chunk) {
@@ -81,14 +77,51 @@ const querystring = require('querystring');
 //     res.write(fs.readFileSync(path.resolve(__dirname, './test.html'), 'utf-8'));
 //     res.end();
 //   });
-// }).listen(8888);
+// }).listen(8880);
 
 
 
+// var node = {
+//   name: "0",
+//   child: [
+//     {
+//       name: "a",
+//       child: [
+//         { name: "a1" },
+//         { name: "a2", child: [{ name: "a21" }, { name: "a22" }] }
+//       ]
+//     },
+//     { name: "b", child: [{ name: "b1" }, { name: "b2" }] }
+//   ]
+// };
 
+// function deep(input, arr = []) {
+//   let index = 0;
+//   let next = input[index];
+//   while (next) {
+//     arr.push(next.name);
+//     if (next.child) {
+//       deep(next.child, arr);
+//     }
+//     next = input[++index];
+//   }
+//   return arr;
+// };
 
+// function deep(node, arr = []) {
+//   const temp = [node];
+//   let next = temp.shift();
+//   while (next) {
+//     arr.push(next.name);
+//     if (next.child) {
+//       temp.unshift(...next.child);
+//     }
+//     next = temp.shift();
+//   }
+//   return arr;
+// };
 
-
+// console.log(deep(node));
 
 // // 城市名-经纬
 // const cities = require('./city2jw');
@@ -149,9 +182,35 @@ const querystring = require('querystring');
 // `)
 
 
+// const cityObj = require('./code2jw');
+// const cityCodeList = require('./city-code');
+
+// const citycode2jw = Object.keys(cityObj).reduce((res, adcode) => {
+//   const city = cityObj[adcode];
+//   const [cityName] = city;
+//   if (!cityCodeList.some(({
+//     name,
+//     citycode,
+//   }) => {
+//     if (name.indexOf(cityName) > -1 && !/区$/.test(name)) {
+//       res[citycode] = city;
+//       if (citycode < 1000) {
+//         res[`0${citycode}`] = city;
+//       }
+//       return true;
+//     }
+//     return false;
+//   })) {
+//     console.log(cityName);
+//   };
+//   return res;
+// }, {});
 
 
+// fs.writeFileSync(path.resolve(__dirname, './citycode2jw.js'), `
+//   export default ${JSON.stringify(citycode2jw)}
 
+// `)
 
 
 
