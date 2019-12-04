@@ -1,21 +1,46 @@
-import { rename } from "fs";
-
 /**
+ * SmartSql
  * 
- * const query = new Query(queryTable);
-    query.select(
-      toUnixTimestamp(interval(query.eventTimestamp, 1)),
-      toUInt32(avg(type, 'value')),
-      toUInt32(count(1, 'value2'))
-    )
-    .where(
-      query.timestamp.gte(toDateTime(beginDate / 1000))
-        .and(query.timestamp.lte(toDateTime(endDate / 1000)))
-    )
-    .orderBy(
-      query.eventTimestamp,
-      query.millisecond
-    ).end();
+ * 语义化 sql 语句，比如：
+ * 
+ * const q = new SmartSql('queryTable');
+    const sql = q.select(
+      q.eventTimestamp.rename(q.time),
+      q.tcpTime.as(q.TTTtime),
+      q['1'].count().rename(q.all),
+      q.type.avg().toUInt32(),
+      q.whiteScreen
+    ).where(
+      q.timestamp.gte(q.beginDate.divide(1000).toUnixTimestamp())
+        .and(q.timestamp.lte(q.endDate))
+    ).orderBy(
+      q.weight,
+      q.height,
+    ).groupBy(
+      q.pathHash
+    ).limit(2, 3)
+    .end();
+ *
+ * 最终生成的 sql 语句是：
+ * 
+ * select
+        eventTimestamp time,
+        tcpTime as TTTtime,
+        count(1) all,
+        toUInt32(avg(type)),
+        whiteScreen
+    from
+        queryTable
+    where
+        timestamp >= toUnixTimestamp(beginDate / 1000)
+            and timestamp <= endDate
+    order by
+        weight,
+        height
+    group by
+        pathHash
+    limit 2,3
+ *    
  */
 
 type BaseType = string | number | null;
@@ -182,27 +207,3 @@ export default class SmartSql extends AbstractSql {
     });
   }
 }
-
-
-
-// test
-const q = new SmartSql('queryTable');
-
-const sql = q.select(
-  q.eventTimestamp.rename(q.time),
-  q.tcpTime.as(q.TTTtime),
-  q['1'].count().rename(q.all),
-  q.type.avg().toUInt32(),
-  q.whiteScreen
-).where(
-  q.timestamp.gte(q.beginDate.divide(1000).toUnixTimestamp())
-    .and(q.timestamp.lte(q.endDate))
-).orderBy(
-  q.weight,
-  q.height,
-).groupBy(
-  q.pathHash
-).limit(2, 3)
-.end();
-
-console.log(sql);

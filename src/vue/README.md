@@ -69,3 +69,13 @@ vue ui
 </template>
 ```
 
+### keep-alive
+> vue 内置组件
+>
+> 会缓存包裹的第一个子组件实例，下次根据组件 id 从缓存中拿实例（如果存在的话）
+
+```html
+<keep-alive>
+  <div>...其他组件</div>
+</keep-alive>
+```
