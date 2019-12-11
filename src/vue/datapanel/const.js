@@ -15,6 +15,10 @@ export const OPTIONS = {
   FETCHKEY: 'fetchKey',
   // 指定自增配置（字段映射和时间间隔）
   INCREMENT: 'increment',
+  // 指定获取自增阈值方法（用于比对起始时间）
+  GETINTERVAL: 'getInterval',
+  // TODO 回调（目前还没用到）
+  HOOKS: 'hooks',
 };
 
 export const METHODS = {
@@ -40,6 +44,8 @@ export const METHODS = {
 
 export const DATA = {
   LASTREQPARAM: `${PRE_ING}lastReqParam`,
+  LASTOUTREQPARAM: `${PRE_ING}lastOutReqParam`,
+  LASTDATA: `${PRE_ING}lastData`,
   RELOADTIME: `${PRE_ING}reloadTime`,
   RELOADING: `${PRE_ING}reloading`,
   ONCE: `${PRE_ING}once`,
@@ -51,7 +57,9 @@ export const PROPS = {
   REFRESH: `${PRE}Refresh`,
   REQUEST: `${PRE}Request`,
   PARSE: `${PRE}Parse`,
+  BEFOREPARSE: `${PRE}BeforeParse`,
   REQUESTCALLBACK: `${PRE}RequestCallback`,
+  BEFOREREQUESTCALLBACK: `${PRE}BeforeRequestCallback`,
   REQUESTPARAM: `${PRE}RequestParam`,
   BEFOREDATAUPDATE: `${PRE}BeforeDataUpdate`,
   DATACOMBINE: `${PRE}DataCombine`,
@@ -92,6 +100,11 @@ export const dataPanelProps = {
     type: Function,
     default: noop,
   },
+  // 接口响应值预处理前方法
+  [PROPS.BEFOREPARSE]: {
+    type: Function,
+    default: noop,
+  },
   // 接口响应值预处理方法
   [PROPS.PARSE]: {
     type: Function,
@@ -104,6 +117,11 @@ export const dataPanelProps = {
   },
   // 增量请求后，前后数据的融合方法
   [PROPS.DATACOMBINE]: {
+    type: Function,
+    default: noop,
+  },
+  // 原数据被接口响应值更新前的回调
+  [PROPS.BEFOREREQUESTCALLBACK]: {
     type: Function,
     default: noop,
   },
@@ -123,3 +141,10 @@ export const TIME = {
   M: 1000 * 60,
   S: 1000,
 };
+
+export const defaultHooks = {
+  active() {},
+  inactive() {},
+};
+
+export const hooksKey = keys(defaultHooks || {});

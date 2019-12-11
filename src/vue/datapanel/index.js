@@ -5,6 +5,7 @@ import {
   filterKeys,
   shallowVueEq,
   toConn,
+  isFunc,
 } from './utils';
 import {
   IntersectionObserverHelper as IOH,
@@ -40,6 +41,8 @@ const {
 
 const {
   LASTREQPARAM,
+  LASTOUTREQPARAM,
+  LASTDATA,
   RELOADTIME,
   RELOADING,
   ONCE,
@@ -49,9 +52,11 @@ const {
 const {
   REQUESTPARAM,
   REQUEST,
+  BEFOREPARSE,
   PARSE,
   BEFOREDATAUPDATE,
   REQUESTCALLBACK,
+  BEFOREREQUESTCALLBACK,
   DATACOMBINE,
   DEFAULT,
 } = PROPS;
@@ -60,6 +65,7 @@ const {
   KEY,
   FETCHKEY,
   INCREMENT,
+  GETINTERVAL,
 } = OPTIONS;
 
 /**
@@ -87,6 +93,7 @@ export default function DataPanel(BaseComp, options = {}) {
     [KEY]: key,
     [FETCHKEY]: fetchKey,
     [INCREMENT]: increment,
+    [GETINTERVAL]: getInterval,
   } = options;
 
   if (!key) {
@@ -144,6 +151,10 @@ export default function DataPanel(BaseComp, options = {}) {
         [panelKey]: defaultValue || null,
         // 上次接口入参
         [LASTREQPARAM]: null,
+        // 上次外部接口入参
+        [LASTOUTREQPARAM]: null,
+        // 上次数据
+        [LASTDATA]: null,
         // 请求间隔
         [RELOADTIME]: 2000,
         // 请求态
@@ -183,7 +194,6 @@ export default function DataPanel(BaseComp, options = {}) {
           [LASTREQPARAM]: lastReqParam,
         } = this;
         const lastValue = lastReqParam[increKey];
-
         switch (type) {
           // TODO 暂时只考虑 Date 的情况
           case Date:
@@ -203,10 +213,30 @@ export default function DataPanel(BaseComp, options = {}) {
         const {
           [REQUESTPARAM]: requestParam,
           [LASTREQPARAM]: lastReqParam,
+          [LASTOUTREQPARAM]: lastOutReqParam,
+          [BASEINSTANCE]: inst,
         } = this;
         // 首次请求失败的情况，仍用原参数请求
         if (!lastReqParam) {
+          this[LASTOUTREQPARAM] = requestParam;
           return requestParam;
+        }
+
+        if (isFunc(getInterval) && incrementKey.length) {
+          const startKey = incrementKey[0];
+          const increType = increment[startKey].type;
+          // 根据自增字段类型做阈值校验
+          if (!increType || increType === Date) {
+            const interval = getInterval.call(inst) || 0;
+            // 对比外部入参，如果自增字段差值大于阈值，视为重新初始化请求
+            if (Math.abs(
+              new Date(requestParam[startKey]).getTime()
+              - new Date(lastOutReqParam[startKey]).getTime()
+            ) > interval) {
+              this[LASTOUTREQPARAM] = requestParam;
+              return requestParam;
+            }
+          }
         }
 
         const result = {};
@@ -233,7 +263,14 @@ export default function DataPanel(BaseComp, options = {}) {
           };
         }
       },
-      [CHECKRELOAD](force = !increment, propKey = '') {
+      [CHECKRELOAD](
+        // 重新请求 or 自增请求
+        force = !increment,
+        // 重新请求 or 异常重新请求
+        propKey = '',
+        // 焦点变更触发的 reload
+        focusFlag = false
+      ) {
         const {
           [REQUEST]: panelRequest = noop,
           [PARSEREQPARAM]: parseReqParam = noop,
@@ -242,7 +279,6 @@ export default function DataPanel(BaseComp, options = {}) {
           [RELOADING]: reloading,
           [LASTREQPARAM]: lastReqParam,
         } = this;
-
         // 如果不指定请求方法，走子组件自身的请求逻辑
         if (panelRequest === noop) {
           if (!fetchKey) {
@@ -262,7 +298,8 @@ export default function DataPanel(BaseComp, options = {}) {
         }
 
         // 非激活态或加载中，不请求
-        if (!this[ISACTIVE]() || reloading) {
+        if (!this[ISACTIVE]([this, this[CHECKRELOAD], force, propKey])
+          || reloading || this._inactive) {
           return;
         }
 
@@ -270,8 +307,16 @@ export default function DataPanel(BaseComp, options = {}) {
 
         let reqParam;
         const forceRefresh = force || !increment || once;
-        if (forceRefresh) {
+        // 重新聚焦，优先取上次请求参数，没有则取外部入参
+        if (focusFlag) {
+          reqParam = lastReqParam || panelRequestParam;
+          if (!lastReqParam) {
+            this[LASTOUTREQPARAM] = reqParam;
+          }
+          this[ONCE] = false;
+        } else if (forceRefresh) {
           reqParam = panelRequestParam;
+          this[LASTOUTREQPARAM] = reqParam;
           this[ONCE] = false;
         } else {
           reqParam = parseReqParam();
@@ -284,30 +329,36 @@ export default function DataPanel(BaseComp, options = {}) {
           }
         }
 
-        this[DOREQUEST](reqParam, forceRefresh);
+        this[DOREQUEST](reqParam, forceRefresh || reqParam === panelRequestParam);
       },
       [DOREQUEST](reqParam, force) {
         const {
           [REQUEST]: panelRequest = noop,
+          [BEFOREPARSE]: panelBeforeParse = noop,
           [PARSE]: panelParse = noop,
           [BEFOREDATAUPDATE]: panelBeforeDataUpdate = noop,
           [DATACOMBINE]: panelDataCombine = noop,
           [REQUESTCALLBACK]: panelRequestCallback = noop,
+          [BEFOREREQUESTCALLBACK]: panelBeforeRequestCallback = noop,
         } = this;
         this.$emit(PANEL_EVENT.LOADING, true);
         this.$emit(PANEL_EVENT.ERROR, false);
         panelRequest(reqParam)
+          .then(panelBeforeParse)
           .then(res => panelParse(res, reqParam))
           .then((res) => {
             panelBeforeDataUpdate(this[panelKey], res);
-            this[panelKey] = force
-              ? res
-              : panelDataCombine(this[panelKey], res);
+            this[LASTDATA] = force ? res : panelDataCombine(this[LASTDATA], res);
             this[LASTREQPARAM] = reqParam;
+            this[panelKey] = panelBeforeRequestCallback(this[LASTDATA]);
             panelRequestCallback(this[panelKey]);
             this.$emit(PANEL_EVENT.LOADING, false);
             this.$emit(PANEL_EVENT.ERROR, false);
-          }).catch(() => {
+          })
+          .catch(() => {
+            if (!this[LASTDATA]) {
+              this[ONCE] = true;
+            }
             this.$emit(PANEL_EVENT.LOADING, false);
             this.$emit(PANEL_EVENT.ERROR, true);
           });
@@ -326,8 +377,8 @@ export default function DataPanel(BaseComp, options = {}) {
           return vnode;
         });
 
+      updateContextMethods(this, this.$props);
       const props = filterKeys(this.$props, dataPanelPropsKey);
-      updateContextMethods(this, props);
       return hoc(Base, {
         on: this.$listeners,
         props: {

@@ -34,6 +34,8 @@
 | key | String | 原组件接收数据对应的 key 名称 | 必选 |
 | increment | Object | 增量配置，可见下方[举例](./用法) | 可选 |
 | fetchKey | String | 原组件自请求的方法名，可见下方[举例](./用法) | 可选 |
+| getInterval | Function | 获取自增阈值的方法（用于比对前后入参是否在阈值内，否则直接用外部入参请求，而不是增量参数） | 可选 |
+| hooks | Object | 暂时没用 | 可选 |
 
 ## props
 > 使用 dataPanel 组件时，可传如下 props:
@@ -44,10 +46,12 @@
 | d-panel-refresh | Function或String | 重新请求方法或方法名（需要在父组件注册这个空方法，为了回避 vue 的未注册警告），入参取外部传入的入参 | 可选 |
 | d-panel-request | Function<requestParam: Object> | 请求方法 | 可选 |
 | d-panel-requestParam | Object | 请求入参 | 可选 |
-| d-panel-parse | Function<response: Object> | 请求返回值预处理 | 可选 |
+| d-panel-before-parse | Function<response: Object> | 请求返回值预处理前 | 可选 |
+| d-panel-parse | Function<response: Object, requestParam: Object> | 请求返回值预处理 | 可选 |
 | d-panel-beforeDataUpdate | Function<oldData: Object, parsedData: Object> | 原数据更新前处理 | 可选 |
 | d-panel-dataCombine | Function<oldData: Object, parsedData: Object> | 原数据和请求返回值合并的处理 | 可选 |
-| d-panel-requestCallback | Function<newData: Object> | 数据更新后的回调 | 可选 |
+| d-panel-before-request-callback | Function<newData: Object> | 数据更新后的回调前 | 可选 |
+| d-panel-request-callback | Function<newData: Object> | 数据更新后的回调 | 可选 |
 | d-panel-default | any | 原组件默认值 | 可选 |
 
 ## 事件

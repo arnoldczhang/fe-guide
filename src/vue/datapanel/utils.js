@@ -7,6 +7,11 @@ export const isFunc = input => typeof input === 'function';
 
 export const toConn = (input = '') => input.replace(/[A-Z]/g, m => `-${m.toLowerCase()}`);
 
+/**
+ * vue 浅比较
+ * @param {*} src
+ * @param {*} tgt
+ */
 export const shallowVueEq = (src = {}, tgt = {}) => {
   let result = true;
   const source = src || {};
@@ -86,13 +91,17 @@ export const isStyleVisible = (el) => {
  */
 export const filterKeys = (obj = {}, fiterlist = []) => Object.keys(obj)
   .reduce((res, key) => {
-    if (key in fiterlist) {
+    if (fiterlist.includes(key)) {
       return res;
     }
     res[key] = obj[key];
     return res;
   }, {});
 
+/**
+ * weakmap/map 操作
+ * @param {*} object
+ */
 export const createCach = object => ({
   set(key, value) {
     object.set(key, value);
@@ -105,3 +114,31 @@ export const createCach = object => ({
     return object.delete(key);
   },
 });
+
+/**
+ * 合并对象 key
+ * @param {*} target
+ * @param {*} source
+ * @param {*} type
+ */
+export const combineObj = (target = {}, source = {}, type) => {
+  switch (type) {
+    case 'exclude':
+      keys(source).forEach((k) => {
+        if (!(k in target)) {
+          target[k] = source[k];
+        }
+      });
+      break;
+    case 'include':
+      keys(source).forEach((k) => {
+        if (k in target) {
+          target[k] = source[k];
+        }
+      });
+      break;
+    default:
+      break;
+  }
+  return target;
+};
