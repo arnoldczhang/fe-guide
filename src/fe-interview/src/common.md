@@ -60,6 +60,7 @@
 * [`URLSearchParams`](#URLSearchParams)
 * [`创建n个有值元素的数组`](#创建n个有值元素的数组)
 * [`数字转金额分割`](#数字转金额分割)
+* [`JSON.stringify`](#JSON.stringify)
 
 **进阶js**
 
@@ -2565,3 +2566,8 @@ String('1234567890').replace(/(\d)(?=(\d{3})+\b)/g, '$1,');
 // 同上
 String('1234567890').replace(/(\d{1,3})(?=(\d{3})+$)/g, '$1,');
 ```
+
+---
+
+### JSON.stringify
+[参考](../../jsonlike/README.md#JSON.stringify)
