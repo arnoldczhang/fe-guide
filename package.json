@@ -30,6 +30,7 @@
   },
   "scripts": {
     "lint:fix": "eslint . --fix",
+    "test": "node ./src/test/src/test.js",
     "test:debug": "nodemon ./src/test/src/server.js",
     "commit": "git-cz"
   },
@@ -44,6 +45,7 @@
   "author": "arnold",
   "license": "MIT",
   "dependencies": {
+    "node-xlsx": "^0.15.0",
     "nodemailer": "^6.3.1",
     "request": "^2.88.0"
   },

@@ -10,6 +10,7 @@
 * [`npm&yarn`](#两者差异)
 * [`npm安装原理`](#npm安装原理)
 * [`npm script`](#npm-script)
+* [`npm link`](#npm-link)
 
 </details>
 
@@ -251,3 +252,13 @@ npm run serve -- params  // 将params参数添加到process.env.argv数组中
   * script-runner
   * npm-run-all
   * redrun
+
+---
+
+## npm-link
+> 假设存在npm包A开发目录，项目B，项目B引用 npm包A，
+>
+> 1. cd 到npm包A的目录，`npm link`，这样全局的npm包A就引用当前开发目录
+>
+> 2. cd 到项目B，`npm link npm包A`
+>
