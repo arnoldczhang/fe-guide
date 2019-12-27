@@ -67,15 +67,15 @@ URL.revokeObjectURL(url);
 ### 后端输出源文件内容+类型格式，前端弹框下载
 ```js
 // node
-this.ctx.set('Content-Type', 'application/json');
-this.ctx.set('Content-Disposition', 'attachment;filename=test.json');
-const res = fs.readFileSync('test.json', 'utf-8');
+this.ctx.set('Content-Type', 'application/x-xls');
+this.ctx.set('Content-Disposition', 'attachment;filename=test.xls');
+const res = fs.readFileSync('test.xls', 'utf-8');
 return this.createSuccessResponse(res);
 ```
 
 ```js
 // 前端
-window.open(`${PATH}/test.json`);
+window.open(`${PATH}/test.xls`);
 ```
 
 ### 后端输出buffer，前端读取+模拟下载
