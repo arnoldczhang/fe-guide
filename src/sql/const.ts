@@ -12,10 +12,20 @@ const TYPE: ICO = {
   max: 'max',
   min: 'min',
   avg: 'avg',
+  desc: 'desc',
+  asc: 'asc',
   count: 'count',
   toUInt32: 'toUInt32',
+  interval: 'interval',
   toUnixTimestamp: 'toUnixTimestamp',
+  toDateTime: 'toDateTime',
+  toStartOfInterval: 'toStartOfInterval',
+  splitArray: 'splitArray',
   wrap: 'wrap',
+  toString: 'toString',
+  rename: 'rename',
+  as: 'as',
+  operate: 'operate',
 };
 
 export default TYPE;

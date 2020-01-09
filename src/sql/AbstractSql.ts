@@ -14,6 +14,8 @@ export default abstract class AbstractSql extends AnySql {
 
   protected limitArray: number[] = [];
 
+  protected offsetCount: number = 0;
+
   constructor(protected table: string) {
     super();
     this.table = table;
@@ -44,6 +46,11 @@ export default abstract class AbstractSql extends AnySql {
     return this;
   }
 
+  public offset(size: number): AbstractSql {
+    this.offsetCount = size;
+    return this;
+  }
+
   public end(): string {
     return `select\n    ${this.selectArray.join(',\n    ')}\nfrom\n    ${this.table}\n${
       this.whereArray.length
@@ -57,6 +64,9 @@ export default abstract class AbstractSql extends AnySql {
     }${
       this.limitArray.length
         ? `\nlimit ${this.limitArray.join()}` : ''
+    }${
+      this.offsetCount
+        ? `\noffset ${this.offsetCount}` : ''
     }
     `;
   }

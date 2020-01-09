@@ -88,6 +88,9 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   as(name: BaseType): string {
     return `${key} as ${name}`;
   },
+  in(value: BaseType[]): ICalcCollection {
+    return this.wrap('in', ...value);
+  },
   eq(value: BaseType): ICalcCollection {
     return this.operate(value, '=');
   },
@@ -121,7 +124,12 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   splitArray(array: BaseType[], splitter = ', '): ICalcCollection {
     return createCalcObject([key].concat(array).join(splitter));
   },
-  wrap(type: BaseType | FunctionSymbol): ICalcCollection {
+  wrap(type: BaseType | FunctionSymbol, ...ch: BaseType[]): ICalcCollection {
+    if (ch.length) {
+      return createCalcObject(`${key} ${type}(${ch.map((val: BaseType) => (
+        typeof val === 'number' ? val : `'${val}'`
+      ))})`);
+    }
     return createCalcObject(`${type}(${key})`);
   },
   operate(value: BaseType, type: CompareSymbol | CalcSymbol): ICalcCollection {
@@ -149,13 +157,15 @@ export default class SmartSql extends AbstractSql {
   static generateSql(sqlOption: IGenerateSql): string {
     const {
       table,
-      select,
+      select = [],
       where = [],
-      groupby,
+      groupby = [],
       orderby = [],
+      limit,
+      offset,
     } = sqlOption;
     const q = new SmartSql(table as string);
-    return q.select(
+    let result = q.select(
       ...select
     ).where(
       ...where
@@ -163,7 +173,19 @@ export default class SmartSql extends AbstractSql {
       ...groupby
     ).orderBy(
       ...orderby
-    )
-      .end();
+    );
+
+    if (limit && limit.length) {
+      const [start, ...rest] = limit;
+      result = result.limit(
+        start,
+        ...rest
+      );
+    }
+
+    if (offset) {
+      result = result.offset(offset);
+    }
+    return result.end();
   }
 }

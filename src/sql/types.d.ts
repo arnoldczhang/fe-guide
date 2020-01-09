@@ -3,7 +3,7 @@ type CompareSymbol = '=' | '>' | '<' | '<>' | '<=' | '>=';
 type CalcSymbol = '+' | '-' | '*' | '/';
 type FunctionSymbol = 'avg' | 'max' | 'min' | 'quantile';
 type CalcMethods = (input: BaseType) => ICalcCollection;
-type joinMethods = (array: BaseType[], extra?: any) => ICalcCollection;
+type joinMethods = (array: BaseType[], ...args: any[]) => ICalcCollection;
 type FuncMethods = () => ICalcCollection;
 type Key<T> = keyof T;
 
@@ -18,6 +18,8 @@ interface IGenerateSql {
   interval?: string;
   groupby: string[];
   orderby?: string[];
+  limit?: number[] | null;
+  offset?: number;
 }
 
 interface ICalcCollection {
@@ -43,9 +45,10 @@ interface ICalcCollection {
   toDateTime: FuncMethods;
   toStartOfInterval: FuncMethods;
   splitArray: joinMethods;
-  wrap: CalcMethods;
+  wrap: (input: BaseType, ...args: any[]) => ICalcCollection;
   toString: () => string;
   rename: (input: BaseType) => string;
   as: (input: BaseType) => string;
+  in: joinMethods;
   operate: (input: BaseType, type: CompareSymbol | CalcSymbol) => ICalcCollection;
 }
