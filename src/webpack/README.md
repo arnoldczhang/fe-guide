@@ -261,10 +261,10 @@ module.exports = {
 
 #### contenthash
 
-- 由文件内容产生的hash值，内容不同产生的contenthash值也不一样
+- 由文件内容产生的hash值，内容不同产生的`contenthash`值也不一样
 
 上例中，由于index.js引用了index.css，所以index.js有变动，index.css即使没有变动,
-打包出的文件，hash值也会变化，这时候就需要用到contenthash
+打包出的文件，hash值也会变化，这时候就需要用到`contenthash`
 
 ```js
 const extractTextPlugin = require('extract-text-webpack-plugin');
