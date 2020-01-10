@@ -123,6 +123,7 @@
 * [`浏览器跨域`](#浏览器跨域)
 * [`如何判断对象是否被GC`](#如何判断对象是否被GC)
 * [`get和post区别`](#get和post区别)
+* [`js单线程`](#js单线程)
 
 **算法**
 
@@ -2211,7 +2212,8 @@ data[i]Context = {
 ### 异步请求
 
 #### vue
-- created
+- created（最推荐，因为 ssr 没有 beforeMount、mounted，都在 created 请求，能保持统一）
+- beforeMount
 - mounted
 
 #### react
@@ -2650,5 +2652,12 @@ body{-webkit-text-size-adjust: 100%!important;}
 ```html
 <input type="text" autocapitalize="none">
 ```
+
+---
+
+### js单线程
+- 多线程操作 UI，会造成操作冲突
+- 多线程操作 DOM，会造成操作冲突
+- 互斥锁能解决这个问题，但是会带来更高的复杂度
 
 ---

@@ -48,6 +48,8 @@
 - [检查库的两个版本间的diff](https://diff.intrinsic.com/)
 - [npm源管理工具-nrm/yrm](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 - [搭建私有npm工具-verdaccio](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+- [数据校验工具 schema-typed](https://juejin.im/post/5b87c8a5e51d4538e41067a8)
+
   * ```
     npm install -g verdaccio
 
@@ -515,6 +517,10 @@ throw new CommonError('abc');
 ## 进程线程
 
 ### 概念
+> 进程：CPU 资源分配最小单位（资源分配和独立运行的最小单位）
+>
+> 线程：CPU 调度最小单位（在进程基础上的一次程序运行单位）
+
 - 多进程的形式，同时执行多个任务
 - 多线程的形式，将单个任务拆分成多个部分执行
 - 进程、线程间可以共享资源
