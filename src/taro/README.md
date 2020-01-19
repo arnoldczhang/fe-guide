@@ -17,3 +17,6 @@
 
 ### js
 无需考虑
+
+### taro next
+[taro next](https://aotu.io/notes/2020/01/02/gmtc/index.html)

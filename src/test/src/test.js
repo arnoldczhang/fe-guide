@@ -58,18 +58,163 @@
 //   ]
 // }).code);
 
-// const http = require('http');
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const request = require('request');
+const querystring = require('querystring');
+
+
 
 // http.createServer(function(req, res){//回调函数
-//   console.log(req.httpVersion);
-//   console.log(req.headers);
-//   console.log(req.method);
-//   console.log(req.url);
-//   console.log(req.trailers);
-//   console.log(req.complete);
-//   res.writeHead(200,{'Content-Type':'text/javascript'});
-//   res.end(``);
-// }).listen(8000);
+//   var body = "";
+//   req.on('data', function (chunk) {
+//       body += chunk;
+//   });
+//   req.on('end', function () {
+//     body = querystring.parse(body);
+//     res.writeHead(200,{'Content-Type':'text/html'});
+//     res.write(fs.readFileSync(path.resolve(__dirname, './test.html'), 'utf-8'));
+//     res.end();
+//   });
+// }).listen(8880);
+
+
+
+// var node = {
+//   name: "0",
+//   child: [
+//     {
+//       name: "a",
+//       child: [
+//         { name: "a1" },
+//         { name: "a2", child: [{ name: "a21" }, { name: "a22" }] }
+//       ]
+//     },
+//     { name: "b", child: [{ name: "b1" }, { name: "b2" }] }
+//   ]
+// };
+
+// function deep(input, arr = []) {
+//   let index = 0;
+//   let next = input[index];
+//   while (next) {
+//     arr.push(next.name);
+//     if (next.child) {
+//       deep(next.child, arr);
+//     }
+//     next = input[++index];
+//   }
+//   return arr;
+// };
+
+// function deep(node, arr = []) {
+//   const temp = [node];
+//   let next = temp.shift();
+//   while (next) {
+//     arr.push(next.name);
+//     if (next.child) {
+//       temp.unshift(...next.child);
+//     }
+//     next = temp.shift();
+//   }
+//   return arr;
+// };
+
+// console.log(deep(node));
+
+// // 城市名-经纬
+// const cities = require('./city2jw');
+// // 城市名-citycode
+// let cc = require('./citycode');
+
+// cc = Object.keys(cc).reduce((res, name) => {
+//   const re = /市$/;
+//   let oldVal;
+//   if (re.test(name)) {
+//     oldVal = cc[name];
+//     name = name.replace(re, '');
+//   }
+//   res[name] = oldVal || cc[name];
+//   return res;
+// }, {});
+
+// const newCCKey = Object.keys(cc);
+
+// const result = Object.keys(cities).reduce((res, name) => {
+//   const oldName = name;
+//   let code = cc[name];
+//   if (code) {
+//     res[code] = [oldName, ...cities[oldName]];
+//   } else {
+//     if (/地区$/.test(name)) {
+//       name = name.replace(/地区$/, '');
+//       code = cc[name];
+//       if (code) {
+//         try {
+//           res[code] = [oldName, ...cities[oldName]];
+//         } catch(err) {
+//           debugger;
+//         }
+//       }
+//     } else {
+//       if (/州$/.test(name)) {
+//         name = name.replace(/州$/, '');
+//       }
+//       const nameRe = new RegExp(`${name}.+$`);
+//       if (!newCCKey.some((key) => {
+//         if (nameRe.test(key)) {
+//           res[cc[key]] = [oldName, ...cities[oldName]];
+//           return true;
+//         }
+//         return false;
+//       })) {
+//         console.log(3, name);
+//       }
+//     }
+//   }
+//   return res;
+// }, {});
+
+// fs.writeFileSync(path.resolve(__dirname, './code2jw.js'), `
+//   export default ${JSON.stringify(result)}
+
+// `)
+
+
+// const cityObj = require('./code2jw');
+// const cityCodeList = require('./city-code');
+
+// const citycode2jw = Object.keys(cityObj).reduce((res, adcode) => {
+//   const city = cityObj[adcode];
+//   const [cityName] = city;
+//   if (!cityCodeList.some(({
+//     name,
+//     citycode,
+//   }) => {
+//     if (name.indexOf(cityName) > -1 && !/区$/.test(name)) {
+//       res[citycode] = city;
+//       if (citycode < 1000) {
+//         res[`0${citycode}`] = city;
+//       }
+//       return true;
+//     }
+//     return false;
+//   })) {
+//     console.log(cityName);
+//   };
+//   return res;
+// }, {});
+
+
+// fs.writeFileSync(path.resolve(__dirname, './citycode2jw.js'), `
+//   export default ${JSON.stringify(citycode2jw)}
+
+// `)
+
+
+
+
 
 // demo1
 // let input = {};
@@ -262,26 +407,26 @@
 // console.log(require("crypto").createHash('sha256').update(('aaa')).digest('hex'));
 
 
-var JavaScriptObfuscator = require('javascript-obfuscator');
+// var JavaScriptObfuscator = require('javascript-obfuscator');
 
-var obfuscationResult = JavaScriptObfuscator.obfuscate(
-  `
-        (function(){
-            var variable1 = '5' - 3;
-            var variable2 = '5' + 3;
-            var variable3 = '5' + - '2';
-            var variable4 = ['10','10','10','10','10'].map(parseInt);
-            var variable5 = 'foo ' + 1 + 1;
-            console.log(variable1);
-            console.log(variable2);
-            console.log(variable3);
-            console.log(variable4);
-            console.log(variable5);
-        })();
-    `, {
-    compact: false,
-    controlFlowFlattening: true
-  }
-);
+// var obfuscationResult = JavaScriptObfuscator.obfuscate(
+//   `
+//         (function(){
+//             var variable1 = '5' - 3;
+//             var variable2 = '5' + 3;
+//             var variable3 = '5' + - '2';
+//             var variable4 = ['10','10','10','10','10'].map(parseInt);
+//             var variable5 = 'foo ' + 1 + 1;
+//             console.log(variable1);
+//             console.log(variable2);
+//             console.log(variable3);
+//             console.log(variable4);
+//             console.log(variable5);
+//         })();
+//     `, {
+//     compact: false,
+//     controlFlowFlattening: true
+//   }
+// );
 
-console.log(obfuscationResult.getObfuscatedCode());
+// console.log(obfuscationResult.getObfuscatedCode());

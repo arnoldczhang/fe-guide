@@ -13,3 +13,6 @@ cmd + alt + ;
 
 ### stepNext
 cmd + alt + ,
+
+### 显示隐藏文件
+cmd + shift + .

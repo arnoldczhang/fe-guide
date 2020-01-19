@@ -5,6 +5,8 @@
 - [前端100问](https://juejin.im/post/5d23e750f265da1b855c7bbe?utm_source=gold_browser_extension#heading-2)
 - [前端必学](https://juejin.im/post/5d387f696fb9a07eeb13ea60?utm_source=gold_browser_extension)
 - [react](https://github.com/xiaomuzhu/front-end-interview/blob/master/docs/guide/react.md)
+- [90%的前端都会踩的坑](https://juejin.im/post/5dfb3e73f265da33b12ea9d3?utm_source=gold_browser_extension#heading-16)
+- [javascript-questions](https://github.com/lydiahallie/javascript-questions/blob/master/zh-CN/README-zh_CN.md)
 
 ## 目录
 <details>
@@ -59,6 +61,8 @@
 * [`解构赋值`](#解构赋值)
 * [`URLSearchParams`](#URLSearchParams)
 * [`创建n个有值元素的数组`](#创建n个有值元素的数组)
+* [`数字转金额分割`](#数字转金额分割)
+* [`JSON.stringify`](#JSON.stringify)
 
 **进阶js**
 
@@ -96,6 +100,7 @@
 * [`前端中的模块化开发`](#前端中的模块化开发)
 * [`浏览器和Node事件循环的区别`](#浏览器和Node事件循环的区别)
 * [`node异步错误捕获`](#node异步错误捕获)
+* [`文件上传`](#文件上传)
 
 **浏览器**
 
@@ -119,6 +124,7 @@
 * [`浏览器跨域`](#浏览器跨域)
 * [`如何判断对象是否被GC`](#如何判断对象是否被GC)
 * [`get和post区别`](#get和post区别)
+* [`js单线程`](#js单线程)
 
 **算法**
 
@@ -153,6 +159,13 @@
 * [`src和href`](#src和href)
 * [`实现一个轮播组件`](#实现一个轮播组件)
 * [`rel属性`](#rel属性)
+
+**各种坑**
+
+* [`IOS点击input不聚焦`](#IOS点击input不聚焦)
+* [`IOS点击focus响应错位`](#IOS点击focus响应错位)
+* [`微信浏览器调整字体页面错位`](#微信浏览器调整字体页面错位)
+* [`iOS下取消input在输入的时候英文首字母的默认大写`](#iOS下取消input在输入的时候英文首字母的默认大写)
 
 </details>
 
@@ -2200,7 +2213,8 @@ data[i]Context = {
 ### 异步请求
 
 #### vue
-- created
+- created（最推荐，因为 ssr 没有 beforeMount、mounted，都在 created 请求，能保持统一）
+- beforeMount
 - mounted
 
 #### react
@@ -2544,3 +2558,112 @@ class URLSearchParams {
 - Array(n).fill(...)
 - [generator](../../meta-programming/README.md#Generator)
 
+---
+
+### 数字转金额分割
+
+```js
+// 正则1
+// 从头部开始，找三连数字组合外的index，插,
+// index: 1, 5, 7
+String('1234567890').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+
+// 正则2
+// 从头部开始，找三连数字组合外的第一个数字，逗号分割
+// value: 1, 4, 7 
+String('1234567890').replace(/(\d)(?=(\d{3})+\b)/g, '$1,');
+
+// 正则3
+// 同上
+String('1234567890').replace(/(\d{1,3})(?=(\d{3})+$)/g, '$1,');
+```
+
+---
+
+### JSON.stringify
+[参考](../../jsonlike/README.md#JSON.stringify)
+
+---
+
+### IOS点击input不聚焦
+强制性加上点击事件，点击后给input框聚集光标
+
+```js
+cilckTextarea(){
+    document.getElementsByClassName('cont-inp')[0].focus();
+},
+```
+
+---
+
+### IOS点击focus响应错位
+手动把滚动条滚到底部写一个自定义指令
+
+```js
+import Vue from 'vue';
+Vue.directive('blur', {
+    'bind'(el) {
+        el.addEventListener("click", function(){
+            window.scrollTo(0,0);
+        })
+    }
+}); 
+//在点击页面提交按钮的时候，把滚动条滚到底部就OK了
+```
+
+---
+
+### 微信浏览器调整字体页面错位
+阻止页面字体自动调整大小
+
+```js
+// 安卓：
+(function() {
+  if (typeof WeixinJSBridge == "object" && typeof WeixinJSBridge.invoke == "function") {
+    handleFontSize();
+  } else {
+    if (document.addEventListener) {
+      document.addEventListener("WeixinJSBridgeReady", handleFontSize, false);
+    } else if (document.attachEvent) {
+      //IE浏览器，非W3C规范
+      document.attachEvent("onWeixinJSBridgeReady", handleFontSize);
+    }
+  }
+  function handleFontSize() {
+    // 设置网页字体为默认大小
+    WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize' : 0 });
+    // 重写设置网页字体大小的事件
+    WeixinJSBridge.on('menu:setfont', function() {
+      WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize' : 0 });
+    });
+  }
+})();
+```
+
+```css
+//iOS：
+// ios使用-webkit-text-size-adjust禁止调整字体大小
+body{-webkit-text-size-adjust: 100%!important;}
+```
+
+---
+
+### iOS下取消input在输入的时候英文首字母的默认大写
+```html
+<input type="text" autocapitalize="none">
+```
+
+---
+
+### js单线程
+- 多线程操作 UI，会造成操作冲突
+- 多线程操作 DOM，会造成操作冲突
+- 互斥锁能解决这个问题，但是会带来更高的复杂度
+
+---
+
+### 文件上传
+[文件上传](./文件上传.md)
+
+---
