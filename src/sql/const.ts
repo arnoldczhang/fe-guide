@@ -25,6 +25,8 @@ const TYPE: ICO = {
   toString: 'toString',
   rename: 'rename',
   as: 'as',
+  in: 'in',
+  uniq: 'uniq',
   operate: 'operate',
 };
 

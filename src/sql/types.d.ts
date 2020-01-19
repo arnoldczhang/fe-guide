@@ -16,7 +16,7 @@ interface IGenerateSql {
   select: string[],
   where: string[],
   interval?: string;
-  groupby: string[];
+  groupby?: string[];
   orderby?: string[];
   limit?: number[] | null;
   offset?: number;
@@ -50,5 +50,6 @@ interface ICalcCollection {
   rename: (input: BaseType) => string;
   as: (input: BaseType) => string;
   in: joinMethods;
+  uniq: joinMethods;
   operate: (input: BaseType, type: CompareSymbol | CalcSymbol) => ICalcCollection;
 }
