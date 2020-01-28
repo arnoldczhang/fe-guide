@@ -152,6 +152,7 @@
 * [`css布局`](#css布局)
 * [`文档流`](#文档流)
 * [`清除浮动`](#清除浮动)
+* [`图片加载失败处理`](#图片加载失败处理)
 
 **html**
 
@@ -2667,3 +2668,99 @@ body{-webkit-text-size-adjust: 100%!important;}
 [文件上传](./文件上传.md)
 
 ---
+
+### 图片加载失败处理
+[参考](https://bitsofco.de/styling-broken-images)
+
+```html
+<img src="http://bitsofco.de/broken.jpg" alt="Kanye Laughing">
+```
+
+**1. 提示帮助文字**
+
+```css
+img {
+  font-family: 'Helvetica';
+  font-weight: 300;
+  line-height: 2;  
+  text-align: center;
+  
+  width: 100%;
+  height: auto;
+  display: block;
+  position: relative;
+}
+
+img:before { 
+  content: "We're sorry, the image below is broken :(";
+  display: block;
+  margin-bottom: 10px;
+}
+
+img:after { 
+  content: "(url: " attr(src) ")";
+  display: block;
+  font-size: 12px;
+}
+```
+
+**2. 图片替换**
+
+```css
+img { /* Same as first example */ }
+
+img:after { 
+  content: "\f1c5" " " attr(alt);
+  
+  font-size: 16px;
+  font-family: FontAwesome;
+  color: rgb(100, 100, 100);
+  
+  display: block;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
+```
+
+**3. 美化替换文字**
+
+```css
+img { 
+  /* 样式跟第一个例子里是一样的，然后加了下面一条样式 */
+  min-height: 50px;
+}
+
+img:before { 
+  content: " ";
+  display: block;
+
+  position: absolute;
+  top: -10px;
+  left: 0;
+  height: calc(100% + 10px);
+  width: 100%;
+  background-color: rgb(230, 230, 230);
+  border: 2px dotted rgb(200, 200, 200);
+  border-radius: 5px;
+}
+
+img:after { 
+  content: "\f127" " Broken Image of " attr(alt);
+  display: block;
+  font-size: 16px;
+  font-style: normal;
+  font-family: FontAwesome;
+  color: rgb(100, 100, 100);
+  
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+```
