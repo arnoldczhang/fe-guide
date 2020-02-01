@@ -2,6 +2,7 @@
   "name": "fe-guide",
   "version": "0.0.1",
   "description": "",
+  "type": "module",
   "main": "./src/webpack/dist/index.bundle.js",
   "bin": {
     "pojo": "./src/webpack/pojo-loader/bin/pojo-loader.js",
