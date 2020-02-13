@@ -125,6 +125,7 @@
 * [`如何判断对象是否被GC`](#如何判断对象是否被GC)
 * [`get和post区别`](#get和post区别)
 * [`js单线程`](#js单线程)
+* [`performanceAPI`](#performanceAPI)
 
 **算法**
 
@@ -2787,3 +2788,8 @@ img:after {
   text-align: center;
 }
 ```
+
+---
+
+### performanceAPI
+[参考](https://www.cnblogs.com/bldxh/p/6857324.html)

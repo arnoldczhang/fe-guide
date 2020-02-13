@@ -31,6 +31,7 @@
   },
   "scripts": {
     "lint:fix": "eslint . --fix",
+    "source": "node ./src/sourcemap/test.js",
     "test": "node ./src/test/src/test.js",
     "test:debug": "nodemon ./src/test/src/server.js",
     "commit": "git-cz"
@@ -50,7 +51,9 @@
     "node-xlsx": "^0.15.0",
     "nodemailer": "^6.3.1",
     "react": "^16.12.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "source-map": "^0.7.3",
+    "source-map-support": "^0.5.16"
   },
   "devDependencies": {}
 }
