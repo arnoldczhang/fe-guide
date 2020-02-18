@@ -4,8 +4,8 @@ const http = require('http');
 const request = require('request');
 const querystring = require('querystring');
 
-const Authorization = 'InpoYW5nY2hlbmcxMDY4MiI:1iPTDE:qtz0dCHa_kV93C0jJicaIwyOqSw';
-const url = 'http://dev-alerts.hellobike.cn/api/v1/work/alerts';
+const Authorization = 'Authorization';
+const url = 'http://test';
 
 /**
  * 调用Alerts告警
