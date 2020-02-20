@@ -6,3 +6,12 @@ interface ISourceOption {
   // 请求最大耗时，默认3000毫秒
   maxTimeout?: number;
 }
+
+interface ICompileResult {
+  // 堆栈信息
+  stack?: string[] | string;
+  // 文件路径 -> 文件源码
+  urlMap?: ICO;
+  // 文件路径
+  urls?: string[];
+}

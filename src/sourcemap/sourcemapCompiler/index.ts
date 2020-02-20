@@ -14,7 +14,7 @@ import SourceMapCompiler from './compiler';
 export default async function transSourcemap(
   stack: string,
   options?: ISourceOption,
-): Promise<string> {
+): Promise<ICompileResult> {
   if (!isStr(stack)) {
     return showError('stack 需为 string');
   }

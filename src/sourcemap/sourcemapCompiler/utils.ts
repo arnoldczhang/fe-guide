@@ -10,7 +10,8 @@ const sourceMsgRE = /(?:at\s*[^()]*\s+|[^@]+@|)\(?([^)]+):(\d+):(\d+)\)?/;
 const httpRE = /^https?:\/\//;
 const localAbsFileRE = /^(?:\/|file:\/\/)/;
 const localRelFileRE = /^\.\//;
-const mapSuffixRE = /\.map$/;
+const pureSuffixRE = /(?:\.map|\.html[^.]*)$/;
+export const mapSuffixRE = /\.map$/;
 export const lineRE = /\s*\n+\s*/;
 
 export function identify<T = any>(input: T): T {
@@ -18,7 +19,7 @@ export function identify<T = any>(input: T): T {
 }
 
 export const parseSourceMsg = (input: string): Array<string>|null => input.match(sourceMsgRE);
-export const addMapSuffix = (input: string): string => (mapSuffixRE.test(input) ? input : `${input}.map`);
+export const addMapSuffix = (input: string): string => (pureSuffixRE.test(input) ? input : `${input}.map`);
 export const getArg = (
   target: ICO,
   key: string|number,
@@ -36,11 +37,13 @@ export const isStr = (input: any): boolean => typeof input === 'string';
 export const isNum = (input: any): boolean => typeof input === 'number' && !Number.isNaN(input);
 export const isRe = (input: any): boolean => input instanceof RegExp;
 export const isFuc = (input: any): boolean => typeof input === 'function';
+export const isMapFile = (input: string): boolean => mapSuffixRE.test(input);
 export const isSourceMsg = (input: string): boolean => sourceMsgRE.test(input);
 export const isHttpFilePath = (input: string): boolean => httpRE.test(input);
 export const isAbsFilePath = (input: string): boolean => localAbsFileRE.test(input);
 export const isRelFilePath = (input: string): boolean => localRelFileRE.test(input);
 export const isSourceMap = (input: sourceMap.RawSourceMap): boolean => input
+  && isObj(input)
   && isStr(getArg(input, 'file'))
   && isStr(getArg(input, 'mappings'));
 export const showError = (input: string): any => { throw new Error(input); };

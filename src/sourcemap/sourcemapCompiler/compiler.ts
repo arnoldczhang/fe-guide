@@ -13,6 +13,7 @@ import {
   isSourceMsg,
   parseSourceMsg,
   addMapSuffix,
+  isMapFile,
 } from './utils';
 
 const {
@@ -22,6 +23,8 @@ const {
 export default class Compiler {
   stack: string[];
 
+  result: ICompileResult = {};
+
   options: ISourceOption;
 
   timer: number;
@@ -30,9 +33,14 @@ export default class Compiler {
 
   maxTimeout: number;
 
+  // 请求url -> Promise
   cachUrls: ICO = {};
 
+  // 解析前文件名 -> sourceMapConsumer
   cachConsumers: ICO = {};
+
+  // 解析后文件名 -> 单文件源码
+  cachFileContent: ICO = {};
 
   filter: Function;
 
@@ -48,12 +56,13 @@ export default class Compiler {
   /**
    * 转sourcemap
    * @param sourcemap string sourcemap
-   * @param raw Object { line, column, origin } stack原始信息
+   * @param raw Object { line, column, origin, url } stack原始信息
    */
   async sourceMapify(
     sourcemap: sourceMap.RawSourceMap,
     raw: ICO<string>,
   ): Promise<string> {
+    const { url, origin } = raw;
     if (isSourceMap(sourcemap)) {
       const { file } = sourcemap;
       const cachedConsumer = this.cachConsumers[file];
@@ -64,6 +73,7 @@ export default class Compiler {
         consumer = new sourceMap.SourceMapConsumer(sourcemap);
         this.cachConsumers[file] = consumer;
       }
+
       const {
         source,
         line,
@@ -73,9 +83,19 @@ export default class Compiler {
         line: Number(raw.line),
         column: Number(raw.column),
       });
-      return `at ${name} (${source}:${line}:${column})`;
+
+      if (source) {
+        const sourceContent = (await consumer).sourceContentFor(source);
+        this.cachFileContent[source] = sourceContent;
+        return `at ${name} (${source}:${line}:${column})`;
+      }
+      return origin;
     }
-    return raw.origin;
+
+    if (sourcemap) {
+      this.cachFileContent[url] = sourcemap;
+    }
+    return origin;
   }
 
   /**
@@ -95,6 +115,7 @@ export default class Compiler {
     });
     this.cachUrls = {};
     this.cachConsumers = {};
+    this.cachFileContent = {};
   }
 
   /**
@@ -124,12 +145,13 @@ export default class Compiler {
     if (isHttpFilePath(url)) {
       return fetch(url, {
         timeout: this.maxTimeout,
-      }).then((res) => res.json())
-        .catch(() => (
-          triedTimes < this.retryTimes
-            ? this.fetchUrl(url, triedTimes + 1)
-            : ''
-        ));
+      }).then((res) => (
+        isMapFile(url) ? res.json() : res.text()
+      )).catch(() => (
+        triedTimes < this.retryTimes
+          ? this.fetchUrl(url, triedTimes + 1)
+          : ''
+      ));
     }
     return this.fetchLocalUrl(url);
   }
@@ -144,7 +166,12 @@ export default class Compiler {
         const msgResult = parseSourceMsg(msg);
         const [origin, url, line, column] = msgResult as string[];
         const cachedUrl = this.cachUrls[url];
-        cbs.push((m: sourceMap.RawSourceMap) => this.sourceMapify(m, { line, column, origin }));
+        cbs.push((m: sourceMap.RawSourceMap) => this.sourceMapify(m, {
+          url,
+          origin,
+          line,
+          column,
+        }));
         if (cachedUrl) {
           return cachedUrl;
         }
@@ -155,16 +182,21 @@ export default class Compiler {
       return msg;
     }));
 
-    this.stack = await Promise.all(
+    const stack = await Promise.all(
       result.map(async (res: sourceMap.RawSourceMap, index: number) => cbs[index](res))
     );
+    this.result = {
+      stack,
+      urls: keys(this.cachFileContent),
+      urlMap: this.cachFileContent,
+    };
     this.destroy();
   }
 
   /**
    * 获取更新的stack
    */
-  getResult(): string {
-    return this.stack.join('\n');
+  getResult(): ICompileResult {
+    return this.result;
   }
 }
