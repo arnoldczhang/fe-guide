@@ -678,7 +678,7 @@ border: 0 - 边框宽度为0，会渲染，占内存
   * 绝对定位，相对于第一个position不为static的父元素
 - fixed
   * 绝对定位，相对于浏览器窗口定位
-  * 当父元素的 transform 不为 none 时，改为相对于该父元素定位（浏览器间有差异）
+  * 当父元素的 transform 不为 none 时，改为相对于该父元素定位（[浏览器间有差异](https://www.zhangxinxu.com/wordpress/2015/05/css3-transform-affect/)）
 - relative
   * 相对于元素自身位置定位，所以类似`left:20px`有效果
   * 自身位置仍然占据
