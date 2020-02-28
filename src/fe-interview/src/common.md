@@ -101,6 +101,7 @@
 * [`浏览器和Node事件循环的区别`](#浏览器和Node事件循环的区别)
 * [`node异步错误捕获`](#node异步错误捕获)
 * [`文件上传`](#文件上传)
+* [`进程退出如何善后`](#进程退出如何善后)
 
 **浏览器**
 
@@ -2793,3 +2794,20 @@ img:after {
 
 ### performanceAPI
 [参考](https://www.cnblogs.com/bldxh/p/6857324.html)
+
+---
+
+### 进程退出如何善后
+[ctrl+c退出进程后，如何处理清理工作](https://yvonnickfrin.dev/shutdown-correctly-nodejs-apps)
+
+```js
+function handleExit(signal) {
+  console.log(`Received ${signal}. Close my server properly.`)
+  server.close(function () {
+    process.exit(0);
+  });
+}
+process.on('SIGINT', handleExit);
+process.on('SIGQUIT', handleExit);
+process.on('SIGTERM', handleExit);
+```
