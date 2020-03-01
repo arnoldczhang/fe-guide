@@ -102,6 +102,7 @@
 * [`node异步错误捕获`](#node异步错误捕获)
 * [`文件上传`](#文件上传)
 * [`进程退出如何善后`](#进程退出如何善后)
+* [`http接口规范`](#http接口规范)
 
 **浏览器**
 
@@ -2624,6 +2625,9 @@ cilckTextarea(){
 ---
 
 ### IOS点击focus响应错位
+[通用完美解](http://www.alloyteam.com/2020/02/14265/)
+
+#### vue
 手动把滚动条滚到底部写一个自定义指令
 
 ```js
@@ -2811,3 +2815,8 @@ process.on('SIGINT', handleExit);
 process.on('SIGQUIT', handleExit);
 process.on('SIGTERM', handleExit);
 ```
+
+---
+
+### http接口规范
+[规范](https://www.jitao.tech/blog/2020/01/java-http-api/)
