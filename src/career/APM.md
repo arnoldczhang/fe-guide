@@ -13,6 +13,7 @@
 * [`埋点管理`](#埋点管理)
 * [`监控大盘`](#监控大盘)
 * [`治理工单`](#治理工单)
+* [`性能指标`](#性能指标)
 
 </details>
 
@@ -268,4 +269,91 @@ try {
 ---
 
 ## 治理工单
+
+---
+
+## 性能指标
+
+[参考](https://help.aliyun.com/document_detail/60288.html?spm=a2c4g.11186623.6.564.Kdg2bo#%E8%AE%BF%E9%97%AE%E9%80%9F%E5%BA%A6)
+
+### 页面满意度
+> 注：T = 2秒
+
+性能指数 APDEX（全称 Application Performance Index）是一个国际通用的应用性能计算标准。该标准将用户对应用的体感定义为三个等级：
+
+满意（0 ~ T）
+可容忍（T ~ 4T）
+不满意（大于 4T）
+
+### 关键性能指标曲线
+- 首包时间
+- 首次渲染
+- 首次可交互
+- DOM Ready
+- 页面完全加载
+- 首屏时间
+
+**首包时间**
+
+responseStart - domainLookupStart
+
+**首次渲染**
+
+responseEnd - fetchStart
+
+从请求开始到浏览器开始解析第一批 HTML 文档字节的时间差
+
+**首次可交互**
+
+domInteractive - fetchStart
+
+浏览器完成所有 HTML 解析并且完成 DOM 构建，此时浏览器开始加载资源
+
+**DOM Ready**
+
+domContentLoadEventEnd - fetchStart
+
+如果页面有同步执行的 JS，则同步 JS 执行时间 = ready - tti
+
+**页面完全加载**
+
+loadEventStart - fetchStart
+
+= 首次渲染时间 + DOM 解析耗时 + 同步 JS 执行 + 资源加载耗时
+
+### 区段耗时
+- DNS查询
+- TCP连接
+- 请求响应
+- 内容传输
+- DOM解析
+- 资源加载
+
+**DNS查询**
+
+domainLookupEnd - domainLookupStart
+
+**TCP连接**
+
+connectEnd - connectStart
+
+**SSL 安全连接耗时**
+
+connectEnd - secureConnectionStart
+
+**Time to First Byte（TTFB），网络请求耗时**
+
+responseStart - requestStart
+
+**数据传输耗时**
+
+responseEnd - responseStart
+
+**DOM解析**
+
+domInteractive - responseEnd
+
+**资源加载**
+
+loadEventStart - domContentLoadedEventEnd
 

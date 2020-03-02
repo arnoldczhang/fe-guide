@@ -23,8 +23,8 @@
 * [`http3.0`](#http3.0)
 * [`quic`](#quic)
 * [`https`](#https)
-* [`osl`](#osl)
-* [`协议层次`](#协议层次)
+* [`网络模型`](#网络模型)
+* [`OSI`](#OSI)
 * [`常用端口`](#常用端口)
 * [`常用状态码`](#常用状态码)
 
@@ -659,10 +659,17 @@ tls（Transport Layer Security 安全传输层协议）
 
 ---
 
-## osl
+## OSI
 Open System Interconnection 开放式系统互联
 
-![osl](./osl层次.jpg)
+![OSI](./OSI层次.jpg)
+
+### 表示层
+- 数据压缩
+- 数据加密
+
+### 会话层
+- 数据交换/同步功能，比如建立检查点、恢复方案
 
 ---
 
@@ -689,7 +696,10 @@ Open System Interconnection 开放式系统互联
 
 ---
 
-## 协议层次
+## 网络模型
+> 超文本传输协议(Hypertext Transfer Protocol)
+>
+> 协议 > 传输 > 超文本
 >
 > 分为多种协议模型，如下图：
 >
@@ -704,4 +714,14 @@ Open System Interconnection 开放式系统互联
 - tcp
 - udp
 
+### 网络层
+- 数据报文（datagram）
+- ip协议
 
+### 链路层
+- wifi
+- 以太
+
+### 物理层
+- 电缆
+- 光纤
