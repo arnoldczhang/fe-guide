@@ -72,6 +72,20 @@ html {
 }
 ```
 
+#### 如果用requestAnimation来做
+```js
+const scrollToTop = () => {
+  const c = document.documentElement.scrollTop || document.body.scrollTop;
+  if (c > 0) {
+    window.requestAnimationFrame(scrollToTop);
+    window.scrollTo(0, c - c / 8);
+  }
+}
+
+// 事例
+scrollToTop()
+```
+
 ### box-sizing
 ```css
 html {
