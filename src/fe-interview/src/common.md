@@ -128,6 +128,7 @@
 * [`get和post区别`](#get和post区别)
 * [`js单线程`](#js单线程)
 * [`performanceAPI`](#performanceAPI)
+* [`rpc和http区别`](#rpc和http区别)
 
 **算法**
 
@@ -2837,3 +2838,16 @@ process.on('SIGTERM', handleExit);
 
 ### http接口规范
 [规范](https://www.jitao.tech/blog/2020/01/java-http-api/)
+
+---
+
+### rpc和http区别
+http：A机器直接调用 B机器的 restful 接口，执行操作C
+rpc：A机器调用自己的代理方法，方法内对数据序列化后，与B机器通信（http、tcp、udp都行），B机器反序列化后，执行操作C
+
+区别仅在于
+- 可读性 VS 效率
+- 通用性 VS 易用性
+
+---
+
