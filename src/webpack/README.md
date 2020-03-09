@@ -20,6 +20,7 @@
 * [`webpack4`](#webpack4)
 * [`plugin`](#plugin)
 * [`中间缓存`](#中间缓存)
+* [`webpack-watch`](#webpack-watch)
 * [`bundle`](#bundle)
 * [`scope hoisting`](#scopeHoisting)
 * [`code split`](#codesplit)
@@ -1123,5 +1124,17 @@ __webpack_require__
 4. 页面根据 socket 获取的 chunk 头进行比较，获知需要更新的模块
 5. 模块根据 module.hot.accpet，判断能否更新，若无法更新，强刷页面
 
+---
+
+## webpack-watch
+> 冷启动耗时较大，后续构建速度大幅提升
+
+### webpack构建关键点
+- webpack构建流程，默认启动`compiler.run`
+- 构建 -> 监听文件变动 -> 触发重新构建 -> 构建
+- `--watch`相当于`webpack-dev-middleware`调用了`compiler.watch`
+- 通过`graceful-fs`和`memory-fs`，以内存读写方式编译文件
+- 用`chokidar`监听文件变更，实现按需构建
+- `--watch`内置了类似`batching`，变更会暂存在`aggregatedChanges`数组中，`200毫秒`内无其他变更才会 emit 聚合事件到上次
 
 

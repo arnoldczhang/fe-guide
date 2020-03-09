@@ -387,7 +387,10 @@ flex: 1
 ---
 
 ### 响应式方案
-[参考](https://github.com/forthealllight/blog/issues/13)
+- [参考](https://github.com/forthealllight/blog/issues/13)
+- [响应式设计](https://zhuanlan.zhihu.com/p/109781992)
+
+**处理方式**
 
 - 媒体查询
 - 百分比
