@@ -269,7 +269,9 @@ try {
 
 ## 性能指标
 
-[参考](https://help.aliyun.com/document_detail/60288.html?spm=a2c4g.11186623.6.564.Kdg2bo#%E8%AE%BF%E9%97%AE%E9%80%9F%E5%BA%A6)
+- [阿里云-arms](https://help.aliyun.com/document_detail/60288.html?spm=a2c4g.11186623.6.564.Kdg2bo#%E8%AE%BF%E9%97%AE%E9%80%9F%E5%BA%A6)
+- [自动化 Web 性能优化分析方案](https://mp.weixin.qq.com/s/2CHA5ewWz_SIlBrdEuVv7w)
+- [微信小程序评分细则](https://developers.weixin.qq.com/miniprogram/dev/framework/audits/scoring.html)
 
 ### 页面满意度
 > 注：T = 2秒
@@ -351,6 +353,17 @@ domInteractive - responseEnd
 **资源加载**
 
 loadEventStart - domContentLoadedEventEnd
+
+### dom层
+- dom数
+- dom最大层级
+
+### 静态资源
+- 资源压缩
+- 开启gzip
+- 图片优化（cdn、懒加载、webp、识别大体积图）
+- 资源缓存
+
 
 ---
 

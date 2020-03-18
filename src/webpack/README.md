@@ -8,6 +8,7 @@
 - [webpack官方plugin文档](https://webpack.js.org/api/compilation-hooks#shouldgeneratechunkassets)
 - [webpack4构建提速](https://juejin.im/post/5c9075305188252d5c743520#heading-5)
 - [webpack-2020](https://juejin.im/post/5de87444518825124c50cd36?utm_source=gold_browser_extension#heading-38)
+- [webpack5缓存设计](https://zhuanlan.zhihu.com/p/110995118)
 
 ## 目录
 <details>
