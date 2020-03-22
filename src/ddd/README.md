@@ -216,6 +216,14 @@ class CarRepositoryImplement implements CarRepository {
 > 与工厂的区别：工厂创建对象，资源库保存已创建的对象
 >
 
+**子域**
+
+> 一个单一、有逻辑的领域模型
+
+- 核心域
+- 支撑子域
+- 通用域
+
 ---
 
 ## 概念
