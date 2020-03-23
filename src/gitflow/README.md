@@ -17,3 +17,7 @@
 ## tag
 - git tag v1.0.0
 - git push origin v1.0.0
+
+## git提交信息
+[git-commit](https://nitayneeman.com/posts/understanding-semantic-commit-messages-using-git-and-angular/#fix)
+

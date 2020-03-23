@@ -66,7 +66,7 @@ const querystring = require('querystring');
 
 
 
-// http.createServer(function(req, res){//回调函数
+// http.createServer(function(req, res) {//回调函数
 //   var body = "";
 //   req.on('data', function (chunk) {
 //       body += chunk;
@@ -77,7 +77,10 @@ const querystring = require('querystring');
 //     res.write(fs.readFileSync(path.resolve(__dirname, './test.html'), 'utf-8'));
 //     res.end();
 //   });
-// }).listen(8880);
+// }).listen(8880, (err) => {
+//   console.log('listening http://localhost:8880/');
+//   console.log('pid is ' + process.pid);
+// });
 
 
 

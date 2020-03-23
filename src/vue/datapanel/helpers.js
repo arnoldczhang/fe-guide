@@ -26,11 +26,13 @@ const {
  * 全局监听元素可见性
  */
 export const IntersectionObserverHelper = (() => {
-  let active = true;
+  let active = document.hasFocus();
   let globalActive = true;
   let bindEvt = false;
   let intersectionObserver = null;
+  // 缓存视窗激活态时，元素对应信息
   const observerElMap = new WeakMap();
+  // 缓存 focus/blur 时，元素对应信息
   const activeMap = new Map();
   const cach = createCach(observerElMap);
 
@@ -106,11 +108,12 @@ export const IntersectionObserverHelper = (() => {
           const { callback, fallback } = elmProp;
           elmProp.isIntersecting = isIntersecting;
           cach.set(target, elmProp);
-          if (this.isActive(target)) {
+          const activeState = this.isActive(target);
+          if (isIntersecting) {
             if (isFunc(callback)) {
-              callback();
+              callback(activeState);
             } else if (Array.isArray(callback)) {
-              callback.forEach(cb => isFunc(cb) && cb());
+              callback.forEach(cb => isFunc(cb) && cb(activeState));
             }
           } else if (fallback) {
             if (isFunc(fallback)) {

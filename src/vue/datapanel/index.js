@@ -47,6 +47,7 @@ const {
   RELOADING,
   ONCE,
   BASEINSTANCE,
+  MANUALCHANGE,
 } = DATA;
 
 const {
@@ -151,18 +152,20 @@ export default function DataPanel(BaseComp, options = {}) {
         [panelKey]: defaultValue || null,
         // 上次接口入参
         [LASTREQPARAM]: null,
-        // 上次外部接口入参
+        // 上次外部入参（目前没用到）
         [LASTOUTREQPARAM]: null,
         // 上次数据
         [LASTDATA]: null,
         // 请求间隔
-        [RELOADTIME]: 2000,
+        [RELOADTIME]: 1000,
         // 请求态
         [RELOADING]: false,
-        // 首次成功请求标志
+        // 首次成功请求标志（首次请求失败，重置）
         [ONCE]: true,
         // 子组件实例
         [BASEINSTANCE]: null,
+        // 手动变更标记（外部力量强行修改入参，则优先用外部入参）
+        [MANUALCHANGE]: false,
       };
     },
     methods: {
@@ -213,7 +216,6 @@ export default function DataPanel(BaseComp, options = {}) {
         const {
           [REQUESTPARAM]: requestParam,
           [LASTREQPARAM]: lastReqParam,
-          [LASTOUTREQPARAM]: lastOutReqParam,
           [BASEINSTANCE]: inst,
         } = this;
         // 首次请求失败的情况，仍用原参数请求
@@ -225,18 +227,19 @@ export default function DataPanel(BaseComp, options = {}) {
         if (isFunc(getInterval) && incrementKey.length) {
           const startKey = incrementKey[0];
           const increType = increment[startKey].type;
-          // 根据自增字段类型做阈值校验
+          // 判断时间间隔内的变动，是手动变更还是自增
           if (!increType || increType === Date) {
-            const interval = getInterval.call(inst) || 0;
-            // 对比外部入参，如果自增字段差值大于阈值，视为重新初始化请求
-            if (Math.abs(
-              new Date(requestParam[startKey]).getTime()
-              - new Date(lastOutReqParam[startKey]).getTime()
-            ) > interval) {
-              this[LASTOUTREQPARAM] = requestParam;
+            if (getInterval.call(inst) === true) {
+              // 如果是手动变更，记录手动标记，直至下次请求成功
+              this[MANUALCHANGE] = true;
               return requestParam;
             }
           }
+        }
+
+        // 如果上次请求是手动变更&请求失败，重新用上次入参请求
+        if (this[MANUALCHANGE]) {
+          return requestParam;
         }
 
         const result = {};
@@ -252,12 +255,13 @@ export default function DataPanel(BaseComp, options = {}) {
       [REWRITEFETCHFN]() {
         if (fetchKey) {
           const isActiveFn = this[ISACTIVE];
+          const checkReload = this[CHECKRELOAD];
           const oldFetchFn = this[BASEINSTANCE][fetchKey];
           if (typeof oldFetchFn !== 'function') {
             throw new Error('未找到 fetchKey 对应的方法');
           }
           this[BASEINSTANCE][fetchKey] = function proxyFetchFn(...args) {
-            if (isActiveFn()) {
+            if (isActiveFn([this, checkReload])) {
               oldFetchFn.apply(this, ...args);
             }
           };
@@ -321,7 +325,6 @@ export default function DataPanel(BaseComp, options = {}) {
         } else {
           reqParam = parseReqParam();
         }
-
         // 非状态变更的 props 变化触发时，前后接口入参一致，不请求
         if (!PROPS_STATE.includes(propKey)) {
           if (shallowVueEq(lastReqParam, reqParam)) {
@@ -350,6 +353,7 @@ export default function DataPanel(BaseComp, options = {}) {
             panelBeforeDataUpdate(this[panelKey], res);
             this[LASTDATA] = force ? res : panelDataCombine(this[LASTDATA], res);
             this[LASTREQPARAM] = reqParam;
+            this[MANUALCHANGE] = false;
             this[panelKey] = panelBeforeRequestCallback(this[LASTDATA]);
             panelRequestCallback(this[panelKey]);
             this.$emit(PANEL_EVENT.LOADING, false);

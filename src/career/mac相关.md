@@ -67,5 +67,5 @@ shift+cmd+.
 
 ### ssh-key
 ```cmd
-ssh-keygen -t rsa -C "zhangcheng10682@hellobike.com"
+ssh-keygen -t rsa -C "zhangcheng10682@xxx.com"
 ```

@@ -91,6 +91,9 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   in(value: BaseType[]): ICalcCollection {
     return this.wrap('in', ...value);
   },
+  uniq(): ICalcCollection {
+    return this.wrap('uniq');
+  },
   eq(value: BaseType): ICalcCollection {
     return this.operate(value, '=');
   },

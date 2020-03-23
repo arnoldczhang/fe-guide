@@ -11,6 +11,7 @@
 * [`npm安装原理`](#npm安装原理)
 * [`npm script`](#npm-script)
 * [`npm link`](#npm-link)
+* [`npm view`](#npm-view)
 
 </details>
 
@@ -262,3 +263,14 @@ npm run serve -- params  // 将params参数添加到process.env.argv数组中
 >
 > 2. cd 到项目B，`npm link npm包A`
 >
+
+---
+
+## npm-view
+
+**查看包所有版本**
+
+```cmd
+npm view xxx versions
+```
+

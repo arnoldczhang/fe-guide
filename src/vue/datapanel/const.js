@@ -50,6 +50,7 @@ export const DATA = {
   RELOADING: `${PRE_ING}reloading`,
   ONCE: `${PRE_ING}once`,
   BASEINSTANCE: `${PRE_ING}baseInstance`,
+  MANUALCHANGE: `${PRE_ING}manualChange`,
 };
 
 export const PROPS = {

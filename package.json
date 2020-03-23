@@ -2,6 +2,7 @@
   "name": "fe-guide",
   "version": "0.0.1",
   "description": "",
+  "type": "module",
   "main": "./src/webpack/dist/index.bundle.js",
   "bin": {
     "pojo": "./src/webpack/pojo-loader/bin/pojo-loader.js",
@@ -30,6 +31,7 @@
   },
   "scripts": {
     "lint:fix": "eslint . --fix",
+    "source": "node ./src/sourcemap/test.js",
     "test": "node ./src/test/src/test.js",
     "test:debug": "nodemon ./src/test/src/server.js",
     "commit": "git-cz"
@@ -48,7 +50,10 @@
     "fingerprintjs2": "^2.1.0",
     "node-xlsx": "^0.15.0",
     "nodemailer": "^6.3.1",
-    "request": "^2.88.0"
+    "react": "^16.12.0",
+    "request": "^2.88.0",
+    "source-map": "^0.7.3",
+    "source-map-support": "^0.5.16"
   },
   "devDependencies": {}
 }

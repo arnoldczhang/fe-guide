@@ -101,6 +101,8 @@
 * [`浏览器和Node事件循环的区别`](#浏览器和Node事件循环的区别)
 * [`node异步错误捕获`](#node异步错误捕获)
 * [`文件上传`](#文件上传)
+* [`进程退出如何善后`](#进程退出如何善后)
+* [`http接口规范`](#http接口规范)
 
 **浏览器**
 
@@ -125,6 +127,8 @@
 * [`如何判断对象是否被GC`](#如何判断对象是否被GC)
 * [`get和post区别`](#get和post区别)
 * [`js单线程`](#js单线程)
+* [`performanceAPI`](#performanceAPI)
+* [`rpc和http区别`](#rpc和http区别)
 
 **算法**
 
@@ -152,6 +156,7 @@
 * [`css布局`](#css布局)
 * [`文档流`](#文档流)
 * [`清除浮动`](#清除浮动)
+* [`图片加载失败处理`](#图片加载失败处理)
 
 **html**
 
@@ -382,7 +387,10 @@ flex: 1
 ---
 
 ### 响应式方案
-[参考](https://github.com/forthealllight/blog/issues/13)
+- [参考](https://github.com/forthealllight/blog/issues/13)
+- [响应式设计](https://zhuanlan.zhihu.com/p/109781992)
+
+**处理方式**
 
 - 媒体查询
 - 百分比
@@ -542,6 +550,29 @@ const resize = (size) => {
   }
 };
 ```
+
+#### 详细清单
+[参考](https://mp.weixin.qq.com/s/M5jJ3gwMfRM1SZlkdYut6A)
+
+**监控**
+
+- 兼容多种浏览器和设备
+- 定期更新设备-浏览器组合
+- 检查网站加载速度
+
+**内容可见性**
+
+- 重要内容是否在所有设备上可见
+- 内容展示顺序根据内容的重要性
+- 完善显示细节（可滚动、边缘溢出、对齐、字体等）
+- 合适字体
+
+**用户体验**
+
+- 网站是否能流畅导航
+- 所有弹出窗口是否正常响应
+- 交互层级（触摸、click、笔尖）
+- 小型移动设备优化
 
 ---
 
@@ -1016,9 +1047,26 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b});
 - 服务端返回已经关闭的请求
 - 客户端发送正式断开的请求
 
-#### A、B 机器正常连接后，B 机器突然重启，问 A 此时处于 TCP 什么状态
+#### A、B 机器正常连接后，B 机器突然重启，问 A 此时处于 TCP 什么状态？
 - 服务器不重启，客户继续工作，就会发现对方没有回应(ETIMEOUT)，目的地不可达(EHOSTUNREACH)。
 - 服务器重启后，客户继续工作，然而服务器已丢失客户信息，收到客户数据后响应RST。
+
+#### 为什么不能二次握手？
+如果客户端是弱网环境，服务端就会收不到响应，而维持 ESTABLISHED 状态，一直等待下去，这样会浪费服务端资源
+
+#### 客户端突然故障怎么办？
+TCP保活计时器 每次客户端请求服务器会重置计时器，当2小时之内没收到客户端任何数据时，会每隔75s向客户端发一个探测报文，若接连发送10个，客户端都没有反应，则认为客户端故障，关闭连接。
+
+#### syn泛洪攻击
+
+**手法**
+
+攻击者不断向服务端做第一次握手，使服务端维持大量 tcp 连接在挂起状态而消耗内存和 cpu
+
+**防范**
+
+- 降低 syn timeout 时间
+- syn cookie 设置，判断短时间内收到同个 ip 的重复请求，则丢弃该 ip 的后续请求
 
 ---
 
@@ -2598,6 +2646,9 @@ cilckTextarea(){
 ---
 
 ### IOS点击focus响应错位
+[通用完美解](http://www.alloyteam.com/2020/02/14265/)
+
+#### vue
 手动把滚动条滚到底部写一个自定义指令
 
 ```js
@@ -2667,3 +2718,139 @@ body{-webkit-text-size-adjust: 100%!important;}
 [文件上传](./文件上传.md)
 
 ---
+
+### 图片加载失败处理
+[参考](https://bitsofco.de/styling-broken-images)
+
+```html
+<img src="http://bitsofco.de/broken.jpg" alt="Kanye Laughing">
+```
+
+**1. 提示帮助文字**
+
+```css
+img {
+  font-family: 'Helvetica';
+  font-weight: 300;
+  line-height: 2;  
+  text-align: center;
+  
+  width: 100%;
+  height: auto;
+  display: block;
+  position: relative;
+}
+
+img:before { 
+  content: "We're sorry, the image below is broken :(";
+  display: block;
+  margin-bottom: 10px;
+}
+
+img:after { 
+  content: "(url: " attr(src) ")";
+  display: block;
+  font-size: 12px;
+}
+```
+
+**2. 图片替换**
+
+```css
+img { /* Same as first example */ }
+
+img:after { 
+  content: "\f1c5" " " attr(alt);
+  
+  font-size: 16px;
+  font-family: FontAwesome;
+  color: rgb(100, 100, 100);
+  
+  display: block;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
+```
+
+**3. 美化替换文字**
+
+```css
+img { 
+  /* 样式跟第一个例子里是一样的，然后加了下面一条样式 */
+  min-height: 50px;
+}
+
+img:before { 
+  content: " ";
+  display: block;
+
+  position: absolute;
+  top: -10px;
+  left: 0;
+  height: calc(100% + 10px);
+  width: 100%;
+  background-color: rgb(230, 230, 230);
+  border: 2px dotted rgb(200, 200, 200);
+  border-radius: 5px;
+}
+
+img:after { 
+  content: "\f127" " Broken Image of " attr(alt);
+  display: block;
+  font-size: 16px;
+  font-style: normal;
+  font-family: FontAwesome;
+  color: rgb(100, 100, 100);
+  
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+```
+
+---
+
+### performanceAPI
+[参考](https://www.cnblogs.com/bldxh/p/6857324.html)
+
+---
+
+### 进程退出如何善后
+[ctrl+c退出进程后，如何处理清理工作](https://yvonnickfrin.dev/shutdown-correctly-nodejs-apps)
+
+```js
+function handleExit(signal) {
+  console.log(`Received ${signal}. Close my server properly.`)
+  server.close(function () {
+    process.exit(0);
+  });
+}
+process.on('SIGINT', handleExit);
+process.on('SIGQUIT', handleExit);
+process.on('SIGTERM', handleExit);
+```
+
+---
+
+### http接口规范
+[规范](https://www.jitao.tech/blog/2020/01/java-http-api/)
+
+---
+
+### rpc和http区别
+http：A机器直接调用 B机器的 restful 接口，执行操作C
+rpc：A机器调用自己的代理方法，方法内对数据序列化后，与B机器通信（http、tcp、udp都行），B机器反序列化后，执行操作C
+
+区别仅在于
+- 可读性 VS 效率
+- 通用性 VS 易用性
+
+---
+

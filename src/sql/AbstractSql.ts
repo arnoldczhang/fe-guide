@@ -1,5 +1,7 @@
 import AnySql from './AnySql';
 
+const identity = (v: any): any => v;
+
 /**
  * AbstractSql
  */
@@ -22,22 +24,22 @@ export default abstract class AbstractSql extends AnySql {
   }
 
   public select(...args: string[]): AbstractSql {
-    this.selectArray = args;
+    this.selectArray = args.filter(identity);
     return this;
   }
 
   public where(...args: string[]): AbstractSql {
-    this.whereArray = args;
+    this.whereArray = args.filter(identity);
     return this;
   }
 
   public orderBy(...args: string[]): AbstractSql {
-    this.orderByArray = args;
+    this.orderByArray = args.filter(identity);
     return this;
   }
 
   public groupBy(...args: string[]): AbstractSql {
-    this.groupByArray = args;
+    this.groupByArray = args.filter(identity);
     return this;
   }
 

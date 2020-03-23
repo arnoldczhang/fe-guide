@@ -165,7 +165,11 @@ js被解析和执行环境的抽象概念
 
 script -> 清空微任务 -> 宏任务 -> 清空微任务 -> render -> 宏任务 -> 清空微任务 -> render -> ...
 
-![示意图](./event_loop.jpeg)
+**简易示意图**
+![示意图](./eventLoop简易示图.png)
+
+**复杂示意图**
+![复杂示意图](./event_loop.jpeg)
 
 ### 完整循环过程
 1. 从macrotask队列选择一个最老的task，如果没有，则执行microtask
