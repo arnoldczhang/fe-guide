@@ -62,7 +62,7 @@ vue ui
 <!-- 使用 -->
 <template>
   <comp>
-    <tempalte v-slot:header>
+    <template v-slot:header>
       ...
     </template>
   </comp>
