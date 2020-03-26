@@ -39,6 +39,7 @@ interface ICalcCollection {
   desc: FuncMethods;
   asc: FuncMethods;
   count: FuncMethods;
+  nullIf: CalcMethods;
   toUInt32: FuncMethods;
   interval: CalcMethods;
   toUnixTimestamp: FuncMethods;
@@ -46,6 +47,7 @@ interface ICalcCollection {
   toStartOfInterval: FuncMethods;
   splitArray: joinMethods;
   wrap: (input: BaseType, ...args: any[]) => ICalcCollection;
+  appendWrap: (input: BaseType, ...args: any[]) => ICalcCollection;
   toString: () => string;
   rename: (input: BaseType) => string;
   as: (input: BaseType) => string;
