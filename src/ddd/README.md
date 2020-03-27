@@ -14,6 +14,7 @@
 
 * [`通用架构`](#通用架构)
 * [`要素`](#要素)
+* [`概念`](#概念)
 * [`《领域驱动设计精粹》`](#《领域驱动设计精粹》)
 * [`《实现领域驱动设计》`](#《实现领域驱动设计》)
 * [`案例`](#案例)
@@ -218,6 +219,10 @@ class CarRepositoryImplement implements CarRepository {
 > 聚合内部的对象可以互相引用，外部只能看到聚合根
 >
 
+**领域事件**
+
+**领域服务**
+
 **工厂(Factory)**
 
 > 封装复杂对象的创建过程（复杂class）
@@ -241,6 +246,20 @@ class CarRepositoryImplement implements CarRepository {
 - 核心域
 - 支撑子域
 - 通用域
+
+---
+
+## 概念
+
+**通用语言**
+
+> 团队自己创建的公用语言
+>
+> 限界上下文和通用语言一对一，只有团队都工作在一个限界上下文中，语言才够“通用”
+>
+> 
+
+
 
 ---
 
@@ -374,6 +393,8 @@ de-duplication
 
 ## 《实现领域驱动设计》
 
+
+
 ---
 
 ## 案例
@@ -397,4 +418,53 @@ de-duplication
 >
 > 查询模型无副作用（总是能返回固定结果）
 >
+
+### 贫血症导致的失忆症
+> 贫血症指，缺少内部行为的领域对象
+
+**坏例子**
+
+```java
+public save() {
+  Customer customer = new CustomerDao.readCustomer(id);
+  customer.setCustomerId(id);
+  customer.setCustomerName(name);
+  customer.setCustomerAge(age);
+}
+// ...等等
+```
+
+**分析**
+
+> Dao对象不涉及业务逻辑，导致service中的方法意图不明显，徒增复杂度
+>
+> Customer作用只是一个数据持有器，非一个对象
+
+**好例子**
+
+```java
+public save() {
+  Customer customer = new CustomerDao.readCustomer(id);
+  updateCustomerId(id);
+  changeCustomerName(id, name);
+  // ...
+}
+
+public void changeCustomerName(
+  String id,
+  String name,
+) {
+  Customer customer = CustomerRepository.getCustomerById(id);
+
+  if (customer == null) {
+    throw new IllegalStateException('customer is not exited');
+  }
+
+  if (name != null) {
+    customer.changeCustomerName(name);
+  }
+}
+```
+
+
 
