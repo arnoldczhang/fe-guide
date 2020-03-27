@@ -125,7 +125,10 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
     return this.operate(value, '-');
   },
   and(value: BaseType): ICalcCollection {
-    return createCalcObject(`${key}\n        and ${value}`);
+    if (value) {
+      return createCalcObject(`${key}\n        and ${value}`);
+    }
+    return createCalcObject(key);
   },
   splitArray(array: BaseType[], splitter = ', '): ICalcCollection {
     return createCalcObject([key].concat(array).join(splitter));

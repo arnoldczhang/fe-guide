@@ -6,13 +6,13 @@ const identity = (v: any): any => v;
  * AbstractSql
  */
 export default abstract class AbstractSql extends AnySql {
-  protected selectArray: string[] = [];
+  protected selectArray: Array<ICalcCollection|string> = [];
 
-  protected whereArray: string[] = [];
+  protected whereArray: Array<ICalcCollection|string> = [];
 
-  protected orderByArray: string[] = [];
+  protected orderByArray: Array<ICalcCollection|string> = [];
 
-  protected groupByArray: string[] = [];
+  protected groupByArray: Array<ICalcCollection|string> = [];
 
   protected limitArray: number[] = [];
 
@@ -23,22 +23,22 @@ export default abstract class AbstractSql extends AnySql {
     this.table = table;
   }
 
-  public select(...args: string[]): AbstractSql {
+  public select(...args: Array<ICalcCollection|string>): AbstractSql {
     this.selectArray = args.filter(identity);
     return this;
   }
 
-  public where(...args: string[]): AbstractSql {
+  public where(...args: Array<ICalcCollection|string>): AbstractSql {
     this.whereArray = args.filter(identity);
     return this;
   }
 
-  public orderBy(...args: string[]): AbstractSql {
+  public orderBy(...args: Array<ICalcCollection|string>): AbstractSql {
     this.orderByArray = args.filter(identity);
     return this;
   }
 
-  public groupBy(...args: string[]): AbstractSql {
+  public groupBy(...args: Array<ICalcCollection|string>): AbstractSql {
     this.groupByArray = args.filter(identity);
     return this;
   }

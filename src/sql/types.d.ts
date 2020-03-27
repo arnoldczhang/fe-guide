@@ -1,4 +1,4 @@
-type BaseType = string | number | null;
+type BaseType = string | number | ICalcCollection |null;
 type CompareSymbol = '=' | '>' | '<' | '<>' | '<=' | '>=';
 type CalcSymbol = '+' | '-' | '*' | '/';
 type FunctionSymbol = 'avg' | 'max' | 'min' | 'quantile';
@@ -13,11 +13,11 @@ interface ICO<T = any> {
 
 interface IGenerateSql {
   table?: string;
-  select: string[],
-  where: string[],
+  select: Array<ICalcCollection|string>,
+  where: Array<ICalcCollection|string>,
   interval?: string;
-  groupby?: string[];
-  orderby?: string[];
+  groupby?: Array<ICalcCollection|string>;
+  orderby?: Array<ICalcCollection|string>;
   limit?: number[] | null;
   offset?: number;
 }
