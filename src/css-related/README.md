@@ -15,6 +15,8 @@
 - [Web开发者需要知道的CSS Tricks](https://juejin.im/post/5aab4f985188255582521c57)
 - [CSS 常用技巧](https://juejin.im/post/5b1f41246fb9a01e725131fb)
 - [csswg](https://drafts.csswg.org/)
+- [nb的配色库](https://color.adobe.com/zh/create/color-wheel)
+- [渐变色配色库](https://www.bestvist.com/css-gradient)
 
 ## 目录
 <details>

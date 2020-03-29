@@ -257,8 +257,6 @@ class CarRepositoryImplement implements CarRepository {
 >
 > 限界上下文和通用语言一对一，只有团队都工作在一个限界上下文中，语言才够“通用”
 >
-> 
-
 
 
 ---
