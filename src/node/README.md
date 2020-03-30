@@ -694,6 +694,38 @@ emitter.emit('error');
 
 - try...catch无法捕获到错误时
 
+### purify-css
+
+> [官网git](https://github.com/purifycss/purifycss)
+>
+> 根据指定模板（字符串），提取其中用到的css样式
+>
+
+#### 用法
+```js
+var content = '<button class="button-active"> Login </button>';
+var css = '.button-active { color: green; }   .unused-class { display: block; }';
+
+console.log(purify(content, css));
+```
+
+#### 用到的核心库
+- uglify-js（模板是js的话，会用这个处理）
+- [rework](https://github.com/reworkcss)（css解析库，包括reworkcss等，都是其分支）
+
+#### 原理
+1. 模板用非小写英文分割（/[^a-z]/g）
+2. map记录分割结果（之后会用于样式匹配）
+3. 样式用`rework`解析成 stylesheet-tree 对象
+4. 遍历 stylesheet，检查各 rule 的 selectors 是否在之前的分割结果中出现，出现则保留当前 rule，否则清空当前 rule 的 selectors
+5. 过滤出 selectors不为空的 rule
+6. tree 做 toString，输出结果
+
+#### 注意
+- 样式名大部分相同时，比如 .button1、.button2、.button3，假如`.button`在模板中被用到，则以上三者都会保留
+- 官方示例有误导性，让使用者（包括鄙人）误以为其支持jquery、react等各类框架，其实不然，核心只是模板分割-匹配
+- 再次证明`rework`还是很屌的
+
 ---
 
 ## 库开发模式
