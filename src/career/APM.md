@@ -273,6 +273,9 @@ try {
 - [自动化 Web 性能优化分析方案](https://mp.weixin.qq.com/s/2CHA5ewWz_SIlBrdEuVv7w)
 - [微信小程序评分细则](https://developers.weixin.qq.com/miniprogram/dev/framework/audits/scoring.html)
 
+### 评分细则
+![页面评分细则](./页面评分细则.jpeg)
+
 ### 页面满意度
 > 注：T = 2秒
 
