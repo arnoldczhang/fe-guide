@@ -18,7 +18,7 @@
     "@types/react-redux": "^6.0.9",
     "antd": "^3.10.0",
     "classnames": "^2.2.6",
-    "next": "^7.0.1",
+    "next": "^9.3.3",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-redux": "^5.0.7"
