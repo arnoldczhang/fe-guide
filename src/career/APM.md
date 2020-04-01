@@ -379,9 +379,12 @@ loadEventStart - domContentLoadedEventEnd
 
 #### 文件优化
 
-**剔除无用模板**
+**模板**
 
-> 根据 template 和其引用（import、include），精简无用模板
+> 1. 根据 template 和其引用（import、include），精简无用模板
+>
+> 2. 复用相同结构的template
+>
 
 **js**
 
@@ -394,6 +397,15 @@ loadEventStart - domContentLoadedEventEnd
 **业务逻辑**
 
 > 逻辑尽可能后置到接口？
+
+**页面**
+
+> 1. 非首页逻辑移至分包加载
+>
+> 2. 部分页面考虑转成会，用<web-view>承载
+
+#### 白屏优化
+
 
 #### setData优化
 
