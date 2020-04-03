@@ -9,15 +9,19 @@ type HookNameType = 'beforeParamReceive'
   | 'compiled';
 
 type PipeLineState = 'init'
-  | 'doing'
+  | 'param'
+  | 'assemble'
   | 'sync'
   | 'async'
-  | 'failed'
-  | 'compiled'
-  | 'uninstalled';
+  | 'fail'
+  | 'compile';
 
 type Hook = {
   [P in HookNameType]: Function[];
+};
+
+type PipeLineStateMap = {
+  [P in PipeLineState]: number;
 };
 
 type PipeLineCompiler = {
