@@ -72,4 +72,16 @@ export default abstract class AbstractSql extends AnySql {
     }
     `;
   }
+
+  public insert(...args: Array<ICalcCollection|string>): string {
+    const result = args.reduce((res: ICO, pre: ICalcCollection|string) => {
+      const [key, value] = pre.toString().split(/\s+=\s+/);
+      if (value === undefined || value === null) {
+        return res;
+      }
+      res[key] = typeof value === 'string' ? `${value || '\'\''}` : value;
+      return res;
+    }, {});
+    return `Insert into ${this.table} (${Object.keys(result)}) values(${Object.values(result)})`;
+  }
 }
