@@ -10,17 +10,24 @@ export default abstract class AbstractTable extends AbstractSql {
 
   private time: string = 'time';
 
-  public getName(): string {
-    return this.name;
+  public get(key: string|number): ICalcCollection {
+    if (!(key in this)) {
+      throw new Error(`字段: ${key} 不在当前 table 中`);
+    }
+    return this.query[key];
+  }
+
+  public getName(): ICalcCollection {
+    return this.get(this.name);
   }
 
   public getColumn1(): ICalcCollection {
-    return this.query[this.column1];
+    return this.get(this.column1);
   }
 
 
   public getTime(): ICalcCollection {
-    return this.query[this.time];
+    return this.get(this.time);
   }
 
   constructor(tableName: string) {
