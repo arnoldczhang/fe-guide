@@ -19,6 +19,7 @@
 * [`webpack加载流程`](#webpack加载流程)
 * [`webpack-3.8.1`](#webpack-3.8.1)
 * [`webpack4`](#webpack4)
+* [`webpack5`](#webpack5)
 * [`plugin`](#plugin)
 * [`中间缓存`](#中间缓存)
 * [`webpack-watch`](#webpack-watch)
@@ -1138,4 +1139,52 @@ __webpack_require__
 - 用`chokidar`监听文件变更，实现按需构建
 - `--watch`内置了类似`batching`，变更会暂存在`aggregatedChanges`数组中，`200毫秒`内无其他变更才会 emit 聚合事件到上次
 
+---
+
+## webpack5
+
+### module federation
+[module federation](http://www.alloyteam.com/2020/04/14338/)
+
+#### 配置方法
+```js
+{
+    plugins: [
+        new ModuleFederationPlugin({
+            name: "app1",
+            library: {
+                type: "var",
+                name: "app1"
+            },
+            remotes: {
+                app2: "app2"
+            },
+            shared: ["react", "react-dom"]
+        })
+    ]
+}
+```
+
+#### 原理
+主要变动为原本的`webpack_require__.e`，由加载一个 script，到调用`webpack_require.f`上面的函数
+
+通过前置加载依赖的方式，解决了依赖问题
+
+```js
+__webpack_require__.e = (chunkId) => {
+    return Promise.all(Object.keys(__webpack_require__.f).reduce((promises, key) => {
+        __webpack_require__.f[key](chunkId, promises);
+        return promises;
+    }, []));
+};
+```
+
+
+`webpack_require.f`主要包含三个函数
+
+- `overridables` 可覆盖的，看代码你应该已经知道和 shared 配置有关
+- `remotes` 远程的，看代码非常明显是和 remotes 配置相关
+- `jsonp` 这个就是原有的加载 chunk 函数，对应的是以前的懒加载或者公共代码提取
+
+页面首先会加载`remoteEntry`文件，文件内声明全局变量，用于解决各个 module 间的共享问题
 
