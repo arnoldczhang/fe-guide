@@ -1,6 +1,7 @@
 # lighthouse
 
 ## 参考
+[lighthouse指南](https://juejin.im/post/5dca05f45188250c643b7d76#heading-23)
 [lighthouse-with-puppeteer](https://medium.com/@jovd/lighthouse-with-puppeteer-5dc4e3245eed)
 [tesseract.js训练模型](https://github.com/naptha/tessdata)
 
