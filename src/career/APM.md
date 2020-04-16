@@ -375,45 +375,6 @@ loadEventStart - domContentLoadedEventEnd
 ## 性能优化
 - [京喜小程序优化指南](https://segmentfault.com/a/1190000022164644)
 
-### h5
-[参考](../js&browser/性能优化.md)
-
-### 小程序
-
-#### 文件优化
-
-**模板**
-
-> 1. 根据 template 和其引用（import、include），精简无用模板
->
-> 2. 复用相同结构的template
->
-
-**js**
-
-> babel-treeshake，需要用`ES module`
-
-**css**
-
->  [PurifyCSS](../node/README.md#purify-css)
-
-**业务逻辑**
-
-> 逻辑尽可能后置到接口？
-
-**页面**
-
-> 1. 非首页逻辑移至分包加载
->
-> 2. 部分页面考虑转成会，用<web-view>承载
-
-#### 白屏优化
-
-
-#### setData优化
-
-#### 一个执行周期内脚本运行时间不超过 1 秒
-
 ---
 
 ## 设计

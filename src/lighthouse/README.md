@@ -41,3 +41,28 @@ Tesseract
 
 ## lighthouse封装
 [参考](../node/lighthouse/README.md)
+
+---
+
+## puppeteer检查代码覆盖率
+```js
+const puppeteer = require('puppeteer');
+
+async function checkCoverage(url) {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  await Promise.all([
+    page.coverage.startJSCoverage(),
+    page.coverage.startCSSCoverage(),
+  ]);
+  await page.goto(url);
+  const [jsCoverage, cssCoverage] = await Promise.all([
+    page.coverage.stopJSCoverage(),
+    page.coverage.stopCSSCoverage(),
+  ]);
+
+  await page.close();
+  await browser.close();
+  console.log(jsCoverage, cssCoverage);
+}
+```

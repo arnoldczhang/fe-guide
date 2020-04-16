@@ -30,6 +30,7 @@
 * [`tapable`](#tapable)
 * [`plugin`](#plugin)
 * [`loader`](#loader)
+* [`require.context`](#require.context)
 * [`热更新`](#热更新)
 * [`其他`](#其他)
 
@@ -1187,4 +1188,33 @@ __webpack_require__.e = (chunkId) => {
 - `jsonp` 这个就是原有的加载 chunk 函数，对应的是以前的懒加载或者公共代码提取
 
 页面首先会加载`remoteEntry`文件，文件内声明全局变量，用于解决各个 module 间的共享问题
+
+---
+
+## require.context
+> 当所有模块开发完成之后，我们需要将各模块导出，这里用到了require.context遍历文件夹中的指定文件,然后自动导入,而不用每个模块单独去导入
+
+```js
+let utils = {};
+let haveDefault = ['http','sentry'];
+
+const modules = require.context('./modules/', true, /.js$/);
+
+modules.keys().forEach(modulesKey => {
+  let attr = modulesKey.replace('./', '').replace('.js', '').replace('/index', '');
+  if (haveDefault.includes(attr)) {
+    utils[attr] = modules(modulesKey).default;
+  }else {
+    utils[attr] = modules(modulesKey);
+  }
+});
+
+module.exports = utils;
+```
+
+`require.context()`可传入三个参数分别是：
+
+- directory: 读取文件的路径
+- useSubdirectories: 是否遍历文件的子目录
+- regEx:  匹配文件的正则
 
