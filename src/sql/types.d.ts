@@ -1,4 +1,4 @@
-type BaseType = string | number | null;
+type BaseType = string | number | ICalcCollection |null;
 type CompareSymbol = '=' | '>' | '<' | '<>' | '<=' | '>=';
 type CalcSymbol = '+' | '-' | '*' | '/';
 type FunctionSymbol = 'avg' | 'max' | 'min' | 'quantile';
@@ -13,11 +13,11 @@ interface ICO<T = any> {
 
 interface IGenerateSql {
   table?: string;
-  select: string[],
-  where: string[],
+  select: Array<ICalcCollection|string>,
+  where: Array<ICalcCollection|string>,
   interval?: string;
-  groupby?: string[];
-  orderby?: string[];
+  groupby?: Array<ICalcCollection|string>;
+  orderby?: Array<ICalcCollection|string>;
   limit?: number[] | null;
   offset?: number;
 }
@@ -39,6 +39,7 @@ interface ICalcCollection {
   desc: FuncMethods;
   asc: FuncMethods;
   count: FuncMethods;
+  nullIf: CalcMethods;
   toUInt32: FuncMethods;
   interval: CalcMethods;
   toUnixTimestamp: FuncMethods;
@@ -46,6 +47,7 @@ interface ICalcCollection {
   toStartOfInterval: FuncMethods;
   splitArray: joinMethods;
   wrap: (input: BaseType, ...args: any[]) => ICalcCollection;
+  appendWrap: (input: BaseType, ...args: any[]) => ICalcCollection;
   toString: () => string;
   rename: (input: BaseType) => string;
   as: (input: BaseType) => string;

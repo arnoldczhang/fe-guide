@@ -62,6 +62,9 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   count(): ICalcCollection {
     return this.wrap('count');
   },
+  nullIf(defaultValue): ICalcCollection {
+    return this.appendWrap('nullIf', defaultValue);
+  },
   toUInt32(): ICalcCollection {
     return this.wrap('toUInt32');
   },
@@ -122,10 +125,19 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
     return this.operate(value, '-');
   },
   and(value: BaseType): ICalcCollection {
-    return createCalcObject(`${key}\n        and ${value}`);
+    if (value) {
+      return createCalcObject(`${key}\n        and ${value}`);
+    }
+    return createCalcObject(key);
   },
   splitArray(array: BaseType[], splitter = ', '): ICalcCollection {
     return createCalcObject([key].concat(array).join(splitter));
+  },
+  appendWrap(type: BaseType | FunctionSymbol, ...args: BaseType[]): ICalcCollection {
+    if (args.length) {
+      return createCalcObject(`${type}(${key}, ${args})`);
+    }
+    return this.wrap(type);
   },
   wrap(type: BaseType | FunctionSymbol, ...ch: BaseType[]): ICalcCollection {
     if (ch.length) {

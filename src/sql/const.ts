@@ -28,6 +28,7 @@ const TYPE: ICO = {
   in: 'in',
   uniq: 'uniq',
   operate: 'operate',
+  nullIf: 'nullIf',
 };
 
 export default TYPE;

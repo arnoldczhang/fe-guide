@@ -380,7 +380,6 @@ export default function DataPanel(BaseComp, options = {}) {
           vnode.context = this._self;
           return vnode;
         });
-
       updateContextMethods(this, this.$props);
       const props = filterKeys(this.$props, dataPanelPropsKey);
       return hoc(Base, {
@@ -391,6 +390,8 @@ export default function DataPanel(BaseComp, options = {}) {
           [key]: this[key],
         },
         attrs: this.$attrs,
+        // feat: 手动更正 scopedSlots 到高阶组件上
+        scopedSlots: this.$scopedSlots,
       }, slots);
     },
   };

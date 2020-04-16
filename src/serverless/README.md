@@ -2,6 +2,7 @@
 
 ## 参考
 - [solid](https://learnsolid.cn/)
+- [rax-serveless实践](https://mp.weixin.qq.com/s/Hj1Py3_CNedxq0ZAy51Qqw)
 
 ## 名词解释
 

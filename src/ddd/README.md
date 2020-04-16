@@ -14,7 +14,9 @@
 
 * [`通用架构`](#通用架构)
 * [`要素`](#要素)
-* [`精粹`](#精粹)
+* [`概念`](#概念)
+* [`《领域驱动设计精粹》`](#《领域驱动设计精粹》)
+* [`《实现领域驱动设计》`](#《实现领域驱动设计》)
 * [`案例`](#案例)
 
 </details>
@@ -186,11 +188,12 @@ class CarRepositoryImplement implements CarRepository {
 **实体(Entity)**
 
 > 具有唯一标识的基本元素（class）
+>
+> 是业务对象的抽象，属于解决方案
 
 **值对象(Value Object)**
 
-> 没有唯一标识的实体（class.getInstance()）
-
+> 没有唯一标识的`实体`（class.getInstance()）
 
 **服务(Service)**
 
@@ -207,12 +210,18 @@ class CarRepositoryImplement implements CarRepository {
 
 **聚合(Aggregates)**
 
-> 有多个实体组成，是一个典型的命令模型
+> 由一或多个`实体`组成，是解决方案
 >
-> 每个聚合都有一个根实体，叫聚合根，在聚合中，聚合根是唯一允许外部引用的元素
+> 是一个典型的命令模型，关联领域事件、和命令
+>
+> 每个聚合都有一个根实体，叫`聚合根`，在聚合中，聚合根是唯一允许外部引用的元素
 >
 > 聚合内部的对象可以互相引用，外部只能看到聚合根
 >
+
+**领域事件**
+
+**领域服务**
 
 **工厂(Factory)**
 
@@ -232,15 +241,27 @@ class CarRepositoryImplement implements CarRepository {
 
 **子域**
 
-> 一个单一、有逻辑的领域模型
+> 一个单一、有逻辑的领域模型，包含界限上下文
 
 - 核心域
-- 支撑子域
-- 通用域
+- 支撑子域：子域对应业务某些重要方面，但不是核心的
+- 通用域：被用于整个业务系统的子域
 
 ---
 
-## 精粹
+## 概念
+
+**通用语言**
+
+> 团队自己创建的公用语言
+>
+> 限界上下文和通用语言一对一，只有团队都工作在一个限界上下文中，语言才够“通用”
+>
+
+
+---
+
+## 《领域驱动设计精粹》
 
 ### 运用上下文映射
 > 战略设计
@@ -270,7 +291,6 @@ class CarRepositoryImplement implements CarRepository {
 > 当团队需要与一个庞大复杂的系统集成时使用
 >
 > 开放式主机服务，提供一套开放的协议和接口，作为跟随者更容易被下游接收
-
 
 **防腐层**
 
@@ -335,7 +355,7 @@ de-duplication
 > 否则，根据最终一致性，更新其他聚合
 
 ### 运用领域事件
-> 事件类型是对过去发生事务的陈述，比如 productCommitted
+> 事件是对过去发生事务的陈述，比如 productCommitted
 >
 > 事件类型必须准确描述事务的行为
 >
@@ -347,10 +367,35 @@ de-duplication
 
 **事件溯源**
 
-> 持久化一个聚合实例上发生的所有领域事件
+> 持久化一个`聚合`实例上发生的所有领域事件
 >
 > 同时一定会用到`CQRS`
 
+**命令**
+
+> 命令通常是用户的某个操作结果，会导致领域事件的发生
+>
+> 所以其命名是指令式的，比如CreateProduct
+
+
+### 运用事件风暴
+
+**SWOT**
+
+- 优势（Strength）
+- 劣势（Weakness）
+- 机会（Opportunity）
+- 威胁（Threat）
+
+---
+
+## 《实现领域驱动设计》
+
+### 领域、子域和限界上下文
+
+- 切忌根据每迭代的需求拆分上下文
+- 切忌根据自己分配到的开发任务拆分上下文
+- 需要预先划分限界、模型，迭代需求只是不断往模型添加、删除一些概念
 
 
 ---
@@ -377,3 +422,49 @@ de-duplication
 > 查询模型无副作用（总是能返回固定结果）
 >
 
+### 贫血症导致的失忆症
+> 贫血症指，缺少内部行为的领域对象
+
+**坏例子**
+
+```java
+public save() {
+  Customer customer = new CustomerDao.readCustomer(id);
+  customer.setCustomerId(id);
+  customer.setCustomerName(name);
+  customer.setCustomerAge(age);
+}
+// ...等等
+```
+
+**分析**
+
+> Dao对象不涉及业务逻辑，导致service中的方法意图不明显，徒增复杂度
+>
+> Customer作用只是一个数据持有器，非一个对象
+
+**好例子**
+
+```java
+public save() {
+  Customer customer = new CustomerDao.readCustomer(id);
+  updateCustomerId(id);
+  changeCustomerName(id, name);
+  // ...
+}
+
+public void changeCustomerName(
+  String id,
+  String name,
+) {
+  Customer customer = CustomerRepository.getCustomerById(id);
+
+  if (customer == null) {
+    throw new IllegalStateException('customer is not exited');
+  }
+
+  if (name != null) {
+    customer.changeCustomerName(name);
+  }
+}
+```
