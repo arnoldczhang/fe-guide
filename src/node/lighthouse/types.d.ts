@@ -26,3 +26,9 @@ type LHHookName = {
 type LHHook = {
   [P in LHHookNameType]?: Function[];
 };
+
+type LHOption = {
+  initChromeConfig: Function | null;
+  initLighthouseConfig: Function | null;
+  hooks: ICO,
+};

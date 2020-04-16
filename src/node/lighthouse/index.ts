@@ -1,5 +1,5 @@
 import defaultConfig, { defaultChromeConfig } from './config';
-import AbstractBase from './AbstractBase';
+import AbstractBase from './abstractBase';
 
 const chromeLauncher = require('chrome-launcher');
 const lighthouseLauncher = require('lighthouse');
@@ -42,7 +42,7 @@ class Lighthouse extends AbstractBase {
 
   protected state: number = this.stateMap.init;
 
-  private option: ICO = {
+  private option: LHOption = {
     initChromeConfig: null,
     initLighthouseConfig: null,
     hooks: {},
@@ -54,7 +54,7 @@ class Lighthouse extends AbstractBase {
 
   constructor(
     url: string,
-    option?: ICO,
+    option?: LHOption,
     config?: ICO,
   ) {
     super();
@@ -66,7 +66,7 @@ class Lighthouse extends AbstractBase {
 
   static geInstance(
     url: string,
-    options?: ICO,
+    options?: LHOption,
     config?: ICO,
   ): Lighthouse {
     return new Lighthouse(url, options, config);
@@ -163,7 +163,7 @@ class Lighthouse extends AbstractBase {
     });
   }
 
-  private async runTask(): Promise<this | void> {
+  private async runTask(): Promise<this | Error> {
     try {
       this.updateState(this.stateMap.launch);
       this.chrome = await this.runChrome();
@@ -176,7 +176,7 @@ class Lighthouse extends AbstractBase {
     } catch (err) {
       this.updateState(this.stateMap.done);
       this.uninstall();
-      return Promise.resolve();
+      return err;
     }
   }
 
@@ -208,7 +208,7 @@ class Lighthouse extends AbstractBase {
     return defaultValue || '';
   }
 
-  public async run(url?: string): Promise<this | void> {
+  public async run(url?: string): Promise<this | Error> {
     this.updateUrl(url);
     const result = await this.runTask();
     return result;

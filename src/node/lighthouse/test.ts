@@ -1,7 +1,7 @@
 import Lighthouse from './index';
+import LighthouseController from '../../controller/LighthouseController';
 
 const fs = require('fs');
-const path = require('path');
 const crypto = require('crypto');
 
 const toHash = (input = ''): string => crypto.createHash('md5').update(input).digest('hex');
