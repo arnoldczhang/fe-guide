@@ -41,6 +41,7 @@ Tesseract
 
 ## lighthouse封装
 [参考](../node/lighthouse/README.md)
+[自定义lighthouse统计指标](https://github.com/GoogleChrome/lighthouse/blob/master/docs/recipes/lighthouse-plugin-example/readme.md)
 
 ---
 
