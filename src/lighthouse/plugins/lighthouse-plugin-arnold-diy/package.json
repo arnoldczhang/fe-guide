@@ -1,0 +1,10 @@
+{
+  "name": "lighthouse-plugin-arnold-diy",
+  "main": "plugin.js",
+  "peerDependencies": {
+    "lighthouse": "^5.6.0"
+  },
+  "devDependencies": {
+    "lighthouse": "^5.6.0"
+  }
+}
