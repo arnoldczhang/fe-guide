@@ -2,6 +2,9 @@
 
 ## 参考
 - [大前端时代下的微前端架构](https://mp.weixin.qq.com/s/DVkrV_KKE9KaGSeUSenc6w)
+- [微前端框架-qiankun](https://zhuanlan.zhihu.com/p/131022025)
+
+![微前端](微前端.png)
 
 ## 原则
 - 单一目的

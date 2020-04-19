@@ -47,10 +47,12 @@ Tesseract
 
 ## puppeteer检查代码覆盖率
 
-不装chromium
+不装chromium指令
+
 ```
 env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm i puppeteer -D
-````
+```
+
 ```js
 const puppeteer = require('puppeteer');
 
