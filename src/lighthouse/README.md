@@ -45,7 +45,8 @@ Tesseract
 
 ---
 
-## puppeteer检查代码覆盖率
+## puppeteer
+[踩坑指南](https://juejin.im/post/5b99c9ece51d450e51625630)
 
 不装chromium指令
 
@@ -54,6 +55,7 @@ env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm i puppeteer -D
 ```
 
 ```js
+// 检查代码覆盖率
 const puppeteer = require('puppeteer');
 
 async function checkCoverage(url) {
