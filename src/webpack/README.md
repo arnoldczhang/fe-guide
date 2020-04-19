@@ -1145,24 +1145,41 @@ __webpack_require__
 ## webpack5
 
 ### module federation
-[module federation](http://www.alloyteam.com/2020/04/14338/)
+> 使 JavaScript 应用得以在客户端或服务器上动态运行另一个 bundle 的代码。
+
+#### 参考
+- [module federation](http://www.alloyteam.com/2020/04/14338/)
+- [module federation应用](https://mp.weixin.qq.com/s/zhkgudIjeuKWi536U5pJhw)
+
+#### 概念
+Remote，被 Host 消费的 Webpack 构建；
+Host，消费其他 Remote 的 Webpack 构建；
 
 #### 配置方法
 ```js
 {
-    plugins: [
-        new ModuleFederationPlugin({
-            name: "app1",
-            library: {
-                type: "var",
-                name: "app1"
-            },
-            remotes: {
-                app2: "app2"
-            },
-            shared: ["react", "react-dom"]
-        })
-    ]
+  plugins: [
+    new ModuleFederationPlugin({
+      // name，必须，唯一 ID，作为输出的模块名，使用的时通过 ${name}/${expose} 的方式使用；
+      name: "app1",
+      // library，必须，其中这里的 name 为作为 umd 的 name；
+      library: {
+        type: "var",
+        name: "app1"
+      },
+      // remotes，可选，表示作为 Host 时，去消费哪些 Remote；
+      remotes: {
+        app2: "app2"
+      },
+      // exposes，可选，表示作为 Remote 时，export 哪些属性被消费；      
+      exposes: {
+        antd: './src/antd',
+        button: './src/button',
+      },
+      // shared，可选，优先用 Host 的依赖，如果 Host 没有，再用自己的
+      shared: ["react", "react-dom"]
+    })
+  ]
 }
 ```
 

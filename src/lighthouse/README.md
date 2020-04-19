@@ -1,10 +1,10 @@
 # lighthouse
 
 ## 参考
-[lighthouse指南](https://juejin.im/post/5dca05f45188250c643b7d76#heading-23)
-[lighthouse-with-puppeteer](https://medium.com/@jovd/lighthouse-with-puppeteer-5dc4e3245eed)
-[tesseract.js训练模型](https://github.com/naptha/tessdata)
-[puppeteer疑难杂症](https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch)
+- [lighthouse指南](https://juejin.im/post/5dca05f45188250c643b7d76#heading-23)
+- [lighthouse-with-puppeteer](https://medium.com/@jovd/lighthouse-with-puppeteer-5dc4e3245eed)
+- [tesseract.js训练模型](https://github.com/naptha/tessdata)
+- [puppeteer疑难杂症](https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch)
 
 ## 图像识别
 
@@ -41,11 +41,21 @@ Tesseract
 
 ## lighthouse封装
 [参考](../node/lighthouse/README.md)
+[自定义lighthouse统计指标](https://github.com/GoogleChrome/lighthouse/blob/master/docs/recipes/lighthouse-plugin-example/readme.md)
 
 ---
 
-## puppeteer检查代码覆盖率
+## puppeteer
+[踩坑指南](https://juejin.im/post/5b99c9ece51d450e51625630)
+
+不装chromium指令
+
+```
+env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm i puppeteer -D
+```
+
 ```js
+// 检查代码覆盖率
 const puppeteer = require('puppeteer');
 
 async function checkCoverage(url) {

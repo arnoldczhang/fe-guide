@@ -726,6 +726,133 @@ console.log(purify(content, css));
 - 官方示例有误导性，让使用者（包括鄙人）误以为其支持jquery、react等各类框架，其实不然，核心只是模板分割-匹配
 - 再次证明`rework`还是很屌的
 
+### cpu
+
+![查看cpu](查看cpu.png)
+
+
+封装
+```js
+const os = require('os');
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+class OSUtils {
+  constructor() {
+    this.cpuUsageMSDefault = 1000; // CPU 利用率默认时间段
+  }
+
+  /**
+   * 获取某时间段 CPU 利用率
+   * @param { Number } Options.ms [时间段，默认是 1000ms，即 1 秒钟]
+   * @param { Boolean } Options.percentage [true（以百分比结果返回）|false] 
+   * @returns { Promise }
+   */
+  async getCPUUsage(options={}) {
+    const that = this;
+    let { cpuUsageMS, percentage } = options;
+    cpuUsageMS = cpuUsageMS || that.cpuUsageMSDefault;
+    const t1 = that._getCPUInfo(); // t1 时间点 CPU 信息
+
+    await sleep(cpuUsageMS);
+
+    const t2 = that._getCPUInfo(); // t2 时间点 CPU 信息
+    const idle = t2.idle - t1.idle;
+    const total = t2.total - t1.total;
+    let usage = 1 - idle / total;
+
+    if (percentage) usage = (usage * 100.0).toFixed(2) + "%";
+
+    return usage;
+  }
+
+  /**
+   * 获取 CPU 信息
+   * @returns { Object } CPU 信息
+   */
+  _getCPUInfo() {
+    const cpus = os.cpus();
+    let user = 0, nice = 0, sys = 0, idle = 0, irq = 0, total = 0;
+
+    for (let cpu in cpus) {
+      const times = cpus[cpu].times;
+      user += times.user;
+      nice += times.nice;
+      sys += times.sys;
+      idle += times.idle;
+      irq += times.irq;
+    }
+
+    total += user + nice + sys + idle + irq;
+
+    return {
+      user,
+      sys,
+      idle,
+      total,
+    }
+  }
+}
+```
+使用
+```js
+const cpuUsage = await osUtils.getCPUUsage({ percentage: true });
+console.log('CPU 利用率：', cpuUsage) // CPU 利用率：13.72%
+```
+
+### util.promisify
+> 将callback形式转为promise形式
+
+示例
+```js
+const { promisify } = require('util');
+const readFilePromisify = util.promisify(fs.readFile); // 转化为 promise
+
+readFilePromisify('text.txt', 'utf8')
+  .then(result => console.log(result)) // Nodejs Callback 转 Promise 对象测试
+  .catch(err => console.log(err));
+```
+
+源码解释
+```js
+// https://github.com/nodejs/node/blob/v12.x/lib/internal/util.js#L277
+const kCustomPromisifyArgsSymbol = Symbol('customPromisifyArgs'); // {1}
+
+function promisify(original) {
+  ...
+
+  // 获取多个回调函数的参数名称列表
+  const argumentNames = original[kCustomPromisifyArgsSymbol]; // {2}
+
+  function fn(...args) {
+    return new Promise((resolve, reject) => {
+      try {
+        // (err, result) 改为 (err, ...values) {3}
+        original.call(this, ...args, (err, ...values) => {
+          if (err) {
+            reject(err);
+          } else {
+            // 变动之处 -> start
+            // argumentNames 存在且 values > 1，则回调会存在多个参数名称，进行遍历，返回一个 obj
+            if (argumentNames !== undefined && values.length > 1) { // {4}
+              const obj = {};
+              for (let i = 0; i < argumentNames.length; i++)
+                obj[argumentNames[i]] = values[i];
+              resolve(obj);
+            } else { // {5} 否则 values 最多仅有一个参数名称，即数组 values 有且仅有一个元素
+              resolve(values[0]);
+            }
+            // end <- 变动之处
+          }
+        });
+      } catch(err) {
+        reject(err);
+      }
+    });
+  }
+  return fn;
+}
+```
+
 ---
 
 ## 库开发模式

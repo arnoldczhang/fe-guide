@@ -25,7 +25,12 @@ export const perfConfig = require('lighthouse/lighthouse-core/config/perf-config
 
 export const defaultChromeConfig = {
   logLevel: 'info',
-  chromeFlags: ['--headless', '--show-paint-rects'],
+  chromeFlags: [
+    '--no-sandbox',
+    '--headless',
+    '--disable-gpu',
+    '--show-paint-rects',
+  ],
 };
 
 const {
@@ -70,7 +75,7 @@ const defaultConfig = {
   settings: {
     ...otherSettings,
     onlyCategories,
-    skipAudits,
+    // skipAudits,
     locale: 'zh',
   }
 };
