@@ -1,0 +1,10 @@
+{
+  "name": "lighthouse-plugin-demo",
+  "main": "plugin.js",
+  "peerDependencies": {
+    "lighthouse": "^5.6.0"
+  },
+  "devDependencies": {
+    "lighthouse": "^5.6.0"
+  }
+}
