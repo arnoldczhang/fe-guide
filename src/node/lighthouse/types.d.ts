@@ -28,7 +28,7 @@ type LHHook = {
 };
 
 type LHOption = {
-  initChromeConfig: Function | null;
-  initLighthouseConfig: Function | null;
-  hooks: ICO,
+  initChromeConfig?: Function | null;
+  initLighthouseConfig?: Function | null;
+  hooks?: ICO,
 };

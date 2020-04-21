@@ -43,6 +43,20 @@ Tesseract
 [参考](../node/lighthouse/README.md)
 [自定义lighthouse统计指标](https://github.com/GoogleChrome/lighthouse/blob/master/docs/recipes/lighthouse-plugin-example/readme.md)
 
+### 配置说明
+
+**throttlingMethod**
+
+> 节流方式，有 provided、devtools、simulate，provided表示不节流
+
+```json
+{
+  "settings": {
+    "throttlingMethod": "provided",
+  },
+}
+```
+
 ---
 
 ## puppeteer
@@ -59,7 +73,17 @@ env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm i puppeteer -D
 const puppeteer = require('puppeteer');
 
 async function checkCoverage(url) {
-  const browser = await puppeteer.launch({ headless: false });
+  const pathToExtension = '/usr/bin/google-chrome-stable';
+  const browser = await puppeteer.launch({
+    args: [
+      '--no-sandbox',
+      '--headless',
+      '--disable-gpu',
+      '--show-paint-rects',
+    ],
+    // 服务器上不装 chromium，或装失败的话，需要用 executablePath 手动指定机器上的 google-chrome-stable（一般是上面这个地址），其他情况不用
+    executablePath: pathToExtension,
+  });
   const page = await browser.newPage();
   await Promise.all([
     page.coverage.startJSCoverage(),
