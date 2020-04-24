@@ -47,6 +47,7 @@ Tesseract
 
 **throttlingMethod**
 
+[参考](https://stackoverflow.com/questions/49899765/how-to-disable-throttling-in-lighthouse-programmaticaly/55850374#55850374)
 > 节流方式，有 provided、devtools、simulate，provided表示不节流
 
 ```js
@@ -59,6 +60,42 @@ Tesseract
       uploadThroughputKbps: 2000,
     },
   },
+}
+```
+
+含义看代码
+```js
+// node_modules/lighthouse/lighthouse-core/computed/load-simulator.js
+
+switch (throttlingMethod) {
+  case 'provided':
+    options.rtt = networkAnalysis.rtt;
+    options.throughput = networkAnalysis.throughput;
+    options.cpuSlowdownMultiplier = 1;
+    options.layoutTaskMultiplier = 1;
+    break;
+  case 'devtools':
+    if (throttling) {
+      options.rtt =
+        throttling.requestLatencyMs / constants.throttling.DEVTOOLS_RTT_ADJUSTMENT_FACTOR;
+      options.throughput =
+        throttling.downloadThroughputKbps * 1024 /
+        constants.throttling.DEVTOOLS_THROUGHPUT_ADJUSTMENT_FACTOR;
+    }
+
+    options.cpuSlowdownMultiplier = 1;
+    options.layoutTaskMultiplier = 1;
+    break;
+  case 'simulate':
+    if (throttling) {
+      options.rtt = throttling.rttMs;
+      options.throughput = throttling.throughputKbps * 1024;
+      options.cpuSlowdownMultiplier = throttling.cpuSlowdownMultiplier;
+    }
+    break;
+  default:
+    // intentionally fallback to simulator defaults
+    break;
 }
 ```
 
