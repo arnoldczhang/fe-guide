@@ -10,6 +10,7 @@
 
 * [`极简安装&启动`](#极简安装&启动)
 * [`技巧`](#技巧)
+* [`一些尝试`](#一些尝试)
 
 </details>
 
@@ -79,3 +80,9 @@ vue ui
   <div>...其他组件</div>
 </keep-alive>
 ```
+
+---
+
+## 一些尝试
+- [懒加载通用组件](./datapanel/README.md)
+- [美化后的tree结构组件](./vue-pretty-tree/README.md)
