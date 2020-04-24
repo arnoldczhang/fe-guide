@@ -49,10 +49,15 @@ Tesseract
 
 > 节流方式，有 provided、devtools、simulate，provided表示不节流
 
-```json
+```js
 {
   "settings": {
-    "throttlingMethod": "provided",
+    throttlingMethod: 'provided', // 直接使用当前网络环境测试
+    throttling: {
+      throughputKbps: 8000,
+      downloadThroughputKbps: 8000,
+      uploadThroughputKbps: 2000,
+    },
   },
 }
 ```
