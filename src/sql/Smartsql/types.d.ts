@@ -1,5 +1,5 @@
 type BaseType = string | number | ICalcCollection |null;
-type CompareSymbol = '=' | '>' | '<' | '<>' | '<=' | '>=';
+type CompareSymbol = '=' | '!=' | '>' | '<' | '<>' | '<=' | '>=';
 type CalcSymbol = '+' | '-' | '*' | '/';
 type FunctionSymbol = 'avg' | 'max' | 'min' | 'quantile';
 type CalcMethods = (input: BaseType) => ICalcCollection;
@@ -24,6 +24,7 @@ interface IGenerateSql {
 
 interface ICalcCollection {
   eq: CalcMethods;
+  notEq: CalcMethods;
   gt: CalcMethods;
   gte: CalcMethods;
   lt: CalcMethods;
@@ -41,6 +42,10 @@ interface ICalcCollection {
   count: FuncMethods;
   nullIf: CalcMethods;
   toUInt32: FuncMethods;
+  countMerge: FuncMethods;
+  uniqMerge: FuncMethods;
+  anyMerge: FuncMethods;
+  sumMerge: FuncMethods;
   interval: CalcMethods;
   toUnixTimestamp: FuncMethods;
   toDateTime: FuncMethods;
@@ -52,6 +57,15 @@ interface ICalcCollection {
   rename: (input: BaseType) => string;
   as: (input: BaseType) => string;
   in: joinMethods;
+  notIn: joinMethods;
   uniq: joinMethods;
   operate: (input: BaseType, type: CompareSymbol | CalcSymbol) => ICalcCollection;
 }
+
+type SqlCommonParam = {
+  select?: Array<string | ICalcCollection>;
+  where?: ICO;
+  groupby?: Array<string | ICalcCollection>;
+  orderby?: string[][];
+  limit?: number;
+};

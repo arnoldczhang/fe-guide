@@ -1,14 +1,18 @@
 import SmartSql from '../../index';
 import AbstractSql from '../../AbstractSql';
 
+const env: string = require('../../../env.js');
+
 export default abstract class AbstractTable extends AbstractSql {
+  static getName(name: string): string {
+    return `${name}${env === 'pro' ? '_all' : ''}`;
+  }
+
   protected query: SmartSql = SmartSql.quickStart();
 
   private name: string = '';
 
   private column1: string = 'column1';
-
-  private time: string = 'time';
 
   public get(key: string|number): ICalcCollection {
     if (!(key in this)) {
@@ -17,21 +21,16 @@ export default abstract class AbstractTable extends AbstractSql {
     return this.query[key];
   }
 
-  public getName(): ICalcCollection {
-    return this.get(this.name);
+  public getName(): string {
+    return AbstractTable.getName(this.name);
   }
 
   public getColumn1(): ICalcCollection {
     return this.get(this.column1);
   }
 
-
-  public getTime(): ICalcCollection {
-    return this.get(this.time);
-  }
-
   constructor(tableName: string) {
-    super(tableName);
+    super(AbstractTable.getName(tableName));
     this.name = tableName;
   }
 }
