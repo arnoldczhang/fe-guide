@@ -1,20 +1,19 @@
 import MTable1 from '../domain/aggregate/MTable1';
+import AbstractService from './AbstractService';
 
-export default class TestService {
+export default class TestService extends AbstractService{
   public queryMTable1({
     where,
   }: {
     where: ICO;
   }): string {
-    const {
-      column1,
-    } = where;
     const table = new MTable1();
-    const sql = table.select(
-      table.getColumn2().rename('xxoo'),
-    ).where(
-      table.getColumn1().eq(column1),
-    ).end();
-    return sql;
+    return this.commonQuery(table, {
+      select: [table.getColumn2().rename('xxoo')],
+      where: {
+        ...where,
+        column1: 'column1',
+      }
+    });
   }
 }

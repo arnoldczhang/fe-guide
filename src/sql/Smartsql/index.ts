@@ -68,6 +68,18 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   toUInt32(): ICalcCollection {
     return this.wrap('toUInt32');
   },
+  countMerge(): ICalcCollection {
+    return this.wrap('countMerge');
+  },
+  uniqMerge(): ICalcCollection {
+    return this.wrap('uniqMerge');
+  },
+  anyMerge(): ICalcCollection {
+    return this.wrap('anyMerge');
+  },
+  sumMerge(): ICalcCollection {
+    return this.wrap('sumMerge');
+  },
   interval(interval: BaseType): ICalcCollection {
     return this.splitArray([
       `${/^interval/.test(interval as string) ? '' : 'interval'} ${interval}`
@@ -94,11 +106,17 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   in(value: BaseType[]): ICalcCollection {
     return this.wrap('in', ...value);
   },
+  notIn(value: BaseType[]): ICalcCollection {
+    return this.wrap('not in', ...value);
+  },
   uniq(): ICalcCollection {
     return this.wrap('uniq');
   },
   eq(value: BaseType): ICalcCollection {
     return this.operate(value, '=');
+  },
+  notEq(value: BaseType): ICalcCollection {
+    return this.operate(value, '!=');
   },
   gt(value: BaseType): ICalcCollection {
     return this.operate(value, '>');

@@ -28,6 +28,7 @@
 - [css学习](./src/css-related/README.md)
 - [node学习](./src/node/README.md)
 - [react学习](./src/react/README.md)
+- [lighthouse学习](./src/lighthouse/README.md)
 - [v8学习](./src/v8/README.md)
 - [npm相关](./src/npm&yarn/README.md)
 - [小程序相关](./src/miniprogram/README.md)
@@ -38,9 +39,7 @@
 - [es6兜底方法](./src/meta-programming/index.js)
 - [immer数据不变性](./src/immer/immer.js)
 - [markdown语法解析](./src/markdown/mark.js)
+- [语义化sql结合ddd实战](./src/sql/Smartsql/README.md)
 - [前端mvvm框架](https://github.com/arnoldczhang/main-test2)
-
-## 知识图谱
-![路线图](https://github.com/InterviewMap/InterviewMap/blob/master/InterviewMapMind.png)
 
 

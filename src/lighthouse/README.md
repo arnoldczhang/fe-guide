@@ -50,10 +50,15 @@ Tesseract
 [参考](https://stackoverflow.com/questions/49899765/how-to-disable-throttling-in-lighthouse-programmaticaly/55850374#55850374)
 > 节流方式，有 provided、devtools、simulate，provided表示不节流
 
-```json
+```js
 {
   "settings": {
-    "throttlingMethod": "provided",
+    throttlingMethod: 'provided', // 直接使用当前网络环境测试
+    throttling: {
+      throughputKbps: 8000,
+      downloadThroughputKbps: 8000,
+      uploadThroughputKbps: 2000,
+    },
   },
 }
 ```
