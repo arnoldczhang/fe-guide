@@ -100,7 +100,7 @@ async function imgParse(
   });
 }
 
-async function aa(): Promise<void> {
+async function runPuppeteer(): Promise<void> {
   const imgPath = 'xxx.png';
   await imgParse(page, '.captcha', imgPath);
   const result = await recognize(
@@ -118,4 +118,4 @@ async function aa(): Promise<void> {
   console.log(111);
 }
 
-aa();
+runPuppeteer();
