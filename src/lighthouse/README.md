@@ -108,10 +108,14 @@ switch (throttlingMethod) {
 
 ```
 env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm i puppeteer -D
+
+// 或
+
+npm install puppeteer --ignore-scripts
 ```
 
+### 检查代码覆盖率
 ```js
-// 检查代码覆盖率
 const puppeteer = require('puppeteer');
 
 async function checkCoverage(url) {
@@ -142,3 +146,6 @@ async function checkCoverage(url) {
   console.log(jsCoverage, cssCoverage);
 }
 ```
+
+### 基于puppeteer的自动化测试
+[参考](../node/puppeteer/test-case/README.md)

@@ -1903,7 +1903,7 @@ function handle(req, res) {
 文档对象模型
 
 - nodeType
-- querySelectorAll
+- [querySelectorAll](https://www.cnblogs.com/HavenLau/p/10476508.html)
 - treewalker
 - onload
 
@@ -2866,7 +2866,7 @@ rpc：A机器调用自己的代理方法，方法内对数据序列化后，与B
 ---
 
 ### e2e测试
-- puppeteer
+- [puppeteer](../../node/puppeteer/test-case/README.md)
 - nightwatch
 - cypress
 
