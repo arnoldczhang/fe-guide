@@ -93,6 +93,7 @@
 * [`reduxVSmobx`](#reduxVSmobx)
 * [`mv*`](#mv*)
 * [`react优化指南`](#react优化指南)
+* [`e2e测试`](#e2e测试)
 
 **node**
 
@@ -164,6 +165,10 @@
 * [`src和href`](#src和href)
 * [`实现一个轮播组件`](#实现一个轮播组件)
 * [`rel属性`](#rel属性)
+
+**typescript**
+
+* [`type和interface区别`](#type和interface区别)
 
 **各种坑**
 
@@ -2854,3 +2859,15 @@ rpc：A机器调用自己的代理方法，方法内对数据序列化后，与B
 
 ---
 
+### type和interface区别
+[参考](../../typescript/README.md#interface和type)
+
+
+---
+
+### e2e测试
+- puppeteer
+- nightwatch
+- cypress
+
+---

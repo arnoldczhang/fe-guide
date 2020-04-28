@@ -20,6 +20,14 @@
 ## 介绍
 
 ### interface和type
+
+相同点：
+
+* 允许extends
+* 都能描述为函数或对象
+
+不同点：
+
 * interface创建了一种新的类型，而 type 仅仅是别名，是一种引用
 * interface通常用于定义对象，type可以定义任意类型
 * interface可在子句中重命名，type不行
