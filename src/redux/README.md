@@ -26,5 +26,12 @@ dispatch( action ) 触发 action，生成新的 state
 ### middleware
 扩展 dispatch 函数！
 
+---
+
 ## 流程
 ![流程](./redux.jpeg)
+
+---
+
+## 最少实现
+[代码](./redux.js)

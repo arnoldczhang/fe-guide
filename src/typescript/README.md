@@ -232,6 +232,17 @@ HttpCode['200_OK']
 HttpCode[200]
 ```
 
+### 其他骚操作
+```ts
+type StringOrNumber = string | number;  
+type Text = string | { text: string };  
+type NameLookup = Dictionary<string, Person>;  
+type Callback<T> = (data: T) => void;  
+type Pair<T> = [T, T];  
+type Coordinates = Pair<number>;  
+type Tree<T> = T | { left: Tree<T>, right: Tree<T> };
+```
+
 ---
 
 ## SOLID

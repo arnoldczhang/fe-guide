@@ -130,6 +130,8 @@
 * [`js单线程`](#js单线程)
 * [`performanceAPI`](#performanceAPI)
 * [`rpc和http区别`](#rpc和http区别)
+* [`X-Frame-Options`](#X-Frame-Options)
+* [`crossorigin`](#crossorigin)
 
 **算法**
 
@@ -1206,6 +1208,7 @@ arr instanceof Array; // false
 
 ### redux和vuex
 [参考](https://zhuanlan.zhihu.com/p/53599723)
+[10行实现redux](../../redux/redux.js)
 
 - 单向数据流
 - state不可变更
@@ -2869,5 +2872,55 @@ rpc：A机器调用自己的代理方法，方法内对数据序列化后，与B
 - [puppeteer](../../node/puppeteer/test-case/README.md)
 - nightwatch
 - cypress
+
+---
+
+### X-Frame-Options
+> 用来给浏览器指示允许一个页面，可否在 <frame>, <iframe>, <embed> 或者 <object> 中展现的标记，是一个广泛支持但非官方的规范
+
+[参考](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/X-Frame-Options)
+
+共3个值：
+
+- deny: 全不允许展示
+- sameorigin: 相同域名页面 frame 中可展示
+- allow-from https://example.com: 指定页面可展示
+
+**如何破解？**
+
+前端处理是无效的（比如：<meta http-equiv="X-Frame-Options" content="deny">）
+
+nginx处理：
+
+```
+add_header X-Frame-Options sameorigin always;
+```
+
+apache处理：
+
+```
+Header always set X-Frame-Options "sameorigin"
+```
+
+express处理：
+
+```
+const helmet = require('helmet');
+const app = express();
+app.use(helmet.frameguard({ action: "sameorigin" }));
+
+// 或
+const frameguard = require('frameguard')
+app.use(frameguard({ action: 'sameorigin' }))
+```
+
+---
+
+### crossorigin
+如果页面引用的跨域脚本执行出错，页面 window.onerror 捕获的错误只有【Script error.】，这样不利于错误分析
+
+解决方法：
+- <script crossorigin src="xxxx"></script>
+- js响应头加上 'Access-Control-Allow-Origin': '*'
 
 ---
