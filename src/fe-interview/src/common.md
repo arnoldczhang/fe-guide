@@ -27,6 +27,7 @@
 * [`执行上下文和作用域链`](#执行上下文和作用域链)
 * [`节流&防抖`](#节流&防抖)
 * [`flattenArray`](#flattenArray)
+* [`flattenObject`](#flattenObject)
 * [`数组去重uniq`](#数组去重uniq)
 * [`何为可迭代对象`](#何为可迭代对象)
 * [`Set、Map、WeakSet和WeakMap的区别`](#Set、Map、WeakSet和WeakMap的区别)
@@ -71,6 +72,7 @@
 * [`jsbridge`](#jsbridge)
 * [`前端监控&异常捕获`](#前端监控&异常捕获)
 * [`如何实现URLSearchParams`](#如何实现URLSearchParams)
+* [`浏览器用esmodule不用cjs的原因`](#浏览器用esmodule不用cjs的原因)
 
 **构建/打包**
 
@@ -777,7 +779,7 @@ Promise.all2 = function(promises) {
 
 ---
 
-### 数组扁平化flattenArray
+### flattenArray
 
 #### 方式一
 ```js
@@ -805,6 +807,86 @@ var flattenArray = (arr) => {
     return res;
   }, []);
 };
+```
+
+---
+
+### flattenObject
+
+方式一：纯遍历
+
+```js
+function flattenObject(
+  input = {},
+  output = {},
+  memo = [],
+) {
+  if (Array.isArray(input)) {
+    input.forEach((item, index) => flatten(item, output, memo.concat(index)))
+  } else if (input && typeof input === 'object') {
+    Object.keys(input).forEach((key) => {
+      flatten(input[key], output, memo.concat(key));
+    });
+  } else {
+    output[memo.join('.').replace(/\.(\d+)/g, '[$1]')] = input;
+  }
+  return output;
+};
+```
+
+方式二：强行要秀reduce的话
+
+```js
+function flattenObject2(
+  input = {},
+  output = {},
+  memo = [],
+) {
+  if (Array.isArray(input)) {
+    return input.reduce((res, pre, index) => {
+      return flattenObject2(pre, res, memo.concat(index));
+    }, output);
+  } else if (input && typeof input === 'object') {
+    return Object.keys(input).reduce((res, key) => {
+      return flattenObject2(input[key], res, memo.concat(key));
+    }, output);
+  }
+  return output[memo.join('.').replace(/\.(\d+)/g, '[$1]')] = input, output;
+}
+```
+
+测试：
+
+```js
+var obj = {
+  "a": {
+    "b": {
+      "c": {
+        "d": 1
+      }
+    }
+  },
+  "aa": 2,
+  "c": [
+    1,
+    2,
+    [3,4,{
+      dd: [2]
+    }]
+  ]
+};
+
+// {
+//   'a.b.c.d': 1,
+//   aa: 2,
+//   'c[0]': 1,
+//   'c[1]': 2,
+//   'c[2][0]': 3,
+//   'c[2][1]': 4,
+//   'c[2][2].dd[0]': 2
+// }
+flattenObject(obj);
+flattenObject2(obj);
 ```
 
 ---
@@ -2901,5 +2983,11 @@ rpc：A机器调用自己的代理方法，方法内对数据序列化后，与B
 ### 移动端离线包
 将文件缓存到本地，过段时间拉取新版本，检查是否需要更新，此外，预加载、按需加载、执行流程编排也可以谈谈
 
+
+---
+
+### 浏览器用esmodule不用cjs的原因
+- esmodule有确定性，可做预加载等优化处理
+- esmodule加载的异步代码，无需await
 
 ---
