@@ -43,6 +43,7 @@ function multiply(in1, in2) {
   }
 }
 
+// test
 const num1 = '123';
 const num2 = '5678';
 multiply(num1, num2);
