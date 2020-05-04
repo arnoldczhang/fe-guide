@@ -6,6 +6,8 @@
 - [tesseract.js训练模型](https://github.com/naptha/tessdata)
 - [puppeteer疑难杂症](https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch)
 
+---
+
 ## 图像识别
 
 ### 参考
