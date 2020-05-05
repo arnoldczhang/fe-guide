@@ -20,6 +20,14 @@
 ## 介绍
 
 ### interface和type
+
+相同点：
+
+* 允许extends
+* 都能描述为函数或对象
+
+不同点：
+
 * interface创建了一种新的类型，而 type 仅仅是别名，是一种引用
 * interface通常用于定义对象，type可以定义任意类型
 * interface可在子句中重命名，type不行
@@ -222,6 +230,17 @@ enum HttpCode {
 // enum能同时用key和value，访问到value和key
 HttpCode['200_OK']
 HttpCode[200]
+```
+
+### 其他骚操作
+```ts
+type StringOrNumber = string | number;  
+type Text = string | { text: string };  
+type NameLookup = Dictionary<string, Person>;  
+type Callback<T> = (data: T) => void;  
+type Pair<T> = [T, T];  
+type Coordinates = Pair<number>;  
+type Tree<T> = T | { left: Tree<T>, right: Tree<T> };
 ```
 
 ---
