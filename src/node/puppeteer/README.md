@@ -37,3 +37,18 @@ page.on('request', (req: any) => {
 });
 ```
 
+### 操作iframe
+```js
+console.log('waiting for iframe with form to be ready.');
+await page.waitForSelector('iframe');
+console.log('iframe is ready. Loading iframe content');
+
+const elementHandle = await page.$(
+    'iframe[src="https://example.com"]',
+);
+const frame = await elementHandle.contentFrame();
+
+console.log('filling form in iframe');
+await frame.type('#Name', 'Bob', { delay: 100 });
+```
+
