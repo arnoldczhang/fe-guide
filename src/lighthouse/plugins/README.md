@@ -1,6 +1,12 @@
 # lighthouse插件
 > lighthouse支持通过[插件](https://github.com/GoogleChrome/lighthouse/blob/master/docs/plugins.md)形式，新增自定义统计指标，下面介绍下开发方式
 
+## 参考
+[audit字段](https://github.com/GoogleChrome/lighthouse/blob/master/docs/understanding-results.md#audit-properties)
+[audit字段-详情类型](https://github.com/GoogleChrome/lighthouse/blob/master/types/audit-details.d.ts)
+
+---
+
 ## 插件目录
 ```
 ├── src --------------- 开发文件目录
@@ -11,6 +17,8 @@
 ├── plugin.js --------------- 插件入口 
 └── package.json ----- 配置文件
 ```
+
+---
 
 ## 文件介绍
 
@@ -111,4 +119,3 @@ class Audit1 extends Audit {
 
 module.exports = Audit1;
 ```
-
