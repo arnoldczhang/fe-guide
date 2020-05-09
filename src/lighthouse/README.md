@@ -151,3 +151,9 @@ async function checkCoverage(url) {
 
 ### 基于puppeteer的自动化测试
 [参考](../node/puppeteer/test-case/README.md)
+
+
+## lighthouse-plugin
+[chrome协议总览](https://vanilla.aslushnikov.com/)
+[自定义gatherer-参考](https://www.aymen-loukil.com/en/blog-en/google-lighthouse-custom-audits/)
+[自定义gatherer-代码](https://github.com/AymenLoukil/Google-lighthouse-custom-audit)
