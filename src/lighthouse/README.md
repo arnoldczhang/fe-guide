@@ -157,3 +157,29 @@ async function checkCoverage(url) {
 [chrome协议总览](https://vanilla.aslushnikov.com/)
 [自定义gatherer-参考](https://www.aymen-loukil.com/en/blog-en/google-lighthouse-custom-audits/)
 [自定义gatherer-代码](https://github.com/AymenLoukil/Google-lighthouse-custom-audit)
+
+
+### 一个npm包可以包含多个plugin
+
+```js
+initLighthouseConfig: (config: ICO) => ({
+  ...config,
+  plugins: [
+    "lighthouse-plugin-aa/src/plugins/container.js",
+    "lighthouse-plugin-aa/src/plugins/performance.js",
+  ],
+  passes: [{
+    passName: 'defaultPass',
+    gatherers: [
+      'lighthouse-plugin-aa/src/gatherers/custom-log-gatherer',
+    ],
+  }],
+  settings: {
+    ...config.settings,
+    onlyCategories: [
+      "lighthouse-plugin-aa/src/plugins/container.js",
+      "lighthouse-plugin-aa/src/plugins/performance.js",
+    ],
+  },
+}),
+```
