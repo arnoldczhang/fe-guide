@@ -158,6 +158,18 @@ async function checkCoverage(url) {
 [自定义gatherer-参考](https://www.aymen-loukil.com/en/blog-en/google-lighthouse-custom-audits/)
 [自定义gatherer-代码](https://github.com/AymenLoukil/Google-lighthouse-custom-audit)
 
+### 关键代码
+
+**config入口**
+
+```
+node_modules/lighthouse/lighthouse-core/config/config.js#L.301
+```
+
+**artifacts总览**
+```
+node_modules/lighthouse/lighthouse-core/runner.js#L.82
+```
 
 ### 一个npm包可以包含多个plugin
 
