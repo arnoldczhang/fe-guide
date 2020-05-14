@@ -162,13 +162,22 @@ async function checkCoverage(url) {
 
 **config入口**
 
+![config引用关系](config引用关系.png)
+
 ```
 node_modules/lighthouse/lighthouse-core/config/config.js#L.301
 ```
 
-**artifacts总览**
+**artifacts**
+
 ```
 node_modules/lighthouse/lighthouse-core/runner.js#L.82
+```
+
+**gatherer**
+
+```
+node_modules/lighthouse/lighthouse-core/config/config.js#L.343
 ```
 
 ### 一个npm包可以包含多个plugin
