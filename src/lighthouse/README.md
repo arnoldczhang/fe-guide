@@ -151,3 +151,56 @@ async function checkCoverage(url) {
 
 ### 基于puppeteer的自动化测试
 [参考](../node/puppeteer/test-case/README.md)
+
+
+## lighthouse-plugin
+[chrome协议总览](https://vanilla.aslushnikov.com/)
+[自定义gatherer-参考](https://www.aymen-loukil.com/en/blog-en/google-lighthouse-custom-audits/)
+[自定义gatherer-代码](https://github.com/AymenLoukil/Google-lighthouse-custom-audit)
+
+### 关键代码
+
+**config入口**
+
+![config引用关系](config引用关系.png)
+
+```
+node_modules/lighthouse/lighthouse-core/config/config.js#L.301
+```
+
+**artifacts**
+
+```
+node_modules/lighthouse/lighthouse-core/runner.js#L.82
+```
+
+**gatherer**
+
+```
+node_modules/lighthouse/lighthouse-core/config/config.js#L.343
+```
+
+### 一个npm包可以包含多个plugin
+
+```js
+initLighthouseConfig: (config: ICO) => ({
+  ...config,
+  plugins: [
+    "lighthouse-plugin-aa/src/plugins/container.js",
+    "lighthouse-plugin-aa/src/plugins/performance.js",
+  ],
+  passes: [{
+    passName: 'defaultPass',
+    gatherers: [
+      'lighthouse-plugin-aa/src/gatherers/custom-log-gatherer',
+    ],
+  }],
+  settings: {
+    ...config.settings,
+    onlyCategories: [
+      "lighthouse-plugin-aa/src/plugins/container.js",
+      "lighthouse-plugin-aa/src/plugins/performance.js",
+    ],
+  },
+}),
+```

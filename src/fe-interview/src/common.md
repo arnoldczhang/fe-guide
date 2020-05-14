@@ -64,6 +64,7 @@
 * [`创建n个有值元素的数组`](#创建n个有值元素的数组)
 * [`数字转金额分割`](#数字转金额分割)
 * [`JSON.stringify`](#JSON.stringify)
+* [`constructor.prototype.constructor`](#constructor.prototype.constructor)
 
 **进阶js**
 
@@ -2991,3 +2992,9 @@ rpc：A机器调用自己的代理方法，方法内对数据序列化后，与B
 - esmodule加载的异步代码，无需await
 
 ---
+
+### constructor.prototype.constructor
+
+> 为什么 constructor.prototype.constructor 指向本身？
+
+这样实例化以后的instance的constructor也指向原class
