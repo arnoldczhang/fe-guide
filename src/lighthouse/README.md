@@ -180,6 +180,10 @@ node_modules/lighthouse/lighthouse-core/runner.js#L.82
 node_modules/lighthouse/lighthouse-core/config/config.js#L.343
 ```
 
+- defaultPass
+- offlinePass
+- redirectPass
+
 ### 一个npm包可以包含多个plugin
 
 ```js
