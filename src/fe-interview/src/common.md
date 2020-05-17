@@ -106,6 +106,7 @@
 * [`node异步错误捕获`](#node异步错误捕获)
 * [`文件上传`](#文件上传)
 * [`进程退出如何善后`](#进程退出如何善后)
+* [`buffer转json`](#buffer转json)
 * [`http接口规范`](#http接口规范)
 
 **浏览器**
@@ -164,6 +165,7 @@
 * [`文档流`](#文档流)
 * [`清除浮动`](#清除浮动)
 * [`图片加载失败处理`](#图片加载失败处理)
+* [`暗黑模式`](#暗黑模式)
 
 **html**
 
@@ -2998,3 +3000,25 @@ rpc：A机器调用自己的代理方法，方法内对数据序列化后，与B
 > 为什么 constructor.prototype.constructor 指向本身？
 
 这样实例化以后的instance的constructor也指向原class
+
+---
+
+### 暗黑模式
+```css
+@media (prefers-color-scheme: dark) {
+    body {
+        color: white;
+        background: black;
+    }
+}
+```
+
+---
+
+### buffer转json
+
+```js
+const buff = Buffer.from(JSON.stringify(obj));
+
+const json = JSON.parse(buff.toString());
+```
