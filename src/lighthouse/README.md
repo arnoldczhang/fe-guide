@@ -160,6 +160,10 @@ async function checkCoverage(url) {
 
 ### 关键代码
 
+**文件总览**
+
+https://paulirish.github.io/lighthouse/docs/api/lighthouse/2.5.1/index.html
+
 **config入口**
 
 ![config引用关系](config引用关系.png)
@@ -179,6 +183,10 @@ node_modules/lighthouse/lighthouse-core/runner.js#L.82
 ```
 node_modules/lighthouse/lighthouse-core/config/config.js#L.343
 ```
+
+- defaultPass
+- offlinePass
+- redirectPass
 
 ### 一个npm包可以包含多个plugin
 

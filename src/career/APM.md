@@ -13,6 +13,7 @@
 * [`埋点管理`](#埋点管理)
 * [`性能指标`](#性能指标)
 * [`性能优化方案`](#性能优化)
+* [`业界产品`](#业界产品)
 * [`设计`](#设计)
 
 </details>
@@ -540,3 +541,9 @@ loadEventStart - domContentLoadedEventEnd
 - 运营商
 - 网络制式
 
+---
+
+## 业界产品
+- [乐鹰](https://yueying.effirst.com/#/wbh5demo/h5/page/index)
+- [frontJS](https://www.frontjs.com/app/0dbf0572d7a46fe5c1a2093a32ae6b9b/)
+- [开源web-monitoring](https://hubing.online/#/sys/5ea50b485b0dd76c634b9cf7/resourceDetails)
