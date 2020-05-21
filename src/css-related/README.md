@@ -17,6 +17,7 @@
 - [csswg](https://drafts.csswg.org/)
 - [nb的配色库](https://color.adobe.com/zh/create/color-wheel)
 - [渐变色配色库](https://www.bestvist.com/css-gradient)
+- [创意海报库](https://www.chuangkit.com/designtools/designindex)
 
 ## 目录
 <details>
