@@ -181,3 +181,58 @@ option = {
 };
 ```
 
+### 中国地图
+```js
+import 'echarts/map/js/china.js';
+
+export default {
+    mounted() {
+        loadEcharts((echarts) => {
+            this.myChart = echarts.init(this.$refs.map);
+            this.myChart.setOption({
+                title: {
+                    text: '',
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter({ data }) {
+                        if (data) {
+                        const { name, value } = data;
+                        return `
+                            省份: ${name}<br/>
+                            次数: ${value}次
+                        `;
+                        }
+                        return '';
+                    },
+                },
+                visualMap: {
+                    min: 1,
+                    max: 500,
+                    text: ['500', '1'],
+                    realtime: false,
+                    calculable: false,
+                    inRange: {
+                        color: ['#409EFF', '#53a8ff', '#66b1ff', '#79bbff', '#8cc5ff', '#a0cfff', '#b3d8ff']
+                    }
+                },
+                series: [{
+                    type: 'map',
+                    name: 'china',
+                    mapType: 'china',
+                    label: {
+                        show: false,
+                    },
+                    itemStyle: {
+                        borderColor: '#ccc',
+                    },
+                    data: [
+                        { name: '内蒙古', value: 1 },
+                        { name: '黑龙江', value: 2 },
+                    ],
+                }],
+            });
+        });
+    },
+}
+```
