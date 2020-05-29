@@ -189,6 +189,10 @@
 * [`微信浏览器调整字体页面错位`](#微信浏览器调整字体页面错位)
 * [`iOS下取消input在输入的时候英文首字母的默认大写`](#iOS下取消input在输入的时候英文首字母的默认大写)
 
+**小知识**
+
+* [`utm字段`](#utm字段)
+
 </details>
 
 ### ==和===
@@ -2918,6 +2922,35 @@ img:after {
 ### performanceAPI
 [参考](https://www.cnblogs.com/bldxh/p/6857324.html)
 
+```js
+// 计算加载时间
+function getPerformanceTiming() {
+    var t = performance.timing
+    var times = {}
+    // 页面加载完成的时间，用户等待页面可用的时间
+    times.loadPage = t.loadEventEnd - t.navigationStart
+    // 解析 DOM 树结构的时间
+    times.domReady = t.domComplete - t.responseEnd
+    // 重定向的时间
+    times.redirect = t.redirectEnd - t.redirectStart
+    // DNS 查询时间
+    times.lookupDomain = t.domainLookupEnd - t.domainLookupStart
+    // 读取页面第一个字节的时间
+    times.ttfb = t.responseStart - t.navigationStart
+    // 资源请求加载完成的时间
+    times.request = t.responseEnd - t.requestStart
+    // 执行 onload 回调函数的时间
+    times.loadEvent = t.loadEventEnd - t.loadEventStart
+    // DNS 缓存时间
+    times.appcache = t.domainLookupStart - t.fetchStart
+    // 卸载页面的时间
+    times.unloadEvent = t.unloadEventEnd - t.unloadEventStart
+    // TCP 建立连接完成握手的时间
+    times.connect = t.connectEnd - t.connectStart
+    return times
+}
+```
+
 ---
 
 ### 进程退出如何善后
@@ -3022,3 +3055,8 @@ const buff = Buffer.from(JSON.stringify(obj));
 
 const json = JSON.parse(buff.toString());
 ```
+
+---
+
+### utm字段
+[参考](https://smashnotes.com/updates/how-to-use-utm-parameters-to-grow-your-audience)
