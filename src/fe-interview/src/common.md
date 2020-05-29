@@ -27,6 +27,7 @@
 * [`执行上下文和作用域链`](#执行上下文和作用域链)
 * [`节流&防抖`](#节流&防抖)
 * [`flattenArray`](#flattenArray)
+* [`flattenObject`](#flattenObject)
 * [`数组去重uniq`](#数组去重uniq)
 * [`何为可迭代对象`](#何为可迭代对象)
 * [`Set、Map、WeakSet和WeakMap的区别`](#Set、Map、WeakSet和WeakMap的区别)
@@ -63,6 +64,7 @@
 * [`创建n个有值元素的数组`](#创建n个有值元素的数组)
 * [`数字转金额分割`](#数字转金额分割)
 * [`JSON.stringify`](#JSON.stringify)
+* [`constructor.prototype.constructor`](#constructor.prototype.constructor)
 
 **进阶js**
 
@@ -71,6 +73,7 @@
 * [`jsbridge`](#jsbridge)
 * [`前端监控&异常捕获`](#前端监控&异常捕获)
 * [`如何实现URLSearchParams`](#如何实现URLSearchParams)
+* [`浏览器用esmodule不用cjs的原因`](#浏览器用esmodule不用cjs的原因)
 
 **构建/打包**
 
@@ -93,6 +96,7 @@
 * [`reduxVSmobx`](#reduxVSmobx)
 * [`mv*`](#mv*)
 * [`react优化指南`](#react优化指南)
+* [`e2e测试`](#e2e测试)
 
 **node**
 
@@ -102,6 +106,7 @@
 * [`node异步错误捕获`](#node异步错误捕获)
 * [`文件上传`](#文件上传)
 * [`进程退出如何善后`](#进程退出如何善后)
+* [`buffer转json`](#buffer转json)
 * [`http接口规范`](#http接口规范)
 
 **浏览器**
@@ -129,6 +134,9 @@
 * [`js单线程`](#js单线程)
 * [`performanceAPI`](#performanceAPI)
 * [`rpc和http区别`](#rpc和http区别)
+* [`X-Frame-Options`](#X-Frame-Options)
+* [`crossorigin`](#crossorigin)
+* [`中间人劫持`](#中间人劫持)
 
 **算法**
 
@@ -157,6 +165,7 @@
 * [`文档流`](#文档流)
 * [`清除浮动`](#清除浮动)
 * [`图片加载失败处理`](#图片加载失败处理)
+* [`暗黑模式`](#暗黑模式)
 
 **html**
 
@@ -165,12 +174,24 @@
 * [`实现一个轮播组件`](#实现一个轮播组件)
 * [`rel属性`](#rel属性)
 
+**typescript**
+
+* [`type和interface区别`](#type和interface区别)
+
+**性能优化**
+
+* [`移动端离线包`](#移动端离线包)
+
 **各种坑**
 
 * [`IOS点击input不聚焦`](#IOS点击input不聚焦)
 * [`IOS点击focus响应错位`](#IOS点击focus响应错位)
 * [`微信浏览器调整字体页面错位`](#微信浏览器调整字体页面错位)
 * [`iOS下取消input在输入的时候英文首字母的默认大写`](#iOS下取消input在输入的时候英文首字母的默认大写)
+
+**小知识**
+
+* [`utm字段`](#utm字段)
 
 </details>
 
@@ -765,7 +786,7 @@ Promise.all2 = function(promises) {
 
 ---
 
-### 数组扁平化flattenArray
+### flattenArray
 
 #### 方式一
 ```js
@@ -793,6 +814,86 @@ var flattenArray = (arr) => {
     return res;
   }, []);
 };
+```
+
+---
+
+### flattenObject
+
+方式一：纯遍历
+
+```js
+function flattenObject(
+  input = {},
+  output = {},
+  memo = [],
+) {
+  if (Array.isArray(input)) {
+    input.forEach((item, index) => flatten(item, output, memo.concat(index)))
+  } else if (input && typeof input === 'object') {
+    Object.keys(input).forEach((key) => {
+      flatten(input[key], output, memo.concat(key));
+    });
+  } else {
+    output[memo.join('.').replace(/\.(\d+)/g, '[$1]')] = input;
+  }
+  return output;
+};
+```
+
+方式二：强行要秀reduce的话
+
+```js
+function flattenObject2(
+  input = {},
+  output = {},
+  memo = [],
+) {
+  if (Array.isArray(input)) {
+    return input.reduce((res, pre, index) => {
+      return flattenObject2(pre, res, memo.concat(index));
+    }, output);
+  } else if (input && typeof input === 'object') {
+    return Object.keys(input).reduce((res, key) => {
+      return flattenObject2(input[key], res, memo.concat(key));
+    }, output);
+  }
+  return output[memo.join('.').replace(/\.(\d+)/g, '[$1]')] = input, output;
+}
+```
+
+测试：
+
+```js
+var obj = {
+  "a": {
+    "b": {
+      "c": {
+        "d": 1
+      }
+    }
+  },
+  "aa": 2,
+  "c": [
+    1,
+    2,
+    [3,4,{
+      dd: [2]
+    }]
+  ]
+};
+
+// {
+//   'a.b.c.d': 1,
+//   aa: 2,
+//   'c[0]': 1,
+//   'c[1]': 2,
+//   'c[2][0]': 3,
+//   'c[2][1]': 4,
+//   'c[2][2].dd[0]': 2
+// }
+flattenObject(obj);
+flattenObject2(obj);
 ```
 
 ---
@@ -1201,6 +1302,7 @@ arr instanceof Array; // false
 
 ### redux和vuex
 [参考](https://zhuanlan.zhihu.com/p/53599723)
+[10行实现redux](../../redux/redux.js)
 
 - 单向数据流
 - state不可变更
@@ -1898,7 +2000,7 @@ function handle(req, res) {
 文档对象模型
 
 - nodeType
-- querySelectorAll
+- [querySelectorAll](https://www.cnblogs.com/HavenLau/p/10476508.html)
 - treewalker
 - onload
 
@@ -2820,6 +2922,35 @@ img:after {
 ### performanceAPI
 [参考](https://www.cnblogs.com/bldxh/p/6857324.html)
 
+```js
+// 计算加载时间
+function getPerformanceTiming() {
+    var t = performance.timing
+    var times = {}
+    // 页面加载完成的时间，用户等待页面可用的时间
+    times.loadPage = t.loadEventEnd - t.navigationStart
+    // 解析 DOM 树结构的时间
+    times.domReady = t.domComplete - t.responseEnd
+    // 重定向的时间
+    times.redirect = t.redirectEnd - t.redirectStart
+    // DNS 查询时间
+    times.lookupDomain = t.domainLookupEnd - t.domainLookupStart
+    // 读取页面第一个字节的时间
+    times.ttfb = t.responseStart - t.navigationStart
+    // 资源请求加载完成的时间
+    times.request = t.responseEnd - t.requestStart
+    // 执行 onload 回调函数的时间
+    times.loadEvent = t.loadEventEnd - t.loadEventStart
+    // DNS 缓存时间
+    times.appcache = t.domainLookupStart - t.fetchStart
+    // 卸载页面的时间
+    times.unloadEvent = t.unloadEventEnd - t.unloadEventStart
+    // TCP 建立连接完成握手的时间
+    times.connect = t.connectEnd - t.connectStart
+    return times
+}
+```
+
 ---
 
 ### 进程退出如何善后
@@ -2854,3 +2985,78 @@ rpc：A机器调用自己的代理方法，方法内对数据序列化后，与B
 
 ---
 
+### type和interface区别
+[参考](../../typescript/README.md#interface和type)
+
+
+---
+
+### e2e测试
+- [puppeteer](../../node/puppeteer/test-case/README.md)
+- nightwatch
+- cypress
+
+---
+
+### X-Frame-Options
+[参考](../../js&browser/网络安全.md#X-Frame-Options)
+
+---
+
+### crossorigin
+[参考](../../js&browser/网络安全.md#crossorigin)
+
+#### integrity
+[参考](../../js&browser/网络安全.md#integrity)
+
+---
+
+### 中间人劫持
+[参考](../../js&browser/网络安全.md#中间人劫持)
+
+---
+
+### 移动端离线包
+将文件缓存到本地，过段时间拉取新版本，检查是否需要更新，此外，预加载、按需加载、执行流程编排也可以谈谈
+
+
+---
+
+### 浏览器用esmodule不用cjs的原因
+- esmodule有确定性，可做预加载等优化处理
+- esmodule加载的异步代码，无需await
+
+---
+
+### constructor.prototype.constructor
+
+> 为什么 constructor.prototype.constructor 指向本身？
+
+这样实例化以后的instance的constructor也指向原class
+
+---
+
+### 暗黑模式
+```css
+@media (prefers-color-scheme: dark) {
+    body {
+        color: white;
+        background: black;
+    }
+}
+```
+
+---
+
+### buffer转json
+
+```js
+const buff = Buffer.from(JSON.stringify(obj));
+
+const json = JSON.parse(buff.toString());
+```
+
+---
+
+### utm字段
+[参考](https://smashnotes.com/updates/how-to-use-utm-parameters-to-grow-your-audience)

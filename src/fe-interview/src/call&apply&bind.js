@@ -14,7 +14,7 @@
 Function.prototype.call2 = function(context = window) {
   const restArgs = [...arguments].slice(1);
   context.fn = this;
-  const result = context.fn(...resArgs);
+  const result = context.fn(...restArgs);
   delete context.fn;
   return result;
 };
@@ -23,7 +23,7 @@ Function.prototype.call2 = function(context = window) {
 Function.prototype.apply2 = function(context = window) {
   const restArgs = arguments[1] || [];
   context.fn = this;
-  const result = context.fn(...resArgs);
+  const result = context.fn(...restArgs);
   delete context.fn;
   return result;
 };

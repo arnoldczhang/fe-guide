@@ -10,9 +10,6 @@
 - [NodeJS和命令行程序](https://mp.weixin.qq.com/s/-jxYbmcbdt5IvpJC0BYOjg)
 
 ## 目录
-<details>
-<summary>展开更多</summary>
-
 * [`好用的库`](#好用的库)
 * [`require原理`](#require原理)
 * [`eventLoop`](#eventLoop)
@@ -25,8 +22,7 @@
 * [`库源码解析`](#库源码解析)
 * [`库开发模式`](#库开发模式)
 * [`其他`](#其他)
-
-</details>
+* [`一些尝试`](#一些尝试)
 
 ## 参数
 * --async-stack-traces
@@ -882,5 +878,8 @@ function promisify(original) {
 
 ---
 
-
-
+## 一些尝试
+- [发邮件](./mailer/README.md)
+- [lighthouse-runner](./lighthouse/README.md)
+- [图像识别](../lighthouse/图像识别.js)
+- [sourcemap-compiler](../sourcemap/sourcempaCompiler/README.md)

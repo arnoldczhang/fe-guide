@@ -1,6 +1,6 @@
 {
   "name": "fe-guide",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "type": "module",
   "main": "./src/webpack/dist/index.bundle.js",
@@ -33,6 +33,7 @@
     "lint:fix": "eslint . --fix",
     "source": "node ./src/sourcemap/test.js",
     "test": "node ./src/test/src/test.js",
+    "test:ndb": "ndb ./src/test/src/test.js",
     "test:debug": "nodemon ./src/test/src/server.js",
     "commit": "git-cz"
   },
