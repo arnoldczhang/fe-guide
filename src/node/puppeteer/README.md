@@ -1,7 +1,9 @@
 # puppeteer
 
 ## 参考
-[中文api](https://zhaoqize.github.io/puppeteer-api-zh_CN/#?product=Puppeteer&version=v3.0.1&show=api-class-puppeteer)
+- [中文api](https://zhaoqize.github.io/puppeteer-api-zh_CN/#?product=Puppeteer&version=v3.0.1&show=api-class-puppeteer)
+
+---
 
 ## 应用
 
