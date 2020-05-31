@@ -7,4 +7,6 @@
 - [任意文件格式在线转换](http://www.alltoall.net/)
 - [在线配色库](https://color.adobe.com/zh/create/color-wheel)
 - [在线文字提取](https://web.baimiaoapp.com/)
+- [在线短链生成工具](https://xiaomark.com/)
+- [在线全网热点](https://tophub.today/)
 
