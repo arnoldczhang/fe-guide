@@ -274,6 +274,7 @@ try {
 - [阿里云-arms](https://help.aliyun.com/document_detail/60288.html?spm=a2c4g.11186623.6.564.Kdg2bo#%E8%AE%BF%E9%97%AE%E9%80%9F%E5%BA%A6)
 - [自动化 Web 性能优化分析方案](https://mp.weixin.qq.com/s/2CHA5ewWz_SIlBrdEuVv7w)
 - [微信小程序评分细则](https://developers.weixin.qq.com/miniprogram/dev/framework/audits/scoring.html)
+- [新一代性能指标](https://juejin.im/post/5ecc5521e51d45788e17dcc6)
 
 ### 评分细则
 ![页面评分细则](./页面评分细则.jpeg)
@@ -291,12 +292,8 @@ try {
 - 不满意（大于 4T）
 
 ### 关键性能指标
-- 首包时间
-- 首次渲染
-- 首次可交互
-- DOM Ready
-- 页面完全加载
-- 首屏时间
+
+> google提供了一个[web-vitals](https://www.npmjs.com/package/web-vitals)，可以快速测定部分性能指标
 
 **首包时间**
 
@@ -307,6 +304,18 @@ responseStart - domainLookupStart
 responseEnd - fetchStart
 
 从请求开始到浏览器开始解析第一批 HTML 文档字节的时间差
+
+**First Input Delay (FID)**
+
+衡量可交互性，为了提供良好的用户体验，页面的`FID`应当小于 100毫秒
+
+**Largest Contentful Paint (LCP)**
+
+`LCP`应该在页面首次开始加载后的 2.5 秒内发生
+
+**Cumulative Layout Shift (CLS)**
+
+衡量视觉稳定性，为了提供良好的用户体验，页面的`CLS`应保持小于 0.1
 
 **首次可交互**
 
@@ -346,7 +355,9 @@ connectEnd - connectStart
 
 connectEnd - secureConnectionStart
 
-**Time to First Byte（TTFB），网络请求耗时**
+**Time to First Byte（TTFB）**
+
+网络请求耗时
 
 responseStart - requestStart
 
