@@ -9,4 +9,5 @@
 - [在线文字提取](https://web.baimiaoapp.com/)
 - [在线短链生成工具](https://xiaomark.com/)
 - [在线全网热点](https://tophub.today/)
+- [公开的api合集](https://apicoding.io/)
 
