@@ -80,6 +80,9 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   sumMerge(): ICalcCollection {
     return this.wrap('sumMerge');
   },
+  quantilesTimingMerge(value: BaseType): ICalcCollection {
+    return this.wrap(`quantilesTimingMerge(${value})`);
+  },
   interval(interval: BaseType): ICalcCollection {
     return this.splitArray([
       `${/^interval/.test(interval as string) ? '' : 'interval'} ${interval}`

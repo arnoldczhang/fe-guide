@@ -46,6 +46,7 @@ interface ICalcCollection {
   uniqMerge: FuncMethods;
   anyMerge: FuncMethods;
   sumMerge: FuncMethods;
+  quantilesTimingMerge: CalcMethods;
   interval: CalcMethods;
   toUnixTimestamp: FuncMethods;
   toDateTime: FuncMethods;
@@ -61,11 +62,3 @@ interface ICalcCollection {
   uniq: joinMethods;
   operate: (input: BaseType, type: CompareSymbol | CalcSymbol) => ICalcCollection;
 }
-
-type SqlCommonParam = {
-  select?: Array<string | ICalcCollection>;
-  where?: ICO;
-  groupby?: Array<string | ICalcCollection>;
-  orderby?: string[][];
-  limit?: number;
-};

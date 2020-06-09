@@ -21,6 +21,7 @@ const TYPE: ICO = {
   uniqMerge: 'uniqMerge',
   anyMerge: 'anyMerge',
   sumMerge: 'sumMerge',
+  quantilesTimingMerge: 'quantilesTimingMerge',
   interval: 'interval',
   toUnixTimestamp: 'toUnixTimestamp',
   toDateTime: 'toDateTime',
