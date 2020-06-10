@@ -30,6 +30,7 @@ interface ICalcCollection {
   lt: CalcMethods;
   lte: CalcMethods;
   and: CalcMethods;
+  or: CalcMethods;
   divide: CalcMethods;
   multiply: CalcMethods;
   add: CalcMethods;
@@ -40,12 +41,14 @@ interface ICalcCollection {
   desc: FuncMethods;
   asc: FuncMethods;
   count: FuncMethods;
+  countIf: FuncMethods;
   nullIf: CalcMethods;
   toUInt32: FuncMethods;
   countMerge: FuncMethods;
   uniqMerge: FuncMethods;
   anyMerge: FuncMethods;
   sumMerge: FuncMethods;
+  avgMerge: FuncMethods;
   quantilesTimingMerge: CalcMethods;
   interval: CalcMethods;
   toUnixTimestamp: FuncMethods;
@@ -59,6 +62,9 @@ interface ICalcCollection {
   as: (input: BaseType) => string;
   in: joinMethods;
   notIn: joinMethods;
-  uniq: joinMethods;
+  uniq: FuncMethods;
+  not: FuncMethods;
+  any: FuncMethods;
+  group: FuncMethods;
   operate: (input: BaseType, type: CompareSymbol | CalcSymbol) => ICalcCollection;
 }

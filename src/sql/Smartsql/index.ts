@@ -62,6 +62,9 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   count(): ICalcCollection {
     return this.wrap('count');
   },
+  countIf(): ICalcCollection {
+    return this.wrap('countIf');
+  },
   nullIf(defaultValue): ICalcCollection {
     return this.appendWrap('nullIf', defaultValue);
   },
@@ -79,6 +82,9 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   },
   sumMerge(): ICalcCollection {
     return this.wrap('sumMerge');
+  },
+  avgMerge(): ICalcCollection {
+    return this.wrap('avgMerge');
   },
   quantilesTimingMerge(value: BaseType): ICalcCollection {
     return this.wrap(`quantilesTimingMerge(${value})`);
@@ -115,6 +121,15 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   uniq(): ICalcCollection {
     return this.wrap('uniq');
   },
+  not(): ICalcCollection {
+    return this.wrap('not');
+  },
+  any(): ICalcCollection {
+    return this.wrap('any');
+  },
+  group(): ICalcCollection {
+    return this.wrap('');
+  },
   eq(value: BaseType): ICalcCollection {
     return this.operate(value, '=');
   },
@@ -148,6 +163,12 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   and(value: BaseType): ICalcCollection {
     if (value) {
       return createCalcObject(`${key}\n        and ${value}`);
+    }
+    return createCalcObject(key);
+  },
+  or(value: BaseType): ICalcCollection {
+    if (value) {
+      return createCalcObject(`${key}\n        or ${value}`);
     }
     return createCalcObject(key);
   },
