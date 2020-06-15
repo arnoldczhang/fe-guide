@@ -243,6 +243,18 @@ type Coordinates = Pair<number>;
 type Tree<T> = T | { left: Tree<T>, right: Tree<T> };
 ```
 
+### is推断
+```ts
+function isAdmin(user: Person): user is Admin {
+  return user.hasOwnProperty("role")
+}
+
+
+if (isAdmin(user)) {
+  // ...
+}
+```
+
 ---
 
 ## SOLID
