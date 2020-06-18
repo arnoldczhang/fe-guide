@@ -599,6 +599,11 @@ loadEventStart - domContentLoadedEventEnd
 - 网络请求失败率
 - 网络请求耗时
 
+#### 异常类型
+- 普遍&突发
+- 个别&突发
+- 普遍&微幅&趋势增长
+
 ---
 
 ## 业界产品
