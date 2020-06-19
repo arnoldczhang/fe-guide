@@ -556,6 +556,7 @@ loadEventStart - domContentLoadedEventEnd
 ---
 
 ## 设计思考
+> 具体问题具体分析 + 知行合一 + 抓主要矛盾
 
 ### js异常
 
