@@ -13,4 +13,5 @@
 - [自动标识为垃圾邮件的方法](https://straight2spam.com/)
 - [在线结构化思维教程](https://untools.co/)
 - [在线设计模式教程](https://refactoringguru.cn/design-patterns/catalog)
+- [在线聊天](https://brie.fi/ng)
 
