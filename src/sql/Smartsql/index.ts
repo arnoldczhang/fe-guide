@@ -65,6 +65,9 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   countIf(): ICalcCollection {
     return this.wrap('countIf');
   },
+  avgIf(condition): ICalcCollection {
+    return this.appendWrap('avgIf', condition);
+  },
   nullIf(defaultValue): ICalcCollection {
     return this.appendWrap('nullIf', defaultValue);
   },
@@ -147,6 +150,9 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   },
   lte(value: BaseType): ICalcCollection {
     return this.operate(value, '<=');
+  },
+  remind(value: BaseType): ICalcCollection {
+    return this.operate(value, '%');
   },
   divide(value: BaseType): ICalcCollection {
     return this.operate(value, '/');

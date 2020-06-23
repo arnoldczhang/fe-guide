@@ -1,6 +1,6 @@
 type BaseType = string | number | ICalcCollection |null;
 type CompareSymbol = '=' | '!=' | '>' | '<' | '<>' | '<=' | '>=';
-type CalcSymbol = '+' | '-' | '*' | '/';
+type CalcSymbol = '+' | '-' | '*' | '/' | '%';
 type FunctionSymbol = 'avg' | 'max' | 'min' | 'quantile';
 type CalcMethods = (input: BaseType) => ICalcCollection;
 type joinMethods = (array: BaseType[], ...args: any[]) => ICalcCollection;
@@ -31,6 +31,7 @@ interface ICalcCollection {
   lte: CalcMethods;
   and: CalcMethods;
   or: CalcMethods;
+  remind: CalcMethods;
   divide: CalcMethods;
   multiply: CalcMethods;
   add: CalcMethods;
@@ -42,6 +43,7 @@ interface ICalcCollection {
   asc: FuncMethods;
   count: FuncMethods;
   countIf: FuncMethods;
+  avgIf: CalcMethods;
   nullIf: CalcMethods;
   toUInt32: FuncMethods;
   countMerge: FuncMethods;
