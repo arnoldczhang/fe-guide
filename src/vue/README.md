@@ -5,6 +5,7 @@
 - [ts + vue](https://segmentfault.com/a/1190000011878086?utm_source=tag-newest)
 - [codemirror](https://codemirror.net/doc/manual.html)
 - [vue虚拟滚动](https://github.com/Akryum/vue-virtual-scroller#variable-size-mode)
+- [vue3-reactive](https://zhuanlan.zhihu.com/p/146097763)
 
 ## 目录
 <details>
