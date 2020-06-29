@@ -47,6 +47,7 @@ vue ui
 ---
 
 ## 技巧
+[vue还能这样写](https://juejin.im/post/5eef7799f265da02cd3b82fe?utm_source=gold_browser_extension)
 
 ### slot
 ```vue
@@ -84,6 +85,19 @@ vue ui
 <keep-alive>
   <div>...其他组件</div>
 </keep-alive>
+```
+
+### hook
+```js
+{
+  mounted() {
+    window.addEventListener('resize', this.$_handleResizeChart)
+      // 通过hook监听组件销毁钩子函数，并取消监听事件
+      this.$once('hook:beforeDestroy', () => {
+        window.removeEventListener('resize', this.$_handleResizeChart)
+      })
+  },
+}
 ```
 
 ---
