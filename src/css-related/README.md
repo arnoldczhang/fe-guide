@@ -350,7 +350,7 @@ Chrome浏览器67+支持
 }
 ```
 
-### 加载中
+### 加载中省略号
 ```html
 <div>加载中<span class="more"></span></div>
 ```

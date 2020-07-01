@@ -40,6 +40,7 @@ const TYPE: ICO = {
   notIn: 'notIn',
   uniq: 'uniq',
   not: 'not',
+  length: 'length',
   any: 'any',
   operate: 'operate',
   nullIf: 'nullIf',

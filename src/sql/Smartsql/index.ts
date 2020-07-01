@@ -127,6 +127,9 @@ const createCalcObject = (key: BaseType): ICalcCollection => ({
   not(): ICalcCollection {
     return this.wrap('not');
   },
+  length(): ICalcCollection {
+    return this.wrap('length');
+  },
   any(): ICalcCollection {
     return this.wrap('any');
   },

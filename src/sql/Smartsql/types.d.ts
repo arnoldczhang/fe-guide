@@ -66,6 +66,7 @@ interface ICalcCollection {
   notIn: joinMethods;
   uniq: FuncMethods;
   not: FuncMethods;
+  length: FuncMethods;
   any: FuncMethods;
   group: FuncMethods;
   operate: (input: BaseType, type: CompareSymbol | CalcSymbol) => ICalcCollection;
