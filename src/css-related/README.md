@@ -27,6 +27,7 @@
 * [`常见用法`](#常见用法)
 * [`属性`](#属性)
 * [`布局`](#布局)
+* [`BEM`](#BEM)
 * [`须知`](#须知)
 * [`答疑`](#答疑)
 
@@ -615,6 +616,72 @@ flex-shrink: 0
     vertical-align: middle;
   }
   ```
+
+---
+
+## BEM
+> 基于 **块（block）、元素（element）、修饰符（modifier）**的命名规范，即：
+> 
+> .块__元素--修饰符{}
+>
+
+### 注意点
+- BEM不考虑结构，即多层嵌套时，**block**取得是最外层的父class，**element**也只是加上当前元素的class
+
+### 举例
+```css
+.person{} /*人*/
+.person__hand{} /*人的手*/
+.person--female{} /*女人*/
+.person--female__hand{} /*女人的手*/
+.person__hand--left{} /*人的左手*/
+```
+
+**scss中使用**
+
+```scss
+.person {
+  @at-root #{&}__hand {
+    color: red;
+    @at-root #{&}--left {
+     color: yellow;
+    }
+  }
+  @at-root #{&}--female {
+    color: blue;
+    @at-root #{&}__hand {
+      color: green;
+    }
+  }
+}
+/*生成的css*/
+.person__hand {
+   color: red;
+}
+.person__hand--left {
+   color: yellow; 
+}
+.person--female{
+  color: blue;
+}
+.person--female__hand {
+  color: green;
+}
+```
+
+**多层嵌套**
+
+```html
+<div class="page-btn">
+    <!-- ... -->
+   <ul class="page-btn__list">
+       <li class="page-btn__item">
+           <a href="#" class="page-btn__btn">第一页</a>
+       </li>
+   </ul>
+   <!-- ... -->
+</div>
+```
 
 ---
 
