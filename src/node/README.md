@@ -914,6 +914,57 @@ function promisify(original) {
 ## 内存泄漏
 [参考](../js&browser/内存管理.md#node内存泄漏)
 
+### 进程内存监控
+
+#### linux
+
+**查看node进程pid**
+
+```sh
+# 1. 通过多余参数
+node index.js shanyue
+ps -ef | grep shanyue
+
+# 2. 通过端口号
+lsof -i:3030
+```
+
+**启动ab测试**
+
+```sh
+# -c: 指定一次向服务器发出请求数
+# -n: 指定测试会话使用的请求数
+ab -c 10000 -n 1000000 http://localhost:3030/
+```
+
+**查看内存占用**
+
+```sh
+# -r: 指输出内存指标
+# -p: 指定 pid
+# 1: 每一秒输出一次
+# 100: 输出100次
+pidstat -r -p 进程的pid 1 100
+
+#UID       PID  minflt/s  majflt/s     VSZ    RSS   %MEM  Command
+#19时20分39秒     0     11401      0.00      0.00  566768  19800   0.12  node
+# ...
+```
+
+VSZ(virtual size): 虚拟内存占用
+
+RSS(Resident Set Size): 常驻内存占用
+
+#### mac
+```sh
+#htop
+htop -p 进程的pid
+
+#top
+top -pid 69608
+```
+
+
 ---
 
 ## 一些尝试
