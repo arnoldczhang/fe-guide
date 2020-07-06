@@ -339,6 +339,86 @@ const count = arr.reduce((t, c) => {
 ---
 
 ### flex属性
+
+#### flex
+
+> `flex`是`flex-grow`、`flex-shrink`、`flex-basis`的缩写
+
+**flex: 1**
+
+- 均分父元素剩余宽度达到自适应
+
+**flex: 0 1 auto**
+
+flex的默认值
+
+**flex: none**
+
+表示0 0 auto
+
+**flex: auto**
+
+1 1 auto
+
+**flex: 非负数字**
+
+表示为`flex-grow`值
+
+```css
+.item {flex: 1;}
+.item {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0%;
+}
+```
+
+**flex: 长度或百分比**
+
+表示为`flex-basis`值
+
+```css
+.item-1 {flex: 0%;}
+.item-1 {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0%;
+}
+.item-2 {flex: 24px;}
+.item-1 {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 24px;
+}
+```
+
+**flex: 两个非负数字**
+
+表示`flex-grow`和`flex-shrink`值，`flex-basis`取0%
+
+```css
+.item {flex: 2 3;}
+.item {
+    flex-grow: 2;
+    flex-shrink: 3;
+    flex-basis: 0%;
+}
+```
+
+**flex: 非负数字和长度或百分比**
+
+表示`flex-grow`和`flex-basis`的值，`flex-shrink`取 1
+
+```css
+.item {flex: 2333 3222px;}
+.item {
+    flex-grow: 2333;
+    flex-shrink: 1;
+    flex-basis: 3222px;
+}
+```
+
+
 **flex-basis**
 
 - 设置或检索弹性盒伸缩基准值，不设置，默认使用元素的width，
@@ -353,12 +433,6 @@ const count = arr.reduce((t, c) => {
 - 设置弹性盒对象扩展比
 - 如果子元素的宽度和小于父容器，则剩余空间根据flex-grow瓜分
 - 默认0，即剩余空间宽度瓜分到0，到当前子元素
-
-**flex**
-
-flex: 1
-
-- 均分父元素剩余宽度达到自适应
 
 **flex-shrink**
 
@@ -2921,6 +2995,10 @@ img:after {
 
 ### performanceAPI
 [参考](https://www.cnblogs.com/bldxh/p/6857324.html)
+
+```js
+performance.now(); // 获取到 performance.timing.navigationStart 到当前时间之间的微秒数
+```
 
 ```js
 // 计算加载时间

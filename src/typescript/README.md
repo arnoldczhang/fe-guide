@@ -243,6 +243,59 @@ type Coordinates = Pair<number>;
 type Tree<T> = T | { left: Tree<T>, right: Tree<T> };
 ```
 
+### is推断
+```ts
+function isAdmin(user: Person): user is Admin {
+  return user.hasOwnProperty('role')
+}
+
+
+if (isAdmin(user)) {
+  // ...
+}
+```
+
+### 函数重载
+```ts
+// 根据第二个入参，决定返回值的类型
+function filterPersons(
+  persons: Person[],
+  personType: string,
+  criteria: Partial<Person>,
+) {}
+
+// 分别定义admin
+function filterPersons(
+  persons: Person[],
+  personType: "admin",
+  criteria: Partial<Person>,
+): Admin[]
+
+// 分别定义user
+function filterPersons(
+  persons: Person[],
+  personType: "user",
+  criteria: Partial<Person>,
+): User[]
+
+let usersOfAge23: User[] = filterPersons(persons, "user", { age: 23 })
+let adminsOfAge23: Admin[] = filterPersons(persons, "admin", { age: 23 })
+```
+
+### 精确定义数组内元素类型
+
+```ts
+// 如果这样定义，返回值类型会变成(K | T)[]，这是ts默认的悲观行为
+function swap<T, K>(v1: T, v2: K) {
+  return [v2, v1];
+}
+
+// 加上了 as const 就好了
+function swap<T, K>(v1: T, v2: K) {
+  return [v2, v1] as const;
+}
+```
+
 ---
 
 ## SOLID

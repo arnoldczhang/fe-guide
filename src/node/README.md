@@ -21,6 +21,7 @@
 * [`手动打包指南`](#手动打包指南)
 * [`库源码解析`](#库源码解析)
 * [`库开发模式`](#库开发模式)
+* [`内存泄漏`](#内存泄漏)
 * [`其他`](#其他)
 * [`一些尝试`](#一些尝试)
 
@@ -522,7 +523,7 @@ throw new CommonError('abc');
 - 进程、线程间可以共享资源
 
 
-### 示例
+### 原生服务器示例
 
 #### 设置进程信息
 ```js
@@ -600,6 +601,38 @@ ls.on('close', (code) => {
 ls.stdout.pipe(process.stdout);
 process.title = '啊啊啊啊啊';
 console.log(process.pid, ls.pid);
+```
+
+### express示例
+```js
+const cluster = require('cluster');
+const express = require('express');
+const os = require('os');
+const path = require('path');
+
+const app = express();
+const numCPUs = os.cpus().length;
+
+if (cluster.isMaster) {
+  console.log(`master ${process.pid} start`);
+  for (let i = 0; i < numCPUs; i += 1) {
+    cluster.fork();
+  }
+  cluster.on('exit', (worker, code, signal) => {
+    cosole.log(`worker ${worker.process.pid} exit`);
+  });
+} else {
+  // app do sth
+  app.listen(3000, () => {
+    console.log(`worker ${process.pid} start`);
+  });
+}
+```
+
+### pm2示例
+```cmd
+# 启动两个实例，如果给0，表示根据cpu数量自动生成对应负载均衡服务器
+pm2 start test.js -i 2
 ```
 
 ---
@@ -875,6 +908,62 @@ function promisify(original) {
 - latin1: 一种将 Buffer 编码成单字节编码字符串的方法（由 RFC 1345 中的 IANA 定义，第 63 页，作为 Latin-1 的补充块和 C0/C1 控制码）。
 - binary: 'latin1' 的别名。
 - hex: 将每个字节编码成两个十六进制的字符。
+
+---
+
+## 内存泄漏
+[参考](../js&browser/内存管理.md#node内存泄漏)
+
+### 进程内存监控
+
+#### linux
+
+**查看node进程pid**
+
+```sh
+# 1. 通过多余参数
+node index.js shanyue
+ps -ef | grep shanyue
+
+# 2. 通过端口号
+lsof -i:3030
+```
+
+**启动ab测试**
+
+```sh
+# -c: 指定一次向服务器发出请求数
+# -n: 指定测试会话使用的请求数
+ab -c 10000 -n 1000000 http://localhost:3030/
+```
+
+**查看内存占用**
+
+```sh
+# -r: 指输出内存指标
+# -p: 指定 pid
+# 1: 每一秒输出一次
+# 100: 输出100次
+pidstat -r -p 进程的pid 1 100
+
+#UID       PID  minflt/s  majflt/s     VSZ    RSS   %MEM  Command
+#19时20分39秒     0     11401      0.00      0.00  566768  19800   0.12  node
+# ...
+```
+
+VSZ(virtual size): 虚拟内存占用
+
+RSS(Resident Set Size): 常驻内存占用
+
+#### mac
+```sh
+#htop
+htop -p 进程的pid
+
+#top
+top -pid 69608
+```
+
 
 ---
 

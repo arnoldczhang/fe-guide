@@ -5,6 +5,7 @@
 - [ts + vue](https://segmentfault.com/a/1190000011878086?utm_source=tag-newest)
 - [codemirror](https://codemirror.net/doc/manual.html)
 - [vue虚拟滚动](https://github.com/Akryum/vue-virtual-scroller#variable-size-mode)
+- [vue3-reactive](https://zhuanlan.zhihu.com/p/146097763)
 
 ## 目录
 <details>
@@ -46,6 +47,7 @@ vue ui
 ---
 
 ## 技巧
+[vue还能这样写](https://juejin.im/post/5eef7799f265da02cd3b82fe?utm_source=gold_browser_extension)
 
 ### slot
 ```vue
@@ -83,6 +85,19 @@ vue ui
 <keep-alive>
   <div>...其他组件</div>
 </keep-alive>
+```
+
+### hook
+```js
+{
+  mounted() {
+    window.addEventListener('resize', this.$_handleResizeChart)
+      // 通过hook监听组件销毁钩子函数，并取消监听事件
+      this.$once('hook:beforeDestroy', () => {
+        window.removeEventListener('resize', this.$_handleResizeChart)
+      })
+  },
+}
 ```
 
 ---
