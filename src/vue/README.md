@@ -5,7 +5,6 @@
 - [ts + vue](https://segmentfault.com/a/1190000011878086?utm_source=tag-newest)
 - [codemirror](https://codemirror.net/doc/manual.html)
 - [vue虚拟滚动](https://github.com/Akryum/vue-virtual-scroller#variable-size-mode)
-- [vue3-reactive](https://zhuanlan.zhihu.com/p/146097763)
 
 ## 目录
 <details>
@@ -13,6 +12,7 @@
 
 * [`极简安装&启动`](#极简安装&启动)
 * [`技巧`](#技巧)
+* [`vue3`](#vue3)
 * [`一些尝试`](#一些尝试)
 
 </details>
@@ -99,6 +99,74 @@ vue ui
   },
 }
 ```
+
+---
+
+## vue3
+- [vue3-reactive](https://zhuanlan.zhihu.com/p/146097763)
+- [vue3-compiler](https://zhuanlan.zhihu.com/p/150732926)
+
+### compiler
+
+#### 提取动态vnode
+> vue3有`Block Tree`和`PatchFlag`的概念
+
+```js
+// Block仅包含最近子代的vnode
+const block = {
+    tag: Fragment,
+    dynamicChildren: [
+        {
+          tag: 'p',
+          children: item,
+          // patchFlag用于标志静态节点还是动态节点，
+          // 动态节点又分：1. 稳定动态节点 2. 不稳定动态节点
+          // 稳定动态节点用优化后的算法，即提取dynamicChildren做更新
+          // 不稳定动态节点还是使用之前的diff算法
+          patchFlag: 1,
+        }
+    ],
+}
+```
+
+**PatchFlag有多种：**
+
+- STABLE_FRAGMENT
+- PROPS（还能指定 props 中的具体 key）
+
+
+#### 静态提升
+> 包含vnode提升和props提升
+>
+> 好处是可以避免多次diff，重复创建静态vnode（props）
+
+```js
+// 静态vnode提升
+const hoist1 = createVNode('p', null, 'text')
+
+function render() {
+    return (openBlock(), createBlock('div', null, [
+        hoist1
+    ]))
+}
+
+// 静态props提升
+const hoistProp = { foo: 'bar', a: 'b' }
+
+render(ctx) {
+    return (openBlock(), createBlock('div', null, [
+        createVNode('p', hoistProp, ctx.text)
+    ]))
+}
+```
+
+**哪些情况不会被静态提升？**
+
+- 元素带有动态的 key 绑定（key 不同即使别的属性相同，做的也是完全替换，用不到 diff）
+- 使用 ref 的元素（创建新元素当然要更新ref，总不能指向老元素吧）
+- 使用自定义指令的元素
+
+#### 预字符串化
 
 ---
 
