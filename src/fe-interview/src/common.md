@@ -1948,9 +1948,36 @@ inputHandler里判断，pending=true则不执行请求，否则，正常字母�
 
 ### 反爬虫技术
 [参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/150)
+[记一次爬douyu经历](https://cjting.me/2020/07/01/douyu-crawler-and-font-anti-crawling/)
+
 - font-family
 - 数字直接下发加密值
 - 汉字做凯撒加密（转unicode，偏移量可以设为一个常量，比如1，2,3）
+
+#### font-family
+
+```css
+@font-face {
+  font-family: test;
+  src:url(./mpepc5unpb.woff);
+}
+
+* {
+  font-family: test;
+}
+```
+
+#### 工具
+
+- SDL（图像渲染），[node-sdl](https://www.npmjs.com/package/node-sdl2)
+
+#### 关键问题处理
+- **日志**: 详细的日志可以帮助分析问题，改进不足以及恢复数据等。
+- **错误处理**: 爬虫的天然属性就是随时可能无法工作，完善的错误处理和报警机制是必须的。
+- **重试机制**: 很多接口会报错，需要有一定的重试机制。
+- **数据校验**: 每一步获取到的数据都需要校验有效性，否则很容易在数据库中写入无效数据。
+- **人工干预**: 有些环节比如 OCR 的准确率是无法做到 100% 的，要考虑到失败的情况，一旦 OCR 识别失败，需要引入人工干预流程。
+- **IP 池**: 很多接口会限制 IP 的访问频率，这个时候要挂 IP 池。
 
 ---
 
