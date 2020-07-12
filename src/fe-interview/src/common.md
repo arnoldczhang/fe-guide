@@ -1120,8 +1120,12 @@ function vs class
 ### 模拟async&await
 参考babel转换后的代码
 
-async/await -> Generator -> Promise
-依次执行context.next()，直到context.stop()，触发this.done = true，resolve Promise
+async/await
+  -> Generator
+  -> Promise
+  -> 依次执行context.next()，直到context.stop()，触发this.done = true，resolve Promise
+
+- yield 会被 v8 编译成 SuspendGenerator 和 ResumeGenerator 两条字节码，await也是
 
 ---
 
