@@ -781,7 +781,7 @@ border: 0 - 边框宽度为0，会渲染，占内存
 .dark {
     /* 兜底，IE和Firefox浏览器 */
     background-image: url(2.jpg);
-    --transparent: url(data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==);
+    --transparent: url(data:image/gif;base64,R0lGODlhAQABAIAAAP///w==);
     /* Safari最近版本已经不需要私有前缀了 */
     background-image: cross-fade(var(--transparent), url(2.jpg), 40%);
     /* 如使用自定义属性，-webkit-语句需要放在没有私有前缀语句的下面 */
