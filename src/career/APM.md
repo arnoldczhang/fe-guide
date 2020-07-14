@@ -633,6 +633,46 @@ loadEventStart - domContentLoadedEventEnd
 3. 提供什么样的解决方式
 4. 帮助什么样的用户提供什么价值
 
+#### 异常归类
+```js
+const errorList = [
+  // 读取/写入对象属性失败，请检查对象是否存在
+  /Cannot (?:read|set) property/,
+  // 调用小程序api方法失败，请检查当前基础库版本是否支持
+  /not implemented/,
+  // 调用对象属性失败，请检查对象是否存在
+  /(?:[^\s]+) is not an object/,
+  // 调用的变量未声明
+  /(?:[^\s]+) is not defined/,
+  // 调用的变量未声明
+  /Can't find variable:/,
+  // 调用的方法未声明
+  /(?:[^\s]+) is not a function/,
+  // JSON.parse异常，请检查入参是否是对象，或对象是否存在
+  /Unexpected token \w+ in JSON at position [\d+]/,
+  // JSON.parse异常，请检查入参是否是对象，或对象是否存在
+  /Unexpected end of JSON input/,
+  // 调用的对象方法不存在，执行失败
+  /Failed to execute [^\s]+ on /,
+  // 调用的对象方法不存在，执行失败
+  /Object [\s\S]+ has no method/,
+  // 代码执行异常，请检查是否缺少{、}、(、)等符号
+  /Unexpected end of input/,
+  // 跨域脚本抛错，需要添加跨域属性来获取更多异常信息
+  /Script error/i,
+  // 小程序页面不存在，请检查页面文件
+  /page [\s\S]+ not found/,
+  // 小程序引用的组件不存在，请检查组件注入即组件文件
+  /Can not find Component/,
+  // 小程序同步api方法未执行回调，请检查入参
+  /SYNC [^\s]+ do not execute callback/,
+  // 数组越界，请检查数组最大长度
+  /Array index out of range/,
+  // 爆栈，请检查是否存在死循环
+  /maximum call stack size exceeded/i,
+];
+```
+
 ---
 
 ### 网络请求
