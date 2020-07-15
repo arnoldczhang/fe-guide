@@ -9,6 +9,7 @@
 - [webpack4构建提速](https://juejin.im/post/5c9075305188252d5c743520#heading-5)
 - [webpack-2020](https://juejin.im/post/5de87444518825124c50cd36?utm_source=gold_browser_extension#heading-38)
 - [webpack5缓存设计](https://zhuanlan.zhihu.com/p/110995118)
+- [前端构建秘籍](https://juejin.im/post/5c9075305188252d5c743520)
 
 ## 目录
 <details>
@@ -116,6 +117,7 @@ module: {
 - 基础框架（react、redux）
 - 基础工具（lodash、utils）
 - 基础ui（antd）
+- 业务代码
 
 **每次打包的id一直变怎么破？**
 
@@ -132,7 +134,7 @@ module: {
 }
 ```
 
-**示例用法**
+**推荐配置**
 
 ```js
 splitChunks: {
@@ -593,6 +595,14 @@ cache-loader也可用于其他缓存
         drop_console: true,
       },
     },
+}
+```
+
+### 过滤不需要做任何处理的库
+```js
+module: {
+  // 这些库都是不依赖其它库的库 不需要解析他们可以加快编译速度
+  noParse: /node_modules\/(moment|chart\.js)/,
 }
 ```
 
