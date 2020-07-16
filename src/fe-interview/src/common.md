@@ -7,7 +7,6 @@
 - [react](https://github.com/xiaomuzhu/front-end-interview/blob/master/docs/guide/react.md)
 - [90%的前端都会踩的坑](https://juejin.im/post/5dfb3e73f265da33b12ea9d3?utm_source=gold_browser_extension#heading-16)
 - [javascript-questions](https://github.com/lydiahallie/javascript-questions/blob/master/zh-CN/README-zh_CN.md)
-- [前端实用书签](https://juejin.im/post/5f0928cf5188252e9b46f717?utm_source=gold_browser_extension)
 
 ## 目录
 <details>

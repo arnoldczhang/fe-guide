@@ -1128,6 +1128,24 @@ __webpack_require__
 - [据说比babel快几十倍的compiler](https://github.com/swc-project/swc)
 - [prepack-顾名思义代码预编译](https://prepack.io/)
 
+### node-sass
+> 安装node-sass遇到各种编译错误，推荐配置如下：
+
+```js
+{
+  loader: resolve('sass-loader'),
+  options: {
+    // 安装dart-sass模块：npm i -D sass
+    implementation: require('sass'),
+    includePaths: [
+      // 支持绝对路径查找
+      path.resolve(projectDir, 'src'),
+    ],
+    sourceMap,
+  },
+},
+```
+
 ---
 
 ## 热更新
