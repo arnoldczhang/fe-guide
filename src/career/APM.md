@@ -638,6 +638,8 @@ loadEventStart - domContentLoadedEventEnd
 const errorList = [
   // 读取/写入对象属性失败，请检查对象是否存在
   /Cannot (?:read|set) property/,
+  // 读取/写入对象属性失败，请检查对象是否存在
+  /Cannot call method [^\s]+ of undefined/,
   // 调用小程序api方法失败，请检查当前基础库版本是否支持
   /not implemented/,
   // 调用对象属性失败，请检查对象是否存在
@@ -648,9 +650,9 @@ const errorList = [
   /Can't find variable:/,
   // 调用的方法未声明
   /(?:[^\s]+) is not a function/,
-  // JSON.parse异常，请检查入参是否是对象，或对象是否存在
-  /Unexpected token \w+ in JSON at position [\d+]/,
-  // JSON.parse异常，请检查入参是否是对象，或对象是否存在
+  // JSON.parse异常，请检查入参是否是对象或对象是否存在
+  /Unexpected token [^\s]+ in JSON at position \d+/,
+  // JSON.parse异常，请检查入参是否是对象或对象是否存在
   /Unexpected end of JSON input/,
   // 调用的对象方法不存在，执行失败
   /Failed to execute [^\s]+ on /,
@@ -658,10 +660,14 @@ const errorList = [
   /Object [\s\S]+ has no method/,
   // 代码执行异常，请检查是否缺少{、}、(、)等符号
   /Unexpected end of input/,
+  // 代码执行异常，请检查是否缺少{、}、(、)等符号
+  /(?:Uncaught |)SyntaxError/,
   // 跨域脚本抛错，需要添加跨域属性来获取更多异常信息
   /Script error/i,
   // 小程序页面不存在，请检查页面文件
-  /page [\s\S]+ not found/,
+  /page [\s\S]+ not found/i,
+  // 小程序页面不存在，请检查页面文件
+  /can not find page: [^\s]+ when execute /,
   // 小程序引用的组件不存在，请检查组件注入即组件文件
   /Can not find Component/,
   // 小程序同步api方法未执行回调，请检查入参
@@ -670,6 +676,20 @@ const errorList = [
   /Array index out of range/,
   // 爆栈，请检查是否存在死循环
   /maximum call stack size exceeded/i,
+  // element-ui内部异常，业务层面难以完全解决
+  /ResizeObserver loop limit exceeded/,
+  // 小程序底层代码异常
+  /Attempt to invoke interface method/,
+  // 从安全角度，禁止读取跨域窗口（包括iframe）的内部信息，请检查是否有类似操作
+  /(?:Uncaught SecurityError: |)Failed to read the [^\s]+ property from [^\s]+/,
+  // 从安全角度，禁止读取跨域窗口（包括iframe）的内部信息，请检查是否有类似操作
+  /Uncaught SecurityError: Blocked a frame with origin/,
+  // 从安全角度，禁止读取跨域窗口（包括iframe）的内部信息，请检查是否有类似操作
+  /Permission denied to access property/,
+  // 变量解构出错，请检查变量是否存在，或者是否为可解构类型（Array/Map/Set/String/NodeList/Arguments/TypedArray）
+  /Invalid attempt to destructure non-iterable instance/,
+  // vue资源文件读取失败，请检查assetsPublicPath是否正确配置
+  /Loading [^\s]+ chunk [^\s]+ failed/,
 ];
 ```
 
