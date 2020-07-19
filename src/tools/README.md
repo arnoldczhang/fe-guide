@@ -9,9 +9,10 @@
 - [在线文字提取](https://web.baimiaoapp.com/)
 - [在线短链生成工具](https://xiaomark.com/)
 - [在线全网热点](https://tophub.today/)
-- [公开的api合集](https://apicoding.io/)
+- [公开的 api 合集](https://apicoding.io/)
 - [自动标识为垃圾邮件的方法](https://straight2spam.com/)
 - [在线结构化思维教程](https://untools.co/)
 - [在线设计模式教程](https://refactoringguru.cn/design-patterns/catalog)
 - [在线聊天](https://brie.fi/ng)
-
+- [伪随机数各种生成方法](https://github.com/bryc/code/blob/master/jshash/PRNGs.md)
+- [各大门户网站页面设计变革](https://www.webdesignmuseum.org/)

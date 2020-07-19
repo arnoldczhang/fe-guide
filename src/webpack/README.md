@@ -451,6 +451,16 @@ module.exports = CopyrightWebpackPlugin;
 
 ### plugin学习
 
+#### compression-webpack-plugin
+> webpack打包完之后，直接生成 gzip 压缩文件
+
+gz文件，可以通过新增 nginx 配置直接访问，空间换时间
+
+```bash
+# nginx对于静态文件的处理模块，开启后会寻找以.gz结尾的文件，直接返回，不会占用cpu进行压缩，如果找不到则不进行压缩
+gzip_static on
+```
+
 #### WarnNoModeSetPlugin
 
 **作用**
