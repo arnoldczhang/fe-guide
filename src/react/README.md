@@ -32,7 +32,7 @@
 * [`react16之前`](#react16之前)
 * [`react16`](#react16)
 * [`redux大型项目构建`](#redux大型项目构建)
-* [`React Hooks流程`](#ReactHooks流程)
+* [`React Hooks`](#ReactHooks)
 * [`React进阶`](#React进阶)
 * [`concurrent`](#concurrent)
 * [`contextAPI`](#contextAPI)
@@ -40,7 +40,6 @@
 * [`interview`](#interview)
 * [`优化指南`](#优化指南)
 * [`react+ts`](#react+ts)
-* [`hooks`](#hooks)
 
 </details>
 
@@ -400,12 +399,6 @@ const domainsReducer = combineReducers({
 
 ---
 
-## ReactHooks 流程
-
-![react hooks](react-hook.jpg)
-
----
-
 ## React 进阶
 
 [参考](https://juejin.im/post/5c92f499f265da612647b754?utm_source=gold_browser_extension)
@@ -689,10 +682,57 @@ export default React.memo(MyComponent, areEqual);
 
 ---
 
-## hooks
+## ReactHooks
+![react hooks](react-hook.jpg)
 
-useState
-useMemo - 缓存数据、方法等
-useEffect - mounted后出发
-useCallback - 缓存方法（useMemo可替代）
-useRef - 缓存数据（useMemo可替代）
+### 方法
+- useState
+- useMemo - 缓存数据、方法等
+- useEffect - mounted后出发
+- useCallback - 缓存方法（useMemo可替代）
+- useRef - 缓存数据（useMemo可替代）
+
+### 实现
+
+```js
+const [num, updateNum] = useState(0);
+```
+
+`hook`
+
+```js
+hook = {
+  queue: {
+    pending: null, // 保存update的queue，即上文介绍的queue
+  },
+  // 保存hook对应的state
+  memoizedState: initialState,
+  // 与下一个Hook连接形成单向无环链表
+  next: null,
+}
+```
+
+`updateNum`
+
+```js
+function dispatchAction(queue = hook.queue, action) {
+  const update = {
+    action,
+    next: null,
+  };
+
+  if (queue.pending === null) {
+    update.next = update;
+  } else {
+    update.next = queue.pending.next;
+    queue.pending.next = update;
+  }
+
+  queue.pending = update;
+
+  // ...
+  schedule();
+}
+```
+
+
