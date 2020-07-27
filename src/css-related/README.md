@@ -19,6 +19,7 @@
 - [渐变色配色库](https://www.bestvist.com/css-gradient)
 - [创意海报库](https://www.chuangkit.com/designtools/designindex)
 - [卡通的网站](https://uglyduck.ca/articles/)
+- [一些新的布局方法](https://mp.weixin.qq.com/s/HYUgb8jEI-aQhbN4sBajNw)
 
 ## 目录
 <details>
@@ -790,6 +791,9 @@ border: 0 - 边框宽度为0，会渲染，占内存
     background-size: cover;
 }
 ```
+
+### background-blend-mode
+[参考](https://www.zhangxinxu.com/wordpress/2020/07/css-background-blend-mode/)
 
 ---
 

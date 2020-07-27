@@ -684,6 +684,7 @@ export default React.memo(MyComponent, areEqual);
 
 ## ReactHooks
 ![react hooks](react-hook.jpg)
+[精简实现hooks](https://mp.weixin.qq.com/s/YLSD4IojDWTPlov_RQtVAA)
 
 ### 方法
 - useState
@@ -716,11 +717,13 @@ hook = {
 
 ```js
 function dispatchAction(queue = hook.queue, action) {
+  // ...创建update
   const update = {
     action,
     next: null,
   };
 
+  // ...环状单向链表操作
   if (queue.pending === null) {
     update.next = update;
   } else {
@@ -730,7 +733,7 @@ function dispatchAction(queue = hook.queue, action) {
 
   queue.pending = update;
 
-  // ...
+  // ...模拟React开始调度更新
   schedule();
 }
 ```

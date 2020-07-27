@@ -21,4 +21,4 @@
 - [chrome-console技巧合集](https://juejin.im/post/5c09a80151882521c81168a2)
 - [js工作原理](https://segmentfault.com/a/1190000018854431?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 - [代码加密工具](https://github.com/javascript-obfuscator/javascript-obfuscator/)
-
+- [quickJS](https://zhuanlan.zhihu.com/p/161722203)
