@@ -657,11 +657,14 @@ module: {
 ---
 
 ## webpack4
-[参考](https://juejin.im/entry/5b63eb8bf265da0f98317441)
-[webpack4的24个实例](https://juejin.im/post/5cae0f616fb9a068a93f0613?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-1)
+- [参考](https://juejin.im/entry/5b63eb8bf265da0f98317441)
+- [webpack4的24个实例](https://juejin.im/post/5cae0f616fb9a068a93f0613?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-1)
 
 ### 流程图
-![流程](https://www.processon.com/view/5cbd0db6e4b085d0107f438c)
+
+![流程简图](https://www.processon.com/view/5cbd0db6e4b085d0107f438c)
+
+
 
 ### 相比webpack3
 * 4多了mode字段，用于切换开发/生成环境
@@ -688,7 +691,7 @@ module: {
 ### sideEffects
 import {a} from xx -> import {a} from xx/a
 
-### tree shaking
+### treeShaking
  [参考](https://zhuanlan.zhihu.com/p/32831172)
 
 上面提到的由于副作用，所以不会摇掉的，可以参考下面例子，
@@ -994,7 +997,7 @@ function __webpack_require__(moduleId) {
 
 **加载函数**
 
-__webpack_require__
+`__webpack_require__`: 将原本的`文件地址 -> 文件内容`转换为`对象的key -> 对象的value（文件内容)`
 
 ---
 
