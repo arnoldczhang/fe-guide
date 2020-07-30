@@ -9,6 +9,7 @@
 - [webpack4构建提速](https://juejin.im/post/5c9075305188252d5c743520#heading-5)
 - [webpack-2020](https://juejin.im/post/5de87444518825124c50cd36?utm_source=gold_browser_extension#heading-38)
 - [webpack5缓存设计](https://zhuanlan.zhihu.com/p/110995118)
+- [真丶webpack4原理解析](https://juejin.im/post/5f20cd8c6fb9a07e731a6712?utm_source=gold_browser_extension)
 - [前端构建秘籍](https://juejin.im/post/5c9075305188252d5c743520)
 
 ## 目录
@@ -29,9 +30,11 @@
 * [`code split`](#codesplit)
 * [`tree shaking`](#treeshaking)
 * [`tapable`](#tapable)
+* [`compilation`](#Compilation)
 * [`plugin`](#plugin)
 * [`loader`](#loader)
 * [`require.context`](#require.context)
+* [`manifest.json`](#manifest.json)
 * [`热更新`](#热更新)
 * [`其他`](#其他)
 
@@ -382,6 +385,68 @@ return hashid.digest('hex');
 
 ---
 
+## Compilation
+> 调用编译对象`Compiler`，执行编译工作
+
+**Compiler**
+
+```js
+const { AsyncSeriesHook } = require('tapable');
+
+class Compiler {
+  constructor() {
+    this.hooks = {
+      beforeRun: new AsyncSeriesHook(['compiler']),
+      //afterRun
+      //beforeCompile
+      //afterCompile
+      //emit
+      // fail
+      // ...
+    };
+    this.mountPlugin();
+  }
+
+  mountPlugin() {
+    this.plugins.forEach((plugin) => {
+      if ('apply' in plugin && typeof plugin.apply === 'function') {
+        plugin.apply(this);
+      }
+    });
+  }
+
+  run() {
+    this.hooks.beforeRun.callAsync(this);
+  }
+}
+```
+
+**Compilation**
+
+```js
+class Compilation {
+  constructor(props) {
+    const {
+      entry,
+      root,
+      loaders,
+      hooks
+    } = props
+    this.entry = entry;
+    // ...
+  }
+
+  async make() {
+    // 1. dfs找到所有引用到的模块
+    // 2. 用loaderParse做路径->代码映射，并做好缓存
+    // 3. emit生成bundle
+    this.moduleWalker(this.entry);
+  }
+}
+```
+
+---
+
 ## plugin
 
 > apply
@@ -664,7 +729,7 @@ module: {
 
 ![流程简图](https://www.processon.com/view/5cbd0db6e4b085d0107f438c)
 
-
+![流程分解](./webpack流程.jpg)
 
 ### 相比webpack3
 * 4多了mode字段，用于切换开发/生成环境
@@ -1091,6 +1156,52 @@ function __webpack_require__(moduleId) {
 - this.async(): 生成callback函数，callback输出转译的内容
 - this.cacheable(): 直接透传缓存文件
 
+### 实现原理
+
+**loaderParse**
+
+```js
+async loaderParse(entryPath) {
+  // 用utf8格式读取文件内容
+  let [ content, md5Hash ] = await readFileWithHash(entryPath)
+  // 获取用户注入的loader
+  const { loaders } = this
+  // 依次遍历所有loader
+  for(let i=0;i<loaders.length;i++) {
+    const loader = loaders[i]
+    const { test : reg, use } = loader
+    if (entryPath.match(reg)) {
+      // 如果该规则需要应用多个loader,从最后一个开始向前执行
+      if (Array.isArray(use)) {
+        while(use.length) {
+          const cur = use.pop();
+          // 判断当前loader是字符串还是function
+          // 字符串做require引入，function则运行后取返回值即可
+          const loaderHandler = 
+            typeof cur.loader === 'string' 
+              ? require(cur.loader)
+              : (
+                typeof cur.loader === 'function'
+                ? cur.loader : _ => _
+              )
+          content = loaderHandler(content)
+        }
+      // 判断当前loader是字符串
+      } else if (typeof use.loader === 'string') {
+        const loaderHandler = require(use.loader)
+        content = loaderHandler(content)
+      // 判断当前loader是function
+      } else if (typeof use.loader === 'function') {
+        const loaderHandler = use.loader
+        content = loaderHandler(content)
+      }
+    }
+  }
+  return [ content, md5Hash ]
+}
+```
+
+
 ### less-loader
 - 使用@functions做px<->rem转换
   * ```js
@@ -1275,4 +1386,11 @@ module.exports = utils;
 - directory: 读取文件的路径
 - useSubdirectories: 是否遍历文件的子目录
 - regEx:  匹配文件的正则
+
+---
+
+## manifest.json
+> webpack编译完成会生成这个文件，用于记录源文件和打包文件之间映射关系
+>
+> 在优化打包速度时（比如根据`Md5Hash`判断是否使用缓存文件），会用到这个配置
 
