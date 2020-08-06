@@ -1,7 +1,7 @@
 # react16+
 
 ## 参考
-
+- [react揭秘](https://react.iamkasong.com)
 - [16.3 升级指南](https://zcfy.cc/article/update-on-async-rendering)
 - 解析过程见 ./src/mobx/react16-*.png
 - vdom 见 https://zhuanlan.zhihu.com/p/35876032

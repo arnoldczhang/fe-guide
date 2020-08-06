@@ -62,6 +62,7 @@ ddd
 ---
 
 ## 如何做好toB
+[做To B，一定要避免的9类致命错误](https://mp.weixin.qq.com/s/G2BRzDjR4rpUkyyxR-hcRw)
 
 ### 获客难
 - toB相对toC，获客周期长、成本高

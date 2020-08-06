@@ -1,4 +1,4 @@
-# 好用的工具网站
+# 好用的工具
 
 - [在线资源免费存储](https://sendfiles.online/)
 - [程序员专用搜索引擎](https://quickref.dev/)
@@ -21,4 +21,5 @@
 - [查两点间轨迹](https://restapi.amap.com/v3/direction/driving?origin=lng,lat643&destination=lng,lat&extensions=all&output=json&key=KEY)
 
 ## 工具库
-[fullpage.js](https://alvarotrigo.com/fullPage/)
+- [fullpage.js](https://alvarotrigo.com/fullPage/)
+- [draft.js-富文本编辑器](https://zhuanlan.zhihu.com/p/24951621)
