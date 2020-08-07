@@ -387,6 +387,8 @@ path是所有plugin-hook的第一个入参
 
 #### 部分用法
 - path.get(key)
+- p.get('loc.start.line') // 获取代码所在开始行
+- [p.get('start').node, p.get('end').node] // 获取代码所在index范围
 - path.isXXXX() or path.get(key).isXXXX()
 - path.replaceWith(types.valueToNode(/**/))
 - path.remove()

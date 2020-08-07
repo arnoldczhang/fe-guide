@@ -15,7 +15,7 @@
 * [`性能指标`](#性能指标)
 * [`性能优化方案`](#性能优化)
 * [`业界产品`](#业界产品)
-* [`设计`](#设计)
+* [`常见设计`](#常见设计)
 * [`设计思考`](#设计思考)
 
 </details>
@@ -406,7 +406,7 @@ loadEventStart - domContentLoadedEventEnd
 
 ---
 
-## 设计
+## 常见设计
 
 > 参考[阿里云监控](https://arms.console.aliyun.com/retcode)
 
@@ -633,9 +633,72 @@ loadEventStart - domContentLoadedEventEnd
 3. 提供什么样的解决方式
 4. 帮助什么样的用户提供什么价值
 
+#### 异常归类
+
+```js
+const errorList = [
+  // 读取/写入对象属性失败，请检查对象是否存在
+  /Cannot (?:read|set) property/,
+  // 读取/写入对象属性失败，请检查对象是否存在
+  /Cannot call method [^\s]+ of undefined/,
+  // 调用小程序api方法失败，请检查当前基础库版本是否支持
+  /not implemented/,
+  // 调用对象属性失败，请检查对象是否存在
+  /(?:[^\s]+) is not an object/,
+  // 调用的变量未声明
+  /(?:[^\s]+) is not defined/,
+  // 调用的变量未声明
+  /Can't find variable:/,
+  // 调用的方法未声明
+  /(?:[^\s]+) is not a function/,
+  // JSON.parse异常，请检查入参是否是对象或对象是否存在
+  /Unexpected token [^\s]+ in JSON at position \d+/,
+  // JSON.parse异常，请检查入参是否是对象或对象是否存在
+  /Unexpected end of JSON input/,
+  // 调用的对象方法不存在，执行失败
+  /Failed to execute [^\s]+ on /,
+  // 调用的对象方法不存在，执行失败
+  /Object [\s\S]+ has no method/,
+  // 代码执行异常，请检查是否缺少{、}、(、)等符号
+  /Unexpected end of input/,
+  // 代码执行异常，请检查是否缺少{、}、(、)等符号
+  /(?:Uncaught |)SyntaxError/,
+  // 跨域脚本抛错，需要添加跨域属性来获取更多异常信息
+  /Script error/i,
+  // 小程序页面不存在，请检查页面文件
+  /page [\s\S]+ not found/i,
+  // 小程序页面不存在，请检查页面文件
+  /can not find page: [^\s]+ when execute /,
+  // 小程序引用的组件不存在，请检查组件注入即组件文件
+  /Can not find Component/,
+  // 小程序同步api方法未执行回调，请检查入参
+  /SYNC [^\s]+ do not execute callback/,
+  // 数组越界，请检查数组最大长度
+  /Array index out of range/,
+  // 爆栈，请检查是否存在死循环
+  /maximum call stack size exceeded/i,
+  // element-ui内部异常，业务层面难以完全解决
+  /ResizeObserver loop limit exceeded/,
+  // 小程序底层代码异常
+  /Attempt to invoke interface method/,
+  // 从安全角度，禁止读取跨域窗口（包括iframe）的内部信息，请检查是否有类似操作
+  /(?:Uncaught SecurityError: |)Failed to read the [^\s]+ property from [^\s]+/,
+  // 从安全角度，禁止读取跨域窗口（包括iframe）的内部信息，请检查是否有类似操作
+  /Uncaught SecurityError: Blocked a frame with origin/,
+  // 从安全角度，禁止读取跨域窗口（包括iframe）的内部信息，请检查是否有类似操作
+  /Permission denied to access property/,
+  // 变量解构出错，请检查变量是否存在，或者是否为可解构类型（Array/Map/Set/String/NodeList/Arguments/TypedArray）
+  /Invalid attempt to destructure non-iterable instance/,
+  // vue资源文件读取失败，请检查assetsPublicPath是否正确配置
+  /Loading [^\s]+ chunk [^\s]+ failed/,
+];
+```
+
 ---
 
 ### 网络请求
+
+主要考虑三大方面：
 
 - 网络请求数
 - 网络请求失败率
@@ -673,7 +736,65 @@ loadEventStart - domContentLoadedEventEnd
 | 页面 | 业务代码问题 | 同上 |
 | 接口返回值 | 需要排查 | 前后端排查 |
 
-智能分析
+### 智能分析
+
+判定出现异常（耗时、总量、失败率）的标准可依次定为：
+
+**耗时**
+
+- 维度耗时 +300ms（预估值，可改）
+- 日同比 +20%
+- 周同比 +20%
+
+**总量**
+
+- 维度总量 -10000（预估值，可改）
+- 维度占比 -10%（绝对值变化，比如 12% -> 1% 即符合要求）
+- 日同比 -20%
+- 周同比 -20%
+
+**失败率**
+
+- 维度失败率 +20%（预估值，可改）
+- 维度占比 +10%
+- 日同比 +20%
+- 周同比 +20%
+
+### nativeAPI 调用
+
+主要考虑三大方面：
+
+- 调用数
+- 调用失败率
+- 调用耗时
+
+整体参考[网络请求](#网络请求)
+
+### js 异常
+
+在缺少 sourcemap 的情况下，可以按序尝试以下方法：
+
+#### 1. 页面维度分类
+
+> 优先级最高，能快速定位问题出处
+
+- 如果集中在一个页面，即页面主体资源文件有问题；
+- 如果分布在不同页面，即这些页面引用的公共资源文件有问题，这种异常修复，尽量在公共文件里解决，通常都是忘记兜底（await 判空、null、条件块未处理等）的情况
+
+#### 2. 应用版本分类
+
+> 优先级中，能排查出现问题的代码版本是否有规律
+
+- 如果集中在某个版本，git diff 就能快速定位出问题代码，
+- 如果分布在多个版本，就不必在这个维度看了
+
+#### 3. 异常堆栈
+
+> 优先级低，最终排查途径
+
+未经 sourcemap 处理的堆栈信息往往难以理解，但也并非不可理解
+
+
 
 ---
 

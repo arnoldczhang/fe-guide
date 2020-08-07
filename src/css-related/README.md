@@ -19,6 +19,7 @@
 - [渐变色配色库](https://www.bestvist.com/css-gradient)
 - [创意海报库](https://www.chuangkit.com/designtools/designindex)
 - [卡通的网站](https://uglyduck.ca/articles/)
+- [一些新的布局方法](https://mp.weixin.qq.com/s/HYUgb8jEI-aQhbN4sBajNw)
 
 ## 目录
 <details>
@@ -27,7 +28,7 @@
 * [`常见用法`](#常见用法)
 * [`属性`](#属性)
 * [`布局`](#布局)
-* [`BEM`](#BEM)
+* [`命名规范-BEM`](#BEM)
 * [`须知`](#须知)
 * [`答疑`](#答疑)
 
@@ -769,6 +770,30 @@ border: 0 - 边框宽度为0，会渲染，占内存
   * 自身位置仍然占据
 - static
   * 默认，没有定位，元素处于正常流中，类似`left:20px`无效
+
+### cross-fade
+[参考](https://www.zhangxinxu.com/wordpress/2020/07/css-cross-fade-background-image-opacity/)
+
+> 多个图像半透明叠加
+>
+> 移动端兼容性非常好（记得加前缀），pc端除ie
+
+```css
+.dark {
+    /* 兜底，IE和Firefox浏览器 */
+    background-image: url(2.jpg);
+    --transparent: url(data:image/gif;base64,R0lGODlhAQABAIAAAP///w==);
+    /* Safari最近版本已经不需要私有前缀了 */
+    background-image: cross-fade(var(--transparent), url(2.jpg), 40%);
+    /* 如使用自定义属性，-webkit-语句需要放在没有私有前缀语句的下面 */
+    background-image: -webkit-cross-fade(var(--transparent), url(2.jpg), 40%);
+
+    background-size: cover;
+}
+```
+
+### background-blend-mode
+[参考](https://www.zhangxinxu.com/wordpress/2020/07/css-background-blend-mode/)
 
 ---
 

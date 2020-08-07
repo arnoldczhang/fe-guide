@@ -6,7 +6,7 @@ const {
   prototype: oProto,
 } = Object;
 
-const sourceMsgRE = /(?:at\s*[^()]*\s+|[^@]+@|)\(?([^)]+):(\d+):(\d+)\)?/;
+const sourceMsgRE = /(?:at\s*[^()]*\s+|[^@]+@|)\(?([^)>]+):(\d+):(\d+)\)?/;
 const httpRE = /^https?:\/\//;
 const localAbsFileRE = /^(?:\/|file:\/\/)/;
 const localRelFileRE = /^\.\//;

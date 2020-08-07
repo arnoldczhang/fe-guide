@@ -18,8 +18,9 @@
 * [`最佳实践`](#最佳实践)
 * [`异步错误`](#异步错误)
 * [`进程线程`](#进程线程)
+* [`打印日志`](#打印日志)
 * [`手动打包指南`](#手动打包指南)
-* [`库源码解析`](#库源码解析)
+* [`源码解析`](#库源码解析)
 * [`库开发模式`](#库开发模式)
 * [`内存泄漏`](#内存泄漏)
 * [`其他`](#其他)
@@ -637,6 +638,51 @@ pm2 start test.js -i 2
 
 ---
 
+## 打印日志
+- [node如何打印日志](https://juejin.im/post/5f0e5701f265da230e6b68c8?utm_source=gold_browser_extension)
+
+[winston](https://www.npmjs.com/package/winston)
+
+```js
+import winston, { format } from 'winston';
+import os from 'os';
+import { session } from './session';
+
+const requestId = format((info) => {
+  // 关于 CLS 中的 requestId
+  info.requestId = session.get('requestId')
+  return info
+});
+
+function createLogger (label: string) {
+  return winston.createLogger({
+    defaultMeta: {
+      serverName: os.hostname(),
+      // 指定日志类型，如 SQL / Request / Access
+      label
+    },
+    format: format.combine(
+      // 打印时间戳
+      format.timestamp(),
+      // 打印 requestId
+      requestId(),
+      // 以 json 格式进行打印
+      format.json()
+    ),
+    transports: [
+      // 存储在文件中
+      new winston.transports.File({
+        dirname: './logs',
+        filename: `${label}.log`,
+      })
+    ]
+  })
+}
+
+const accessLogger = createLogger('access');
+```
+
+---
 ## 手动打包指南
 **css/less**
 
