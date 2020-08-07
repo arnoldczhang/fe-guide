@@ -14,6 +14,8 @@
 - [在线结构化思维教程](https://untools.co/)
 - [在线设计模式教程](https://refactoringguru.cn/design-patterns/catalog)
 - [在线聊天](https://brie.fi/ng)
+- [在线图片搜索器](https://yandex.com/images/)
+- [在线生成随机信息](https://random-data-api.com/)
 - [伪随机数各种生成方法](https://github.com/bryc/code/blob/master/jshash/PRNGs.md)
 - [各大门户网站页面设计变革](https://www.webdesignmuseum.org/)
 
