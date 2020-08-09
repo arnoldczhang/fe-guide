@@ -22,7 +22,6 @@
 * [`webpack-3.8.1`](#webpack-3.8.1)
 * [`webpack4`](#webpack4)
 * [`webpack5`](#webpack5)
-* [`plugin`](#plugin)
 * [`中间缓存`](#中间缓存)
 * [`webpack-watch`](#webpack-watch)
 * [`bundle`](#bundle)
@@ -460,6 +459,9 @@ class Compilation {
 > 针对四种template的具体处理
 > 内部包含hooks、和template处理
 
+### 常用plugins
+- [检测循环引用](https://www.npmjs.com/package/circular-dependency-plugin)
+- [检测重复包-inspectpack](https://github.com/FormidableLabs/inspectpack/#plugin)
 
 ### 调试
 ```js
