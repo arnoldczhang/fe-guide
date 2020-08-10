@@ -3085,7 +3085,8 @@ process.on('SIGTERM', handleExit);
 ---
 
 ### rpc和http区别
-> remote procedure call: 远程方法调用
+[参考](../../http/README.md#rpc)
+[知乎问答-rpc和http](https://www.zhihu.com/question/41609070)
 
 #### http
 - 协议格式
@@ -3098,12 +3099,6 @@ process.on('SIGTERM', handleExit);
 区别仅在于：
 - 可读性 VS 效率
 - 通用性 VS 易用性
-
-**rpc通信的优势**
-
-- http1.1的tcp报文头包含太多信息，每次传输会有很多废编码，
-而使用rpc可以自定义报文头，极大程度精简传输内容
-- rpc是面相服务的封装，对服务可用性和效率做了优化，这是http做不到的
 
 ---
 

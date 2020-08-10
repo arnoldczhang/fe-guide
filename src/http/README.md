@@ -26,6 +26,7 @@
 * [`quic`](#quic)
 * [`http3.0`](#http3.0)
 * [`https`](#https)
+* [`rpc`](#rpc)
 * [`网络模型`](#网络模型)
 * [`OSI`](#OSI)
 * [`常用端口`](#常用端口)
@@ -864,6 +865,19 @@ Open System Interconnection 开放式系统互联
 503 - service unavailable
 
 * 表明服务器暂时处于超负载或正在停机维护，无法处理请求
+
+---
+
+## rpc
+> remote procedure call: 远程方法调用
+>
+> RPC可以采用自定义协议，也可以通过HTTP协议来传输，thrift，grpc，xml-rpc，json-rpc都是通过HTTP传输的
+
+
+**rpc通信的优势**
+
+- http1.1的tcp报文头包含太多信息，每次传输会有很多废编码，而使用rpc可以自定义报文头，极大程度精简传输内容
+- RPC是一种编程模式，把对服务器的调用抽象为过程调用，是面相服务的封装，对服务可用性和效率做了优化，这是http做不到的
 
 ---
 
