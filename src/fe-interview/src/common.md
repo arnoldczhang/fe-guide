@@ -3085,13 +3085,14 @@ process.on('SIGTERM', handleExit);
 ---
 
 ### rpc和http区别
+> remote procedure call: 远程方法调用
 
 #### http
 - 协议格式
 - A机器直接调用 B机器的 restful 接口，执行操作C
 
 #### rpc
-- 通讯方式
+- 通讯方式，底层可以用http、tcp、udp等，看具体需求
 - A机器调用自己的代理方法，方法内对数据序列化后，与B机器通信（http、tcp、udp都行），B机器反序列化后，执行操作C
 
 区别仅在于：

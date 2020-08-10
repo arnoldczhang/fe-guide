@@ -15,6 +15,7 @@
 <details>
 <summary>展开更多</summary>
 
+* [`总览`](#总览)
 * [`tcp`](#tcp)
 * [`udp`](#udp)
 * [`request header`](#requestHeader)
@@ -35,9 +36,18 @@
 
 ---
 
+## 总览
+
+![TCP-IP 协议层次](./TCP-IP协议层次.jpg)
+
+
+![TCP-IP 协议模型](./TCP-IP协议模型.png)
+
+---
+
 ## tcp
 
-基于 IP 协议构建 + 流模式
+> 基于 IP 协议构建 + 流模式
 
 **RTT**
 => 一个数据包从发出去到回来的时间
@@ -785,11 +795,13 @@ tls（Transport Layer Security 安全传输层协议）
 - session ticket
 
 #### sessionId
+
 每次对话都会产生一个 sessionId，由浏览器生成，只要客户端给出编号，服务端根据编号就能找到以前的通信的秘钥；
 
 缺点是 sessionId 只能保存在一个服务器上，如果做了负载均衡就无法恢复之前的秘钥了。
 
 #### session ticket
+
 由服务端根据之前的会话信息（对话秘钥、加密方式等）加密而生成，然后返回给客户端，只要下次会话带了 session ticket，服务端就一定能解密出，有且只有服务端能解
 
 ---
