@@ -1,1 +1,0 @@
-// 参考puppeteer/test-case/utils/image-recognize.ts
