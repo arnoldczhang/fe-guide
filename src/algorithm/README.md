@@ -8,6 +8,7 @@
   - [各种算法结构演示](https://visualgo.net/zh)
   - [前端算法-git](https://juejin.im/post/5d5b307b5188253da24d3cd1?utm_source=gold_browser_extension)
   - [前端算法-docs](http://www.conardli.top/docs/dataStructure/%E4%BA%8C%E5%8F%89%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C.html#%E6%A0%91%E6%9F%A5%E6%89%BE)
+  - [leetcode原题详解](https://labuladong.gitbook.io/algo/)
 
 ## 目录
 <details>
