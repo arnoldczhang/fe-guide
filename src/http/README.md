@@ -249,8 +249,8 @@
 
 ### 未来头部新字段
 
-- "Device-Memory" ":" #memory-value
-  - 浏览器可以返回设备内存大小给服务端，Chrome 63+ 和 Opera50+ 支持
+- "Device-Memory": #memory-value
+> 浏览器可以返回设备内存大小给服务端，Chrome 63+ 和 Opera50+ 支持
 
 ### POST 和 PUT
 
