@@ -289,12 +289,12 @@ var obj = {
     number: 3,
     fn1: (function () {
         var number;
-        this.number *= 2;
+        this.number *= 2; // window.number = 10
         number = number * 2;
         number = 3;
         return function () {
             var num = this.number;
-            this.number *= 2;
+            this.number *= 2; // window.number = 20
             console.log(num);
             number *= 3;
             console.log(number);
@@ -325,10 +325,10 @@ const count = arr.reduce((t, c) => {
 ---
 
 ### vue/react中key的作用
-- 不能单纯的讲和性能好坏有无关联
-  * 节点树简单时，纯innerText改动比节点位置改动快
 - 没有key时，做innerText的改动
 - 有key时，会做节点位置交换
+- 不能单纯的讲和性能好坏有无关联
+  * 节点树简单时，纯innerText改动比节点位置改动快
 
 #### 准确性
 对比a.key === b.key，可以避免复用节点，更准确
@@ -418,66 +418,73 @@ flex的默认值
 }
 ```
 
-
 **flex-basis**
 
-- 设置或检索弹性盒伸缩基准值，不设置，默认使用元素的width，
-  如果width是auto，宽度由文本内容决定
-- 用法
-  * flex-basis: 120px;
-  * flex-basis: auto;
-  * flex-basis: 10%;
+> 设置或检索弹性盒伸缩基准值，不设置，默认使用元素的width
+>
+> 如果width是auto，宽度由文本内容决定
+
+用法
+
+* flex-basis: 120px;
+* flex-basis: auto;
+* flex-basis: 10%;
 
 **flex-grow**
 
-- 设置弹性盒对象扩展比
-- 如果子元素的宽度和小于父容器，则剩余空间根据flex-grow瓜分
-- 默认0，即剩余空间宽度瓜分到0，到当前子元素
+> 设置弹性盒对象扩展比，默认0，即剩余空间宽度瓜分到0，到当前子元素
+>
+> 如果子元素的宽度和小于父容器，则剩余空间根据flex-grow瓜分
 
 **flex-shrink**
 
-- 设置弹性盒对象收缩比
-- 用法
-  * flex-shrink: 0; // 不收缩
-  * flex-shrink: 1; // 默认值
-- 计算方式
-  ```js
-  const 元素总宽度和 = '各元素 flex-basis 之和'
-  const 超出宽度 = 元素总宽度和 - 容器宽度
-  const 当前元素宽度占比 = (当前元素 flex-basis * 当前元素 flex-shrink) / (所有元素各自 flex-basis * flex-shrink 之和)
-  const 当前元素最终宽度 = 当前元素 flex-basis - (超出宽度 * 当前元素宽度占比)
-  ```
-- 实例
-  ```html
-  <div id="content">
-    <!-- 宽度105.72 -->
-    <div class="box">A</div>
-    <div class="box">B</div>
-    <div class="box">C</div>
-    <!-- 宽度91.42 -->
-    <!-- 120 - (120 * 5 - 500) * 120 * 2 / (120 * 3 * 1 + 120 * 2 * 2) -->
-    <div class="box1">D</div>
-    <div class="box1">E</div>
-  </div>
-  <style type="text/css">
-    #content {
-      display: flex;
-      width: 500px;
-    }
+> 设置弹性盒对象收缩比
 
-    #content div {
-      flex-basis: 120px;
-    }
+用法
 
-    .box { 
-      flex-shrink: 1;
-    }
+* flex-shrink: 0; // 不收缩
+* flex-shrink: 1; // 默认值
 
-    .box1 { 
-      flex-shrink: 2; 
-    }
-  </style>
-  ```
+计算方式
+
+```js
+const 元素总宽度和 = '各元素 flex-basis 之和'
+const 超出宽度 = 元素总宽度和 - 容器宽度
+const 当前元素宽度占比 = (当前元素 flex-basis * 当前元素 flex-shrink) / (所有元素各自 flex-basis * flex-shrink 之和)
+const 当前元素最终宽度 = 当前元素 flex-basis - (超出宽度 * 当前元素宽度占比)
+```
+实例
+
+```html
+<div id="content">
+  <!-- 宽度105.72 -->
+  <div class="box">A</div>
+  <div class="box">B</div>
+  <div class="box">C</div>
+  <!-- 宽度91.42 -->
+  <!-- 120 - (120 * 5 - 500) * 120 * 2 / (120 * 3 * 1 + 120 * 2 * 2) -->
+  <div class="box1">D</div>
+  <div class="box1">E</div>
+</div>
+<style type="text/css">
+  #content {
+    display: flex;
+    width: 500px;
+  }
+
+  #content div {
+    flex-basis: 120px;
+  }
+
+  .box { 
+    flex-shrink: 1;
+  }
+
+  .box1 { 
+    flex-shrink: 2; 
+  }
+</style>
+```
 
 ---
 
