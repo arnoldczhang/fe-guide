@@ -24,8 +24,12 @@ const { BinaryNode } = require('./base');
  * 
  */
 class BinaryTree {
-  constructor() {
+  constructor(val) {
     this.root = null;
+    if (typeof val !== 'undefined') {
+      this.root = new BinaryNode(val);
+      this.val = val;
+    }
   }
 
   insert(value) {
