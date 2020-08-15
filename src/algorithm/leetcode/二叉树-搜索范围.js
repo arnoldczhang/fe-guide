@@ -1,11 +1,12 @@
 /**
  * 题目：
  * 
- * 二叉树搜索范围
+ * 二叉树-搜索范围
  * 
  * 给定二叉搜索树的根结点 root，返回 L 和 R（含）之间的所有结点的值的和
  * 
- * 也就是说结点值要在在L和R之间（含）
+ * 题解：
+ * - 说白了，算出结点值在L和R之间（含）的所有结点之和即可
  * 
  */
 const BinaryTree = require('../structure/二叉树.js');
@@ -28,8 +29,8 @@ function searchRange(root, L, R) {
     }
     search(node.left);
     search(node.right);
-    if (node.value >= L && node.value <= R) {
-      sum += node.value;
+    if (node.val >= L && node.val <= R) {
+      sum += node.val;
     }
   };
 

@@ -38,8 +38,8 @@ class BinaryTree {
 
   insertNode(current, value) {
     const node = new BinaryNode(value);
-    if (value === current.value) return false;
-    if (value < current.value) {
+    if (value === current.val) return false;
+    if (value < current.val) {
       if (!current.left) {
         current.left = node;
       } else {
@@ -70,8 +70,8 @@ class BinaryTree {
   findNode(value, root = this.root) {
     if (!root || !this.contains(root, value)) return false;
     let next = root;
-    while (next && next.value !== value) {
-      if (value < next.value) {
+    while (next && next.val !== value) {
+      if (value < next.val) {
         next = next.left;
       } else {
         next = next.right;
@@ -82,15 +82,15 @@ class BinaryTree {
 
   findParent(value, root = this.root) {
     if (!root || !this.contains(root, value)) return false;
-    if (root.value === value) return null;
-    if (root.value < value) {
+    if (root.val === value) return null;
+    if (root.val < value) {
       if (!root.right) return null;
-      return root.right.value === value
+      return root.right.val === value
         ? root
         : this.findParent(value, root.right);
     } else {
       if (!root.left) return null;
-      return root.left.value === value
+      return root.left.val === value
         ? root
         : this.findParent(value, root.left);
     }

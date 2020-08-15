@@ -1,9 +1,14 @@
 /**
  * 题目：
  * 
- * 合并二叉树
+ * 二叉树-合并二叉树
  * 
- * 将一棵二叉树上的节点覆盖到另一棵，原节点如果存在，则值累加
+ * 将一棵二叉树上的节点覆盖到另一棵
+ * 
+ * 题解：
+ * 
+ * - 后续遍历
+ * - 原节点如果存在，则值累加，否则直接替换即可
  * 
  */
 const BinaryTree = require('../structure/二叉树.js');
@@ -22,7 +27,7 @@ binaryTree2.insert(7);
 
 function mergeTrees(t1, t2) {
   if (t1 && t2) {
-    t1.value += t2.value;
+    t1.val += t2.val;
     t1.left = mergeTrees(t1.left, t2.left);
     t1.right = mergeTrees(t1.right, t2.right);
   }

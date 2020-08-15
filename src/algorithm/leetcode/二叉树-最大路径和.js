@@ -1,14 +1,14 @@
 /**
  * 题目：
  * 
- * 二叉树最大路径和
+ * 二叉树-最大路径和
  * 
  * 路径被定义为一条从树中任意节点出发，达到任意节点的序列。
  * 该路径至少包含一个节点，且不一定经过根节点
  * 
  * 题解：
  * 
- * 后续遍历 + 求左右子树max
+ * - 后续遍历 + 求左右子树max
  * 
  */
 
@@ -31,8 +31,8 @@ function maxPathSum(root) {
     if (!rt) return 0;
     const left = Math.max(0, getMax(rt.left));
     const right = Math.max(0, getMax(rt.right));
-    maxRes = Math.max(maxRes, left + right + rt.value);
-    return Math.max(left, right) + rt.value;
+    maxRes = Math.max(maxRes, left + right + rt.val);
+    return Math.max(left, right) + rt.val;
   };
   getMax(root);
   return maxRes;
