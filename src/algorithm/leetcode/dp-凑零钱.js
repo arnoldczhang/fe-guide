@@ -20,15 +20,22 @@
  * 
  */
 function coinChange(coins, amount) {
-  // cach可以记录所有的硬币组合
-  const dp = (n, cach = []) => {
+  const dp = (n, cach = {}) => {
+    console.log('aa');
     // 如果超出金额范围，返回-1
     if (n < 0) return -1;
     // 如果金额正好减完
     if (n === 0) return 0;
     let res = Infinity;
     coins.forEach((coin) => {
-      const sub = dp(n - coin, cach.concat(coin));
+      let sub;
+      // 缓存计算次数
+      if (cach[n - coin]) {
+        sub = cach[n - coin];
+      } else {
+        cach[n - coin] = dp(n - coin, cach);
+        sub = cach[n - coin];
+      }
       // 如果超出金额范围，该子式无解
       if (sub === -1) return;
       // 计算最小的组合次数
