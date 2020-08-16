@@ -9,6 +9,7 @@
   - [前端算法-git](https://juejin.im/post/5d5b307b5188253da24d3cd1?utm_source=gold_browser_extension)
   - [前端算法-docs](http://www.conardli.top/docs/dataStructure/%E4%BA%8C%E5%8F%89%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C.html#%E6%A0%91%E6%9F%A5%E6%89%BE)
   - [leetcode原题详解](https://labuladong.gitbook.io/algo/)
+  - [leetcode原题详解-历史目录](https://mp.weixin.qq.com/s/JUBHDr5T7-UPTSDaJGGfaA)
 
 ## 目录
 <details>
@@ -36,7 +37,6 @@
 线性: for/while/forEach
 
 非线性: 递归
-
 
 ---
 
@@ -207,7 +207,6 @@ function binarySearch(target, list, start = 0, end = list.length) {
 2. 明确「状态」，即原问题和子问题中会变化的变量
 3. 明确「选择」，即引起状态发生变化的变量
 4. 定义 dp 数组/函数的含义
-
 
 ---
 

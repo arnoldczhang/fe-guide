@@ -7,26 +7,9 @@
  * 动态规划
  * 
  */
+
+// 链表解
 function getSubArraySum(arr) {
-  let sum = arr[0];
-  let maxSum = arr[0];
-
-  for (let i = 0; i < arr.length; i += 1) {
-    const ch = arr[i];
-    if (sum < 0) {
-      sum = ch;
-    } else {
-      sum += ch;
-    }
-
-    if (sum > maxSum) {
-      maxSum = sum;
-    }
-  }
-  return maxSum;
-}
-
-function getSubArraySum2(arr) {
   let maxSum = 0;
   let sum = 0;
   for (let i = 0; i < arr.length; i += 1) {
@@ -42,6 +25,16 @@ function getSubArraySum2(arr) {
     }
   }
   return maxSum;
+}
+
+// dp解
+function getSubArraySum(nums) {
+  const dp = [];
+    dp[0] = nums[0];
+    for (let i = 1; i < nums.length; i += 1) {
+        dp[i] = Math.max(nums[i], nums[i] + dp[i - 1]);
+    }
+    return Math.max(...dp);
 }
 
 console.log(getSubArraySum([-2, 6, -1, 5, 4, -7, 2, 3]));

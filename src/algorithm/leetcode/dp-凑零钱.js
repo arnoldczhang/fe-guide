@@ -21,7 +21,6 @@
  */
 function coinChange(coins, amount) {
   const dp = (n, cach = {}) => {
-    console.log('aa');
     // 如果超出金额范围，返回-1
     if (n < 0) return -1;
     // 如果金额正好减完
