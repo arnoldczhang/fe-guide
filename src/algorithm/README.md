@@ -208,6 +208,14 @@ function binarySearch(target, list, start = 0, end = list.length) {
 3. 明确「选择」，即引起状态发生变化的变量
 4. 定义 dp 数组/函数的含义
 
+### 方程
+```
+for 状态1 in 状态1的所有取值：
+    for 状态2 in 状态2的所有取值：
+        for ...
+            dp[状态1][状态2][...] = 择优(选择1，选择2...)
+```
+
 ---
 
 ## 遍历方式
