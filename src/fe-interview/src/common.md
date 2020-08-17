@@ -1255,10 +1255,12 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b});
 - 服务器重启后，客户继续工作，然而服务器已丢失客户信息，收到客户数据后响应RST。
 
 #### 为什么不能二次握手？
-如果客户端是弱网环境，服务端就会收不到响应，而维持 ESTABLISHED 状态，一直等待下去，这样会浪费服务端资源
+如果客户端是弱网环境，服务端由于收不到确认响应，而维持 ESTABLISHED 状态，等待会浪费服务端资源
 
 #### 客户端突然故障怎么办？
-TCP保活计时器 每次客户端请求服务器会重置计时器，当2小时之内没收到客户端任何数据时，会每隔75s向客户端发一个探测报文，若接连发送10个，客户端都没有反应，则认为客户端故障，关闭连接。
+> TCP保活计时器
+
+每次客户端请求服务器，服务端都会重置计时器，当`2小时`之内没收到客户端任何数据时，会每隔`75s`向客户端发一个探测报文，若接连发送`10个`，客户端都没有反应，则认为客户端故障，关闭连接。
 
 #### syn泛洪攻击
 
@@ -1276,13 +1278,13 @@ TCP保活计时器 每次客户端请求服务器会重置计时器，当2小时
 ### react的setState变更的同/异步
 [参考](https://github.com/sisterAn/blog/issues/26)
 
-- react自身引发的事件处理（onClick，componentWillMount等），即合成时间，这时候异步执行
+- react自身引发的事件处理（onClick，componentWillMount等），即合成事件，异步执行
 - 此外的调用（addEventListener、setTimeout等），同步执行
 
 #### 原因
-- 同/异步处理受isBatchingUpdates影响，默认isBatchingUpdates=false，也就是同步执行
+- 同/异步处理受`isBatchingUpdates`影响，默认isBatchingUpdates=false，也就是`同步执行`
+- react的自身事件处理前，就会调用batchingUpdate
 - 当调用batchUpdate函数时，isBatchingUpdates=true
-- react的事件处理前，就会调用batchingUpdate
 
 #### 获取异步后的值
 ```js
@@ -1303,16 +1305,19 @@ class Example extends React.Component {
   }
   
   componentDidMount() {
+    // 异步
     this.setState({val: this.state.val + 1});
     console.log(this.state.val);    // 第 1 次 log
 
+    // 异步
     this.setState({val: this.state.val + 1});
     console.log(this.state.val);    // 第 2 次 log
 
     setTimeout(() => {
+      // 同步
       this.setState({val: this.state.val + 1});
       console.log(this.state.val);  // 第 3 次 log
-
+      // 同步
       this.setState({val: this.state.val + 1});
       console.log(this.state.val);  // 第 4 次 log
     }, 0);
@@ -1339,15 +1344,19 @@ class Example extends React.Component {
 - instanceof
 - Array.isArray()
 
-Object.prototype.toString.call
+**Object.prototype.toString.call**
+
 - 每一个继承 Object 的对象都有 toString 方法
 - 判断是否是数组 [Object array]
 
-instanceof
+**instanceof**
+
 - 判断对象的原型链中是不是能找到类型的 prototype
 
-Array.isArray
+**Array.isArray**
+
 - 能检测出 Iframes，而 instanceof 不行
+
 ```js
 xArray = window.frames[window.frames.length-1].Array;
 var arr = new xArray(1,2,3); // [1,2,3]
@@ -1363,6 +1372,7 @@ arr instanceof Array; // false
 [参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/24)
 
 #### 原理
+
 **重绘**
 
 - 几何或样式发生变动，但是不影响布局的
@@ -1370,7 +1380,7 @@ arr instanceof Array; // false
 **回流**
 
 - 几何属性变动，页面需要全部或局部更新
-- [触发浏览器回流的属性方法一览表](https://mp.weixin.qq.com/s/EL40dbdMWKh9BSfHKtZf2Q)
+- [触发回流一览表](https://gist.github.com/paulirish/5d52fb081b3570c81e3a)
 
 回流必定会发生重绘，重绘不一定会引发回流
 
