@@ -112,7 +112,7 @@
 **浏览器**
 
 * [`同/异任务`](#同/异任务)
-* [`http2多路复用`](#http2多路复用)
+* [`http2`](#http2)
 * [`描述网页从输入url到渲染的过程`](#描述网页从输入url到渲染的过程)
 * [`TCP三次握手&四次挥手的理解`](#TCP三次握手&四次挥手的理解)
 * [`重绘和回流`](#重绘和回流)
@@ -147,6 +147,7 @@
 * [`逆序数字（递归实现）`](#逆序数字（递归实现）)
 * [`红黑树`](#红黑树)
 * [`判断属性继承自哪个原型`](#判断属性继承自哪个原型)
+* [`前端加密`](#前端加密)
 
 **css**
 
@@ -500,7 +501,10 @@ const 当前元素最终宽度 = 当前元素 flex-basis - (超出宽度 * 当�
 - vw/vh
 
 #### 媒体查询
-缺点：需要准备多套样式
+
+**缺点**
+
+需要准备多套样式
 
 ```css
 @media screen and (max-width: 960px){
@@ -517,9 +521,13 @@ const 当前元素最终宽度 = 当前元素 flex-basis - (超出宽度 * 当�
 ```
 
 #### 百分比
-缺点：
+
+**缺点**
+
 1. 所有尺寸都要重新换算
 2. 各尺寸参照父元素的宽高标准不一
+
+**属性相关**
 
 - width/height: 相对于直接父元素
 - top和bottom 、left和right: 相对于直接非static父元素的高度/宽度
@@ -528,8 +536,12 @@ const 当前元素最终宽度 = 当前元素 flex-basis - (超出宽度 * 当�
 - vertical-align: 百分比相对于自身line-height计算
 
 #### vh/vw
-缺点：
+
+**缺点**
+
 1. ie9-11不支持vmin和vmax，opera整体不支持
+
+**属性相关**
 
 - vh: 相对于视窗的宽度，视窗宽度是100vh
 - vw: 相对于视窗的宽度，视窗宽度是100vw
@@ -546,9 +558,13 @@ const 当前元素最终宽度 = 当前元素 flex-basis - (超出宽度 * 当�
 - 插件：postcss-px-to-viewport
 
 #### rem
-本质是等比缩放
+> 本质是等比缩放
 
-缺点：font-size的设置必须在样式前
+**缺点**
+
+font-size的设置必须在样式前
+
+**属性相关**
 
 - 默认1rem = 16px
 - 配合媒体查询才能实现响应式
@@ -717,8 +733,12 @@ const resize = (size) => {
 ---
 
 ### 事件触发过程
-- attachEvent(event,listener)
-- addEventListener(event, listener, useCapture = false)
+```js
+// ie8，只支持冒泡阶段触发
+attachEvent(event,listener)
+
+addEventListener(event, listener, useCapture = false)
+```
 
 捕获 - 目标状态 - 冒泡
 onDoingthing冒泡阶段触发
@@ -799,7 +819,7 @@ arr.join = arr.shift;
 ---
 
 ### 执行上下文和作用域链
-[参考](../js&browser/并发模型-event_loop.md#执行上下文和作用域链)
+[参考](../../js&browser/并发模型-event_loop.md#执行上下文和作用域链)
 
 ---
 
@@ -1157,6 +1177,9 @@ function foo() {
 ---
 
 ### 算法题
+
+所有题可参考`src/algorithm/*`
+
 ```js
 // 例：已知如下数组：
 // var arr = [ [1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14] ] ] ], 10];
@@ -1188,13 +1211,9 @@ function upper(arr = []) {
   upper,
 ].reduce((res, fn) => fn(res), arr);
 
-
-
 // 方式二：邪道
 // Array.prototype.flat才刚到提案（chrome69支持）
 Array.from(new Set(arr.flat(Infinity))).sort((a,b)=>{ return a-b});
-
-
 
 // 方式三：妖道
 Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b});
@@ -1207,10 +1226,8 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b});
 
 ---
 
-### http2多路复用
-- 同一域名下所有通信都在单个TCP连接上完成
-- 消除因多个TCP连接带来的延时和内存消耗
-- 单个连接上的请求可以并行交错，互不影响
+### http2
+[参考](../../http/README.md#多路复用)
 
 ---
 
@@ -3184,3 +3201,28 @@ const json = JSON.parse(buff.toString());
 
 ### utm字段
 [参考](https://smashnotes.com/updates/how-to-use-utm-parameters-to-grow-your-audience)
+
+---
+
+### 前端加密
+[参考](https://juejin.im/post/6844903986156273678)
+
+- 常见对称加密有AES、DES、3DES等
+- 常见非对称加密有RSA、ECC等
+
+**hash**
+
+- 单向不可逆（只能加密，不能解密）
+- 一般前端hash加密后，后端直接入库的（因为无法解密），这样的安全性较低
+
+**RSA**
+
+- 非对称加密
+- 公、私钥在每次服务端收到预登录请求时生成，预登陆成功后，将RSA公钥传给前端
+- AES密钥由前端生成，用于对密码等信息加密；用服务端给的RSA公钥加密后，统一返回给服务端
+- 服务端用RSA私钥解密，获得AES密钥；用AES密钥解密用户密码等信息
+- 若验证成功，AES密钥保存至session过期（退出、重新登录、超时等）
+- 登录成功后，前端一直保留AES密钥；后续和后端交互也使用这个密钥
+
+
+
