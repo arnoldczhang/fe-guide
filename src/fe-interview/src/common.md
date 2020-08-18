@@ -2132,14 +2132,14 @@ function handle(req, res) {
 ### BOMvsDOMvsHTML5
 
 #### BOM
-浏览器对象模型
+> 浏览器对象模型
 
 - window
 - location
 - navigator
 
 #### DOM
-文档对象模型
+> 文档对象模型
 
 - nodeType
 - [querySelectorAll](https://www.cnblogs.com/HavenLau/p/10476508.html)
@@ -2147,7 +2147,7 @@ function handle(req, res) {
 - onload
 
 #### HTML5
-各浏览器自定义的模型
+> 各浏览器自定义的模型
 
 - DOMContentLoaded
 
@@ -2157,7 +2157,7 @@ function handle(req, res) {
 [参考](https://juejin.im/post/5b8905456fb9a01a105966b4)
 
 #### white-space
-控制空白字符的显示
+> 控制空白字符的显示
 
 - normal: 空格和换行符无效，自动换行
 - nowrap: 永不换行
@@ -2166,13 +2166,13 @@ function handle(req, res) {
 - pre-line: 即preserve new line +wrap，空格无效，换行符保留，自动换行
 
 #### word-break
-控制单词如何被拆分换行
+> 控制单词如何被拆分换行
 
 - keep-all: 一律不换行，除了空格
 - break-all: 一律换行
 
 #### word-wrap
-控制单词如何被拆分换行
+> 控制单词如何被拆分换行
 
 - break-word: 当一个单词一行显示不下时，才会换行
 
@@ -2227,7 +2227,7 @@ function handle(req, res) {
 
 #### 优化重绘重排
 
-####避免@import
+#### 避免@import
 - 破坏了浏览器并行下载
 
 ---
@@ -2447,7 +2447,7 @@ data[i]Context = {
 > bind(thisObj, ...args)
 >
 
-[参考](./call&apply.js)
+[参考](./call&apply&bind.js)
 
 - thisObj绑定一次有效
 - 作为constructor时，绑定的thisObj无效
@@ -2460,7 +2460,7 @@ data[i]Context = {
 ---
 
 ### src和href
-[参考](../../html/README.md#doctype#src和href)
+[参考](../../html/README.md#src和href)
 
 ---
 
@@ -2549,7 +2549,7 @@ data[i]Context = {
 ---
 
 ### 性能优化
-[参考](../../js&browser/性能优化.md#面试回答)
+[参考](../../js&browser/性能优化2019.md#面试回答)
 
 ---
 
@@ -2573,7 +2573,9 @@ data[i]Context = {
 #### relatedTarget
 [参考](https://www.cnblogs.com/rubylouvre/p/7384375.html)
 
-在做mouseenter与mouseleave的兼容时，我们需要用到事件对象的`relatedTarget`属性
+- 对于 mouseover 事件来说，该属性是鼠标指针移到目标节点上时所离开的那个节点
+- 对于 mouseout 事件来说，该属性是离开目标时，鼠标指针进入的节点
+- 对于其他类型的事件来说，这个属性没有用
 
 ```js
 function getRelatedTarget(e) {
