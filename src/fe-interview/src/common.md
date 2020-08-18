@@ -144,7 +144,7 @@
 * [`深度优先和广度优先`](#深度优先和广度优先)
 * [`发布订阅VS观察者模式`](#发布订阅VS观察者模式)
 * [`排序`](#排序)
-* [`逆序数字（递归实现）`](#逆序数字（递归实现）)
+* [`逆序数字`](#逆序数字（递归实现）)
 * [`红黑树`](#红黑树)
 * [`判断属性继承自哪个原型`](#判断属性继承自哪个原型)
 * [`前端加密`](#前端加密)
@@ -1488,7 +1488,10 @@ define(function(require, exports, module) {
 
 ---
 
-### 把两个数组 ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'D1', 'D2'] 和 ['A', 'B', 'C', 'D']，合并为 ['A1', 'A2', 'A', 'B1', 'B2', 'B', 'C1', 'C2', 'C', 'D1', 'D2', 'D']
+### 合并数组
+
+题目：把两个数组 ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'D1', 'D2'] 和 ['A', 'B', 'C', 'D']，合并为 ['A1', 'A2', 'A', 'B1', 'B2', 'B', 'C1', 'C2', 'C', 'D1', 'D2', 'D']
+
 - ['A', 'B', 'C', 'D'] => .map(item => item + 3)
 - concat + sort
 - if (item.includes(3)) { ... }
@@ -1498,12 +1501,12 @@ define(function(require, exports, module) {
 ### setTimeout输出0-9改法
 ```js
 // 1
-for (var i = 0; i< 10; i++){
+for (var i = 0; i< 10; i++) {
     setTimeout(console.log, 1000, i)
 }
 
 // 2
-for (var i = 0; i< 10; i++){
+for (var i = 0; i< 10; i++) {
   ((i) => {
     setTimeout(() => {
       console.log(i);
@@ -1512,7 +1515,7 @@ for (var i = 0; i< 10; i++){
 }
 
 // 3
-for (let i = 0; i< 10; i++){
+for (let i = 0; i< 10; i++) {
   setTimeout(() => {
     console.log(i);
   }, 1000)
@@ -1700,7 +1703,7 @@ sleep(output, 1000);
 // 等待了10秒...
 // I am eating junk food
 
-function LazyMan (name = '') {
+function LazyMan(name = '') {
   if (!(this instanceof LazyMan)) {
     return new LazyMan(name);
   }
@@ -2122,7 +2125,7 @@ function handle(req, res) {
 ---
 
 ### css影响页面加载
-[参考](../../js&browser/页面过程与浏览器缓存.md#知识点)
+[参考](../../js&browser/页面过程与浏览器缓存.md#js/css对dom解析渲染的影响)
 
 ---
 
