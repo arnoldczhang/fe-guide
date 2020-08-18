@@ -76,7 +76,7 @@ IE8Compat：近乎标准模式
 
 `<picture />`元素内部包含若干`<source />`和`<img />`，针对不同屏幕尺寸提供图片
 
-如果没有满足的<source />，展示<img />
+如果没有满足的`<source />`，展示`<img />`
 
 ```html
 <picture>

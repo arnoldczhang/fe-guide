@@ -105,14 +105,11 @@ class ExampleComponent extends React.Component {
 
 1. 针对 input、option、select、textarea 做了特殊处理
 2. 针对 dom 属性做处理
-
-* style
-* 其他属性
-
+  * style
+  * 其他属性
 3. 针对 dom&dom 子节点做处理
-
-* text 不同 => updateTextContent
-* key、type 不同 => 节点增、删、改
+  * text 不同 => updateTextContent
+  * key、type 不同 => 节点增、删、改
 
 ---
 
