@@ -7,7 +7,7 @@
 
 ## 应用
 
-### chrome插件
+### chrome录制插件
 基于[puppeteer recorder](https://chrome.google.com/webstore/search/checkly?utm_source=chrome-ntp-icon)录制了页面的操作过程，一些微调后生成了测试案例，可以参考[项目](./test-case/README.md)
 
 ### 拦截请求
