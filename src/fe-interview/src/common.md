@@ -3036,23 +3036,10 @@ process.on('SIGTERM', handleExit);
 [参考](../../http/README.md#rpc)
 [知乎问答-rpc和http](https://www.zhihu.com/question/41609070)
 
-#### http
-- 协议格式
-- A机器直接调用 B机器的 restful 接口，执行操作C
-
-#### rpc
-- 通讯方式，底层可以用http、tcp、udp等，看具体需求
-- A机器调用自己的代理方法，方法内对数据序列化后，与B机器通信（http、tcp、udp都行），B机器反序列化后，执行操作C
-
-区别仅在于：
-- 可读性 VS 效率
-- 通用性 VS 易用性
-
 ---
 
 ### type和interface区别
 [参考](../../typescript/README.md#interface和type)
-
 
 ---
 
