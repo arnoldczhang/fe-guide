@@ -116,7 +116,7 @@ location.href连续调用native，会造成部分调用丢失，只有最后一�
                 if (callbacks[callbackId]) { // 找到相应句柄
                     callbacks[callbackId](msg.data); // 执行调用
                 }
-            } elseif (bridgeName) {
+            } else if (bridgeName) {
                 if (registerFuncs[bridgeName]) { // 通过 bridgeName 找到句柄
                     var ret = {},
                         flag = false;
@@ -226,12 +226,12 @@ window.WebViewJavascriptBridge.callHandler(
 ---
 
 ## 实例-拦截url
-- 在UIWebview里发起任意网络请求，比如jsbridge://methodName?param1=value1&param2=value2
+- 在UIWebview里发起任意网络请求，比如`jsbridge://methodName?param1=value1&param2=value2`
 - UIWebview通过delegate函数获取网络请求的通知
 - delegate内对约定的网络请求进行捕获处理（而非直接跳转）
 
 ### native处理
-```oc
+```object-c
 func delegate(
     webView: UIWebView,
     shouldStartLoadWithRequest request: NSURLRequest,
@@ -296,7 +296,3 @@ webView.loadUrl("content://com.ansen.webview/sdcard/test.html");
 ```java
 webView.loadDataWithBaseURL(null,"<html><head><title> 欢迎您 </title></head>" + "<body><h2>使用webview显示 html代码</h2></body></html>", "text/html" , "utf-8", null);
 ```
-
-
-
-

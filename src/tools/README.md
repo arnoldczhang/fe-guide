@@ -25,3 +25,7 @@
 ## 工具库
 - [fullpage.js](https://alvarotrigo.com/fullPage/)
 - [draft.js-富文本编辑器](https://zhuanlan.zhihu.com/p/24951621)
+- [es-check-检测es6代码](https://www.npmjs.com/package/es-check)
+- [检测循环引用](https://www.npmjs.com/package/circular-dependency-plugin)
+- [inspectpack-检测重复包](https://github.com/FormidableLabs/inspectpack/#plugin)
+- [otplib.js-单次验证](https://www.npmjs.com/package/otplib)

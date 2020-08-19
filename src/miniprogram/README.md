@@ -118,7 +118,7 @@ webview+原生组件
 
 ### 打包上传
 - wcc：所有wxml转虚拟节点
-- wcsc：所有wxss转为js字符串，通过<style/>append到header
+- wcsc：所有wxss转为js字符串，通过`<style/>`append到header
 
 ### 下载解析
 - webview.loadUrl(`page-frame.html`)【page-frame是本地默认框架】

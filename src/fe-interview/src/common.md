@@ -112,7 +112,7 @@
 **浏览器**
 
 * [`同/异任务`](#同/异任务)
-* [`http2多路复用`](#http2多路复用)
+* [`http2`](#http2)
 * [`描述网页从输入url到渲染的过程`](#描述网页从输入url到渲染的过程)
 * [`TCP三次握手&四次挥手的理解`](#TCP三次握手&四次挥手的理解)
 * [`重绘和回流`](#重绘和回流)
@@ -144,9 +144,10 @@
 * [`深度优先和广度优先`](#深度优先和广度优先)
 * [`发布订阅VS观察者模式`](#发布订阅VS观察者模式)
 * [`排序`](#排序)
-* [`逆序数字（递归实现）`](#逆序数字（递归实现）)
+* [`逆序数字`](#逆序数字（递归实现）)
 * [`红黑树`](#红黑树)
 * [`判断属性继承自哪个原型`](#判断属性继承自哪个原型)
+* [`前端加密`](#前端加密)
 
 **css**
 
@@ -203,7 +204,7 @@
   * 判断比较的是否是 null 或者是 undefined, 如果是, 返回 true；
   * 判断其中一方是否为 boolean, 如果是, 将 boolean 转为 number 再进行判断；
   * 判断两者类型是否为 string 和 number, 如果是, 将字符串转换成 number；
-  * 判断其中一方是否为 object 且另一方为 string、number 或者 symbol , 如果是, 将 object   * 转为原始类型再进行判断。
+  * 判断其中一方是否为 object 且另一方为 string、number 或者 symbol , 如果是, 将 object 转为原始类型再进行判断。
 
 ---
 
@@ -289,12 +290,12 @@ var obj = {
     number: 3,
     fn1: (function () {
         var number;
-        this.number *= 2;
+        this.number *= 2; // window.number = 10
         number = number * 2;
         number = 3;
         return function () {
             var num = this.number;
-            this.number *= 2;
+            this.number *= 2; // window.number = 20
             console.log(num);
             number *= 3;
             console.log(number);
@@ -325,10 +326,10 @@ const count = arr.reduce((t, c) => {
 ---
 
 ### vue/react中key的作用
-- 不能单纯的讲和性能好坏有无关联
-  * 节点树简单时，纯innerText改动比节点位置改动快
 - 没有key时，做innerText的改动
 - 有key时，会做节点位置交换
+- 不能单纯的讲和性能好坏有无关联
+  * 节点树简单时，纯innerText改动比节点位置改动快
 
 #### 准确性
 对比a.key === b.key，可以避免复用节点，更准确
@@ -418,66 +419,73 @@ flex的默认值
 }
 ```
 
-
 **flex-basis**
 
-- 设置或检索弹性盒伸缩基准值，不设置，默认使用元素的width，
-  如果width是auto，宽度由文本内容决定
-- 用法
-  * flex-basis: 120px;
-  * flex-basis: auto;
-  * flex-basis: 10%;
+> 设置或检索弹性盒伸缩基准值，不设置，默认使用元素的width
+>
+> 如果width是auto，宽度由文本内容决定
+
+用法
+
+* flex-basis: 120px;
+* flex-basis: auto;
+* flex-basis: 10%;
 
 **flex-grow**
 
-- 设置弹性盒对象扩展比
-- 如果子元素的宽度和小于父容器，则剩余空间根据flex-grow瓜分
-- 默认0，即剩余空间宽度瓜分到0，到当前子元素
+> 设置弹性盒对象扩展比，默认0，即剩余空间宽度瓜分到0，到当前子元素
+>
+> 如果子元素的宽度和小于父容器，则剩余空间根据flex-grow瓜分
 
 **flex-shrink**
 
-- 设置弹性盒对象收缩比
-- 用法
-  * flex-shrink: 0; // 不收缩
-  * flex-shrink: 1; // 默认值
-- 计算方式
-  ```js
-  const 元素总宽度和 = '各元素 flex-basis 之和'
-  const 超出宽度 = 元素总宽度和 - 容器宽度
-  const 当前元素宽度占比 = (当前元素 flex-basis * 当前元素 flex-shrink) / (所有元素各自 flex-basis * flex-shrink 之和)
-  const 当前元素最终宽度 = 当前元素 flex-basis - (超出宽度 * 当前元素宽度占比)
-  ```
-- 实例
-  ```html
-  <div id="content">
-    <!-- 宽度105.72 -->
-    <div class="box">A</div>
-    <div class="box">B</div>
-    <div class="box">C</div>
-    <!-- 宽度91.42 -->
-    <!-- 120 - (120 * 5 - 500) * 120 * 2 / (120 * 3 * 1 + 120 * 2 * 2) -->
-    <div class="box1">D</div>
-    <div class="box1">E</div>
-  </div>
-  <style type="text/css">
-    #content {
-      display: flex;
-      width: 500px;
-    }
+> 设置弹性盒对象收缩比
 
-    #content div {
-      flex-basis: 120px;
-    }
+用法
 
-    .box { 
-      flex-shrink: 1;
-    }
+* flex-shrink: 0; // 不收缩
+* flex-shrink: 1; // 默认值
 
-    .box1 { 
-      flex-shrink: 2; 
-    }
-  </style>
-  ```
+计算方式
+
+```js
+const 元素总宽度和 = '各元素 flex-basis 之和'
+const 超出宽度 = 元素总宽度和 - 容器宽度
+const 当前元素宽度占比 = (当前元素 flex-basis * 当前元素 flex-shrink) / (所有元素各自 flex-basis * flex-shrink 之和)
+const 当前元素最终宽度 = 当前元素 flex-basis - (超出宽度 * 当前元素宽度占比)
+```
+实例
+
+```html
+<div id="content">
+  <!-- 宽度105.72 -->
+  <div class="box">A</div>
+  <div class="box">B</div>
+  <div class="box">C</div>
+  <!-- 宽度91.42 -->
+  <!-- 120 - (120 * 5 - 500) * 120 * 2 / (120 * 3 * 1 + 120 * 2 * 2) -->
+  <div class="box1">D</div>
+  <div class="box1">E</div>
+</div>
+<style type="text/css">
+  #content {
+    display: flex;
+    width: 500px;
+  }
+
+  #content div {
+    flex-basis: 120px;
+  }
+
+  .box { 
+    flex-shrink: 1;
+  }
+
+  .box1 { 
+    flex-shrink: 2; 
+  }
+</style>
+```
 
 ---
 
@@ -493,7 +501,10 @@ flex的默认值
 - vw/vh
 
 #### 媒体查询
-缺点：需要准备多套样式
+
+**缺点**
+
+需要准备多套样式
 
 ```css
 @media screen and (max-width: 960px){
@@ -510,9 +521,13 @@ flex的默认值
 ```
 
 #### 百分比
-缺点：
+
+**缺点**
+
 1. 所有尺寸都要重新换算
 2. 各尺寸参照父元素的宽高标准不一
+
+**属性相关**
 
 - width/height: 相对于直接父元素
 - top和bottom 、left和right: 相对于直接非static父元素的高度/宽度
@@ -521,8 +536,12 @@ flex的默认值
 - vertical-align: 百分比相对于自身line-height计算
 
 #### vh/vw
-缺点：
+
+**缺点**
+
 1. ie9-11不支持vmin和vmax，opera整体不支持
+
+**属性相关**
 
 - vh: 相对于视窗的宽度，视窗宽度是100vh
 - vw: 相对于视窗的宽度，视窗宽度是100vw
@@ -539,9 +558,13 @@ flex的默认值
 - 插件：postcss-px-to-viewport
 
 #### rem
-本质是等比缩放
+> 本质是等比缩放
 
-缺点：font-size的设置必须在样式前
+**缺点**
+
+font-size的设置必须在样式前
+
+**属性相关**
 
 - 默认1rem = 16px
 - 配合媒体查询才能实现响应式
@@ -710,8 +733,12 @@ const resize = (size) => {
 ---
 
 ### 事件触发过程
-- attachEvent(event,listener)
-- addEventListener(event, listener, useCapture = false)
+```js
+// ie8，只支持冒泡阶段触发
+attachEvent(event,listener)
+
+addEventListener(event, listener, useCapture = false)
+```
 
 捕获 - 目标状态 - 冒泡
 onDoingthing冒泡阶段触发
@@ -792,7 +819,7 @@ arr.join = arr.shift;
 ---
 
 ### 执行上下文和作用域链
-[参考](../js&browser/并发模型-event_loop.md#执行上下文和作用域链)
+[参考](../../js&browser/并发模型-event_loop.md#执行上下文和作用域链)
 
 ---
 
@@ -1150,6 +1177,9 @@ function foo() {
 ---
 
 ### 算法题
+
+所有题可参考`src/algorithm/*`
+
 ```js
 // 例：已知如下数组：
 // var arr = [ [1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14] ] ] ], 10];
@@ -1181,13 +1211,9 @@ function upper(arr = []) {
   upper,
 ].reduce((res, fn) => fn(res), arr);
 
-
-
 // 方式二：邪道
 // Array.prototype.flat才刚到提案（chrome69支持）
 Array.from(new Set(arr.flat(Infinity))).sort((a,b)=>{ return a-b});
-
-
 
 // 方式三：妖道
 Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b});
@@ -1200,10 +1226,8 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b});
 
 ---
 
-### http2多路复用
-- 同一域名下所有通信都在单个TCP连接上完成
-- 消除因多个TCP连接带来的延时和内存消耗
-- 单个连接上的请求可以并行交错，互不影响
+### http2
+[参考](../../http/README.md#多路复用)
 
 ---
 
@@ -1231,10 +1255,12 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b});
 - 服务器重启后，客户继续工作，然而服务器已丢失客户信息，收到客户数据后响应RST。
 
 #### 为什么不能二次握手？
-如果客户端是弱网环境，服务端就会收不到响应，而维持 ESTABLISHED 状态，一直等待下去，这样会浪费服务端资源
+如果客户端是弱网环境，服务端由于收不到确认响应，而维持 ESTABLISHED 状态，等待会浪费服务端资源
 
 #### 客户端突然故障怎么办？
-TCP保活计时器 每次客户端请求服务器会重置计时器，当2小时之内没收到客户端任何数据时，会每隔75s向客户端发一个探测报文，若接连发送10个，客户端都没有反应，则认为客户端故障，关闭连接。
+> TCP保活计时器
+
+每次客户端请求服务器，服务端都会重置计时器，当`2小时`之内没收到客户端任何数据时，会每隔`75s`向客户端发一个探测报文，若接连发送`10个`，客户端都没有反应，则认为客户端故障，关闭连接。
 
 #### syn泛洪攻击
 
@@ -1252,13 +1278,13 @@ TCP保活计时器 每次客户端请求服务器会重置计时器，当2小时
 ### react的setState变更的同/异步
 [参考](https://github.com/sisterAn/blog/issues/26)
 
-- react自身引发的事件处理（onClick，componentWillMount等），即合成时间，这时候异步执行
+- react自身引发的事件处理（onClick，componentWillMount等），即合成事件，异步执行
 - 此外的调用（addEventListener、setTimeout等），同步执行
 
 #### 原因
-- 同/异步处理受isBatchingUpdates影响，默认isBatchingUpdates=false，也就是同步执行
+- 同/异步处理受`isBatchingUpdates`影响，默认isBatchingUpdates=false，也就是`同步执行`
+- react的自身事件处理前，就会调用batchingUpdate
 - 当调用batchUpdate函数时，isBatchingUpdates=true
-- react的事件处理前，就会调用batchingUpdate
 
 #### 获取异步后的值
 ```js
@@ -1279,16 +1305,19 @@ class Example extends React.Component {
   }
   
   componentDidMount() {
+    // 异步
     this.setState({val: this.state.val + 1});
     console.log(this.state.val);    // 第 1 次 log
 
+    // 异步
     this.setState({val: this.state.val + 1});
     console.log(this.state.val);    // 第 2 次 log
 
     setTimeout(() => {
+      // 同步
       this.setState({val: this.state.val + 1});
       console.log(this.state.val);  // 第 3 次 log
-
+      // 同步
       this.setState({val: this.state.val + 1});
       console.log(this.state.val);  // 第 4 次 log
     }, 0);
@@ -1315,15 +1344,19 @@ class Example extends React.Component {
 - instanceof
 - Array.isArray()
 
-Object.prototype.toString.call
+**Object.prototype.toString.call**
+
 - 每一个继承 Object 的对象都有 toString 方法
 - 判断是否是数组 [Object array]
 
-instanceof
+**instanceof**
+
 - 判断对象的原型链中是不是能找到类型的 prototype
 
-Array.isArray
+**Array.isArray**
+
 - 能检测出 Iframes，而 instanceof 不行
+
 ```js
 xArray = window.frames[window.frames.length-1].Array;
 var arr = new xArray(1,2,3); // [1,2,3]
@@ -1339,6 +1372,7 @@ arr instanceof Array; // false
 [参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/24)
 
 #### 原理
+
 **重绘**
 
 - 几何或样式发生变动，但是不影响布局的
@@ -1346,7 +1380,7 @@ arr instanceof Array; // false
 **回流**
 
 - 几何属性变动，页面需要全部或局部更新
-- [触发浏览器回流的属性方法一览表](https://mp.weixin.qq.com/s/EL40dbdMWKh9BSfHKtZf2Q)
+- [触发回流一览表](https://gist.github.com/paulirish/5d52fb081b3570c81e3a)
 
 回流必定会发生重绘，重绘不一定会引发回流
 
@@ -1454,7 +1488,10 @@ define(function(require, exports, module) {
 
 ---
 
-### 把两个数组 ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'D1', 'D2'] 和 ['A', 'B', 'C', 'D']，合并为 ['A1', 'A2', 'A', 'B1', 'B2', 'B', 'C1', 'C2', 'C', 'D1', 'D2', 'D']
+### 合并数组
+
+题目：把两个数组 ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'D1', 'D2'] 和 ['A', 'B', 'C', 'D']，合并为 ['A1', 'A2', 'A', 'B1', 'B2', 'B', 'C1', 'C2', 'C', 'D1', 'D2', 'D']
+
 - ['A', 'B', 'C', 'D'] => .map(item => item + 3)
 - concat + sort
 - if (item.includes(3)) { ... }
@@ -1464,12 +1501,12 @@ define(function(require, exports, module) {
 ### setTimeout输出0-9改法
 ```js
 // 1
-for (var i = 0; i< 10; i++){
+for (var i = 0; i< 10; i++) {
     setTimeout(console.log, 1000, i)
 }
 
 // 2
-for (var i = 0; i< 10; i++){
+for (var i = 0; i< 10; i++) {
   ((i) => {
     setTimeout(() => {
       console.log(i);
@@ -1478,7 +1515,7 @@ for (var i = 0; i< 10; i++){
 }
 
 // 3
-for (let i = 0; i< 10; i++){
+for (let i = 0; i< 10; i++) {
   setTimeout(() => {
     console.log(i);
   }, 1000)
@@ -1666,7 +1703,7 @@ sleep(output, 1000);
 // 等待了10秒...
 // I am eating junk food
 
-function LazyMan (name = '') {
+function LazyMan(name = '') {
   if (!(this instanceof LazyMan)) {
     return new LazyMan(name);
   }
@@ -2088,21 +2125,21 @@ function handle(req, res) {
 ---
 
 ### css影响页面加载
-[参考](../../js&browser/页面过程与浏览器缓存.md#知识点)
+[参考](../../js&browser/页面过程与浏览器缓存.md#js/css对dom解析渲染的影响)
 
 ---
 
 ### BOMvsDOMvsHTML5
 
 #### BOM
-浏览器对象模型
+> 浏览器对象模型
 
 - window
 - location
 - navigator
 
 #### DOM
-文档对象模型
+> 文档对象模型
 
 - nodeType
 - [querySelectorAll](https://www.cnblogs.com/HavenLau/p/10476508.html)
@@ -2110,7 +2147,7 @@ function handle(req, res) {
 - onload
 
 #### HTML5
-各浏览器自定义的模型
+> 各浏览器自定义的模型
 
 - DOMContentLoaded
 
@@ -2120,7 +2157,7 @@ function handle(req, res) {
 [参考](https://juejin.im/post/5b8905456fb9a01a105966b4)
 
 #### white-space
-控制空白字符的显示
+> 控制空白字符的显示
 
 - normal: 空格和换行符无效，自动换行
 - nowrap: 永不换行
@@ -2129,13 +2166,13 @@ function handle(req, res) {
 - pre-line: 即preserve new line +wrap，空格无效，换行符保留，自动换行
 
 #### word-break
-控制单词如何被拆分换行
+> 控制单词如何被拆分换行
 
 - keep-all: 一律不换行，除了空格
 - break-all: 一律换行
 
 #### word-wrap
-控制单词如何被拆分换行
+> 控制单词如何被拆分换行
 
 - break-word: 当一个单词一行显示不下时，才会换行
 
@@ -2190,7 +2227,7 @@ function handle(req, res) {
 
 #### 优化重绘重排
 
-####避免@import
+#### 避免@import
 - 破坏了浏览器并行下载
 
 ---
@@ -2410,7 +2447,7 @@ data[i]Context = {
 > bind(thisObj, ...args)
 >
 
-[参考](./call&apply.js)
+[参考](./call&apply&bind.js)
 
 - thisObj绑定一次有效
 - 作为constructor时，绑定的thisObj无效
@@ -2423,7 +2460,7 @@ data[i]Context = {
 ---
 
 ### src和href
-[参考](../../html/README.md#doctype#src和href)
+[参考](../../html/README.md#src和href)
 
 ---
 
@@ -2512,7 +2549,7 @@ data[i]Context = {
 ---
 
 ### 性能优化
-[参考](../../js&browser/性能优化.md#面试回答)
+[参考](../../js&browser/性能优化2019.md#面试回答)
 
 ---
 
@@ -2536,7 +2573,9 @@ data[i]Context = {
 #### relatedTarget
 [参考](https://www.cnblogs.com/rubylouvre/p/7384375.html)
 
-在做mouseenter与mouseleave的兼容时，我们需要用到事件对象的`relatedTarget`属性
+- 对于 mouseover 事件来说，该属性是鼠标指针移到目标节点上时所离开的那个节点
+- 对于 mouseout 事件来说，该属性是离开目标时，鼠标指针进入的节点
+- 对于其他类型的事件来说，这个属性没有用
 
 ```js
 function getRelatedTarget(e) {
@@ -2873,7 +2912,7 @@ Vue.directive('blur', {
 ---
 
 ### 微信浏览器调整字体页面错位
-阻止页面字体自动调整大小
+> 阻止页面字体自动调整大小
 
 ```js
 // 安卓：
@@ -2902,7 +2941,9 @@ Vue.directive('blur', {
 ```css
 //iOS：
 // ios使用-webkit-text-size-adjust禁止调整字体大小
-body{-webkit-text-size-adjust: 100%!important;}
+body{
+  -webkit-text-size-adjust: 100%!important;
+}
 ```
 
 ---
@@ -2927,100 +2968,7 @@ body{-webkit-text-size-adjust: 100%!important;}
 ---
 
 ### 图片加载失败处理
-[参考](https://bitsofco.de/styling-broken-images)
-
-```html
-<img src="http://bitsofco.de/broken.jpg" alt="Kanye Laughing">
-```
-
-**1. 提示帮助文字**
-
-```css
-img {
-  font-family: 'Helvetica';
-  font-weight: 300;
-  line-height: 2;  
-  text-align: center;
-  
-  width: 100%;
-  height: auto;
-  display: block;
-  position: relative;
-}
-
-img:before { 
-  content: "We're sorry, the image below is broken :(";
-  display: block;
-  margin-bottom: 10px;
-}
-
-img:after { 
-  content: "(url: " attr(src) ")";
-  display: block;
-  font-size: 12px;
-}
-```
-
-**2. 图片替换**
-
-```css
-img { /* Same as first example */ }
-
-img:after { 
-  content: "\f1c5" " " attr(alt);
-  
-  font-size: 16px;
-  font-family: FontAwesome;
-  color: rgb(100, 100, 100);
-  
-  display: block;
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-}
-```
-
-**3. 美化替换文字**
-
-```css
-img { 
-  /* 样式跟第一个例子里是一样的，然后加了下面一条样式 */
-  min-height: 50px;
-}
-
-img:before { 
-  content: " ";
-  display: block;
-
-  position: absolute;
-  top: -10px;
-  left: 0;
-  height: calc(100% + 10px);
-  width: 100%;
-  background-color: rgb(230, 230, 230);
-  border: 2px dotted rgb(200, 200, 200);
-  border-radius: 5px;
-}
-
-img:after { 
-  content: "\f127" " Broken Image of " attr(alt);
-  display: block;
-  font-size: 16px;
-  font-style: normal;
-  font-family: FontAwesome;
-  color: rgb(100, 100, 100);
-  
-  position: absolute;
-  top: 5px;
-  left: 0;
-  width: 100%;
-  text-align: center;
-}
-```
+[参考](../../css-related/README.md#图片加载失败)
 
 ---
 
@@ -3042,20 +2990,20 @@ function getPerformanceTiming() {
     times.domReady = t.domComplete - t.responseEnd
     // 重定向的时间
     times.redirect = t.redirectEnd - t.redirectStart
+    // DNS 缓存时间
+    times.appcache = t.domainLookupStart - t.fetchStart
     // DNS 查询时间
     times.lookupDomain = t.domainLookupEnd - t.domainLookupStart
+    // TCP 建立连接完成握手的时间
+    times.connect = t.connectEnd - t.connectStart
     // 读取页面第一个字节的时间
     times.ttfb = t.responseStart - t.navigationStart
-    // 资源请求加载完成的时间
+    // 资源请求开始&响应完成的时间
     times.request = t.responseEnd - t.requestStart
     // 执行 onload 回调函数的时间
     times.loadEvent = t.loadEventEnd - t.loadEventStart
-    // DNS 缓存时间
-    times.appcache = t.domainLookupStart - t.fetchStart
     // 卸载页面的时间
     times.unloadEvent = t.unloadEventEnd - t.unloadEventStart
-    // TCP 建立连接完成握手的时间
-    times.connect = t.connectEnd - t.connectStart
     return times
 }
 ```
@@ -3085,18 +3033,13 @@ process.on('SIGTERM', handleExit);
 ---
 
 ### rpc和http区别
-http：A机器直接调用 B机器的 restful 接口，执行操作C
-rpc：A机器调用自己的代理方法，方法内对数据序列化后，与B机器通信（http、tcp、udp都行），B机器反序列化后，执行操作C
-
-区别仅在于
-- 可读性 VS 效率
-- 通用性 VS 易用性
+[参考](../../http/README.md#rpc)
+[知乎问答-rpc和http](https://www.zhihu.com/question/41609070)
 
 ---
 
 ### type和interface区别
 [参考](../../typescript/README.md#interface和type)
-
 
 ---
 
@@ -3169,3 +3112,28 @@ const json = JSON.parse(buff.toString());
 
 ### utm字段
 [参考](https://smashnotes.com/updates/how-to-use-utm-parameters-to-grow-your-audience)
+
+---
+
+### 前端加密
+[参考](https://juejin.im/post/6844903986156273678)
+
+- 常见对称加密有AES、DES、3DES等
+- 常见非对称加密有RSA、ECC等
+
+**hash**
+
+- 单向不可逆（只能加密，不能解密）
+- 一般前端hash加密后，后端直接入库的（因为无法解密），这样的安全性较低
+
+**RSA**
+
+- 非对称加密
+- 公、私钥在每次服务端收到预登录请求时生成，预登陆成功后，将RSA公钥传给前端
+- AES密钥由前端生成，用于对密码等信息加密；用服务端给的RSA公钥加密后，统一返回给服务端
+- 服务端用RSA私钥解密，获得AES密钥；用AES密钥解密用户密码等信息
+- 若验证成功，AES密钥保存至session过期（退出、重新登录、超时等）
+- 登录成功后，前端一直保留AES密钥；后续和后端交互也使用这个密钥
+
+
+

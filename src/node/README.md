@@ -955,6 +955,9 @@ function promisify(original) {
 - binary: 'latin1' 的别名。
 - hex: 将每个字节编码成两个十六进制的字符。
 
+### node实现websocket
+[参考](https://mp.weixin.qq.com/s/jrXsXch-wnlTcS2JEKe32Q)
+
 ---
 
 ## 内存泄漏

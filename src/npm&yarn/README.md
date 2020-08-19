@@ -23,6 +23,8 @@
 - [node 依赖管理](https://mp.weixin.qq.com/s/XdOPPay8fpNBiH2ExW_EyQ)
 - [前端工程](https://juejin.im/post/5d08d3d3f265da1b7e103a4d?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 
+---
+
 ## 基本操作&相关常识
 
 ### 相关常识
@@ -94,28 +96,36 @@
 
 ### 命令
 
-- 初始化
-  - npm init
-  - yarn init
-- 一键安装
-  - npm i
-  - npm install
-  - yarn
-- 指定安装
-  - npm i xx -save/-save-dev
-  - npm install xx -save/-save-dev
-  - yarn add xx 空/-dev/-optional/-peer
-- 卸载
-  - npm uninstalll xx[@version]
-  - yarn remove xx[@version]
-- 更新
-  - npm update xx[@version]
-    - `npm升级会根据package的符号配置，不会直接更新到最新版`
-  - yarn upgrade xx[@version]
-    - `yarn直接升到最新版`
-- 锁
-  - yarn.lock
-  - package-lock.json
+#### 初始化
+- npm init
+- yarn init
+
+#### 一键安装
+- npm i
+- npm install
+- yarn
+
+#### 指定安装
+- npm i xx -save/-save-dev
+- npm install xx -save/-save-dev
+- yarn add xx 空/-dev/-optional/-peer
+
+#### 卸载
+- npm uninstalll xx[@version]
+- yarn remove xx[@version]
+
+#### 更新
+- npm update xx[@version]
+  + `npm升级会根据package的符号配置，不会直接更新到最新版`
+- yarn upgrade xx[@version]
+  + `yarn直接升到最新版`
+
+#### 锁
+- yarn.lock
+- package-lock.json
+
+#### 本地调试
+- npm link
 
 ### npm 发布
 
@@ -193,7 +203,9 @@ yarn：直接输出安装结果，报错日志清晰
 
 ## npm 安装原理
 
-1. preinstall
+### 执行步骤
+
+#### 1.preinstall
 
 - 执行 npm install 命令前，npm 会自动执行 npm preinstall 钩子，可以做些什么
 - ```json
@@ -201,32 +213,32 @@ yarn：直接输出安装结果，报错日志清晰
 	    "preinstall": "node ./bin/preinstall.js"
 	}
    ```
-2. 确定首层依赖模块
+#### 2.确定首层依赖模块
 
 - `dependencies`
 - `devDependencies`
 
-3. 获取模块
+#### 3.获取模块
 
 - package.json 拿 `version`、`resolved` 等字段
 - 根据 `resolved` 到本地找缓存，没有再从仓库下载
 - 查找当前模块是否有依赖，有的话回到 1
 
-4. 模块扁平化
+#### 4.模块扁平化
 
 - 所有模块放到根节点（npm3 加入的 dedupe）
 - semver 兼容，semver 对应一段版本允许的范围
 - 当发现有重复模块时，则将其丢弃（由于存在版本兼容范围，所以不一定要版本完全一致）
 
-6. 执行工程自身生命周期
+#### 5.执行工程自身生命周期
 
 - install
 
-7. postinstall + prepublish + prepare
+#### 6.postinstall+prepublish+prepare
 
 ### npm 模块安装机制
 
-查询 node_modules 是否已存在
+1. 查询 node_modules 是否已存在
 
 - 存在，不重新安装
 - 不存在
@@ -260,7 +272,7 @@ npm dedupe
 
 ## npm-script
 
-### npm run
+### npm-run
 
 - 本地自动新建一个 shell
 - 将 node_modules/.bin 的绝对路径加入 PATH，执行

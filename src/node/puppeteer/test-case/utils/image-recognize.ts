@@ -8,8 +8,8 @@ const jimp = require('jimp');
 const path = require('path');
 
 export const getPath = () => [
-  path.resolve('./dist/example.png'),
-  path.resolve('./dist/example2.png'),
+  path.resolve('../../../../lighthouse/example.png'),
+  path.resolve('../../../../lighthouse/example2.png'),
 ];
 
 /**
