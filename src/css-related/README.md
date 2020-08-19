@@ -748,7 +748,7 @@ elm.animate([
 ### font-size
 - px
 - rem
-  * [参考](../fe-interview/common.md#响应式方案)
+  * [参考](../fe-interview/src/common.md#响应式方案)
 - em
   * 相对于父元素，1em = 父元素，2em = 2 * 父元素
   * 如果父元素没设置，取浏览器默认值（chrome一般是16px）

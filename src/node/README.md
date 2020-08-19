@@ -1020,4 +1020,4 @@ top -pid 69608
 - [发邮件](./mailer/README.md)
 - [lighthouse-runner](./lighthouse/README.md)
 - [图像识别](../lighthouse/图像识别.js)
-- [sourcemap-compiler](../sourcemap/sourcempaCompiler/README.md)
+- [sourcemap-compiler](../sourcemap/sourcemapCompiler/README.md)
