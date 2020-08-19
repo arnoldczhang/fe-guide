@@ -2912,7 +2912,7 @@ Vue.directive('blur', {
 ---
 
 ### 微信浏览器调整字体页面错位
-阻止页面字体自动调整大小
+> 阻止页面字体自动调整大小
 
 ```js
 // 安卓：
@@ -2941,7 +2941,9 @@ Vue.directive('blur', {
 ```css
 //iOS：
 // ios使用-webkit-text-size-adjust禁止调整字体大小
-body{-webkit-text-size-adjust: 100%!important;}
+body{
+  -webkit-text-size-adjust: 100%!important;
+}
 ```
 
 ---
@@ -2966,100 +2968,7 @@ body{-webkit-text-size-adjust: 100%!important;}
 ---
 
 ### 图片加载失败处理
-[参考](https://bitsofco.de/styling-broken-images)
-
-```html
-<img src="http://bitsofco.de/broken.jpg" alt="Kanye Laughing">
-```
-
-**1. 提示帮助文字**
-
-```css
-img {
-  font-family: 'Helvetica';
-  font-weight: 300;
-  line-height: 2;  
-  text-align: center;
-  
-  width: 100%;
-  height: auto;
-  display: block;
-  position: relative;
-}
-
-img:before { 
-  content: "We're sorry, the image below is broken :(";
-  display: block;
-  margin-bottom: 10px;
-}
-
-img:after { 
-  content: "(url: " attr(src) ")";
-  display: block;
-  font-size: 12px;
-}
-```
-
-**2. 图片替换**
-
-```css
-img { /* Same as first example */ }
-
-img:after { 
-  content: "\f1c5" " " attr(alt);
-  
-  font-size: 16px;
-  font-family: FontAwesome;
-  color: rgb(100, 100, 100);
-  
-  display: block;
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-}
-```
-
-**3. 美化替换文字**
-
-```css
-img { 
-  /* 样式跟第一个例子里是一样的，然后加了下面一条样式 */
-  min-height: 50px;
-}
-
-img:before { 
-  content: " ";
-  display: block;
-
-  position: absolute;
-  top: -10px;
-  left: 0;
-  height: calc(100% + 10px);
-  width: 100%;
-  background-color: rgb(230, 230, 230);
-  border: 2px dotted rgb(200, 200, 200);
-  border-radius: 5px;
-}
-
-img:after { 
-  content: "\f127" " Broken Image of " attr(alt);
-  display: block;
-  font-size: 16px;
-  font-style: normal;
-  font-family: FontAwesome;
-  color: rgb(100, 100, 100);
-  
-  position: absolute;
-  top: 5px;
-  left: 0;
-  width: 100%;
-  text-align: center;
-}
-```
+[参考](../../css-related/README.md#图片加载失败)
 
 ---
 
@@ -3081,20 +2990,20 @@ function getPerformanceTiming() {
     times.domReady = t.domComplete - t.responseEnd
     // 重定向的时间
     times.redirect = t.redirectEnd - t.redirectStart
+    // DNS 缓存时间
+    times.appcache = t.domainLookupStart - t.fetchStart
     // DNS 查询时间
     times.lookupDomain = t.domainLookupEnd - t.domainLookupStart
+    // TCP 建立连接完成握手的时间
+    times.connect = t.connectEnd - t.connectStart
     // 读取页面第一个字节的时间
     times.ttfb = t.responseStart - t.navigationStart
-    // 资源请求加载完成的时间
+    // 资源请求开始&响应完成的时间
     times.request = t.responseEnd - t.requestStart
     // 执行 onload 回调函数的时间
     times.loadEvent = t.loadEventEnd - t.loadEventStart
-    // DNS 缓存时间
-    times.appcache = t.domainLookupStart - t.fetchStart
     // 卸载页面的时间
     times.unloadEvent = t.unloadEventEnd - t.unloadEventStart
-    // TCP 建立连接完成握手的时间
-    times.connect = t.connectEnd - t.connectStart
     return times
 }
 ```
