@@ -3,8 +3,20 @@
  * 
  * dp-目标和
  * 
+ * 输入：nums: [1, 1, 1, 1, 1], S: 3
+ * 输出：5
+ * 解释：
+ * -1+1+1+1+1 = 3
+ * +1-1+1+1+1 = 3
+ * +1+1-1+1+1 = 3
+ * +1+1+1-1+1 = 3
+ * +1+1+1+1-1 = 3
+ * 一共有5种方法让最终目标和为3
+ * 
  * 思路：
- * 动态规划
+ * - 回溯
+ * - 动态规划
+ * - 
  * 
  */
 // function getArrayCount(nums, S) {
@@ -38,10 +50,13 @@
 //   dp(nums);
 //   return sum;
 // }
+
+// dp算法
 function getArrayCount(nums, S) {
   const memo = new Map();
-  const dp = (arr, i, rest) => {
-    if (i === arr.length) {
+  const { length } = nums;
+  const dp = (i, rest) => {
+    if (i === length) {
       if (rest === 0) return 1;
       return 0;
     }
@@ -49,12 +64,12 @@ function getArrayCount(nums, S) {
     if (memo.has(key)) {
       return memo.get(key);
     }
-    const result = dp(arr, i + 1, rest - arr[i]) + dp(arr, i + 1, rest + arr[i]);
+    const result = dp(i + 1, rest - nums[i]) + dp(i + 1, rest + nums[i]);
     memo.set(key, result);
     return result;
   };
-  if (nums.length == 0) return 0;
-  return dp(nums, 0, S);
+  if (length == 0) return 0;
+  return dp(0, S);
 }
 
 console.log(getArrayCount(

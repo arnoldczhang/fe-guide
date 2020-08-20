@@ -1,7 +1,7 @@
 /**
  * 题目：
  * 
- * 洗牌算法
+ * 回溯-洗牌算法
  * 
  * 关键点：
  * 保证数字交换（洗牌）必须有 n! 种可能结果
@@ -11,15 +11,15 @@
  * 
  */
 
-const randInt = (min, max) => Math.ceil(min + (max - min) * Math.random(), 10);
+const randInt = (min, max) => Math.ceil(min + (max - min) * Math.random());
 
 function shuffle(array) {
   const { length } = array;
   for (let i = 0 ; i < length; i++) {
-      const rand = randInt(i, length - 1);
-      const temp = array[i];
-      array[i] = array[rand];
-      array[rand] = temp;
+    const rand = randInt(i, length - 1);
+    const temp = array[i];
+    array[i] = array[rand];
+    array[rand] = temp;
   }
   return array;
 }

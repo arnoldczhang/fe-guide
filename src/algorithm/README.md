@@ -20,8 +20,12 @@
 * [`树`](#树)
 * [`链表`](#链表)
 * [`dp`](#dp)
+* [`回溯`](#回溯)
+* [`习题`](#习题)
 
 </details>
+
+---
 
 ## 总纲
 
@@ -203,8 +207,8 @@ function binarySearch(target, list, start = 0, end = list.length) {
 - 状态转移方程
 
 ### 破解步骤
-1. 明确 base case
-2. 明确「状态」，即原问题和子问题中会变化的变量
+1. 明确 base case，即满足题设条件的值
+2. 明确「状态」，即原/子问题中会变化的变量，一般是总量
 3. 明确「选择」，即引起状态发生变化的变量
 4. 定义 dp 数组/函数的含义
 
@@ -286,5 +290,22 @@ var postorderTraversal = function (root) {
 }
 ```
 
+---
 
+## 回溯
+```
+result = []
+def backtrack(路径, 选择列表):
+  if 满足结束条件:
+    result.add(路径)
+    return
+  for 选择 in 选择列表:
+    做选择
+    backtrack(路径, 选择列表)
+    撤销选择
+```
 
+---
+
+## 习题
+[目录](./leetcode/README.md)
