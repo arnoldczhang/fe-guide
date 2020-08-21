@@ -11,3 +11,40 @@
  * 题解：
  * 
  */
+
+function minDepth(root) {
+  if (root === null) return 0;
+  let depth = 1;
+  const q = [root];
+
+  while(q.length) {
+    const { length } = q;
+    for (let i = 0; i < length; i += 1) {
+      const node = q.shift();
+      const { left, right } = node;
+      if (!left && !right) {
+        return depth;
+      }
+
+      if (left) q.push(left);
+      if (right) q.push(right);
+    }
+    depth += 1;
+  }
+}
+
+console.log(minDepth({
+  val: 3,
+  left: {
+    val: 9,
+  },
+  right: {
+    val: 20,
+    left: {
+      val: 15,
+    },
+    right: {
+      val: 7,
+    },
+  },
+}));
