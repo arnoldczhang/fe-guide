@@ -1,5 +1,7 @@
 /**
  * 题目：
+ * 链表-链表相加
+ * 
  * 给出两个 非空 的链表用来表示两个非负的整数。
  * 其中，它们各自的位数是按照 逆序 的方式存储的，并且它们的每个节点只能存储 一位 数字。
  * 如果，我们将这两个数相加起来，则会返回一个新的链表来表示它们的和。
@@ -25,7 +27,8 @@ list2.add(5);
 list2.add(6);
 list2.add(4);
 
-function addLinkedList(l1, l2) {
+// 循环解
+function addTwoNumbers(l1, l2) {
   const result = new LinkedList(0);
   if (!l1) {
     l1 = new LinkedList(0);
@@ -47,4 +50,23 @@ function addLinkedList(l1, l2) {
   return result;
 }
 
-console.log(addLinkedList(list1, list2));
+// dp解
+function addTwoNumbers(l1, l2) {
+  const initial = l1.val + l2.val;
+  const list = new ListNode(initial % 10);
+  let next = list;
+  const dp = (ll1, ll2, added = 0) => {
+    if (ll1 || ll2 || added) {
+      ll1 = ll1 || { val: 0 };
+      ll2 = ll2 || { val: 0 };
+      const val = ll1.val + ll2.val;
+      next.next = new ListNode((val + added) % 10);
+      next = next.next;
+      dp(ll1.next, ll2.next, Math.floor((val + added) / 10));
+    }
+  };
+  dp(l1.next, l2.next, Math.floor(initial / 10));
+  return list;
+};
+
+console.log(addTwoNumbers(list1, list2));
