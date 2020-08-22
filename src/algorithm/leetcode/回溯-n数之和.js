@@ -17,7 +17,7 @@ function twoSum(nums, target = 0) {
   }, []);
 }
 
-// 双指针索引-两数之和
+// 双指针索引-两数之和 O(n)
 function twoSum(nums, target = 0) {
   // nums = nums.sort((pre, next) => pre - next);
   const result = [];
@@ -41,7 +41,7 @@ function twoSum(nums, target = 0) {
   return result;
 }
 
-// 三数之和
+// 三数之和 O(n^2)
 function threeSum(nums, target = 0) {
   nums = nums.sort((pre, next) => pre - next);
   const { length } = nums;
@@ -57,7 +57,7 @@ function threeSum(nums, target = 0) {
   return result;
 }
 
-// n数之和
+// n数之和 O(n^n-1)
 function nSum(
   nums,
   target = 0,
@@ -79,5 +79,5 @@ function nSum(
   return result;
 }
 
-// console.log(twoSum([-1, 0, 1, 2, -1, -4]));
+console.log(twoSum([-1, 0, 1, 2, -1, -4]));
 console.log(nSum([1,0,-1,0,-2,2], 0, 4));

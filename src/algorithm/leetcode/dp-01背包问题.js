@@ -13,18 +13,21 @@ function bag(W, N, wt, val) {
   dp.forEach((item, index, array) => {
     array[index] = Array.from({ length: W + 1 }).fill(0);
   });
+
   for (let i = 1; i <= N; i++) {
     for (let w = 1; w <= W; w++) {
-        if (w - wt[i-1] < 0) {
-            // 当前背包容量装不下，只能选择不装入背包
-            dp[i][w] = dp[i - 1][w];
-        } else {
-            // 装入或者不装入背包，择优
-            dp[i][w] = Math.max(dp[i - 1][w - wt[i-1]] + val[i-1], 
-                           dp[i - 1][w]);
-        }
+      if (w - wt[i-1] < 0) {
+        // 当前背包容量装不下，只能选择不装入背包
+        dp[i][w] = dp[i - 1][w];
+      } else {
+        // 装入或者不装入背包，择优
+        dp[i][w] = Math.max(
+          dp[i - 1][w - wt[i-1]] + val[i-1], 
+          dp[i - 1][w],
+        );
+      }
     }
-}
+  }
   return dp[N][W];
 }
 

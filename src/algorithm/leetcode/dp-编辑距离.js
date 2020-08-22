@@ -82,4 +82,24 @@ function minDistance(word1, word2) {
   return dp[l1][l2];
 }
 
-console.log(minDistance('a', 'b'));
+function minDistance(s1, s2) {
+  const cach = new Map();
+  const dp = (i, j) => {
+    if (j === -1) return i + 1;
+    if (i === -1) return j + 1;
+    const key = `${i},${j}`;
+    if (cach.has(key)) return cach.get(key);
+    if (s1[i] !== s2[j]) {
+      cach.set(key, Math.min(
+        dp(i - 1, j) + 1,
+        dp(i - 1, j - 1) + 1,
+        dp(i, j - 1) + 1,
+      ));
+    } else {
+      cach.set(key, dp(i - 1, j - 1));
+    }
+    return cach.get(key);
+  };
+  return dp(s1.length - 1, s2.length - 1);
+}
+console.log(minDistance('abc', 'bcb'));

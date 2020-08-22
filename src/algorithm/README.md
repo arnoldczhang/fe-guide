@@ -22,6 +22,8 @@
 * [`dp`](#dp)
 * [`回溯`](#回溯)
 * [`BFS`](#BFS)
+* [`二分查找`](#二分查找)
+* [`滑动窗口`](#滑动窗口)
 * [`习题`](#习题)
 
 </details>
@@ -294,6 +296,8 @@ var postorderTraversal = function (root) {
 ---
 
 ## 回溯
+> 即dfs
+
 ```
 result = []
 def backtrack(路径, 选择列表):
@@ -309,7 +313,8 @@ def backtrack(路径, 选择列表):
 ---
 
 ## BFS
-```
+
+```c++
 // 计算从起点 start 到终点 target 的最近距离
 int BFS(Node start, Node target) {
   Queue<Node> q; // 核心数据结构
@@ -337,6 +342,63 @@ int BFS(Node start, Node target) {
       /* 划重点：更新步数在这里 */
       step++;
   }
+}
+```
+
+---
+
+## 二分查找
+```c++
+int binarySearch(int[] nums, int target) {
+    int left = 0, right = ...;
+
+    while(...) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] == target) {
+            ...
+        } else if (nums[mid] < target) {
+            left = ...
+        } else if (nums[mid] > target) {
+            right = ...
+        }
+    }
+    return ...;
+}
+```
+
+---
+
+## 滑动窗口
+
+```c++
+void slidingWindow(string s, string t) {
+    unordered_map<char, int> need, window;
+    for (char c : t) need[c]++;
+
+    int left = 0, right = 0;
+    int valid = 0; 
+    while (right < s.size()) {
+        // c 是将移入窗口的字符
+        char c = s[right];
+        // 右移窗口
+        right++;
+        // 进行窗口内数据的一系列更新
+        ...
+
+        /*** debug 输出的位置 ***/
+        printf("window: [%d, %d)\n", left, right);
+        /********************/
+
+        // 判断左侧窗口是否要收缩
+        while (window needs shrink) {
+            // d 是将移出窗口的字符
+            char d = s[left];
+            // 左移窗口
+            left++;
+            // 进行窗口内数据的一系列更新
+            ...
+        }
+    }
 }
 ```
 

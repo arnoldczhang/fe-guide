@@ -37,5 +37,20 @@ function getSubArraySum(nums) {
     return Math.max(...dp);
 }
 
+// dp解
+function getSubArraySum(nums) {
+	const { length } = nums;
+	const dp = (index = 0, sum = 0, max = 0) => {
+		if (index >= length) return max;
+		const val = nums[index];
+		sum += val;
+		if (sum < val) {
+			return dp(index + 1, val, val);
+		}
+		return dp(index + 1, sum, Math.max(max, sum));
+	};
+	return dp(0);
+}
+
 console.log(getSubArraySum([-2, 6, -1, 5, 4, -7, 2, 3]));
 console.log(getSubArraySum2([-2, 6, -1, 5, 4, -7, 2, 3]));

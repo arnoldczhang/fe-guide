@@ -1,6 +1,6 @@
 /**
  * 题目：
- * 链表-链表相加
+ * dp-链表相加
  * 
  * 给出两个 非空 的链表用来表示两个非负的整数。
  * 其中，它们各自的位数是按照 逆序 的方式存储的，并且它们的每个节点只能存储 一位 数字。
@@ -52,17 +52,17 @@ function addTwoNumbers(l1, l2) {
 
 // dp解
 function addTwoNumbers(l1, l2) {
-  const initial = l1.val + l2.val;
-  const list = new ListNode(initial % 10);
+  const initial = l1.value + l2.value;
+  const list = new LinkedList(initial % 10);
   let next = list;
   const dp = (ll1, ll2, added = 0) => {
     if (ll1 || ll2 || added) {
-      ll1 = ll1 || { val: 0 };
-      ll2 = ll2 || { val: 0 };
-      const val = ll1.val + ll2.val;
-      next.next = new ListNode((val + added) % 10);
+      ll1 = ll1 || { value: 0 };
+      ll2 = ll2 || { value: 0 };
+      const value = ll1.value + ll2.value + added;
+      next.next = new LinkedList(value % 10);
       next = next.next;
-      dp(ll1.next, ll2.next, Math.floor((val + added) / 10));
+      dp(ll1.next, ll2.next, Math.floor(value / 10));
     }
   };
   dp(l1.next, l2.next, Math.floor(initial / 10));
