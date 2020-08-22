@@ -5,72 +5,79 @@
 
 // 对象映射-两数之和（性能较差）
 function twoSum(nums, target = 0) {
-  const { length } = nums;
-  const result = [];
-  const visited = new Set();
   const cach = {};
-  if (!length) return result;
-  for (let i = 0; i < length; i += 1) {
-    const val = nums[i];
-    if (cach[val] != undefined) {
-      if (visited.has(`${cach[val]}${val}`) || visited.has(`${val}${cach[val]}`)) {
-        continue;
-      }
-      result.push([val, cach[val]]);
+  return nums.reduce((res, pre) => {
+    if (cach[pre] != undefined && cach[pre] != Infinity) {
+      res.push([pre, cach[pre]]);
+      cach[pre] = Infinity;
     } else {
-      cach[target - val] = val;
+      cach[target - pre] = pre;
     }
-  }
-  return result;
-};
+    return res;
+  }, []);
+}
 
 // 双指针索引-两数之和
 function twoSum(nums, target = 0) {
   // nums = nums.sort((pre, next) => pre - next);
-  const { length } = nums;
-  let lo = 0;
-  let hi = length - 1;
   const result = [];
-  while (lo < hi) {
-    const sum = nums[lo] + nums[hi];
-    const left = nums[lo];
-    const right = nums[hi];
-    if (sum < target) {
-      while (lo < hi && nums[lo] == left) lo++;
-    } else if (sum > target) {
-      while (lo < hi && nums[hi] == right) hi--;
+  const { length } = nums;
+  let start = 0;
+  let end = length - 1;
+  while (start < end) {
+    const startVal = nums[start];
+    const endVal = nums[end];
+    const sum = startVal + endVal;
+    if (sum > target) {
+      while (start < end && nums[end] === endVal) end -= 1;
+    } else if (sum < target) {
+      while (start < end && nums[start] === startVal) start += 1;
     } else {
-      result.push([left, right]);
-      while (lo < hi && nums[lo] == left) lo++;
-      while (lo < hi && nums[hi] == right) hi--;
+      result.push([startVal, endVal]);
+      while (start < end && nums[start] === startVal) start += 1;
+      while (start < end && nums[end] === endVal) end -= 1;
     }
   }
   return result;
-};
+}
 
 // 三数之和
 function threeSum(nums, target = 0) {
   nums = nums.sort((pre, next) => pre - next);
   const { length } = nums;
   const result = [];
-  const cached = {};
   for (let i = 0; i < length; i += 1) {
     const val = nums[i];
     const twoRes = twoSum(nums.slice(i + 1), target - val);
-    if (twoRes.length) {
-      twoRes.forEach((r) => {
-        const el = r.concat(val);
-        const elStr = el.sort((pre, next) => pre - next).join('');
-        if (cached[elStr]) {
-          return;
-        }
-        cached[elStr] = true;
-        result.push(el);
-      })
-    }
+    twoRes.forEach((r) => {
+      result.push(r.concat(val));
+    });
+    while (i < length - 1 && nums[i] === nums[i + 1]) i += 1;
   }
   return result;
 }
 
-console.log(twoSum([-1, 0, 1, 2, -1, -4]));
-// console.log(threeSum([-1, 0, 1, 2, -1, -4]));
+// n数之和
+function nSum(
+  nums,
+  target = 0,
+  n = 2,
+) {
+  const result = [];
+  const { length } = nums;
+  if (n > length || n < 2) return result;
+  nums = nums.sort((pre, next) => pre - next);
+  if (n === 2) return twoSum(nums, target);
+  for (let i = 0; i < length; i += 1) {
+    const val = nums[i];
+    const lastSum = nSum(nums.slice(i + 1), target - val, n - 1);
+    lastSum.forEach((sum) => {
+      result.push([val].concat(sum));
+    });
+    while (i < length - 1 && nums[i] === nums[i + 1]) i += 1;
+  }
+  return result;
+}
+
+// console.log(twoSum([-1, 0, 1, 2, -1, -4]));
+console.log(nSum([1,0,-1,0,-2,2], 0, 4));
