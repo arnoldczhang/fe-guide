@@ -47,5 +47,4 @@ function coinChange(coins, amount) {
   return dp(amount);
 }
 
-const coins = [1, 3, 5];
-console.log(coinChange(coins, 11));
+console.log(coinChange([1, 3, 5], 11));
