@@ -52,21 +52,17 @@ function addTwoNumbers(l1, l2) {
 
 // dp解
 function addTwoNumbers(l1, l2) {
-  const initial = l1.value + l2.value;
-  const list = new LinkedList(initial % 10);
-  let next = list;
-  const dp = (ll1, ll2, added = 0) => {
-    if (ll1 || ll2 || added) {
-      ll1 = ll1 || { value: 0 };
-      ll2 = ll2 || { value: 0 };
-      const value = ll1.value + ll2.value + added;
-      next.next = new LinkedList(value % 10);
-      next = next.next;
-      dp(ll1.next, ll2.next, Math.floor(value / 10));
-    }
-  };
-  dp(l1.next, l2.next, Math.floor(initial / 10));
-  return list;
+  let sum = 0;
+  const head = {};
+  let cur = head;
+  while(l1 || l2 || sum) {
+    sum += (l1 && l1.val) + (l2 && l2.val);
+    cur = cur.next = new ListNode(sum % 10);
+    l1 = l1 && l1.next;
+    l2 = l2 && l2.next;
+    sum = Math.floor(sum / 10);
+  }
+  return head.next;
 };
 
 console.log(addTwoNumbers(list1, list2));
