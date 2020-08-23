@@ -15,6 +15,30 @@
  * ]
  * 
  * 题解：
- * 
+ * - 反正很屌，不明觉厉
  * 
  */
+function generateParenthesis(n) {
+  const result = [];
+  const backtrack = (left, right, track = []) => {
+    if (right < left || left < 0 || right < 0) {
+      return;
+    }
+
+    if (!left && !right) {
+      return result.push(track.join(''));
+    }
+
+    track.push('(');
+    backtrack(left - 1, right, track.slice());
+    track.pop();
+
+    track.push(')');
+    backtrack(left, right - 1, track.slice());
+    track.pop();
+  };
+  backtrack(n, n);
+  return result;
+}
+
+console.log(generateParenthesis(3));
