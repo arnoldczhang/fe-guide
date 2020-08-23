@@ -203,6 +203,7 @@ function binarySearch(target, list, start = 0, end = list.length) {
 ---
 
 ## dp
+- [子序列问题模板](https://www.cnblogs.com/labuladong/p/12320381.html)
 
 ### 三大要素
 - 重叠子问题
@@ -216,7 +217,39 @@ function binarySearch(target, list, start = 0, end = list.length) {
 4. 定义 dp 数组/函数的含义
 
 ### 方程
+
+**子序列思路**
+
+```c++
+int n = array.length;
+int[] dp = new int[n];
+
+for (int i = 1; i < n; i++) {
+    for (int j = 0; j < i; j++) {
+        dp[i] = 最值(dp[i], dp[j] + ...)
+    }
+}
 ```
+
+**两个子串/数组思路**
+
+```c++
+int n = arr.length;
+int[][] dp = new dp[n][n];
+
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+        if (arr[i] == arr[j]) 
+            dp[i][j] = dp[i][j] + ...
+        else
+            dp[i][j] = 最值(...)
+    }
+}
+```
+
+**通用思路**
+
+```c++
 for 状态1 in 状态1的所有取值：
     for 状态2 in 状态2的所有取值：
         for ...

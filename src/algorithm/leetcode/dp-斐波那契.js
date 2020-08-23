@@ -14,7 +14,6 @@ function fib(n, cach = { 1: 1, 2: 1 }) {
   if (cach[n]) return cach[n];
   if (n === 1 || n === 2) return 1;
   cach[n] = fib(n - 2, cach) + fib(n - 1, cach);
-  console.log('count');
   return cach[n];
 }
 

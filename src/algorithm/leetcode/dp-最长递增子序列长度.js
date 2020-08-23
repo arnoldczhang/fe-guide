@@ -48,6 +48,5 @@ function findLIS2(nums) {
   });
   return stack.length;
 }
-
-console.log(findLIS([1,3,5,4,7]));
+console.log(findLIS([1,2,4,3,5,4,7,2]));
 console.log(findLIS([2,2,2,2,2]));
