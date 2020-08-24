@@ -338,9 +338,9 @@ def backtrack(路径, 选择列表):
     result.add(路径)
     return
   for 选择 in 选择列表:
-    做选择
+    track.push(选择) // 做选择
     backtrack(路径, 选择列表)
-    撤销选择
+    track.pop() // 撤销选择
 ```
 
 ---
