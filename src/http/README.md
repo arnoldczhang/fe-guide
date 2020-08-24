@@ -2,7 +2,7 @@
 
 ## 参考
 
-- https://www.fastly.com/blog/headers-we-dont-want
+- [fastly](https://www.fastly.com/blog/headers-we-dont-want)
 - https://www.nihaoshijie.com.cn/index.php/archives/630/
 - [前端必须明白的 http 知识点](https://mp.weixin.qq.com/s/4tluvji9YVtxloqmssY-Nw)
 - [把网站升级到 QUIC](https://www.yinchengli.com/2018/06/10/quic/)
@@ -373,16 +373,9 @@
 #### 资源缓存几种方式
 
 * HTTP 1.1 风格的 Cache-Control 响应头中的 max-age 指令
+ + Cach-Control: private 可缓存时长
 * HTTP 1.0 风格的 Expires 响应头
 * Last-Modified 响应头
-
->
-
-> Cach-Control: private 可缓存时长
->
-> 可缓存时长 1 小时（22 - 12） * 0.1
->
-> 注：浏览器差异导致缓存时长不同
 
 ```
 HTTP/2 200
@@ -632,7 +625,7 @@ map $http_cookie $resources {
 8. 密钥/算法协商结束
 9. 数据传输
 
-**并非所有请求（0.01%）都要增加 7 个 RTT，需要满足**
+并非所有请求（0.01%）都要增加 **7 个 RTT**，需要满足
 
 1. 首次请求（TCP 建立连接后第一个请求，之后请求不发生上述行为）
 2. 必须要完全握手（80% 请求只要求简化握手即可）
@@ -643,6 +636,7 @@ map $http_cookie $resources {
 一般走 2+4 即可
 
 ### 完整流程
+> 非常推荐下图
 
 ![https 请求完整流程](./https请求完整流程.jpg)
 
