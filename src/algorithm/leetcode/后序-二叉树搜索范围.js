@@ -1,7 +1,7 @@
 /**
  * 题目：
  * 
- * 二叉树-搜索范围
+ * 后序-二叉树搜索范围
  * 
  * 给定二叉搜索树的根结点 root，返回 L 和 R（含）之间的所有结点的值的和
  * 
@@ -27,13 +27,13 @@ function searchRange(root, L, R) {
     if (!node) {
       return;
     }
-    search(node.left);
-    search(node.right);
-    if (node.val >= L && node.val <= R) {
-      sum += node.val;
+    const { left, right, val } = node;
+    search(left);
+    search(right);
+    if (val >= L && val <= R) {
+      sum += val;
     }
   };
-
   search(root);
   return sum;
 }

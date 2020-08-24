@@ -1,7 +1,7 @@
 /**
  * 题目：
  * 
- * 二叉树-最大深度n叉树
+ * 前序-最大深度n叉树
  * 
  */
 const BinaryTree = require('../structure/二叉树.js');
@@ -14,12 +14,10 @@ binaryTree.insert(5);
 binaryTree.insert(6);
 
 function maxDepth(root) {
-  if (!root) {
-      return 0;
-  }
+  if (!root) return 0;
   const { children } = root;
   if (children && children.length) {
-      return Math.max(...children.map(maxDepth)) + 1;
+    return Math.max(...children.map(maxDepth)) + 1;
   }
   return 1;
 };

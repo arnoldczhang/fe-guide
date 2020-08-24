@@ -1,7 +1,7 @@
 /**
  * 题目：
  * 
- * 二叉树-最大路径和
+ * 后续-二叉树最大路径和
  * 
  * 路径被定义为一条从树中任意节点出发，达到任意节点的序列。
  * 该路径至少包含一个节点，且不一定经过根节点
@@ -27,12 +27,14 @@ binaryTree2.insert(7);
 
 function maxPathSum(root) {
   let maxRes = Number.MIN_SAFE_INTEGER;
-  const getMax = (rt) => {
-    if (!rt) return 0;
-    const left = Math.max(0, getMax(rt.left));
-    const right = Math.max(0, getMax(rt.right));
-    maxRes = Math.max(maxRes, left + right + rt.val);
-    return Math.max(left, right) + rt.val;
+  const getMax = (node) => {
+    if (!node) return 0;
+    const { left, right, val } = node;
+    const leftVal = Math.max(0, getMax(left));
+    const rightVal = Math.max(0, getMax(right));
+    maxRes = Math.max(maxRes, leftVal + rightVal + val);
+    // 取左右子树中，总和最大的一条路径，作为从当前节点开始的一条最大路径和
+    return Math.max(leftVal, rightVal) + val;
   };
   getMax(root);
   return maxRes;

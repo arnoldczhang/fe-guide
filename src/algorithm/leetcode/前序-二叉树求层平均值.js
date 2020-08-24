@@ -1,7 +1,7 @@
 /**
  * 题目：
  * 
- * 二叉树-求层平均值
+ * 前序-二叉树求层平均值
  * 
  */
 function averageOfLevels(root) {

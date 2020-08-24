@@ -1,7 +1,7 @@
 /**
  * 题目：
  * 
- * 二叉树-最大深度
+ * 前序-最大深度二叉树
  * 
  * 题解：
  * - 计算左右子树最大深度即可
@@ -17,7 +17,7 @@ binaryTree.insert(13);
 
 function maxDepth(root) {
   if (!root) {
-      return 0;
+    return 0;
   }
   const { left, right } = root;
   return Math.max(maxDepth(left), maxDepth(right)) + 1;
