@@ -1,6 +1,6 @@
 /**
  * 题目：
- * 优化-计数质数
+ * 巧技-计数质数
  * 
  * [高效寻找质数](https://labuladong.gitbook.io/algo/gao-pin-mian-shi-xi-lie/da-yin-su-shu)
  * 
