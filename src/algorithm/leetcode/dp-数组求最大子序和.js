@@ -27,7 +27,7 @@ function getSubArraySum(arr) {
   return maxSum;
 }
 
-// dp解
+// dp-table解
 function getSubArraySum(nums) {
   const dp = [];
     dp[0] = nums[0];

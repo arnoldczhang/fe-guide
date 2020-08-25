@@ -12,7 +12,7 @@
  * 
  */
 
- // dp解
+ // dp-table解
 function findLIS(nums) {
   const { length } = nums;
   const dp = Array.from({ length }).fill(1);

@@ -18,6 +18,7 @@
  * 题解：
  * 
  */
+// dp-table解
 function longestCommonSubsequence(text1, text2) {
   const { length: l1 } = text1;
   const { length: l2 } = text2;
