@@ -27,16 +27,6 @@ function getSubArraySum(arr) {
   return maxSum;
 }
 
-// dp-table解
-function getSubArraySum(nums) {
-  const dp = [];
-    dp[0] = nums[0];
-    for (let i = 1; i < nums.length; i += 1) {
-        dp[i] = Math.max(nums[i], nums[i] + dp[i - 1]);
-    }
-    return Math.max(...dp);
-}
-
 // dp解
 function getSubArraySum(nums) {
 	const { length } = nums;
@@ -50,6 +40,15 @@ function getSubArraySum(nums) {
 		return dp(index + 1, sum, Math.max(max, sum));
 	};
 	return dp(0);
+}
+
+// dp-table解
+function getSubArraySum(nums) {
+  const dp = [...nums];
+  for (let i = 1; i < nums.length; i += 1) {
+      dp[i] = Math.max(dp[i], dp[i] + dp[i - 1]);
+  }
+  return Math.max(...dp);
 }
 
 console.log(getSubArraySum([-2, 6, -1, 5, 4, -7, 2, 3]));

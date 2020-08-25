@@ -21,6 +21,12 @@ function maxDepth(root) {
   }
   const { left, right } = root;
   return Math.max(maxDepth(left), maxDepth(right)) + 1;
-};
+}
+
+function maxDepth(root, depth = 0) {
+  if (!root) return depth;
+  const { left, right } = root;
+  return Math.max(maxDepth(left, depth + 1), maxDepth(right, depth + 1));
+}
 
 console.log(maxDepth(binaryTree.root));
