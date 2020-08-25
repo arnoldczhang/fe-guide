@@ -72,6 +72,21 @@ function getArrayCount(nums, S) {
   return dp(0, S);
 }
 
+// dp极简
+function getArrayCount(nums, S) {
+  const { length } = nums;
+  const dp = (i, rest) => {
+    if (i >= length) {
+      if (!rest) return 1;
+      return 0;
+    }
+    return dp(i + 1, rest + nums[i]) + dp(i + 1, rest - nums[i]);
+  };
+  if (!length) return 0;
+  return dp(0, S);
+}
+
+
 console.log(getArrayCount(
   [10,9,6,4,19,0,41,30,27,15,14,39,33,7,34,17,24,46,2,46],
   45,

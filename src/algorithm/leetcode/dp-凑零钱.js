@@ -21,6 +21,7 @@
  * > 最少硬币组合
  * 
  */
+// dp
 function coinChange(coins, amount) {
   const dp = (n, cach = {}) => {
     // 如果超出金额范围，返回-1
@@ -45,6 +46,20 @@ function coinChange(coins, amount) {
     return res === Infinity ? -1 : res;
   };
   return dp(amount);
+}
+
+// dp-table
+function coinChange(coins, amount) {
+  const dp = Array.from({ length: amount + 1 }).fill(Infinity);
+  dp[0] = 0;
+  for (let i = 1; i <= amount; i += 1) {
+    for (const coin of coins) {
+      if (i >= coin) {
+        dp[i] = Math.min(dp[i - coin] + 1, dp[i]);
+      }
+    }
+  }
+  return dp[amount] === Infinity ? - 1 : dp[amount];
 }
 
 console.log(coinChange([1, 3, 5], 11));

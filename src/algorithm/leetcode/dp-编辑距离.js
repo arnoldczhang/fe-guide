@@ -61,8 +61,10 @@ function minDistance(word1, word2) {
   if (!l2) return l1;
   dp.forEach((it, i, array) => {
       array[i] = array[i] || Array.from({ length: l2 + 1 }).fill(0);
+      // word2为空时，改变次数即word1长度
       array[i][0] = i;
   });
+  // word1为空时，改变次数即word2长度
   dp[0].forEach((it, j, array) => {
       array[j] = j;
   });
