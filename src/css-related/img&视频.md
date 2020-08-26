@@ -3,6 +3,17 @@
 ## 参考
 - [图片优化](https://mp.weixin.qq.com/s/euvdMHkYUXHmgkV9D334NQ)
 
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`png`](#png)
+* [`webp`](#webp)
+* [`选型`](#选型)
+* [`视频`](#视频)
+
+</details>
+
 ---
 
 ## png
@@ -42,5 +53,11 @@ png8、png24、png32
 - 需要高分辨率、精确保留细节、真彩色，不需要背景多阶透明 =》 png24
 - 需要高分辨率、精确保留细节、真彩色、背景多阶透明 =》 png32
 
+---
 
+## 视频
+<video>仅支持webm和MP4
+
+webm - 支持透明
+mp4 - 没有透明通道
 

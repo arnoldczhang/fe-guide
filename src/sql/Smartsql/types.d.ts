@@ -1,6 +1,6 @@
 type BaseType = string | number | ICalcCollection |null;
 type CompareSymbol = '=' | '!=' | '>' | '<' | '<>' | '<=' | '>=';
-type CalcSymbol = '+' | '-' | '*' | '/';
+type CalcSymbol = '+' | '-' | '*' | '/' | '%';
 type FunctionSymbol = 'avg' | 'max' | 'min' | 'quantile';
 type CalcMethods = (input: BaseType) => ICalcCollection;
 type joinMethods = (array: BaseType[], ...args: any[]) => ICalcCollection;
@@ -30,6 +30,8 @@ interface ICalcCollection {
   lt: CalcMethods;
   lte: CalcMethods;
   and: CalcMethods;
+  or: CalcMethods;
+  remind: CalcMethods;
   divide: CalcMethods;
   multiply: CalcMethods;
   add: CalcMethods;
@@ -40,12 +42,16 @@ interface ICalcCollection {
   desc: FuncMethods;
   asc: FuncMethods;
   count: FuncMethods;
+  countIf: FuncMethods;
+  avgIf: CalcMethods;
   nullIf: CalcMethods;
   toUInt32: FuncMethods;
   countMerge: FuncMethods;
   uniqMerge: FuncMethods;
   anyMerge: FuncMethods;
   sumMerge: FuncMethods;
+  avgMerge: FuncMethods;
+  quantilesTimingMerge: CalcMethods;
   interval: CalcMethods;
   toUnixTimestamp: FuncMethods;
   toDateTime: FuncMethods;
@@ -58,14 +64,10 @@ interface ICalcCollection {
   as: (input: BaseType) => string;
   in: joinMethods;
   notIn: joinMethods;
-  uniq: joinMethods;
+  uniq: FuncMethods;
+  not: FuncMethods;
+  length: FuncMethods;
+  any: FuncMethods;
+  group: FuncMethods;
   operate: (input: BaseType, type: CompareSymbol | CalcSymbol) => ICalcCollection;
 }
-
-type SqlCommonParam = {
-  select?: Array<string | ICalcCollection>;
-  where?: ICO;
-  groupby?: Array<string | ICalcCollection>;
-  orderby?: string[][];
-  limit?: number;
-};

@@ -29,7 +29,7 @@
 </details>
 
 ## 概念
-- js线程与GUI线程互斥
+> js线程与GUI线程互斥
 
 ---
 
@@ -41,20 +41,20 @@
 - Render Step - 渲染节奏
 - Web APIs - 宿主环境
 
-- - -
+---
 
 ## 执行上下文和作用域链
 * 函数被调用
 * 创建执行上下文
-    * a) 词法环境（LexicalEnviroment，以前叫VO）：变量、函数和参数
-    * b) 作用域链：Scope
-    * c) this
+    - a) 词法环境（LexicalEnviroment，以前叫VO）：变量、函数和参数
+    - b) 作用域链：Scope
+    - c) this
 * 开始执行（在执行上下文上）
-    * ...
-    * a) 遇到同步函数
-    * b) 当前执行上下文入栈
-    * c) 重复以上过程
-    * ...
+    - ...
+    - a) 遇到同步函数
+    - b) 当前执行上下文入栈
+    - c) 重复以上过程
+    - ...
 * 执行完成，往上一层 执行上下文  返回数据
 * 从执行上下文栈pop出一个新的执行上下文执行
 
@@ -153,7 +153,7 @@ js被解析和执行环境的抽象概念
 - 检查调用栈是否空闲，如果是且`回调队列`里有某个函数，则将其从`回调队列`移入`调用栈`执行
 
 ### 浏览器环境
-![任务队列](68747470733a2f2f736661756c742d696d6167652e62302e7570616979756e2e636f6d2f3134392f3930352f313439393035313630392d356138616434376663653736345f61727469636c6578.png)
+![任务队列](任务队列.png)
 
 >
 > 每个线程都有自己的event loop
@@ -166,9 +166,11 @@ js被解析和执行环境的抽象概念
 script -> 清空微任务 -> 宏任务 -> 清空微任务 -> render -> 宏任务 -> 清空微任务 -> render -> ...
 
 **简易示意图**
+
 ![示意图](./eventLoop简易示图.png)
 
 **复杂示意图**
+
 ![复杂示意图](./event_loop.jpeg)
 
 ### 完整循环过程
@@ -200,21 +202,33 @@ script -> 清空微任务 -> 宏任务 -> 清空微任务 -> render -> 宏任务
 
 * `timers`: 执行 setTimeout 和 setInterval 中到期的 callback。
 * `I/O callback`: 上一轮循环中少数的 callback 会放在这一阶段执行。
-* `idle, prepare`: 仅在内部使用。
+* `idle, prepare`: 仅在内部使用。比如process.nextTick
 * `poll`: 最重要的阶段，执行 pending callback，在适当的情况下会阻塞在这个阶段。
-* `check`: 执行 setImmediate（`setImmediate`是将事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行setImmediate指定的回调函数）的callback。
+* `check`: 执行 setImmediate（`setImmediate`是将事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行 setImmediate 指定的回调函数）的callback。
 * `close callbacks`: 执行close事件的callback，例如socket.on('close'[,fn])或者http.server.on('close, fn)。
 
 #### 执行顺序区别
 ![浏览器和node的eventLoop](./浏览器和node的eventLoop.png)
 
 **node10以前**
+
 - 执行宏任务一个阶段的所有任务
 - 执行nextTick队列里面的内容
 - 执行微任务队列的内容
 
 **node11以后**
+
 和浏览器的行为统一了，都是每执行一个宏任务就执行完微任务队列
+
+### setImmediate和setTimeout顺序
+可以参考[随机顺序探讨](https://segmentfault.com/a/1190000013102056)
+
+`setTimeout`源码可以[参考](https://github.com/nodejs/node/blob/f38bcc2b59ac37554442b84a204ea87e72a132b2/lib/timers.js#L388)，底层的`Timer`对象可以[参考](https://github.com/nodejs/node/blob/master/lib/internal/timers.js#L163)
+
+一共只有两种情况：
+
+1. 进入到timers中，如果时间已到，也就是超时，则会执行回调
+2. poll队列为空且代码没有被setImmediate()时，若检测到timers队列中有timer已经超时，则回到timers阶段中，执行超时的timer回调
 
 ---
 
@@ -232,7 +246,7 @@ script -> 清空微任务 -> 宏任务 -> 清空微任务 -> render -> 宏任务
 > 真正的异步
 
 * 整体代码script
-* setTimeout（标准4ms），setInterval，setImmediate（node）
+* setTimeout（浏览器标准4ms，node标准1ms），setInterval，setImmediate（node）
 * I/O
 * UI交互事件
 * postMessage（MessageChannel）
@@ -275,15 +289,19 @@ script -> 清空微任务 -> 宏任务 -> 清空微任务 -> render -> 宏任务
 [参考](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/7)
 
 ### 总结
-- `宏任务`是`宏任务` + `微任务`统称，即微任务队列包含在当前宏任务内
-- 一次事件循环：同步任务 -> 一个宏任务 -> 微任务 -> render
-- 即使是立即resolve/reject，then还是微任务
-- 微任务中嵌套的微任务，仍然会在当前事件循环中执行完，
+> 1. `宏任务`是`宏任务` + `微任务`统称，即微任务队列包含在当前宏任务内
+>
+> 2. 一次事件循环：同步任务 -> 执行一个宏任务 -> 执行所有微任务 -> render
+>
+> 3. 即使是立即resolve/reject，then还是微任务
+>
+> 4. 微任务中嵌套的微任务，仍然会在当前事件循环中执行完，
   也即是说，微任务无限嵌套微任务会导致未响应，因为页面一直没有render
-- 每个宏任务执行完都会判断，是否有微任务，有就执行，
+>
+> 5. 每个宏任务执行完都会判断，是否有微任务，有就执行，
   也即是说，宏任务无限嵌套宏任务，不会导致未响应，因为会检查微任务&触发render
-- await是generator + promise的语法糖，类似Promise执行方式，[参考](../fe-interview/src/common.md#模拟async/await)例
-- 目前试下来，setTimeout(1)效果等同setTimeout(0)
+>
+> 6. await是generator + promise的语法糖，类似Promise执行方式，[参考](../fe-interview/src/common.md#模拟async/await)
 
 **await就是promise语法糖**
 
@@ -353,9 +371,9 @@ script start
 async2 end
 Promise
 script end
+async1 end
 promise1
 promise2
-async1 end
 setTimeout
 */
 console.log('script start')
@@ -381,6 +399,40 @@ new Promise(resolve => {
   console.log('promise2')
 })
 console.log('script end')
+```
+
+例4：
+```js
+console.log(1);
+   
+setTimeout(() => {
+    console.log(2);
+}, 0);
+
+process.nextTick(() => {
+    console.log(3);
+});
+
+setImmediate(() => {
+    console.log(4);
+});
+
+new Promise((resolve, reject) => {
+    console.log(5);
+    resolve();
+    console.log(6);
+}).then(() => {
+    console.log(7);
+});
+
+Promise.resolve().then(() => {
+    console.log(8);
+
+    process.nextTick(() => {
+        console.log(9);
+    });
+});
+// 1 5 6 3 7 8 9 2 4
 ```
 
 ---

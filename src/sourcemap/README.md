@@ -1,11 +1,61 @@
-## sourcemap原理
+# sourcemap原理
 
-- 参考
-  - http://www.ruanyifeng.com/blog/2013/01/javascript_source_map.html
-  - http://javascript.ruanyifeng.com/tool/sourcemap.html
-  - ...
+## 参考
+- http://www.ruanyifeng.com/blog/2013/01/javascript_source_map.html
+- http://javascript.ruanyifeng.com/tool/sourcemap.html
+- ...
 
-- 格式
+---
+
+## 解释
+
+### version
+> Source map的版本，目前为3
+
+### sources
+> 转换前文件目录名。数组，表示多个文件合并
+
+### names
+> 转换前的所有变量名和属性名
+
+### mappings
+> 记录位置信息的字符串
+
+**第一层** 行对应：分号";"分割，分号前的内容，分别对应一行转换后的代码
+
+**第二层** 位置对应：逗号","分割，逗号前的内容，分别对应源码的一个位置，比如变量名
+
+每个位置使用**五位字符**，表示五个字段：
+
+- 第一位，表示这个位置在（转换后的代码的）的第几列；
+- 第二位，表示这个位置属于sources属性中的哪一个文件；
+- 第三位，表示这个位置属于转换前代码的第几行；
+- 第四位，表示这个位置属于转换前代码的第几列；
+- 第五位，表示这个位置属于names属性中的哪一个变量；
+
+```
+例：aAuCA，表示：
+现文件26列
+sources中第1个文件
+原文件46行
+原文件2列
+names中的第一个变量
+```
+
+**第三层** 位置转换：该位置对应的转换前的源码位置，VLQ编码，参考：http://javascript.ruanyifeng.com/tool/sourcemap.html#toc4；
+
+### file
+> 转换后的文件名
+
+### sourcesContent
+> 转换前文件
+
+### sourceRoot
+> 转换前的文件所在的目录。如果与转换前的文件在同一目录，该项为空
+
+---
+
+## 格式
 ```javascript
 {
     "version": 3,
@@ -17,27 +67,3 @@
     "sourceRoot": ""
 }
 ```
-
-- 解释
-  - version：Source map的版本，目前为3；
-  - sources：转换前文件目录名。数组，表示多个文件合并；
-  - names：转换前的所有变量名和属性名；
-  - mappings：记录位置信息的字符串；
-    - 第一层 行对应：分号";"分割，分号前的内容，分别对应一行转换后的代码；
-    - 第二层 位置对应：逗号","分割，逗号前的内容，分别对应源码的一个位置，比如变量名；
-      - 每个位置使用五位字符，表示五个字段；
-        - 第一位，表示这个位置在（转换后的代码的）的第几列；
-        - 第二位，表示这个位置属于sources属性中的哪一个文件；
-        - 第三位，表示这个位置属于转换前代码的第几行；
-        - 第四位，表示这个位置属于转换前代码的第几列；
-        - 第五位，表示这个位置属于names属性中的哪一个变量；
-        - 例：aAuCA，表示：
-          现文件26列
-          sources中第1个文件
-          原文件46行
-          原文件2列
-          names中的第一个变量
-    - 第三层 位置转换：该位置对应的转换前的源码位置，VLQ编码，参考：http://javascript.ruanyifeng.com/tool/sourcemap.html#toc4；
-  - file：转换后的文件名；
-  - sourcesContent：转换前文件；
-  - sourceRoot：转换前的文件所在的目录。如果与转换前的文件在同一目录，该项为空；

@@ -74,9 +74,9 @@ IE8Compat：近乎标准模式
 
 **类似srcset**
 
-<picture />元素内部包含若干<source />和<img />，针对不同屏幕尺寸提供图片
+`<picture />`元素内部包含若干`<source />`和`<img />`，针对不同屏幕尺寸提供图片
 
-如果没有满足的<source />，展示<img />
+如果没有满足的`<source />`，展示`<img />`
 
 ```html
 <picture>
@@ -89,7 +89,6 @@ IE8Compat：近乎标准模式
 ---
 
 ### rel
->
 > 大部分关于`rel`的介绍很久没更新
 >
 > 权威文档建议直接看[MDN](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Link_types)
@@ -98,7 +97,6 @@ IE8Compat：近乎标准模式
 >
 
 #### alternate
->
 > 1. 下载优先级变为lowest
 >
 > 2. 资源仅下载，不做渲染

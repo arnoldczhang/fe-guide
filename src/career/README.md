@@ -11,6 +11,7 @@
 - [中台微服务](https://www.infoq.cn/article/HNDtDuaIYsWUP-SGOPTK)
 - [架构师能力模型](https://mp.weixin.qq.com/s?__biz=MzI0MTczNDgyOQ==&mid=2247484195&idx=1&sn=4023a1def4da46509a481b77e297e1f7&chksm=e90646e1de71cff786e0b7a3c6ce12074b1df0502a57a5553554b18fa91ab280160708d06e09&xtrack=1&scene=0&subscene=131&clicktime=1554469736&ascene=7&devicetype=android-28&version=2700033c&nettype=WIFI&abtest_cookie=BAABAAoACwASABMABQAjlx4AVpkeANCZHgDamR4A3JkeAAAA&lang=zh_CN&pass_ticket=AHr/9Slxa9wyQOBtmYsQinKiS+CRt/uP1tbENeGh5nL+qvkco8ifDo8OmS6Y/JS4&wx_header=1&utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 - [技术主管之路](https://segmentfault.com/a/1190000018894283?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
+- [前端早早聊](https://www.yuque.com/zaotalk/posts/enec3e)
 
 ## 目录
 <details>
@@ -331,7 +332,7 @@ project
 3. 组件化开发
 4. 组件仓库
 5. 性能优化
-  * [参考](../js&browser/性能优化.md)
+  * [参考](../js&browser/性能优化2019.md)
 6. 项目部署
   * 静态资源缓存
   * cdn
@@ -413,8 +414,58 @@ import module1 from 'module1'
 
 ---
 
-## 无障碍
-[无障碍](https://mp.weixin.qq.com/s?__biz=MzIwNjkwMTcyOQ==&mid=2247484738&idx=1&sn=c16f3abd28c8df97d534208cf2000e3f&chksm=971bddcca06c54da609dfc13d72ed265ecd51f6ff31ca1fc11fdc3c9452c5f2bfaa78fb15988&scene=27&ascene=0&devicetype=android-28&version=2700033b&nettype=)
+## 无障碍-a11y
+- [无障碍](https://mp.weixin.qq.com/s?__biz=MzIwNjkwMTcyOQ==&mid=2247484738&idx=1&sn=c16f3abd28c8df97d534208cf2000e3f&chksm=971bddcca06c54da609dfc13d72ed265ecd51f6ff31ca1fc11fdc3c9452c5f2bfaa78fb15988&scene=27&ascene=0&devicetype=android-28&version=2700033b&nettype=)
+- [accessibility](https://developer.mozilla.org/en-US/docs/Web/Accessibility)
+
+### 分类
+- 听觉障碍
+- 视觉障碍
+- 行动障碍
+- 认知障碍
+
+### html
+
+#### 语义化
+- 强调标题、关键文案
+- 说明文字使用缩减、下划虚线
+- 链接（访问前、中、后），去掉外沿的默认蓝框（outline: 0）
+- 表单元素
+- 表格
+
+```html
+<label for="FOR"></label>
+
+<img src="" alt="ALT" title="TITLE"/>
+```
+
+#### 键盘可访问性
+
+**tabIndex="0"**: 默认值，排列在所有指定tabIndex的元素之后
+**tabIndex="-1"**: 元素将被排除在tab序列之外
+
+#### aria
+[wai-aria](https://developer.mozilla.org/zh-CN/docs/Learn/Accessibility/WAI-ARIA_basics)
+
+### css
+
+#### 颜色对比度
+参考[element-ui](https://element.eleme.cn/#/zh-CN/component/color)配色，也可以使用在线[配色工具](https://color.adobe.com/zh/create/color-wheel)
+
+#### 隐藏元素
+如果使用`visibility: hidden`和`display: none`隐藏元素，屏幕阅读器会读取不到里面内容，必要时才使用
+
+### js
+
+#### 太多的javascript
+- 页面元素、样式都用js生成的话，会导致访问性问题，应该用适当的技术实现适当功能
+- 频繁通过js更新ui也会混淆屏幕阅读器
+
+#### 增强而非构建
+时刻记住，js用于增强页面功能、行为。比如表单验证，本身提供<form>的一些验证属性，能用则用
+
+#### react-a11y
+[eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y)
 
 ---
 

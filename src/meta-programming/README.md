@@ -372,6 +372,7 @@ c.d.forEach(() => {
 ---
 
 ## Generator
+[generator 执行机制分析](https://zhuanlan.zhihu.com/p/150984402)
 - `...`: 相当于调用`Symbol.iterator`
 - `yield*`: 迭代展开
 

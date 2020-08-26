@@ -6,6 +6,8 @@ const TYPE: ICO = {
   lt: 'lt',
   lte: 'lte',
   and: 'and',
+  or: 'or',
+  remind: 'remind',
   divide: 'divide',
   multiply: 'multiply',
   add: 'add',
@@ -16,11 +18,15 @@ const TYPE: ICO = {
   desc: 'desc',
   asc: 'asc',
   count: 'count',
+  countIf: 'countIf',
+  avgIf: 'avgIf',
   toUInt32: 'toUInt32',
   countMerge: 'countMerge',
   uniqMerge: 'uniqMerge',
   anyMerge: 'anyMerge',
   sumMerge: 'sumMerge',
+  avgMerge: 'avgMerge',
+  quantilesTimingMerge: 'quantilesTimingMerge',
   interval: 'interval',
   toUnixTimestamp: 'toUnixTimestamp',
   toDateTime: 'toDateTime',
@@ -33,6 +39,9 @@ const TYPE: ICO = {
   in: 'in',
   notIn: 'notIn',
   uniq: 'uniq',
+  not: 'not',
+  length: 'length',
+  any: 'any',
   operate: 'operate',
   nullIf: 'nullIf',
 };
@@ -48,5 +57,7 @@ export const GTE_TAG = '>=';
 export const LT_TAG = '<';
 
 export const LTE_TAG = '<=';
+
+export const COMPLEX_TAG = 'complex';
 
 export default TYPE;

@@ -2,6 +2,7 @@
 
 ## 参考
 - [图片库](https://remixicon.com/)
+- [icon库](https://mp.weixin.qq.com/s/vBzp8zMZ9he-3JsuAEpoxQ)
 - [特效库](https://cssfx.dev/)
 - [现代css性能优化](http://verymuch.site/2018/07/22/CSS%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%848%E4%B8%AA%E6%8A%80%E5%B7%A7/?nsukey=3eczM2FJ0JQ8aS2hEDt1CnIzmS32kXvEkjuE7I0lrEF7M8jW7k7PPZtuVxX%2BT%2FsRQqGQ7YhSV%2FicPVi%2FrRG%2BhGGQQn6y7EuHKuERI93Idzq2ziur8T8dZL3qgDT%2Bw5au3cocxOGnSC7pBI7bve9tigiinrZL8Xaac042IW%2FR%2FxqJp8Fk21Nm7YbVUczUdhD%2F)
 - [5个新css属性](https://zhuanlan.zhihu.com/p/40736286)
@@ -18,6 +19,8 @@
 - [nb的配色库](https://color.adobe.com/zh/create/color-wheel)
 - [渐变色配色库](https://www.bestvist.com/css-gradient)
 - [创意海报库](https://www.chuangkit.com/designtools/designindex)
+- [卡通的网站](https://uglyduck.ca/articles/)
+- [一些新的布局方法](https://mp.weixin.qq.com/s/HYUgb8jEI-aQhbN4sBajNw)
 
 ## 目录
 <details>
@@ -26,8 +29,10 @@
 * [`常见用法`](#常见用法)
 * [`属性`](#属性)
 * [`布局`](#布局)
+* [`命名规范-BEM`](#BEM)
 * [`须知`](#须知)
 * [`答疑`](#答疑)
+* [`草案`](#草案)
 
 </details>
 
@@ -349,7 +354,7 @@ Chrome浏览器67+支持
 }
 ```
 
-### 加载中
+### 加载中省略号
 ```html
 <div>加载中<span class="more"></span></div>
 ```
@@ -617,6 +622,72 @@ flex-shrink: 0
 
 ---
 
+## BEM
+> 基于 **块（block）、元素（element）、修饰符（modifier）**的命名规范，即：
+> 
+> .块__元素--修饰符{}
+>
+
+### 注意点
+- BEM不考虑结构，即多层嵌套时，**block**取得是最外层的父class，**element**也只是加上当前元素的class
+
+### 举例
+```css
+.person{} /*人*/
+.person__hand{} /*人的手*/
+.person--female{} /*女人*/
+.person--female__hand{} /*女人的手*/
+.person__hand--left{} /*人的左手*/
+```
+
+**scss中使用**
+
+```scss
+.person {
+  @at-root #{&}__hand {
+    color: red;
+    @at-root #{&}--left {
+     color: yellow;
+    }
+  }
+  @at-root #{&}--female {
+    color: blue;
+    @at-root #{&}__hand {
+      color: green;
+    }
+  }
+}
+/*生成的css*/
+.person__hand {
+   color: red;
+}
+.person__hand--left {
+   color: yellow; 
+}
+.person--female{
+  color: blue;
+}
+.person--female__hand {
+  color: green;
+}
+```
+
+**多层嵌套**
+
+```html
+<div class="page-btn">
+    <!-- ... -->
+   <ul class="page-btn__list">
+       <li class="page-btn__item">
+           <a href="#" class="page-btn__btn">第一页</a>
+       </li>
+   </ul>
+   <!-- ... -->
+</div>
+```
+
+---
+
 ## 须知
 
 ### 选择器
@@ -678,7 +749,7 @@ elm.animate([
 ### font-size
 - px
 - rem
-  * [参考](../fe-interview/common.md#响应式方案)
+  * [参考](../fe-interview/src/common.md#响应式方案)
 - em
   * 相对于父元素，1em = 父元素，2em = 2 * 父元素
   * 如果父元素没设置，取浏览器默认值（chrome一般是16px）
@@ -701,6 +772,30 @@ border: 0 - 边框宽度为0，会渲染，占内存
   * 自身位置仍然占据
 - static
   * 默认，没有定位，元素处于正常流中，类似`left:20px`无效
+
+### cross-fade
+[参考](https://www.zhangxinxu.com/wordpress/2020/07/css-cross-fade-background-image-opacity/)
+
+> 多个图像半透明叠加
+>
+> 移动端兼容性非常好（记得加前缀），pc端除ie
+
+```css
+.dark {
+    /* 兜底，IE和Firefox浏览器 */
+    background-image: url(2.jpg);
+    --transparent: url(data:image/gif;base64,R0lGODlhAQABAIAAAP///w==);
+    /* Safari最近版本已经不需要私有前缀了 */
+    background-image: cross-fade(var(--transparent), url(2.jpg), 40%);
+    /* 如使用自定义属性，-webkit-语句需要放在没有私有前缀语句的下面 */
+    background-image: -webkit-cross-fade(var(--transparent), url(2.jpg), 40%);
+
+    background-size: cover;
+}
+```
+
+### background-blend-mode
+[参考](https://www.zhangxinxu.com/wordpress/2020/07/css-background-blend-mode/)
 
 ---
 
@@ -966,4 +1061,105 @@ border: 0 - 边框宽度为0，会渲染，占内存
 - 不要使用浮动
 - 用padding-left代替margin-left
 
+### 图片加载失败
+> 通过css美化加载失败后的图片占位区块
 
+[参考](https://bitsofco.de/styling-broken-images)
+
+```html
+<img src="http://bitsofco.de/broken.jpg" alt="Kanye Laughing">
+```
+
+**1. 提示帮助文字**
+
+```css
+img {
+  font-family: 'Helvetica';
+  font-weight: 300;
+  line-height: 2;  
+  text-align: center;
+  
+  width: 100%;
+  height: auto;
+  display: block;
+  position: relative;
+}
+
+img:before { 
+  content: "We're sorry, the image below is broken :(";
+  display: block;
+  margin-bottom: 10px;
+}
+
+img:after { 
+  content: "(url: " attr(src) ")";
+  display: block;
+  font-size: 12px;
+}
+```
+
+**2. 图片替换**
+
+```css
+img { /* Same as first example */ }
+
+img:after { 
+  content: "\f1c5" " " attr(alt);
+  
+  font-size: 16px;
+  font-family: FontAwesome;
+  color: rgb(100, 100, 100);
+  
+  display: block;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
+```
+
+**3. 美化替换文字**
+
+```css
+img { 
+  /* 样式跟第一个例子里是一样的，然后加了下面一条样式 */
+  min-height: 50px;
+}
+
+img:before { 
+  content: " ";
+  display: block;
+
+  position: absolute;
+  top: -10px;
+  left: 0;
+  height: calc(100% + 10px);
+  width: 100%;
+  background-color: rgb(230, 230, 230);
+  border: 2px dotted rgb(200, 200, 200);
+  border-radius: 5px;
+}
+
+img:after { 
+  content: "\f127" " Broken Image of " attr(alt);
+  display: block;
+  font-size: 16px;
+  font-style: normal;
+  font-family: FontAwesome;
+  color: rgb(100, 100, 100);
+  
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+```
+
+---
+
+## 草案
+- [折叠屏api](https://github.com/w3c/csswg-drafts/issues/4736)

@@ -9,6 +9,8 @@
 - [webpack4构建提速](https://juejin.im/post/5c9075305188252d5c743520#heading-5)
 - [webpack-2020](https://juejin.im/post/5de87444518825124c50cd36?utm_source=gold_browser_extension#heading-38)
 - [webpack5缓存设计](https://zhuanlan.zhihu.com/p/110995118)
+- [真丶webpack4原理解析](https://juejin.im/post/5f20cd8c6fb9a07e731a6712?utm_source=gold_browser_extension)
+- [前端构建秘籍](https://juejin.im/post/5c9075305188252d5c743520)
 
 ## 目录
 <details>
@@ -20,7 +22,6 @@
 * [`webpack-3.8.1`](#webpack-3.8.1)
 * [`webpack4`](#webpack4)
 * [`webpack5`](#webpack5)
-* [`plugin`](#plugin)
 * [`中间缓存`](#中间缓存)
 * [`webpack-watch`](#webpack-watch)
 * [`bundle`](#bundle)
@@ -28,9 +29,11 @@
 * [`code split`](#codesplit)
 * [`tree shaking`](#treeshaking)
 * [`tapable`](#tapable)
+* [`compilation`](#Compilation)
 * [`plugin`](#plugin)
 * [`loader`](#loader)
 * [`require.context`](#require.context)
+* [`manifest.json`](#manifest.json)
 * [`热更新`](#热更新)
 * [`其他`](#其他)
 
@@ -116,6 +119,7 @@ module: {
 - 基础框架（react、redux）
 - 基础工具（lodash、utils）
 - 基础ui（antd）
+- 业务代码
 
 **每次打包的id一直变怎么破？**
 
@@ -132,7 +136,7 @@ module: {
 }
 ```
 
-**示例用法**
+**推荐配置**
 
 ```js
 splitChunks: {
@@ -380,19 +384,87 @@ return hashid.digest('hex');
 
 ---
 
+## Compilation
+> 调用编译对象`Compiler`，执行编译工作
+
+**Compiler**
+
+```js
+const { AsyncSeriesHook } = require('tapable');
+
+class Compiler {
+  constructor() {
+    this.hooks = {
+      beforeRun: new AsyncSeriesHook(['compiler']),
+      //afterRun
+      //beforeCompile
+      //afterCompile
+      //emit
+      // fail
+      // ...
+    };
+    this.mountPlugin();
+  }
+
+  mountPlugin() {
+    this.plugins.forEach((plugin) => {
+      if ('apply' in plugin && typeof plugin.apply === 'function') {
+        plugin.apply(this);
+      }
+    });
+  }
+
+  run() {
+    this.hooks.beforeRun.callAsync(this);
+  }
+}
+```
+
+**Compilation**
+
+```js
+class Compilation {
+  constructor(props) {
+    const {
+      entry,
+      root,
+      loaders,
+      hooks
+    } = props
+    this.entry = entry;
+    // ...
+  }
+
+  async make() {
+    // 1. dfs找到所有引用到的模块
+    // 2. 用loaderParse做路径->代码映射，并做好缓存
+    // 3. emit生成bundle
+    this.moduleWalker(this.entry);
+  }
+}
+```
+
+---
+
 ## plugin
 
-> apply
+**apply**
+
 > 插件初始化操作
->
-> compiler
+
+**compiler**
+
 > webpack初始化，返回的就是一个compiler对象
 > 内部包含hooks、compilation和finalcallback回调
->
-> compilation
+
+**compilation**
+
 > 针对四种template的具体处理
 > 内部包含hooks、和template处理
 
+### 常用plugins
+- [检测循环引用](https://www.npmjs.com/package/circular-dependency-plugin)
+- [检测重复包-inspectpack](https://github.com/FormidableLabs/inspectpack/#plugin)
 
 ### 调试
 ```js
@@ -448,6 +520,16 @@ module.exports = CopyrightWebpackPlugin;
 不同种类的hook
 
 ### plugin学习
+
+#### compression-webpack-plugin
+> webpack打包完之后，直接生成 gzip 压缩文件
+
+gz文件，可以通过新增 nginx 配置直接访问，空间换时间
+
+```bash
+# nginx对于静态文件的处理模块，开启后会寻找以.gz结尾的文件，直接返回，不会占用cpu进行压缩，如果找不到则不进行压缩
+gzip_static on
+```
 
 #### WarnNoModeSetPlugin
 
@@ -596,6 +678,14 @@ cache-loader也可用于其他缓存
 }
 ```
 
+### 过滤不需要做任何处理的库
+```js
+module: {
+  // 这些库都是不依赖其它库的库 不需要解析他们可以加快编译速度
+  noParse: /node_modules\/(moment|chart\.js)/,
+}
+```
+
 ---
 
 ## webpack加载流程
@@ -637,11 +727,14 @@ cache-loader也可用于其他缓存
 ---
 
 ## webpack4
-[参考](https://juejin.im/entry/5b63eb8bf265da0f98317441)
-[webpack4的24个实例](https://juejin.im/post/5cae0f616fb9a068a93f0613?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-1)
+- [参考](https://juejin.im/entry/5b63eb8bf265da0f98317441)
+- [webpack4的24个实例](https://juejin.im/post/5cae0f616fb9a068a93f0613?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-1)
 
 ### 流程图
-![流程](https://www.processon.com/view/5cbd0db6e4b085d0107f438c)
+
+![流程简图](https://www.processon.com/view/5cbd0db6e4b085d0107f438c)
+
+![流程分解](./webpack流程.jpg)
 
 ### 相比webpack3
 * 4多了mode字段，用于切换开发/生成环境
@@ -668,7 +761,7 @@ cache-loader也可用于其他缓存
 ### sideEffects
 import {a} from xx -> import {a} from xx/a
 
-### tree shaking
+### treeShaking
  [参考](https://zhuanlan.zhihu.com/p/32831172)
 
 上面提到的由于副作用，所以不会摇掉的，可以参考下面例子，
@@ -974,7 +1067,7 @@ function __webpack_require__(moduleId) {
 
 **加载函数**
 
-__webpack_require__
+`__webpack_require__`: 将原本的`文件地址 -> 文件内容`转换为`对象的key -> 对象的value（文件内容)`
 
 ---
 
@@ -1068,6 +1161,52 @@ __webpack_require__
 - this.async(): 生成callback函数，callback输出转译的内容
 - this.cacheable(): 直接透传缓存文件
 
+### 实现原理
+
+**loaderParse**
+
+```js
+async loaderParse(entryPath) {
+  // 用utf8格式读取文件内容
+  let [ content, md5Hash ] = await readFileWithHash(entryPath)
+  // 获取用户注入的loader
+  const { loaders } = this
+  // 依次遍历所有loader
+  for(let i=0;i<loaders.length;i++) {
+    const loader = loaders[i]
+    const { test : reg, use } = loader
+    if (entryPath.match(reg)) {
+      // 如果该规则需要应用多个loader,从最后一个开始向前执行
+      if (Array.isArray(use)) {
+        while(use.length) {
+          const cur = use.pop();
+          // 判断当前loader是字符串还是function
+          // 字符串做require引入，function则运行后取返回值即可
+          const loaderHandler = 
+            typeof cur.loader === 'string' 
+              ? require(cur.loader)
+              : (
+                typeof cur.loader === 'function'
+                ? cur.loader : _ => _
+              )
+          content = loaderHandler(content)
+        }
+      // 判断当前loader是字符串
+      } else if (typeof use.loader === 'string') {
+        const loaderHandler = require(use.loader)
+        content = loaderHandler(content)
+      // 判断当前loader是function
+      } else if (typeof use.loader === 'function') {
+        const loaderHandler = use.loader
+        content = loaderHandler(content)
+      }
+    }
+  }
+  return [ content, md5Hash ]
+}
+```
+
+
 ### less-loader
 - 使用@functions做px<->rem转换
   * ```js
@@ -1117,6 +1256,24 @@ __webpack_require__
 - ![import](import-polyfill.png)
 - [据说比babel快几十倍的compiler](https://github.com/swc-project/swc)
 - [prepack-顾名思义代码预编译](https://prepack.io/)
+
+### node-sass
+> 安装node-sass遇到各种编译错误，推荐配置如下：
+
+```js
+{
+  loader: resolve('sass-loader'),
+  options: {
+    // 安装dart-sass模块：npm i -D sass
+    implementation: require('sass'),
+    includePaths: [
+      // 支持绝对路径查找
+      path.resolve(projectDir, 'src'),
+    ],
+    sourceMap,
+  },
+},
+```
 
 ---
 
@@ -1234,4 +1391,11 @@ module.exports = utils;
 - directory: 读取文件的路径
 - useSubdirectories: 是否遍历文件的子目录
 - regEx:  匹配文件的正则
+
+---
+
+## manifest.json
+> webpack编译完成会生成这个文件，用于记录源文件和打包文件之间映射关系
+>
+> 在优化打包速度时（比如根据`Md5Hash`判断是否使用缓存文件），会用到这个配置
 

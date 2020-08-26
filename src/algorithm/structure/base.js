@@ -32,8 +32,8 @@ class TrieNode extends HeapNode {
 }
 
 class BinaryNode {
-  constructor(value = 0) {
-    this.value = value;
+  constructor(val = 0) {
+    this.val = val;
     this.left = null;
     this.right = null;
     this.parent = null;

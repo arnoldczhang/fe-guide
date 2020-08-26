@@ -18,9 +18,11 @@
 * [`最佳实践`](#最佳实践)
 * [`异步错误`](#异步错误)
 * [`进程线程`](#进程线程)
+* [`打印日志`](#打印日志)
 * [`手动打包指南`](#手动打包指南)
-* [`库源码解析`](#库源码解析)
+* [`源码解析`](#库源码解析)
 * [`库开发模式`](#库开发模式)
+* [`内存泄漏`](#内存泄漏)
 * [`其他`](#其他)
 * [`一些尝试`](#一些尝试)
 
@@ -522,7 +524,7 @@ throw new CommonError('abc');
 - 进程、线程间可以共享资源
 
 
-### 示例
+### 原生服务器示例
 
 #### 设置进程信息
 ```js
@@ -602,8 +604,85 @@ process.title = '啊啊啊啊啊';
 console.log(process.pid, ls.pid);
 ```
 
+### express示例
+```js
+const cluster = require('cluster');
+const express = require('express');
+const os = require('os');
+const path = require('path');
+
+const app = express();
+const numCPUs = os.cpus().length;
+
+if (cluster.isMaster) {
+  console.log(`master ${process.pid} start`);
+  for (let i = 0; i < numCPUs; i += 1) {
+    cluster.fork();
+  }
+  cluster.on('exit', (worker, code, signal) => {
+    cosole.log(`worker ${worker.process.pid} exit`);
+  });
+} else {
+  // app do sth
+  app.listen(3000, () => {
+    console.log(`worker ${process.pid} start`);
+  });
+}
+```
+
+### pm2示例
+```cmd
+# 启动两个实例，如果给0，表示根据cpu数量自动生成对应负载均衡服务器
+pm2 start test.js -i 2
+```
+
 ---
 
+## 打印日志
+- [node如何打印日志](https://juejin.im/post/5f0e5701f265da230e6b68c8?utm_source=gold_browser_extension)
+
+[winston](https://www.npmjs.com/package/winston)
+
+```js
+import winston, { format } from 'winston';
+import os from 'os';
+import { session } from './session';
+
+const requestId = format((info) => {
+  // 关于 CLS 中的 requestId
+  info.requestId = session.get('requestId')
+  return info
+});
+
+function createLogger (label: string) {
+  return winston.createLogger({
+    defaultMeta: {
+      serverName: os.hostname(),
+      // 指定日志类型，如 SQL / Request / Access
+      label
+    },
+    format: format.combine(
+      // 打印时间戳
+      format.timestamp(),
+      // 打印 requestId
+      requestId(),
+      // 以 json 格式进行打印
+      format.json()
+    ),
+    transports: [
+      // 存储在文件中
+      new winston.transports.File({
+        dirname: './logs',
+        filename: `${label}.log`,
+      })
+    ]
+  })
+}
+
+const accessLogger = createLogger('access');
+```
+
+---
 ## 手动打包指南
 **css/less**
 
@@ -876,10 +955,69 @@ function promisify(original) {
 - binary: 'latin1' 的别名。
 - hex: 将每个字节编码成两个十六进制的字符。
 
+### node实现websocket
+[参考](https://mp.weixin.qq.com/s/jrXsXch-wnlTcS2JEKe32Q)
+
+---
+
+## 内存泄漏
+[参考](../js&browser/内存管理.md#node内存泄漏)
+
+### 进程内存监控
+
+#### linux
+
+**查看node进程pid**
+
+```sh
+# 1. 通过多余参数
+node index.js shanyue
+ps -ef | grep shanyue
+
+# 2. 通过端口号
+lsof -i:3030
+```
+
+**启动ab测试**
+
+```sh
+# -c: 指定一次向服务器发出请求数
+# -n: 指定测试会话使用的请求数
+ab -c 10000 -n 1000000 http://localhost:3030/
+```
+
+**查看内存占用**
+
+```sh
+# -r: 指输出内存指标
+# -p: 指定 pid
+# 1: 每一秒输出一次
+# 100: 输出100次
+pidstat -r -p 进程的pid 1 100
+
+#UID       PID  minflt/s  majflt/s     VSZ    RSS   %MEM  Command
+#19时20分39秒     0     11401      0.00      0.00  566768  19800   0.12  node
+# ...
+```
+
+VSZ(virtual size): 虚拟内存占用
+
+RSS(Resident Set Size): 常驻内存占用
+
+#### mac
+```sh
+#htop
+htop -p 进程的pid
+
+#top
+top -pid 69608
+```
+
+
 ---
 
 ## 一些尝试
 - [发邮件](./mailer/README.md)
 - [lighthouse-runner](./lighthouse/README.md)
 - [图像识别](../lighthouse/图像识别.js)
-- [sourcemap-compiler](../sourcemap/sourcempaCompiler/README.md)
+- [sourcemap-compiler](../sourcemap/sourcemapCompiler/README.md)

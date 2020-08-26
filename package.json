@@ -48,13 +48,8 @@
   "author": "arnold",
   "license": "MIT",
   "dependencies": {
-    "fingerprintjs2": "^2.1.0",
-    "node-xlsx": "^0.15.0",
-    "nodemailer": "^6.3.1",
     "react": "^16.12.0",
-    "request": "^2.88.0",
-    "source-map": "^0.7.3",
-    "source-map-support": "^0.5.16"
+    "request": "^2.88.0"
   },
   "devDependencies": {}
 }
