@@ -24,9 +24,7 @@ binaryTree.insert(6);
 function searchRange(root, L, R) {
   let sum = 0;
   const search = (node) => {
-    if (!node) {
-      return;
-    }
+    if (!node) return;
     const { left, right, val } = node;
     search(left);
     search(right);
