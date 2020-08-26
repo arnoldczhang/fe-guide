@@ -353,7 +353,7 @@ int BFS(Node start, Node target) {
   Queue<Node> q; // 核心数据结构
   Set<Node> visited; // 避免走回头路
 
-  q.offer(start); // 将起点加入队列
+  q.push(start); // 将起点加入队列
   visited.add(start);
   int step = 0; // 记录扩散的步数
 
@@ -361,14 +361,14 @@ int BFS(Node start, Node target) {
       int sz = q.size();
       /* 将当前队列中的所有节点向四周扩散 */
       for (int i = 0; i < sz; i++) {
-          Node cur = q.poll();
+          Node cur = q.shift();
           /* 划重点：这里判断是否到达终点 */
           if (cur is target)
               return step;
           /* 将 cur 的相邻节点加入队列 */
           for (Node x : cur.adj())
               if (x not in visited) {
-                  q.offer(x);
+                  q.push(x);
                   visited.add(x);
               }
       }
@@ -405,7 +405,7 @@ int binarySearch(int[] nums, int target) {
 
 ```c++
 void slidingWindow(string s, string t) {
-    unordered_map<char, int> need, window;
+    unordered_map<char, int> need = {}, window = {};
     for (char c : t) need[c]++;
 
     int left = 0, right = 0;
