@@ -51,4 +51,24 @@ function perm(s) {
   return result;
 }
 
+// 回溯-优化
+function perm(s) {
+  const { length } = s;
+  const result = [];
+  const backtrack = (str, track = []) => {
+    if (track.length === length) {
+      return result.push(track.join(''));
+    }
+    for (let i = 0; i < str.length; i += 1) {
+      if (track.includes(str[i])) continue;
+      track.push(str[i]);
+      // 跳过当前字母
+      backtrack(str.substring(0, i) + str.substr(i + 1), track.slice());
+      track.pop();
+    }
+  };
+  backtrack(s);
+  return result;
+}
+
 console.log(perm('abcdef'));

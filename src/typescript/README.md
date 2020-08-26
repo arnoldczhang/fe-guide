@@ -12,6 +12,7 @@
 <summary>展开更多</summary>
 
 * [`介绍`](#介绍)
+* [`基础类型`](#基础类型)
 * [`常用语法`](#常用语法)
 * [`SOLID`](#SOLID)
 
@@ -32,6 +33,20 @@
 * interface通常用于定义对象，type可以定义任意类型
 * interface可在子句中重命名，type不行
 * interface可多个合并声明union，type不行
+
+---
+
+## 基础类型
+- Number
+- String
+- 元组
+- Boolean
+- Array
+- Enum
+- void
+- null
+- undefined
+- never（其他类型的子集，表示从不会出现的值）
 
 ---
 

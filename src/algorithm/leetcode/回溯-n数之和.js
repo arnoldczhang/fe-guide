@@ -74,6 +74,7 @@ function nSum(
     lastSum.forEach((sum) => {
       result.push([val].concat(sum));
     });
+    // 跳过和当前相同的数字
     while (i < length - 1 && nums[i] === nums[i + 1]) i += 1;
   }
   return result;

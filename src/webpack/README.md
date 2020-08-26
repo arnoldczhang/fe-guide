@@ -448,14 +448,17 @@ class Compilation {
 
 ## plugin
 
-> apply
+**apply**
+
 > 插件初始化操作
->
-> compiler
+
+**compiler**
+
 > webpack初始化，返回的就是一个compiler对象
 > 内部包含hooks、compilation和finalcallback回调
->
-> compilation
+
+**compilation**
+
 > 针对四种template的具体处理
 > 内部包含hooks、和template处理
 
