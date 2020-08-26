@@ -13,6 +13,7 @@
 
 const randInt = (min, max) => Math.ceil(min + (max - min) * Math.random());
 
+// 遍历
 function shuffle(array) {
   const { length } = array;
   for (let i = 0 ; i < length; i++) {
@@ -22,6 +23,21 @@ function shuffle(array) {
     array[rand] = temp;
   }
   return array;
+}
+
+// 回溯
+function shuffle(nums) {
+  const { length } = nums;
+  const backtrack = (start) => {
+    if (start >= length) return;
+    const randomIndex = start + (Math.random() * (length - start)) >> 0;
+    let tmp = nums[start];
+    nums[start] = nums[randomIndex];
+    nums[randomIndex] = tmp;
+    backtrack(start + 1);
+  };
+  backtrack(0);
+  return nums;
 }
 
 const arr = Array.from({ length: 54 }).fill(1).map((v, i) => v + i);

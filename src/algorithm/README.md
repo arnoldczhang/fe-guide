@@ -331,7 +331,7 @@ var postorderTraversal = function (root) {
 ## 回溯
 > 即dfs
 
-```
+```python
 result = []
 def backtrack(路径, 选择列表):
   if 满足结束条件:
@@ -386,7 +386,7 @@ int binarySearch(int[] nums, int target) {
     int left = 0, right = ...;
 
     while(...) {
-        int mid = left + (right - left) / 2;
+        int mid = left + (right - left) >> 1;
         if (nums[mid] == target) {
             ...
         } else if (nums[mid] < target) {

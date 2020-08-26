@@ -686,7 +686,7 @@ export default React.memo(MyComponent, areEqual);
 ### 方法
 - useState
 - useMemo - 缓存数据、方法等
-- useEffect - mounted后出发
+- useEffect - mounted后触发
 - useCallback - 缓存方法（useMemo可替代）
 - useRef - 缓存数据（useMemo可替代）
 
