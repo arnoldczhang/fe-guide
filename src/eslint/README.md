@@ -2,6 +2,7 @@
 
 ## 参考
 - [自定义eslint](https://mp.weixin.qq.com/s/zDTRB9BQFbzj6SeAM7mVcA)
+- [基于husky做的代码增量eslint](https://juejin.im/post/6865101730166767623?utm_source=gold_browser_extension)
 
 ## 原理
 
