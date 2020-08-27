@@ -24,7 +24,7 @@
       "post-install": "echo 'postinstall'",
       "pre-publish": "echo 'prepublish'",
       "prepare": "echo 'prepare'",
-      "pre-commit": "lint-staged",
+      "pre-commit": "yarn run test",
       "post-commit": "echo 'postcommit'",
       "post-receive": "echo 'postreceive'"
     }
