@@ -19,7 +19,7 @@ function longestPalindrome(s) {
         right += 1;
       }
 
-      const len = right - left - 1;
+      const len = (right - 1 ) - (left + 1) + 1;
       if (len > result.length) {
         result = s.substr(left + 1, len);
       }

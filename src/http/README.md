@@ -39,8 +39,14 @@
 
 ## 总览
 
+![http五大类知识](./http五大类知识.png)
+
+**TCP-IP 协议层次**
+
 ![TCP-IP 协议层次](./TCP-IP协议层次.jpg)
 
+
+**TCP-IP 协议模型**
 
 ![TCP-IP 协议模型](./TCP-IP协议模型.png)
 
