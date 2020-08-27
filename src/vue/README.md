@@ -6,6 +6,7 @@
 - [一份超级详细的 Vue-cli3.0 使用教程](http://obkoro1.com/web_accumulate/accumulate/tool/%E4%B8%80%E4%BB%BD%E8%B6%85%E7%BA%A7%E8%AF%A6%E7%BB%86%E7%9A%84Vue-cli3.0%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B.html#node%E7%89%88%E6%9C%AC%E8%A6%81%E6%B1%82%EF%BC%9A)
 - [ts + vue](https://segmentfault.com/a/1190000011878086?utm_source=tag-newest)
 - [codemirror](https://codemirror.net/doc/manual.html)
+- [深度使用vue](https://juejin.im/post/6862560722531352583?utm_source=gold_browser_extension)
 - [vue 虚拟滚动](https://github.com/Akryum/vue-virtual-scroller#variable-size-mode)
 
 ## 目录
