@@ -48,6 +48,7 @@
   "author": "arnold",
   "license": "MIT",
   "dependencies": {
+    "husky": "^4.2.5",
     "react": "^16.12.0",
     "request": "^2.88.0"
   },
