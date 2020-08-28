@@ -21,3 +21,16 @@
 ## git提交信息
 [git-commit](https://nitayneeman.com/posts/understanding-semantic-commit-messages-using-git-and-angular/#fix)
 
+## git-blame
+
+```
+// 看差异
+git blame ./package.json
+```
+
+## git-branch
+
+```
+// 查远程所有分支包含某次commit
+git branch -r --contains commitID
+```
