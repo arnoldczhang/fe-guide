@@ -21,6 +21,8 @@
 - [创意海报库](https://www.chuangkit.com/designtools/designindex)
 - [卡通的网站](https://uglyduck.ca/articles/)
 - [一些新的布局方法](https://mp.weixin.qq.com/s/HYUgb8jEI-aQhbN4sBajNw)
+- [自动配渐变色](https://www.gradientmagic.com/)
+- [生成3d字体](https://bennettfeely.com/ztext/)
 
 ## 目录
 <details>
