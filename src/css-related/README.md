@@ -799,6 +799,13 @@ border: 0 - 边框宽度为0，会渲染，占内存
 ### background-blend-mode
 [参考](https://www.zhangxinxu.com/wordpress/2020/07/css-background-blend-mode/)
 
+### font-smoothing
+```css
+-webkit-font-smoothing: none; # 无抗锯齿
+
+-webkit-font-smoothing: antialiased # 抗锯齿
+```
+
 ---
 
 ## 布局

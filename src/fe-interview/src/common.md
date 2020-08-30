@@ -175,6 +175,7 @@
 * [`清除浮动`](#清除浮动)
 * [`图片加载失败处理`](#图片加载失败处理)
 * [`暗黑模式`](#暗黑模式)
+* [`抗锯齿`](#抗锯齿)
 
 **html**
 
@@ -3460,3 +3461,6 @@ function bar(a, b, c) {
 
 console.log(bar(1,1,1)); // 21
 ```
+
+### 抗锯齿
+[font-smooth](../../css-related/README.md#font-smoothing)
