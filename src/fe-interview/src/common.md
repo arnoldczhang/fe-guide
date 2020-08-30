@@ -17,6 +17,8 @@
 **基础 js**
 
 * [`==和===`](#==和===)
+* [`arguments`](#arguments)
+* [`isNaN和Number.isNaN`](#isNaN和Number.isNaN)
 * [`[]==![]`](#[]==![])
 * [`let、const以及var的区别`](#let、const以及var的区别)
 * [`this`](#this)
@@ -121,6 +123,7 @@
 * [`描述网页从输入url到渲染的过程`](#描述网页从输入url到渲染的过程)
 * [`TCP三次握手&四次挥手的理解`](#TCP三次握手&四次挥手的理解)
 * [`重绘和回流`](#重绘和回流)
+* [`cookie弊端`](#cookie弊端)
 * [`cookie和token都存放在header中，为什么不会劫持token`](#cookie和token都存放在header中，为什么不会劫持token)
 * [`如何实现token加密`](#如何实现token加密)
 * [`浏览器缓存读取规则`](#浏览器缓存读取规则)
@@ -201,7 +204,7 @@
 
 </details>
 
-### == 和 ===
+### ==和===
 
 - === 不需要进行类型转换，只有类型相同并且值相等时，才返回 true.
 - == 如果两者类型不同，首先需要进行类型转换。具体流程如下:
@@ -211,6 +214,18 @@
   * 判断其中一方是否为 boolean, 如果是, 将 boolean 转为 number 再进行判断；
   * 判断两者类型是否为 string 和 number, 如果是, 将字符串转换成 number；
   * 判断其中一方是否为 object 且另一方为 string、number 或者 symbol , 如果是, 将 object 转为原始类型再进行判断。
+
+
+```js
+const a = [1, 2, 3];
+const b = [1, 2, 3];
+
+console.log(a == b); // 引用类型，false
+console.log(a === b); // 引用类型，false
+console.log(a < b); // toString，3 < 4，true
+console.log(a > b); // toString，3 > 4，false
+
+```
 
 ---
 
@@ -261,6 +276,19 @@ A: const 不允许修改声明绑定，允许修改值
 - 解析代码，获取被声明的变量（var、function）
 - 按行执行
 - 变量提升
+
+```js
+var name = 'abc';
+
+(function() {
+  if (typeof name === 'undefined') {
+    var name = 'cba'; // 变量提升
+    console.log(name); // 会走这里
+  } else {
+    console.log(name);
+  }
+})();
+```
 
 #### 提升顺序
 
@@ -1203,9 +1231,10 @@ function vs class
 
 ---
 
-### 模拟 async&await
+### 模拟async&await
 
 参考 babel 转换后的代码
+[实现](./async&await.js)
 
 async/await
 -> Generator
@@ -3380,3 +3409,54 @@ console.log(b); // { x: { y: 2 } }
 
 ### Object.is
 [Object.is](../../js&browser/基本常识.md#Object.is)
+
+---
+
+### isNaN和Number.isNaN
+
+**isNaN**
+
+1. 输入转数字
+2. 判断
+
+**Number.isNaN**
+
+1. 判断是否为数字，不是的话直接返回false
+2. 再判断
+
+```js
+const name = 'abc';
+const age = 123;
+
+console.log(Number.isNaN(name)); // false
+console.log(Number.isNaN(age)); // false
+
+console.log(isNaN(name)); // true
+console.log(isNaN(age)); // false
+```
+
+---
+
+### cookie弊端
+[cookie](../../js&browser/基本常识.md#cookie)
+
+---
+
+### arguments
+
+- arguments是类数组对象
+- 内部的key赋值操作都是有效
+
+```js
+function sideEffect(args) {
+  args[0] = args[2]; // 赋值有效
+}
+
+function bar(a, b, c) {
+  c = 10;
+  sideEffect(arguments);
+  return a + b + c;
+}
+
+console.log(bar(1,1,1)); // 21
+```
