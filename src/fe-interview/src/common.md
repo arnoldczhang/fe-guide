@@ -40,6 +40,7 @@
 * [`setTimeout输出0-9改法`](#setTimeout输出0-9改法)
 * [`闭包`](#闭包)
 * [`bind`](#bind)
+* [`Object.is`](#Object.is)
 * [`作用域`](#作用域)
 * [`实现sleep`](#实现sleep)
 * [`class/function`](#class/function)
@@ -3376,3 +3377,6 @@ console.log(b); // { x: { y: 2 } }
 - 标记压缩
 
 ---
+
+### Object.is
+[Object.is](../../js&browser/基本常识.md#Object.is)
