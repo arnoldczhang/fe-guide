@@ -65,7 +65,6 @@
 * [`appendVSappendChild`](#appendVSappendChild)
 * [`passive`](#passive)
 * [`解构赋值`](#解构赋值)
-* [`URLSearchParams`](#URLSearchParams)
 * [`创建n个有值元素的数组`](#创建n个有值元素的数组)
 * [`数字转金额分割`](#数字转金额分割)
 * [`JSON.stringify`](#JSON.stringify)
@@ -78,7 +77,7 @@
 * [`Promise.all实现`](#Promise.all实现)
 * [`jsbridge`](#jsbridge)
 * [`前端监控&异常捕获`](#前端监控&异常捕获)
-* [`如何实现URLSearchParams`](#如何实现URLSearchParams)
+* [`如何实现URLSearchParams`](#URLSearchParams)
 * [`浏览器用esmodule不用cjs的原因`](#浏览器用esmodule不用cjs的原因)
 
 **构建/打包**
@@ -2918,141 +2917,20 @@ function findPrototypeByProperty(obj, name) {
 
 ---
 
-### 如何实现 URLSearchParams
-
-> 要求
-
-```js
-searchParams = new URLSearchParams("foo=1&bar=2") 
-
-// 构造函数也支持传入一个包含参数键值对的对象
-searchParams = new URLSearchParams({foo: "1", bar: "2"})
-
-// 实例支持 get()、set()、has()、append() 四个方法
-console.log(searchParams.get("foo")) // "1"
-searchParams.set("foo", "10") 
-console.log(searchParams.has("bar")) // true
-searchParams.append("foo", "100") 
-
-// 实例支持 toString() 方法
-console.log(searchParams.toString()) // "foo=10&bar=2&foo=100"
-
-// 实例支持 for-of 迭代
-for(const [key, value] of searchParams) {
-  console.log([key, value])
-  // ["foo", "10"]
-  // ["bar", "2"]
-  // ["foo", "100"]
-}
-```
-
-> 解答
-
-```js
-class URLSearchParams {
-  constructor(search) {
-    this.search = search;
-    this.init();
-  }
-
-  init() {
-    const type = typeof this.search;
-    if (type === 'string') {
-      this.searchObj = this.convert2Obj();
-    } else if (type === 'object') {
-      this.searchObj = this.search;
-      this.search = this.convert2Str();
-    } else {
-      throw new Error('search must be string or object');
-    }
-  }
-
-  get(key) {
-    return this.searchObj[key];
-  }
-  
-  set(key, value) {
-    this.searchObj[key] = value;
-    this.search = this.convert2Str();
-  }
-  
-  has(key) {
-    return key in this.searchObj;
-  }
-  
-  append(key, value) {
-    if (key in this.searchObj) {
-      const val = this.searchObj[key];
-      if (Array.isArray(val)) {
-        val.push(value);
-        this.searchObj[key] = val;
-      } else {
-        this.searchObj[key] = [val, value];
-      }
-      this.search = this.convert2Str();
-    }
-  }
-  
-
-  convert2Obj(search = this.search) {
-    const arr = search.split('&');
-    const result = {};
-    arr.forEach((v) => {
-      const [ key, value ] = v.split('=');
-      if (key) {
-        if (key in result) {
-          result[key] = Array.isArray(result[key]) ? result[key].concat(value) : [result[key], value];
-        } else {
-          result[key] = value;
-        }
-      }
-    });
-    return result;
-  }
-
-  convert2Str(obj = this.searchObj) {
-    return Object.keys(obj).reduce((key, res) => {
-      const value = obj[key];
-      if (Array.isArray(value)) {
-        res += value.map(val => `&${key}=${val}`).join('');
-      } else {
-        res += `&${key}=${value}`;
-      }
-      return res;
-    }, '');
-  }
-
-  [Symbol.iterator]() {
-    const arr = Object.entries(this.searchObj);
-    let index = 0;
-		return {
-			next: () => {
-				return {
-					value: arr[index],
-					done: index++ >= arr.length,
-				};
-			},
-		};
-	}
-}
-```
-
----
-
-### react 优化指南
-
+### react优化指南
 [参考](../../react/README.md)
 
 ---
 
 ### URLSearchParams
+[如何实现URLSearchParams](./urlSearchParams.js)
 
 - URLSearchParams 接口定义了一些实用的方法来处理 URL 的查询字符串
 - 一个实现了 URLSearchParams 的对象可以直接用在 for...of 结构中
 
 ---
 
-### 如何判断对象是否被 GC
+### 如何判断对象是否被GC
 
 1. Chrome-Memory
 2. 对象操作前，记录一次快照
@@ -3061,17 +2939,17 @@ class URLSearchParams {
 
 ---
 
-### get 和 post 区别
+### get和post区别
 
 [参考](../../js&browser/页面过程与浏览器缓存.md#GETvsPOST)
 
 ---
 
-### 创建 n 个有值元素的数组
+### 创建n个有值元素的数组
 
 - for 循环直接撸
 - [...Array(n)].map(() => ...)
-- Array.from({ length: n }, (_, i) => ...)
+- **Array.from({ length: n }, (_, i) => ...)**
 - Array(n).fill(...)
 - [generator](../../meta-programming/README.md#Generator)
 
