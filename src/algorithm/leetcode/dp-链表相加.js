@@ -66,4 +66,20 @@ function addTwoNumbers(l1, l2) {
   return head.next;
 };
 
-console.log(addTwoNumbers(list1, list2));
+console.log(addTwoNumbers({
+  val: 2,
+  next: {
+    val: 4,
+    next: {
+      val: 3,
+    },
+  },
+}, {
+  val: 5,
+  next: {
+    val: 6,
+    next: {
+      val: 4,
+    },
+  },
+}));
