@@ -8,7 +8,117 @@
 
 ---
 
+## 介绍
+
+![lighthouse架构](lighthouse架构.jpeg)
+
+### 基本流程
+
+> 可以分为：采集 -> 消费 -> 输出报告
+
+**采集-Gatherers**
+
+lighthouse默认会提供很多`gatherers`采集需要的数据，但是还有部分没有采集（比如手动调用的console.log）。
+
+我们可以自定义类似的`gatherers`
+
+```js
+class ConsoleLogs extends Gatherer {
+
+  private logs: CM.LogItem[] = [];
+
+  private onRuntimeConsoleAPICalledThis: (...args: any[]) => void;
+
+  constructor() {
+    super();
+    this.onRuntimeConsoleAPICalledThis = this.onRuntimeConsoleAPICalled.bind(this);
+  }
+
+  public onRuntimeConsoleAPICalled(entry: CM.LogItem) {
+    const { type, args = [] } = entry;
+    if (
+      type === 'log'
+      && args.length >= 2
+      && logKeys.includes(args[0].value)
+    ) {
+      this.logs.push(entry);
+    }
+  }
+
+  public beforePass(passContext: LH.Gatherer.PassContext) {
+    const { driver } = passContext;
+    // 初始化，监听console调用
+    driver.on('Runtime.consoleAPICalled', this.onRuntimeConsoleAPICalledThis);
+  }
+
+  public async afterPass(
+    passContext: LH.Gatherer.PassContext,
+  ) {
+    const { driver } = passContext;
+    // 卸载时，移除console监听
+    await driver.off('Runtime.consoleAPICalled', this.onRuntimeConsoleAPICalledThis);
+    return this.logs;
+  }
+}
+
+export = ConsoleLogs;
+```
+
+**消费-Audits**
+
+`audits`即审计项，用于消费`gatherers`里采集的原始信息，这块我们也可以自定义
+
+```js
+class MyAudit extends Audit {
+  static get meta() {
+    return {
+      description: '描述',
+      id: 'audit-id',
+      requiredArtifacts: [
+        '依赖的gatherers',
+      ],
+      title: '标题',
+    };
+  }
+
+  public static audit(artifacts: LH.Artifacts & CM.CustomArtifact) {
+    // 一些处理...
+    return {
+      details: Audit.makeTableDetails(MyAudit.getHeadings(), data), // '审计项内容，一般为表格输出'
+      displayValue: '审计项标题',
+      score: 1, // 得分，0-1
+    };
+  }
+
+  private static getHeadings() {
+    return [
+      {
+        itemType: 'text',
+        key: 'mykey',
+        text: '名称',
+      },
+      // ...
+    ];
+  }
+}
+
+export = MyAudit;
+```
+
+### 报告分类
+
+- 性能
+- 渐进式
+- seo
+- 最佳实践
+- 无障碍
+
+
+
+---
+
 ## lighthouse封装
+
 - [参考](../node/lighthouse/README.md)
 - [自定义lighthouse统计指标](https://github.com/GoogleChrome/lighthouse/blob/master/docs/recipes/lighthouse-plugin-example/readme.md)
 

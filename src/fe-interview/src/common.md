@@ -70,6 +70,7 @@
 * [`JSON.stringify`](#JSON.stringify)
 * [`连续赋值`](#连续赋值)
 * [`constructor.prototype.constructor`](#constructor.prototype.constructor)
+* [forEach和forof](#forEach和forof)
 
 **进阶 js**
 
@@ -3342,3 +3343,60 @@ console.log(bar(1,1,1)); // 21
 
 ### 抗锯齿
 [font-smooth](../../css-related/README.md#font-smoothing)
+
+---
+
+### forEach和forof
+
+> Q：说出下面的执行结果
+>
+> A：1 秒后，一次性输出1，4，9。因为forEach底层仅执行传入的回调，没有做异步处理
+
+```js
+var multi = num => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (num) {
+        resolve(num * num);
+      } else {
+        reject(new Error('num not specified'));
+      }
+    }, 1000);
+  })
+}
+async function test () {
+  var nums = [1, 2, 3];
+  nums.forEach(async x => {
+    var res = await multi(x);
+    console.log(res);
+  })
+}
+test();
+```
+
+> Q：如果希望每隔1s输出一次结果，该怎么改
+
+```js
+// 方式一：for...of
+async function test () {
+  var nums = [1, 2, 3];
+  for(let x of nums) {
+    var res = await multi(x);
+    console.log(res);
+  }
+}
+
+// 方式二：Symbol.iterator
+async function test() {
+  const iterator = list[Symbol.iterator]();
+  let result = iterator.next();
+  while(!result.done) {
+    const res = await square(result.value);
+    console.log(res);
+    result = iterator.next();
+  }
+}
+```
+
+
+
