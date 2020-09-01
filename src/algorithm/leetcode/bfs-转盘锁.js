@@ -14,7 +14,7 @@
  * 
  */
 
- // 纯BFS
+ // bfs
 function openLock(deadends, target) {
   const visited = new Set(deadends);
   const q = [];
@@ -63,7 +63,51 @@ function openLock(deadends, target) {
     step += 1;
   }
   return -1;
-};
+}
+
+// bfs优化
+function openLock(deadends, target) {
+  const initial = '0000';
+  const visited = new Set(deadends);
+  const q = [];
+  let times = 0;
+  q.push(initial);
+  visited.add(initial);
+
+  const getAdj = (num) => {
+    const result = [];
+    const arr = [...num];
+    arr.forEach((it, i) => {
+      let up = Number(it) + 1;
+      let down = it - 1;
+      up = up > 9 ? 0 : up;
+      down = down < 0 ? 9 : down;
+      result.push(arr.slice(0, i).concat(up).concat(arr.slice(i + 1)).join(''));
+      result.push(arr.slice(0, i).concat(down).concat(arr.slice(i + 1)).join(''));
+    });
+    return result;
+  };
+
+  while (q.length) {
+    const { length } = q;
+    for (let i  = 0; i < length; i += 1) {
+      const now = q.shift();
+      if (now === target) {
+        return times;
+      }
+
+      const adjacents = getAdj(now);
+      adjacents.forEach((adj) => {
+        if (!visited.has(adj)) {
+          visited.add(adj);
+          q.push(adj);
+        }
+      });
+    }
+    times += 1;
+  }
+  return -1;
+}
 
 // console.log(openLock(["0201","0101","0102","1212","2002"], "0202"));
 console.log(openLock(

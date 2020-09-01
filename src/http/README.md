@@ -43,7 +43,7 @@
 
 ![http五大类知识](./http五大类知识.png)
 
-**TCP-IP 协议层次**
+**TCP-IP 协议层级**
 
 ![TCP-IP 协议层次](./TCP-IP协议层次.jpg)
 
@@ -92,7 +92,6 @@
 #### 一对多
 
 - 一个 tcp 连接可以发送多个 http 请求（原因：Connection: keep-alive）
-- chrome 里可以通过 network 里的 `Connection ID` 查看（http1.1对同一域名支持最多并发 6 个tcp连接，h2 没有限制)
 - 设置 **Connection: close** 的话，一个 http 请求结束就会断掉 tcp 连接
 - 维持连接的优点是能省下请求的**初始化和 ssl 连接**时间
 
@@ -104,7 +103,8 @@
 
 #### 连接上限
 
-- Chrome 最多允许对同一个 Host 建立六个 TCP 连接，不同的浏览器有一些区别
+- chrome 里可以通过 network 里的 `Connection ID` 查看单个 tcp 连接
+- 对同一域名，http1.1支持最多并发 6 个tcp连接，h2 没有限制，不同的浏览器有一些区别
 
 #### 丢包处理
 
@@ -234,7 +234,7 @@
 **连接数**
 
 - tcp 是一对一
-- udp 支持多种，一对一，一对多，多对多
+- udp 支持多种（1. 一对一 2. 一对多 3. 多对多）
 
 **首部开销**
 
@@ -737,7 +737,7 @@ map $http_cookie $resources {
 - 服务端 A，将自己的公钥 key 发给 CA，申请证书
 - CA 对服务端 A 的公钥 key 做 hash 处理
 - CA 对 hash 后的值用私钥加密，得到数字签名
-- 证书明文（服务端A公钥 key） + hash算法 + 数字签名 = 数字证书，颁发给网站
+- 证书明文（服务端A公钥 key） + hash算法 + 数字签名 = 数字证书（颁发给网站）
 
 **鉴别真伪**
 
