@@ -44,7 +44,7 @@ function longestPalindrome(s) {
 function longestPalindrome(s) {
   let res = '';
   const { length } = s;
-  const dp = Array.from(new Array(length), () => new Array(length).fill(0));
+  const dp = Array.from(new Array(length), () => new Array(length).fill(false));
   for (let i = length - 1; i >= 0; i -= 1) {
     for (let j = i; j < length; j += 1) {
       dp[i][j] = s[i] === s[j] && (j - i < 2 || dp[i + 1][j - 1]);
