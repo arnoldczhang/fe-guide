@@ -289,7 +289,7 @@ document.link.disabled = false;
 #### 层叠顺序
 ![层叠顺序](./层叠顺序.png)
 
-注：inline/inline-block的等级高于block，是因为网页设计之初就是希望文字能不被覆盖
+**注：inline/inline-block的等级高于block，是因为网页设计之初就是希望文字能不被覆盖**
 
 ---
 
@@ -386,18 +386,22 @@ filter:blur（数值）
 ### 1px
 - border-image
   * ```css
-  .border_1px{
+    .border_1px{
     border-bottom: 1px solid #000;
-  }
-  @media only screen and (-webkit-min-device-pixel-ratio:2){
+    }
+    @media only screen and (-webkit-min-device-pixel-ratio:2){
       .border_1px{
           border-bottom: none;
           border-width: 0 0 1px 0;
           border-image: url(../img/1pxline.png) 0 0 2 0 stretch;
       }
-  }
+    }
+    ```
+  ```
+  
   ```
 - background-image
+  
   * 同border-image
 - 伪类 + scaleY(0.5)
   * ```css
