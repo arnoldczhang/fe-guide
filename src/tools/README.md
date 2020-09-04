@@ -19,6 +19,7 @@
 - [伪随机数各种生成方法](https://github.com/bryc/code/blob/master/jshash/PRNGs.md)
 - [各大门户网站页面设计变革](https://www.webdesignmuseum.org/)
 - [在线将任意图片转为二维码](https://www.qrpicture.com/)
+- [在线工具集-超多](https://www.v2fy.com/p/readme-onlinetoolsbook/)
 
 ## 高德
 - [查两点间轨迹](https://restapi.amap.com/v3/direction/driving?origin=lng,lat643&destination=lng,lat&extensions=all&output=json&key=KEY)
