@@ -21,9 +21,7 @@ function multiply(num1, num2) {
       dp[i + j] += sum / 10 >> 0;
     }
   }
-  while (dp[0] === 0) {
-    dp.shift();
-  }
+  while (dp[0] === 0) dp.shift();
   return dp.length ? dp.join('') : '0';
 }
 

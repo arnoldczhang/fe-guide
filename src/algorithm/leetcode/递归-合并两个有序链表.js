@@ -42,3 +42,5 @@ console.log(mergeTwoLists({
     },
   },
 }));
+
+module.export = mergeTwoLists;
