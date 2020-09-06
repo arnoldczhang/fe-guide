@@ -71,6 +71,7 @@
 * [`连续赋值`](#连续赋值)
 * [`constructor.prototype.constructor`](#constructor.prototype.constructor)
 * [forEach和forof](#forEach和forof)
+* [金额format](#金额format)
 
 **进阶 js**
 
@@ -3414,5 +3415,10 @@ async function test() {
 }
 ```
 
+---
 
+### 金额format
+```js
+number.toString().replace(/(\d{1,2})(?=(\d{3})+(\.\d{1,2})?$)/g, '$1, ');
+```
 
