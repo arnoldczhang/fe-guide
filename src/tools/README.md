@@ -24,7 +24,7 @@
 ## 高德
 - [查两点间轨迹](https://restapi.amap.com/v3/direction/driving?origin=lng,lat643&destination=lng,lat&extensions=all&output=json&key=KEY)
 
-## 工具库
+## utils库
 - [fullpage.js](https://alvarotrigo.com/fullPage/)
 - [draft.js-富文本编辑器](https://zhuanlan.zhihu.com/p/24951621)
 - [es-check-检测es6代码](https://www.npmjs.com/package/es-check)
@@ -36,3 +36,10 @@
 - [Charles](https://www.newasp.net/soft/314929.html)
 - [Charles](http://www.sohu.com/a/303868014_120031027)
 - [docker](https://www.runoob.com/docker/macos-docker-install.html)
+
+## 开课吧
+
+react原理剖析：http://t.kuick.cn/RC08
+React源码扩展：http://t.kuick.cn/RC0n
+React 组件化： http://t.kuick.cn/RC04
+
