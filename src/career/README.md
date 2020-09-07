@@ -12,6 +12,7 @@
 - [架构师能力模型](https://mp.weixin.qq.com/s?__biz=MzI0MTczNDgyOQ==&mid=2247484195&idx=1&sn=4023a1def4da46509a481b77e297e1f7&chksm=e90646e1de71cff786e0b7a3c6ce12074b1df0502a57a5553554b18fa91ab280160708d06e09&xtrack=1&scene=0&subscene=131&clicktime=1554469736&ascene=7&devicetype=android-28&version=2700033c&nettype=WIFI&abtest_cookie=BAABAAoACwASABMABQAjlx4AVpkeANCZHgDamR4A3JkeAAAA&lang=zh_CN&pass_ticket=AHr/9Slxa9wyQOBtmYsQinKiS+CRt/uP1tbENeGh5nL+qvkco8ifDo8OmS6Y/JS4&wx_header=1&utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 - [技术主管之路](https://segmentfault.com/a/1190000018894283?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 - [前端早早聊](https://www.yuque.com/zaotalk/posts/enec3e)
+- [vivo商场前后端架构演进](https://mp.weixin.qq.com/s/vD9yvYNaxTQBLABik6aqNg)
 
 ## 目录
 <details>
@@ -32,6 +33,7 @@
 * [`无障碍`](#无障碍)
 * [`设计模式`](#设计模式)
 * [`代码保护`](#代码保护)
+* [`SOLID`](#SOLID)
 * [`快速开发`](#快速开发)
 * [`产品相关`](#产品相关)
 * [`视觉设计相关`](#视觉设计相关)
@@ -627,3 +629,10 @@ import module1 from 'module1'
 - 热情 =》主动
 - 独立思考 + 程序化思维 =》学习能力
 - 沟通 =》全面发展
+
+---
+
+## SOLID
+[ts-solid](../typescript/README.md#SOLID)
+
+
