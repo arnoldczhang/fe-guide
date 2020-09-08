@@ -1,6 +1,7 @@
 # puppeteer
 
 ## 参考
+- [electron+puppeteer+Robotjs实践](https://mp.weixin.qq.com/s/mziw_VfwcO_qLglypbzy2A)
 - [中文api](https://zhaoqize.github.io/puppeteer-api-zh_CN/#?product=Puppeteer&version=v3.0.1&show=api-class-puppeteer)
 
 ---
