@@ -2,6 +2,7 @@
 
 ## 参考
 - [图片优化](https://mp.weixin.qq.com/s/euvdMHkYUXHmgkV9D334NQ)
+- [canvas做图片压缩](https://segmentfault.com/a/1190000023486410)
 
 ## 目录
 <details>
@@ -56,7 +57,7 @@ png8、png24、png32
 ---
 
 ## 视频
-<video>仅支持webm和MP4
+html的`<video>`仅支持webm和MP4，区别在于：
 
 webm - 支持透明
 mp4 - 没有透明通道
