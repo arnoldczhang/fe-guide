@@ -31,6 +31,7 @@
 - [检测循环引用](https://www.npmjs.com/package/circular-dependency-plugin)
 - [inspectpack-检测重复包](https://github.com/FormidableLabs/inspectpack/#plugin)
 - [otplib.js-单次验证](https://www.npmjs.com/package/otplib)
+- [skia-服务端画canvas](https://github.com/samizdatco/skia-canvas)
 
 ## 常用工具
 - [Charles](https://www.newasp.net/soft/314929.html)
