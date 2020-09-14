@@ -206,6 +206,7 @@
 **小知识**
 
 * [`utm字段`](#utm字段)
+* [`鸿蒙系统`](#鸿蒙系统)
 
 </details>
 
@@ -3432,6 +3433,12 @@ async function test() {
 
 ### 模拟节流请求
 [模拟节流请求](./模拟节流请求.js)
+
+---
+
+### 鸿蒙系统
+- [仓库](https://gitee.com/openharmony)
+- [鸿蒙系统中的 JS 开发框架](https://mp.weixin.qq.com/s/IhACmlQ6Df0A2R-Y9Kkxig)
 
 ---
 
