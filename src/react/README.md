@@ -6,7 +6,7 @@
 - 解析过程见 ./src/mobx/react16-*.png
 - vdom 见 https://zhuanlan.zhihu.com/p/35876032
 - [fiber](https://zhuanlan.zhihu.com/p/37098539)
-- [ HOC 复用和拆分](https://zhuanlan.zhihu.com/p/40245156)
+- [HOC 复用和拆分](https://zhuanlan.zhihu.com/p/40245156)
 - [react-redux](https://segmentfault.com/a/1190000012976767)
 - [react17](https://zhuanlan.zhihu.com/p/46147401)
 - [redux 大型项目](https://zhuanlan.zhihu.com/p/47396514)
@@ -40,6 +40,8 @@
 * [`interview`](#interview)
 * [`优化指南`](#优化指南)
 * [`react+ts`](#react+ts)
+* [`create react app`](#create-react-app)
+* [`react router`](#react-router)
 
 </details>
 
@@ -681,7 +683,8 @@ export default React.memo(MyComponent, areEqual);
 
 ## ReactHooks
 ![react hooks](react-hook.jpg)
-[精简实现hooks](https://mp.weixin.qq.com/s/YLSD4IojDWTPlov_RQtVAA)
+- [精简实现hooks](https://mp.weixin.qq.com/s/YLSD4IojDWTPlov_RQtVAA)
+- [使用必读](https://zhuanlan.zhihu.com/p/113216415)
 
 ### 方法
 - useState
@@ -735,4 +738,21 @@ function dispatchAction(queue = hook.queue, action) {
 }
 ```
 
+---
+
+## create-react-app
+[参考](https://create-react-app.dev/docs/adding-typescript)
+一般来说初始化带typescript即可
+```
+npx create-react-app my-app --template typescript
+```
+
+---
+
+## react-router
+[参考](https://reactrouter.com/web/example/basic)
+
+router默认不做按需加载处理，需要[手动实现](https://blog.csdn.net/jacktesla/article/details/80792110?utm_medium=distribute.pc_relevant_download.none-task-blog-baidujs-2.nonecase&depth_1-utm_source=distribute.pc_relevant_download.none-task-blog-baidujs-2.nonecase)
+
+---
 
