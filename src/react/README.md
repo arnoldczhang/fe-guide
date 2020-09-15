@@ -31,6 +31,7 @@
 * [`更新过程`](#更新过程)
 * [`react16之前`](#react16之前)
 * [`react16`](#react16)
+* [`react16.13原理`](#react16.13原理)
 * [`redux大型项目构建`](#redux大型项目构建)
 * [`React Hooks`](#ReactHooks)
 * [`React进阶`](#React进阶)
@@ -753,6 +754,30 @@ npx create-react-app my-app --template typescript
 [参考](https://reactrouter.com/web/example/basic)
 
 router默认不做按需加载处理，需要[手动实现](https://blog.csdn.net/jacktesla/article/details/80792110?utm_medium=distribute.pc_relevant_download.none-task-blog-baidujs-2.nonecase&depth_1-utm_source=distribute.pc_relevant_download.none-task-blog-baidujs-2.nonecase)
+
+---
+
+## react16.13原理
+
+### 核心api
+
+- React.createElement: 创建虚拟DOM
+- React.Component: 实现自定义组件
+- ReactDOM.render: 渲染真实DOM
+
+**createElement**
+
+```js
+function createElement(type, props, children) {
+
+}
+```
+
+**Component**
+
+
+
+**render**
 
 ---
 
