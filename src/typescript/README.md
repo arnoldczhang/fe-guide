@@ -48,6 +48,64 @@
 - undefined
 - never（其他类型的子集，表示从不会出现的值）
 
+### 元组
+```ts
+// 1. 数组可以定义各元素不同类型
+// 2. 初始顺序必须和定义类型一致
+// 3. 之后push进去的元素，类型必须包含在定义类型中
+let arr: [string, number] = ['a', 123];
+```
+
+### never
+> 当一个函数一定不会执行`return`，即中途会抛错时，用never，否则别用
+
+```ts
+function fn(): never {
+  throw new Error('');
+}
+
+let a: string;
+a = fn(); // 这样可以，never是其他类型子类型
+let b: never;
+b = a; // 这样不行
+```
+
+### enum
+> enum 枚举名称{ key1=value1, key2=value2 }
+> 1. key不能是数字
+
+```ts
+enum HttpCode {
+    /** 成功 */
+    '200_OK' = 200,
+    /** 已生成了新的资源 */
+    '201_Created' = 201,
+    /** 请求稍后会被处理 */
+    '202_Accepted' = 202,
+    /** 资源已经不存在 */
+    '204_NoContent' = 204,
+    /** 被请求的资源有一系列可供选择的回馈信息 */
+    '300_MultipleChoices' = 300,
+    /** 永久性转移 */
+    '301_MovedPermanently' = 301,
+    /** 暂时性转移 */
+    '302_MoveTemporarily' = 302,
+}
+
+// 相比于普通对象map，只能用key访问value，
+// enum能同时用key和value，访问到value和key
+HttpCode['200_OK']
+HttpCode[200]
+```
+
+### any
+> 可以赋值给任意类型
+
+### unknown
+> 1. 更安全的any
+> 2. 仅能赋值给unknown、any
+> 3. 没有任何属性、方法
+
 ---
 
 ## 常用语法
@@ -55,8 +113,8 @@
 ### 让某个接口中的所有属性变为可选
 ```ts
 interface Person {
-    name: string;
-    age: number;
+  name: string;
+  age: number;
 }
 
 // 方式1
@@ -189,7 +247,8 @@ process().toUpperCase() // error
 ```
 
 ### Record
-类似enum
+> 类似enum
+
 ```ts
 type AnimalType = 'cat' | 'dog' | 'frog';
 interface AnimalDescription { name: string, icon: string }
@@ -220,31 +279,6 @@ const AnimalMap: Record<AnimalType, AnimalDescription> = {
 export function genErrMsg (message: string, code: number | string, type?: ('demo1' | 'demo2')): string {
     return (message || `网络繁忙，请稍候再试`) + (code ? `(${code})` : ``)
 }
-```
-
-### enum
-```ts
-enum HttpCode {
-    /** 成功 */
-    '200_OK' = 200,
-    /** 已生成了新的资源 */
-    '201_Created' = 201,
-    /** 请求稍后会被处理 */
-    '202_Accepted' = 202,
-    /** 资源已经不存在 */
-    '204_NoContent' = 204,
-    /** 被请求的资源有一系列可供选择的回馈信息 */
-    '300_MultipleChoices' = 300,
-    /** 永久性转移 */
-    '301_MovedPermanently' = 301,
-    /** 暂时性转移 */
-    '302_MoveTemporarily' = 302,
-}
-
-// 相比于普通对象map，只能用key访问value，
-// enum能同时用key和value，访问到value和key
-HttpCode['200_OK']
-HttpCode[200]
 ```
 
 ### 其他骚操作
