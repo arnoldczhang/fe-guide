@@ -31,7 +31,7 @@
 * [`更新过程`](#更新过程)
 * [`react16之前`](#react16之前)
 * [`react16`](#react16)
-* [`react16.13原理`](#react16.13原理)
+* [`react16.13`](#react16.13原理)
 * [`redux大型项目构建`](#redux大型项目构建)
 * [`React Hooks`](#ReactHooks)
 * [`React进阶`](#React进阶)
@@ -760,10 +760,12 @@ router默认不做按需加载处理，需要[手动实现](https://blog.csdn.ne
 ## react16.13原理
 
 ### 核心api
-
 - React.createElement: 创建虚拟DOM
 - React.Component: 实现自定义组件
 - ReactDOM.render: 渲染真实DOM
+
+### 实现
+![实现](react-16.13.1.png)
 
 ### fiber遍历顺序
 ```
