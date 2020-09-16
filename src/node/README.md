@@ -14,6 +14,7 @@
 * [`require原理`](#require原理)
 * [`eventLoop`](#eventLoop)
 * [`GC`](#GC)
+* [`shebang`](#shebang)
 * [`循环引用`](#循环引用)
 * [`最佳实践`](#最佳实践)
 * [`异步错误`](#异步错误)
@@ -37,6 +38,7 @@
 - [监听文件夹变化](https://github.com/dt-fe/weekly/blob/master/59.%E7%B2%BE%E8%AF%BB%E3%80%8A%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%20Nodejs%20%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E3%80%8B.md)
 - [调试工具-ndb](https://zhuanlan.zhihu.com/p/45851471)
 - [JSON.stringify工具-fast-json-stringify](https://github.com/fastify/fast-json-stringify)
+  
   - 预设字段类型，加速stringify
 - [promise工具-bluebird](https://github.com/petkaantonov/bluebird)
   - V8 原生实现的 Promise 比 bluebird 这样第三方实现的 Promise 库要慢很多
@@ -224,6 +226,7 @@
       };
       ```
     4. Module._resolveFilename
+  
       - ```js
         Module._resolveFilename = function(request, parent, isMain) {
           // ...
@@ -238,57 +241,60 @@
         ```
     5. [Module._findPath](https://github.com/nodejs/node/blob/v6.x/lib/module.js#L158)
     6. NativeModule.require
+  
       - 如果是 built-in 模块 -> process.binding('模块名')
       - 判断 cache 中是否已经加载过，如果有，直接返回 exports
       - 新建 nativeModule 对象，然后缓存，并加载编译
     7. require用户自定义模块
+  
       - tryModuleLoad
     8. Module.prototype.load
-      - ```js
+  
+    - ```js
         NativeModule.wrap = function(script) {
           return NativeModule.wrapper[0] + script + NativeModule.wrapper[1];
         };
-
-        NativeModule.wrapper = [
+      
+      NativeModule.wrapper = [
           '(function (exports, require, module, __filename, __dirname) { ',
           '\n});'
         ];
-
+    
         NativeModule.prototype.compile = function() {
-          var source = NativeModule.getSource(this.id);
+        var source = NativeModule.getSource(this.id);
           source = NativeModule.wrap(source);
-
+      
           this.loading = true;
-
+      
           try {
             const fn = runInThisContext(source, {
               filename: this.filename,
-              lineOffset: 0,
+            lineOffset: 0,
               displayErrors: true
             });
             fn(this.exports, NativeModule.require, this, this.filename);
-
+      
             this.loaded = true;
-          } finally {
+        } finally {
             this.loading = false;
           }
-        };
-
+      };
+      
         Module.prototype.load = function(filename) {
           debug('load %j for module %j', filename, this.id);
-
+    
           assert(!this.loaded);
-          this.filename = filename;
+        this.filename = filename;
           this.paths = Module._nodeModulePaths(path.dirname(filename));
-
+      
           var extension = path.extname(filename) || '.js';
-
+      
           // 通过不同扩展名，选择不同的处理
-          if (!Module._extensions[extension]) extension = '.js';
+        if (!Module._extensions[extension]) extension = '.js';
           Module._extensions[extension](this, filename);
           this.loaded = true;
         };
-
+      
         // Native extension for .js
         Module._extensions['.js'] = function(module, filename) {
           var content = fs.readFileSync(filename, 'utf8');
@@ -313,22 +319,22 @@
         Module._extensions['.node'] = function(module, filename) {
           return process.dlopen(module, path._makeLong(filename));
         };
-
+    
         // ...
         Module.wrap = NativeModule.wrap;
         // ...
         Module.prototype._compile = function(content, filename) {
         // ...
-
+    
         // create wrapper function
         var wrapper = Module.wrap(content);
-
+    
         var compiledWrapper = vm.runInThisContext(wrapper, {
           filename: filename,
           lineOffset: 0,
           displayErrors: true
         });
-
+    
         // ...
         var result = compiledWrapper.apply(this.exports, args);
         if (depth === 0) stat.cache = null;
@@ -476,6 +482,42 @@ function promiseRejectHandler(type, promise, reason) {
 #### 须知
 - 每次 Tick 完成后，会执行并清空 Tock 队列
 - 之后才会触发unhandledRejection回调
+
+## shebang
+
+> Shebang 在文件的第一行时，Node.js 才会将其忽略为注释（即使它前面有空行或 //comment 行也不会起作用）
+
+[参考](https://mp.weixin.qq.com/s/6ascDu9z99nhUlEfnEMB0g)
+
+### 举例
+
+**设置环境变量**
+
+```
+#!/usr/bin/env -S NODE_ENV=production node
+```
+
+**启用esm**
+
+```
+#!/usr/bin/env -S node --experimental-module
+```
+
+**锁node版本**
+
+```
+#!/usr/bin/env -S npx node@6
+```
+
+**用typescript运行**
+
+```
+#!/usr/bin/env ts-node
+```
+
+
+
+
 
 ---
 

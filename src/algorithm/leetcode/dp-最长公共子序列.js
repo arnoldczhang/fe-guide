@@ -22,10 +22,7 @@
 function longestCommonSubsequence(text1, text2) {
   const { length: l1 } = text1;
   const { length: l2 } = text2;
-  const dp = Array.from({ length: l1 + 1 }).fill(0);
-  dp.forEach((el, index) => {
-    dp[index] = Array.from({ length: l2 + 1 }).fill(0);
-  });
+  const dp = Array.from(new Array(l1 + 1), () => new Array(l2 + 1).fill(0));
   for (let i = 1; i <= l1; i += 1) {
     for (let j = 1; j <= l2; j += 1) {
       if (text1[i - 1] === text2[j - 1]) {

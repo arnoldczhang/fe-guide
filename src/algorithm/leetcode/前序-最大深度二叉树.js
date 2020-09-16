@@ -15,6 +15,7 @@ binaryTree.insert(5);
 binaryTree.insert(9);
 binaryTree.insert(13);
 
+// 无默认值
 function maxDepth(root) {
   if (!root) {
     return 0;
@@ -23,6 +24,7 @@ function maxDepth(root) {
   return Math.max(maxDepth(left), maxDepth(right)) + 1;
 }
 
+// 有默认值
 function maxDepth(root, depth = 0) {
   if (!root) return depth;
   const { left, right } = root;

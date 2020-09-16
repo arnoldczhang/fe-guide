@@ -120,14 +120,14 @@
 - yarn upgrade xx[@version]
   + `yarn直接升到最新版`
 
-#### 锁
+#### 锁版本文件
 - yarn.lock
 - package-lock.json
 
 #### 本地调试
 - npm link
 
-### npm 发布
+#### 普通发布
 
 - npm c ls
 - npm config list
@@ -139,6 +139,10 @@
 - npm run xxx
   - `发布前打包一下`
 - npm publish
+
+#### 发beta版本
+
+npm publish --tag beta
 
 ### 其他操作
 
@@ -212,7 +216,7 @@ yarn：直接输出安装结果，报错日志清晰
 	"scripts": {
 	    "preinstall": "node ./bin/preinstall.js"
 	}
-   ```
+  ```
 #### 2.确定首层依赖模块
 
 - `dependencies`

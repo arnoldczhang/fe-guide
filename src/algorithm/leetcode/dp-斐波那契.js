@@ -17,4 +17,4 @@ function fib(n, cach = { 1: 1, 2: 1 }) {
   return cach[n];
 }
 
-fib(10);
+console.log(fib(10));

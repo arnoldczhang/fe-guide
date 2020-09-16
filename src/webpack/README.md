@@ -29,6 +29,7 @@
 * [`code split`](#codesplit)
 * [`tree shaking`](#treeshaking)
 * [`tapable`](#tapable)
+* [`sourcemap`](#sourcemap)
 * [`compilation`](#Compilation)
 * [`plugin`](#plugin)
 * [`loader`](#loader)
@@ -610,6 +611,36 @@ webpack.watch + nodemon
 #### style
 `sourceMap: true`: 将sourcemap内联到style中，方便快速调试，但是会导致页面闪烁（FOUC）
 `singleton: true`: 复用同一个插入的style标签，能解决FOUC，但sourceMap就失效了（找不到源文件路径，而是合并后的路径）
+
+---
+
+## sourcemap
+
+### source-map
+> vue-cli的生产环境使用的就是这个值
+
+在外部生成一个文件，在控制台会显示 错误代码准确信息 和 源代码的错误位置
+
+### inline-source-map
+内嵌到bundle.js中只生成一个source-map，在控制台会显示 错误代码准确信息 和 源代码的错误位置
+
+### hidden-source-map
+> 生产环境一般推荐这个
+外部错误代码错误原因，源代码的错误位置不能追踪源代码错误，只能提示到构建后代码的错误位置
+
+### eval-source-map
+内嵌每一个文件都生成对应的source-map错误代码准确信息，源代码的错误位置
+
+### nosources-source-map
+外部错误代码准确信息，没有任何源代码信息
+
+### cheap-source-map
+外部错误代码准确信息，源代码的错误位置只能精准到行
+
+### cheap-module-eval-source-map
+> vue-cli开发环境和一般开发环境，都使用这个
+
+外部错误代码准确信息，源代码的错误位置module会将loader的source-map加入
 
 ---
 

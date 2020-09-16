@@ -8,6 +8,7 @@
 - [react](https://github.com/xiaomuzhu/front-end-interview/blob/master/docs/guide/react.md)
 - [90% 的前端都会踩的坑](https://juejin.im/post/5dfb3e73f265da33b12ea9d3?utm_source=gold_browser_extension#heading-16)
 - [javascript-questions](https://github.com/lydiahallie/javascript-questions/blob/master/zh-CN/README-zh_CN.md)
+- [我在近期求职中遇到的前端面试问题及其解法](https://mp.weixin.qq.com/s/vFTAoSDKcjrgf34vRARyKw)
 
 ## 目录
 
@@ -17,6 +18,8 @@
 **基础 js**
 
 * [`==和===`](#==和===)
+* [`arguments`](#arguments)
+* [`isNaN和Number.isNaN`](#isNaN和Number.isNaN)
 * [`[]==![]`](#[]==![])
 * [`let、const以及var的区别`](#let、const以及var的区别)
 * [`this`](#this)
@@ -40,6 +43,7 @@
 * [`setTimeout输出0-9改法`](#setTimeout输出0-9改法)
 * [`闭包`](#闭包)
 * [`bind`](#bind)
+* [`Object.is`](#Object.is)
 * [`作用域`](#作用域)
 * [`实现sleep`](#实现sleep)
 * [`class/function`](#class/function)
@@ -62,12 +66,15 @@
 * [`appendVSappendChild`](#appendVSappendChild)
 * [`passive`](#passive)
 * [`解构赋值`](#解构赋值)
-* [`URLSearchParams`](#URLSearchParams)
 * [`创建n个有值元素的数组`](#创建n个有值元素的数组)
 * [`数字转金额分割`](#数字转金额分割)
 * [`JSON.stringify`](#JSON.stringify)
 * [`连续赋值`](#连续赋值)
 * [`constructor.prototype.constructor`](#constructor.prototype.constructor)
+* [forEach和forof](#forEach和forof)
+* [金额format](#金额format)
+* [扁平数据转树状结构](#扁平数据转树状结构)
+* [模拟节流请求](#模拟节流请求)
 
 **进阶 js**
 
@@ -75,7 +82,7 @@
 * [`Promise.all实现`](#Promise.all实现)
 * [`jsbridge`](#jsbridge)
 * [`前端监控&异常捕获`](#前端监控&异常捕获)
-* [`如何实现URLSearchParams`](#如何实现URLSearchParams)
+* [`如何实现URLSearchParams`](#URLSearchParams)
 * [`浏览器用esmodule不用cjs的原因`](#浏览器用esmodule不用cjs的原因)
 
 **构建/打包**
@@ -120,6 +127,7 @@
 * [`描述网页从输入url到渲染的过程`](#描述网页从输入url到渲染的过程)
 * [`TCP三次握手&四次挥手的理解`](#TCP三次握手&四次挥手的理解)
 * [`重绘和回流`](#重绘和回流)
+* [`cookie弊端`](#cookie弊端)
 * [`cookie和token都存放在header中，为什么不会劫持token`](#cookie和token都存放在header中，为什么不会劫持token)
 * [`如何实现token加密`](#如何实现token加密)
 * [`浏览器缓存读取规则`](#浏览器缓存读取规则)
@@ -171,6 +179,7 @@
 * [`清除浮动`](#清除浮动)
 * [`图片加载失败处理`](#图片加载失败处理)
 * [`暗黑模式`](#暗黑模式)
+* [`抗锯齿`](#抗锯齿)
 
 **html**
 
@@ -197,10 +206,11 @@
 **小知识**
 
 * [`utm字段`](#utm字段)
+* [`鸿蒙系统`](#鸿蒙系统)
 
 </details>
 
-### == 和 ===
+### ==和===
 
 - === 不需要进行类型转换，只有类型相同并且值相等时，才返回 true.
 - == 如果两者类型不同，首先需要进行类型转换。具体流程如下:
@@ -210,6 +220,18 @@
   * 判断其中一方是否为 boolean, 如果是, 将 boolean 转为 number 再进行判断；
   * 判断两者类型是否为 string 和 number, 如果是, 将字符串转换成 number；
   * 判断其中一方是否为 object 且另一方为 string、number 或者 symbol , 如果是, 将 object 转为原始类型再进行判断。
+
+
+```js
+const a = [1, 2, 3];
+const b = [1, 2, 3];
+
+console.log(a == b); // 引用类型，false
+console.log(a === b); // 引用类型，false
+console.log(a < b); // toString，3 < 4，true
+console.log(a > b); // toString，3 > 4，false
+
+```
 
 ---
 
@@ -260,6 +282,19 @@ A: const 不允许修改声明绑定，允许修改值
 - 解析代码，获取被声明的变量（var、function）
 - 按行执行
 - 变量提升
+
+```js
+var name = 'abc';
+
+(function() {
+  if (typeof name === 'undefined') {
+    var name = 'cba'; // 变量提升
+    console.log(name); // 会走这里
+  } else {
+    console.log(name);
+  }
+})();
+```
 
 #### 提升顺序
 
@@ -1202,9 +1237,10 @@ function vs class
 
 ---
 
-### 模拟 async&await
+### 模拟async&await
 
 参考 babel 转换后的代码
+[实现](./async&await.js)
 
 async/await
 -> Generator
@@ -1451,14 +1487,30 @@ arr instanceof Array; // false
 
 **重绘**
 
-- 几何或样式发生变动，但是不影响布局的
+> 更新了元素绘制属性
+
+- 相比回流，**省去了布局和分层阶段**，可以参考[关键渲染路径](../../js&browser/页面过程与浏览器缓存.md#17.关键渲染路径)
+
+![重绘触发](./重绘触发.jpg)
 
 **回流**
 
-- 几何属性变动，页面需要全部或局部更新
+> 更新了元素的几何属性
+
 - [触发回流一览表](https://gist.github.com/paulirish/5d52fb081b3570c81e3a)
 
+![回流触发](./回流触发.jpg)
+
 回流必定会发生重绘，重绘不一定会引发回流
+
+**既非重绘也非回流**
+
+> 即**合成操作**（比如修改transform）
+
+- 相比回流，**省去了布局、分层和绘制阶段**
+- 可以参考[关键渲染路径](../../js&browser/页面过程与浏览器缓存.md#17.关键渲染路径)
+
+![合成触发](./合成触发.jpg)
 
 #### 优化
 
@@ -2887,141 +2939,20 @@ function findPrototypeByProperty(obj, name) {
 
 ---
 
-### 如何实现 URLSearchParams
-
-> 要求
-
-```js
-searchParams = new URLSearchParams("foo=1&bar=2") 
-
-// 构造函数也支持传入一个包含参数键值对的对象
-searchParams = new URLSearchParams({foo: "1", bar: "2"})
-
-// 实例支持 get()、set()、has()、append() 四个方法
-console.log(searchParams.get("foo")) // "1"
-searchParams.set("foo", "10") 
-console.log(searchParams.has("bar")) // true
-searchParams.append("foo", "100") 
-
-// 实例支持 toString() 方法
-console.log(searchParams.toString()) // "foo=10&bar=2&foo=100"
-
-// 实例支持 for-of 迭代
-for(const [key, value] of searchParams) {
-  console.log([key, value])
-  // ["foo", "10"]
-  // ["bar", "2"]
-  // ["foo", "100"]
-}
-```
-
-> 解答
-
-```js
-class URLSearchParams {
-  constructor(search) {
-    this.search = search;
-    this.init();
-  }
-
-  init() {
-    const type = typeof this.search;
-    if (type === 'string') {
-      this.searchObj = this.convert2Obj();
-    } else if (type === 'object') {
-      this.searchObj = this.search;
-      this.search = this.convert2Str();
-    } else {
-      throw new Error('search must be string or object');
-    }
-  }
-
-  get(key) {
-    return this.searchObj[key];
-  }
-  
-  set(key, value) {
-    this.searchObj[key] = value;
-    this.search = this.convert2Str();
-  }
-  
-  has(key) {
-    return key in this.searchObj;
-  }
-  
-  append(key, value) {
-    if (key in this.searchObj) {
-      const val = this.searchObj[key];
-      if (Array.isArray(val)) {
-        val.push(value);
-        this.searchObj[key] = val;
-      } else {
-        this.searchObj[key] = [val, value];
-      }
-      this.search = this.convert2Str();
-    }
-  }
-  
-
-  convert2Obj(search = this.search) {
-    const arr = search.split('&');
-    const result = {};
-    arr.forEach((v) => {
-      const [ key, value ] = v.split('=');
-      if (key) {
-        if (key in result) {
-          result[key] = Array.isArray(result[key]) ? result[key].concat(value) : [result[key], value];
-        } else {
-          result[key] = value;
-        }
-      }
-    });
-    return result;
-  }
-
-  convert2Str(obj = this.searchObj) {
-    return Object.keys(obj).reduce((key, res) => {
-      const value = obj[key];
-      if (Array.isArray(value)) {
-        res += value.map(val => `&${key}=${val}`).join('');
-      } else {
-        res += `&${key}=${value}`;
-      }
-      return res;
-    }, '');
-  }
-
-  [Symbol.iterator]() {
-    const arr = Object.entries(this.searchObj);
-    let index = 0;
-		return {
-			next: () => {
-				return {
-					value: arr[index],
-					done: index++ >= arr.length,
-				};
-			},
-		};
-	}
-}
-```
-
----
-
-### react 优化指南
-
+### react优化指南
 [参考](../../react/README.md)
 
 ---
 
 ### URLSearchParams
+[如何实现URLSearchParams](./urlSearchParams.js)
 
 - URLSearchParams 接口定义了一些实用的方法来处理 URL 的查询字符串
 - 一个实现了 URLSearchParams 的对象可以直接用在 for...of 结构中
 
 ---
 
-### 如何判断对象是否被 GC
+### 如何判断对象是否被GC
 
 1. Chrome-Memory
 2. 对象操作前，记录一次快照
@@ -3030,17 +2961,17 @@ class URLSearchParams {
 
 ---
 
-### get 和 post 区别
+### get和post区别
 
 [参考](../../js&browser/页面过程与浏览器缓存.md#GETvsPOST)
 
 ---
 
-### 创建 n 个有值元素的数组
+### 创建n个有值元素的数组
 
 - for 循环直接撸
 - [...Array(n)].map(() => ...)
-- Array.from({ length: n }, (_, i) => ...)
+- **Array.from({ length: n }, (_, i) => ...)**
 - Array(n).fill(...)
 - [generator](../../meta-programming/README.md#Generator)
 
@@ -3376,3 +3307,138 @@ console.log(b); // { x: { y: 2 } }
 - 标记压缩
 
 ---
+
+### Object.is
+[Object.is](../../js&browser/基本常识.md#Object.is)
+
+---
+
+### isNaN和Number.isNaN
+
+**isNaN**
+
+1. 输入转数字
+2. 判断
+
+**Number.isNaN**
+
+1. 判断是否为数字，不是的话直接返回false
+2. 再判断
+
+```js
+const name = 'abc';
+const age = 123;
+
+console.log(Number.isNaN(name)); // false
+console.log(Number.isNaN(age)); // false
+
+console.log(isNaN(name)); // true
+console.log(isNaN(age)); // false
+```
+
+---
+
+### cookie弊端
+[cookie](../../js&browser/基本常识.md#cookie)
+
+---
+
+### arguments
+
+- arguments是类数组对象
+- 内部的key赋值操作都是有效
+
+```js
+function sideEffect(args) {
+  args[0] = args[2]; // 赋值有效
+}
+
+function bar(a, b, c) {
+  c = 10;
+  sideEffect(arguments);
+  return a + b + c;
+}
+
+console.log(bar(1,1,1)); // 21
+```
+
+### 抗锯齿
+[font-smooth](../../css-related/README.md#font-smoothing)
+
+---
+
+### forEach和forof
+
+> Q：说出下面的执行结果
+>
+> A：1 秒后，一次性输出1，4，9。因为forEach底层仅执行传入的回调，没有做异步处理
+
+```js
+var multi = num => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (num) {
+        resolve(num * num);
+      } else {
+        reject(new Error('num not specified'));
+      }
+    }, 1000);
+  })
+}
+async function test () {
+  var nums = [1, 2, 3];
+  nums.forEach(async x => {
+    var res = await multi(x);
+    console.log(res);
+  })
+}
+test();
+```
+
+> Q：如果希望每隔1s输出一次结果，该怎么改
+
+```js
+// 方式一：for...of
+async function test () {
+  var nums = [1, 2, 3];
+  for(let x of nums) {
+    var res = await multi(x);
+    console.log(res);
+  }
+}
+
+// 方式二：Symbol.iterator
+async function test() {
+  const iterator = list[Symbol.iterator]();
+  let result = iterator.next();
+  while(!result.done) {
+    const res = await square(result.value);
+    console.log(res);
+    result = iterator.next();
+  }
+}
+```
+
+---
+
+### 金额format
+[金额format](./金额format.js)
+
+---
+
+### 扁平数据转树状结构
+[扁平数据转树状结构](./扁平数据转树状结构.js)
+
+---
+
+### 模拟节流请求
+[模拟节流请求](./模拟节流请求.js)
+
+---
+
+### 鸿蒙系统
+- [仓库](https://gitee.com/openharmony)
+- [鸿蒙系统中的 JS 开发框架](https://mp.weixin.qq.com/s/IhACmlQ6Df0A2R-Y9Kkxig)
+
+---
+

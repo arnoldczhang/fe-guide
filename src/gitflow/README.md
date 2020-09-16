@@ -1,7 +1,6 @@
 # git flow
 
 ## 参考
-
 1. https://juejin.im/post/5ad99c05f265da0b9265231b
 2. ![git-flow](git-flow.png)
 
@@ -18,6 +17,30 @@
 - git tag v1.0.0
 - git push origin v1.0.0
 
-## git提交信息
+## git-commit-info
 [git-commit](https://nitayneeman.com/posts/understanding-semantic-commit-messages-using-git-and-angular/#fix)
 
+```
+style: 样式修改
+fix: bug修复
+feat: 功能开发
+refactor: 代码重构
+test: 测试类修改
+doc: 文档更新
+conf: 配置修改
+merge: 代码合并
+```
+
+## git-blame
+
+```
+// 看差异
+git blame ./package.json
+```
+
+## git-branch
+
+```
+// 查远程所有分支包含某次commit
+git branch -r --contains commitID
+```
