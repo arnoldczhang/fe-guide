@@ -110,6 +110,21 @@ HttpCode[200]
 
 ## 常用语法
 
+### in
+> 1. 遍历对象key
+> 2. 后面的值必须是string、number、symbol
+
+```ts
+interface Person {
+  name: string;
+  age: number;
+}
+
+type newP = {
+  [key in keyof Person]: number;
+}
+```
+
 ### 让某个接口中的所有属性变为可选
 ```ts
 interface Person {
@@ -139,7 +154,7 @@ interface Person {
 }
 ```
 
-### 默认值生成type
+### typeof
 ```ts
 const defaultOption = {
   timeout: 500
@@ -201,9 +216,11 @@ interface Person {
 ```
 
 ### keyOf
-> 获取对象所有属性名，构成联合类型
+> 1. 获取类型所有属性名，构成联合类型
+> 2. 无法直接对值做操作，或者套一层typeof
 
 ```ts
+// 示例1
 interface Itest{
   webName:string;
   age:number;
@@ -211,10 +228,17 @@ interface Itest{
 }
 
 // 'webName' | 'age' | 'address'
-type ant=keyof Itest;
+type ant = keyof Itest;
+
+// 示例2
+function css(el: Element, attr: keyof CSSStyleDeclaration) {
+  getComputedStyle(el)[attr];
+}
+
+css(document.querySelector('.box'), 'width');
 ```
 
-> 当属性名确认的情况下，也可以用 keyOf 限制属性值
+**当属性名确认的情况下，也可以用 keyOf 限制属性值**
 
 ```ts
 interface Props {
@@ -228,6 +252,18 @@ const props: Props = {
 
 props["foo"] = "baz"; // ok
 props["bar"] = "baz"; // error，目前看来只能是 string 类型
+```
+
+**对值操作的情况**
+
+```ts
+const obj = {
+  name: 'abc',
+  age: 123,
+  gender: '男',
+};
+
+type key = keyof typeof obj; // 'name' | 'age' | 'gender'
 ```
 
 ### 查找类型+keyOf
@@ -274,6 +310,7 @@ function process<T extends string | null>(
 }
 
 process("foo").toUpperCase() // ok
+process<string>("foo").toUpperCase() // ok
 process().toUpperCase() // error
 ```
 
@@ -373,6 +410,43 @@ function swap<T, K>(v1: T, v2: K) {
 // 加上了 as const 就好了
 function swap<T, K>(v1: T, v2: K) {
   return [v2, v1] as const;
+}
+
+swap<string,number>('a', 1);
+```
+
+### 类型保护
+> 几个关键词可以做类型保护：typeof、instanceof、自定义
+
+```ts
+function fn(str: string|string[]) {
+  // 方式1：typeof
+  if (typeof str === 'string') {
+    return str.substring(1,2);
+  } else {
+    str.push();
+  }
+
+  // 方式2：instanceof
+  if (str instanceof String) {
+    return str.substring(1,2);
+  } else {
+    str.push();
+  }
+}
+```
+
+```ts
+// 方式3：自定义
+// is关键词可以让typescript识别为类型保护
+function canForEach(data: string|string[]): data is string[] {
+  return (<string[]>data).forEach !== undefined;
+}
+
+function fn(str: string|string[]) {
+  if (canForEach(str)) {
+    str.forEach
+  }
 }
 ```
 
