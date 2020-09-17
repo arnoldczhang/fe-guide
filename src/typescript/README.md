@@ -148,13 +148,45 @@ const defaultOption = {
 type Opt = typeof defaultOption;
 ```
 
-### 联合类型（取其一）
+### 联合类型
+
+**取其一**
+
 ```ts
 type Dinner2 = {
   fish: number,
 } | {
   bear: number,
 }
+```
+
+**取并集**
+
+```ts
+type Dinner3 = {
+  fish: number,
+} & {
+  bear: number,
+}
+```
+
+### 类型断言
+> 提供一个更加精确的类型范围
+
+**方式一**
+
+```ts
+let img = <HTMLImageElement>document.querySelector('.img');
+// 当明确断言为HTMLImageElement时，就能操作src属性了
+img.src
+```
+
+**方式二**
+
+```ts
+let img = document.querySelector('.img') as HTMLImageElement;
+// 当明确断言为HTMLImageElement时，就能操作src属性了
+img.src
 ```
 
 ### 查找类型
@@ -243,7 +275,6 @@ function process<T extends string | null>(
 
 process("foo").toUpperCase() // ok
 process().toUpperCase() // error
-
 ```
 
 ### Record
