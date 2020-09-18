@@ -32,6 +32,7 @@
 * [`react16之前`](#react16之前)
 * [`react16`](#react16)
 * [`react16.13`](#react16.13原理)
+* [react17](#react17)
 * [`redux大型项目构建`](#redux大型项目构建)
 * [`React Hooks`](#ReactHooks)
 * [`React进阶`](#React进阶)
@@ -1071,3 +1072,13 @@ export default {
   useComponent
 }
 ```
+
+---
+
+## react17
+
+[启发式更新算法](https://mp.weixin.qq.com/s/E1tsUT2EldaFxhwNplXr1g)
+
+react16通过fibter.expirationTime >= expirationTime来决定是否更新
+
+react17新增lanes（车道）概念，将更新形式归类为31种，如果当前更新形式已经占用了lane，则降低优先级，寻找下一个lane，方便IO操作和CPU操作

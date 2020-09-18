@@ -3233,6 +3233,8 @@ process.on('SIGTERM', handleExit);
 
 ### 暗黑模式
 
+**方式一：直接改色值**
+
 ```css
 @media (prefers-color-scheme: dark) {
     body {
@@ -3241,6 +3243,24 @@ process.on('SIGTERM', handleExit);
     }
 }
 ```
+
+**方式二：直接反转**
+
+```css
+html[theme='dark-mode'] {
+    /* invert - 反转黑/白配色 */
+    /* hue-rotate - 将非黑/白配色的色相旋转180度 */
+    filter: invert(1) hue-rotate(180deg);
+    transition: filter 300ms;
+}
+
+/* 以上还会反转图片颜色，如果想避免此效果，需要对图片再做反转 */
+html[theme='dark-mode'] img {
+    filter: invert(1) hue-rotate(180deg);
+}
+```
+
+
 
 ---
 
