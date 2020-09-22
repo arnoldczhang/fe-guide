@@ -1,6 +1,27 @@
 # g2
 
-## 使用
+## g2使用
+```js
+import { Chart } from '@antv/g2';
+
+const chart = new Chart({
+  container: 'chart',
+  autoFit: true,
+  height: 500,
+});
+chart.data(xxxData)
+  .scale({
+    key1: {
+      min: 0,
+      max: 150,
+    },
+  })
+  .line()
+  .position('key1*key2');
+chart.render();
+```
+
+## g2plot使用
 
 ```vue
 <template>
