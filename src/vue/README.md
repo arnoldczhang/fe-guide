@@ -111,6 +111,17 @@ vue ui
 }
 ```
 
+### 覆盖组件scoped样式
+```vue
+<style lang="less" scoped>
+.aa {
+  /deep/ .el-alert__title {
+
+  }
+}
+</style>
+```
+
 ---
 
 ## vue3
