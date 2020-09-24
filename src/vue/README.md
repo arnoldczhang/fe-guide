@@ -78,9 +78,12 @@ vue ui
 <!-- 使用 -->
 <template>
   <comp>
+    <!-- 用法1 -->
     <template v-slot:header>
       ...
     </template>
+    <!-- 用法2 -->
+    <div slot="header">多行信息<br/>第二行信息</div>
   </comp>
 </template>
 
