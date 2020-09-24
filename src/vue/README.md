@@ -56,9 +56,10 @@ vue ui
 
 ## 技巧
 
-[vue 还能这样写](https://juejin.im/post/5eef7799f265da02cd3b82fe?utm_source=gold_browser_extension)
+[vue还能这样写](https://juejin.im/post/5eef7799f265da02cd3b82fe?utm_source=gold_browser_extension)
 
 ### slot
+> vue.runtime搜索`renderSlot`
 
 ```vue
 <!-- 组件 -->
@@ -81,6 +82,49 @@ vue ui
       ...
     </template>
   </comp>
+</template>
+
+<!-- v-slot简写 -->
+<template>
+  <comp>
+    <!--  #代替v-slot -->
+    <template #header>
+      ...
+    </template>
+  </comp>
+</template>
+```
+
+### slot-scope
+``` vue
+<!-- 组件 -->
+<template>
+  <!-- 新建了一个slot，叫header -->
+  <div
+    v-if="$slots.header"
+    class="c-base-popup-header"
+  >
+    <!-- slot用v-bind绑定插槽数据，被替换后，可以直接读取这个值 -->
+    <slot v-bind="aa" />
+    <slot name="value" v-bind="{ value: 123 }" />
+  </div>
+</template>
+
+...
+
+<!-- 使用 -->
+<template>
+  <CustomTable :data="tableData">
+    <!-- 替换父组件中的默认<slot /> -->
+    <template v-slot="slotProp">
+      {{ slotProp.user.firstName }}
+    </template>
+    <!-- 替换父组件中的<slot name="value"/>，并且获取当前数据，命名为row -->
+    <template v-slot:value="{row}">
+      <!-- 由于slot绑定了{ value: 123}，所以这里可以直接操作属性value -->
+      {{ row.value.toFixed(3) }}
+    </template>
+  </CustomTable>
 </template>
 ```
 
