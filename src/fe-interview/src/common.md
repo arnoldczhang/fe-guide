@@ -75,6 +75,7 @@
 * [金额format](#金额format)
 * [扁平数据转树状结构](#扁平数据转树状结构)
 * [模拟节流请求](#模拟节流请求)
+* [没有momentjs怎么办](#没有momentjs怎么办)
 
 **进阶 js**
 
@@ -3461,4 +3462,7 @@ async function test() {
 - [鸿蒙系统中的 JS 开发框架](https://mp.weixin.qq.com/s/IhACmlQ6Df0A2R-Y9Kkxig)
 
 ---
+
+### 没有momentjs怎么办
+原生的日期格式化[toLocaleString](https://elijahmanor.com/blog/format-js-dates-and-times)了解下
 
