@@ -8,6 +8,7 @@
 - [codemirror](https://codemirror.net/doc/manual.html)
 - [深度使用vue](https://juejin.im/post/6862560722531352583?utm_source=gold_browser_extension)
 - [vue 虚拟滚动](https://github.com/Akryum/vue-virtual-scroller#variable-size-mode)
+- [vue-codemirror](https://github.surmon.me/vue-codemirror/)
 
 ## 目录
 
