@@ -32,7 +32,8 @@
 * [`react16之前`](#react16之前)
 * [`react16`](#react16)
 * [`react16.13`](#react16.13原理)
-* [react17](#react17)
+* [`react17`](#react17)
+* [`内部构造`](#内部构造)
 * [`redux大型项目构建`](#redux大型项目构建)
 * [`React Hooks`](#ReactHooks)
 * [`React进阶`](#React进阶)
@@ -51,6 +52,8 @@
 
 1. ckeditor： https://ckeditor.com/blog/best-wysiwyg-editor-for-angular-react/
 2. react 可视化库：https://mp.weixin.qq.com/s/NgaQ4sGI4RDXb23ua2Spbw
+
+---
 
 ## lifecycle
 
@@ -1082,3 +1085,40 @@ export default {
 react16通过fibter.expirationTime >= expirationTime来决定是否更新
 
 react17新增lanes（车道）概念，将更新形式归类为31种，如果当前更新形式已经占用了lane，则降低优先级，寻找下一个lane，方便IO操作和CPU操作
+
+---
+
+## 内部构造
+
+### errorBoundary
+[不用try catch，如何机智的捕获错误](https://mp.weixin.qq.com/s/ne7Ts5fagf6xFq7mNhr2ng)
+
+> 由于errorBoundary会捕获异常，会导致`Pause on exceptions`失效，不利于线下调试，故react做了类似如下处理：
+
+```js
+function wrapperDev(func) {
+  function handleWindowError(error) {
+    // 收集错误交给Error Boundary处理
+  }
+  
+  function callCallback() {
+    fakeNode.removeEventListener(evtType, callCallback, false); 
+    func();
+  }
+  
+  const event = document.createEvent('Event');
+  const fakeNode = document.createElement('fake');
+  const evtType = 'fake-event';
+
+  window.addEventListener('error', handleWindowError);
+  fakeNode.addEventListener(evtType, callCallback, false);
+
+  event.initEvent(evtType, false, false);
+  
+  // 触发callCallback的执行
+  // 由于是事件触发，抛错不会阻止后续代码的运行，但是却能被`Pause on exceptions`捕获
+  fakeNode.dispatchEvent(event);
+  
+  window.removeEventListener('error', handleWindowError);
+}
+```
