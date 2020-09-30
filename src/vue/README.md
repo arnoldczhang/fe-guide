@@ -9,6 +9,7 @@
 - [深度使用vue](https://juejin.im/post/6862560722531352583?utm_source=gold_browser_extension)
 - [vue 虚拟滚动](https://github.com/Akryum/vue-virtual-scroller#variable-size-mode)
 - [vue-codemirror](https://github.surmon.me/vue-codemirror/)
+- [vue-property-decoration](https://github.com/kaorun343/vue-property-decorator)
 
 ## 目录
 
@@ -85,12 +86,7 @@ vue ui
     </template>
     <!-- 用法2 -->
     <div slot="header">多行信息<br/>第二行信息</div>
-  </comp>
-</template>
-
-<!-- v-slot简写 -->
-<template>
-  <comp>
+    <!-- 用法3 -->
     <!--  #代替v-slot -->
     <template #header>
       ...
@@ -124,7 +120,7 @@ vue ui
       {{ slotProp.user.firstName }}
     </template>
     <!-- 替换父组件中的<slot name="value"/>，并且获取当前数据，命名为row -->
-    <template v-slot:value="{row}">
+    <template v-slot:value="row">
       <!-- 由于slot绑定了{ value: 123}，所以这里可以直接操作属性value -->
       {{ row.value.toFixed(3) }}
     </template>
