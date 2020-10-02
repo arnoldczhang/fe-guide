@@ -71,11 +71,13 @@
 * [`JSON.stringify`](#JSON.stringify)
 * [`连续赋值`](#连续赋值)
 * [`constructor.prototype.constructor`](#constructor.prototype.constructor)
-* [forEach和forof](#forEach和forof)
-* [金额format](#金额format)
-* [扁平数据转树状结构](#扁平数据转树状结构)
-* [模拟节流请求](#模拟节流请求)
-* [没有momentjs怎么办](#没有momentjs怎么办)
+* [`forEach和forof`](#forEach和forof)
+* [`金额format`](#金额format)
+* [`扁平数据转树状结构`](#扁平数据转树状结构)
+* [`模拟节流请求`](#模拟节流请求)
+* [`没有momentjs怎么办`](#没有momentjs怎么办)
+* [`newFunction创建异步函数`](#newFunction创建异步函数)
+* [`Intl-相对时间格式化`](#Intl-相对时间格式化)
 
 **进阶 js**
 
@@ -3466,3 +3468,27 @@ async function test() {
 ### 没有momentjs怎么办
 原生的日期格式化[toLocaleString](https://elijahmanor.com/blog/format-js-dates-and-times)了解下
 
+---
+
+### newFunction创建异步函数
+
+```js
+const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+
+const fetchPage = new AsyncFunction("url", "return await fetch(url);");
+
+```
+
+---
+
+### Intl-相对时间格式化
+[参考](http://www.deathghost.cn/article/javascript/53)
+
+```js
+const rtf = new Intl.RelativeTimeFormat('ch');
+
+rtf.format(2, 'second'); // 2秒钟后
+rtf.format(-2, 'second'); // 2秒钟前
+```
+
+---
