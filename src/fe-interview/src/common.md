@@ -48,6 +48,7 @@
 * [`实现sleep`](#实现sleep)
 * [`class/function`](#class/function)
 * [`普通函数/箭头函数`](#普通函数/箭头函数)
+* [`模板函数`](#模板函数)
 * [`求数组交集`](#求数组交集)
 * [`Promise.prototype.finally`](#Promise.prototype.finally)
 * [`es6->es5`](#es6->es5)
@@ -3492,3 +3493,21 @@ rtf.format(-2, 'second'); // 2秒钟前
 ```
 
 ---
+
+### 模板函数
+
+```js
+function foo(tpl, ...value) {
+    console.log(tpl); // ['try catch', '.']
+    console.log(value); // ['foo']
+}
+
+foo`try catch ${foo.name}.`;
+```
+
+
+
+---
+
+
+
