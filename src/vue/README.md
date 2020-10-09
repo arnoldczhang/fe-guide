@@ -20,6 +20,7 @@
 * [`技巧`](#技巧)
 * [`vue3`](#vue3)
 * [`一些尝试`](#一些尝试)
+* [`组件`](#组件)
 
 </details>
 
@@ -316,3 +317,53 @@ render(ctx, cache) {
 
 - [懒加载通用组件](./datapanel/README.md)
 - [美化后的 tree 结构组件](./vue-pretty-tree/README.md)
+
+---
+
+## 组件
+
+### vue-code-diff
+> 类git风格代码对比
+> [参考](https://www.npmjs.com/package/vue-code-diff)
+
+#### 使用到的库
+```js
+<div v-html="html" v-highlight></div>
+
+// ..
+import { createPatch } from 'diff';
+import { Diff2Html } from 'diff2html';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/googlecode.css';
+import 'diff2html/dist/diff2html.css';
+
+{
+  // ...
+  computed: {
+    html() {
+      const oldString = 'hello world';
+      const newString = 'hello world2';
+      const args = ['', oldString, newString, '', ''];
+      // 这里获取了git diff 的结果
+      const dd = createPatch(...args);
+      // git diff 结果转 json
+      const outStr = Diff2Html.getJsonFromDiff(dd, {
+        inputFormat: 'diff',
+        outputFormat: 'side-by-side',
+        showFiles: false,
+        matching: 'lines',
+      });
+      // json 转 html
+      const html = Diff2Html.getPrettyHtml(outStr, {
+        inputFormat: 'json',
+        outputFormat: 'side-by-side',
+        showFiles: false,
+        matching: 'lines',
+      });
+      return html;
+    },
+  },
+  // ...
+}
+```
+
