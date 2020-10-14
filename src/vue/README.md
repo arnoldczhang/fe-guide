@@ -283,7 +283,7 @@ export default {
 ```vue
 <template>
 	<!-- 用sync定义属性 -->
-	<child .foo.sync="foo" />
+	<child :foo.sync="foo" />
 </template>
 <script>
 export default {
