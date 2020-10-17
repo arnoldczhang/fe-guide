@@ -49,6 +49,7 @@
 - [npm源管理工具-nrm/yrm](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 - [搭建私有npm工具-verdaccio](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 - [数据校验工具 schema-typed](https://juejin.im/post/5b87c8a5e51d4538e41067a8)
+- [图片压缩工具-optimizt](https://github.com/funbox/optimizt)
 
   * ```
     npm install -g verdaccio
