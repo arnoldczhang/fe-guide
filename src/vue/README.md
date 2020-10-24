@@ -481,8 +481,7 @@ render(ctx, cache) {
 ## 组件
 
 ### vue-code-diff
-> 类git风格代码对比
-> [参考](https://www.npmjs.com/package/vue-code-diff)
+> 类git风格代码对比，[参考](https://www.npmjs.com/package/vue-code-diff)
 
 #### 使用到的库
 ```js
@@ -524,4 +523,60 @@ import 'diff2html/dist/diff2html.css';
   // ...
 }
 ```
+
+### tiptap
+> 轻量级页面编辑器
+
+```vue
+<template>
+  <div>
+    <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
+        <button :class="{ 'is-active': isActive.bold() }" @click="commands.bold">
+          Bold
+        </button>
+    </editor-menu-bar>
+    <editor-content :editor="editor" />
+  </div>
+</template>
+
+<script>
+import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
+import {
+  Blockquote,
+  CodeBlock,
+  HardBreak,
+  Heading,
+} from 'tiptap-extensions'
+
+export default {
+  components: {
+    EditorMenuBar,
+    EditorContent,
+  },
+  data() {
+    return {
+      editor: new Editor({
+        extensions: [
+          new Blockquote(),
+          new CodeBlock(),
+          new HardBreak(),
+          new Heading({ levels: [1, 2, 3] }),
+          // ...按需注入扩展
+        ],
+        content: `
+          <h1>Yay Headlines!</h1>
+          <p>All these <strong>cool tags</strong> are working now.</p>
+        `,
+      }),
+    }
+  },
+  beforeDestroy() {
+    this.editor.destroy()
+  },
+}
+</script>
+```
+
+
+
 

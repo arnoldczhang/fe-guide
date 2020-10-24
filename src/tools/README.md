@@ -23,6 +23,7 @@
 - [在线水印](https://wewatermark.com/)
 - [在线绘图](https://app.wireflow.co/)
 - [在线ai手绘英文](https://www.calligrapher.ai/)
+- [email响应式模板](https://github.com/hunzaboy/codedmails)
 
 ---
 
