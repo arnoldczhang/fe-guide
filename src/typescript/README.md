@@ -48,15 +48,88 @@
 - undefined
 - never（其他类型的子集，表示从不会出现的值）
 
+### 元组
+```ts
+// 1. 数组可以定义各元素不同类型
+// 2. 初始顺序必须和定义类型一致
+// 3. 之后push进去的元素，类型必须包含在定义类型中
+let arr: [string, number] = ['a', 123];
+```
+
+### never
+> 当一个函数一定不会执行`return`，即中途会抛错时，用never，否则别用
+
+```ts
+function fn(): never {
+  throw new Error('');
+}
+
+let a: string;
+a = fn(); // 这样可以，never是其他类型子类型
+let b: never;
+b = a; // 这样不行
+```
+
+### enum
+> enum 枚举名称{ key1=value1, key2=value2 }
+> 1. key不能是数字
+
+```ts
+enum HttpCode {
+    /** 成功 */
+    '200_OK' = 200,
+    /** 已生成了新的资源 */
+    '201_Created' = 201,
+    /** 请求稍后会被处理 */
+    '202_Accepted' = 202,
+    /** 资源已经不存在 */
+    '204_NoContent' = 204,
+    /** 被请求的资源有一系列可供选择的回馈信息 */
+    '300_MultipleChoices' = 300,
+    /** 永久性转移 */
+    '301_MovedPermanently' = 301,
+    /** 暂时性转移 */
+    '302_MoveTemporarily' = 302,
+}
+
+// 相比于普通对象map，只能用key访问value，
+// enum能同时用key和value，访问到value和key
+HttpCode['200_OK']
+HttpCode[200]
+```
+
+### any
+> 可以赋值给任意类型
+
+### unknown
+> 1. 更安全的any
+> 2. 仅能赋值给unknown、any
+> 3. 没有任何属性、方法
+
 ---
 
 ## 常用语法
 
+### in
+> 1. 遍历对象key
+> 2. 后面的值必须是string、number、symbol
+
+```ts
+interface Person {
+  name: string;
+  age: number;
+}
+
+type newP = {
+  [key in keyof Person]: number;
+}
+```
+
 ### 让某个接口中的所有属性变为可选
 ```ts
 interface Person {
-    name: string;
-    age: number;
+  name: string;
+  age: number;
 }
 
 // 方式1
@@ -81,7 +154,7 @@ interface Person {
 }
 ```
 
-### 默认值生成type
+### typeof
 ```ts
 const defaultOption = {
   timeout: 500
@@ -90,13 +163,45 @@ const defaultOption = {
 type Opt = typeof defaultOption;
 ```
 
-### 联合类型（取其一）
+### 联合类型
+
+**取其一**
+
 ```ts
 type Dinner2 = {
   fish: number,
 } | {
   bear: number,
 }
+```
+
+**取并集**
+
+```ts
+type Dinner3 = {
+  fish: number,
+} & {
+  bear: number,
+}
+```
+
+### 类型断言
+> 提供一个更加精确的类型范围
+
+**方式一**
+
+```ts
+let img = <HTMLImageElement>document.querySelector('.img');
+// 当明确断言为HTMLImageElement时，就能操作src属性了
+img.src
+```
+
+**方式二**
+
+```ts
+let img = document.querySelector('.img') as HTMLImageElement;
+// 当明确断言为HTMLImageElement时，就能操作src属性了
+img.src
 ```
 
 ### 查找类型
@@ -111,9 +216,11 @@ interface Person {
 ```
 
 ### keyOf
-> 获取对象所有属性名，构成联合类型
+> 1. 获取类型所有属性名，构成联合类型
+> 2. 无法直接对值做操作，或者套一层typeof
 
 ```ts
+// 示例1
 interface Itest{
   webName:string;
   age:number;
@@ -121,10 +228,17 @@ interface Itest{
 }
 
 // 'webName' | 'age' | 'address'
-type ant=keyof Itest;
+type ant = keyof Itest;
+
+// 示例2
+function css(el: Element, attr: keyof CSSStyleDeclaration) {
+  getComputedStyle(el)[attr];
+}
+
+css(document.querySelector('.box'), 'width');
 ```
 
-> 当属性名确认的情况下，也可以用 keyOf 限制属性值
+**当属性名确认的情况下，也可以用 keyOf 限制属性值**
 
 ```ts
 interface Props {
@@ -138,6 +252,18 @@ const props: Props = {
 
 props["foo"] = "baz"; // ok
 props["bar"] = "baz"; // error，目前看来只能是 string 类型
+```
+
+**对值操作的情况**
+
+```ts
+const obj = {
+  name: 'abc',
+  age: 123,
+  gender: '男',
+};
+
+type key = keyof typeof obj; // 'name' | 'age' | 'gender'
 ```
 
 ### 查找类型+keyOf
@@ -184,12 +310,13 @@ function process<T extends string | null>(
 }
 
 process("foo").toUpperCase() // ok
+process<string>("foo").toUpperCase() // ok
 process().toUpperCase() // error
-
 ```
 
 ### Record
-类似enum
+> 类似enum
+
 ```ts
 type AnimalType = 'cat' | 'dog' | 'frog';
 interface AnimalDescription { name: string, icon: string }
@@ -220,31 +347,6 @@ const AnimalMap: Record<AnimalType, AnimalDescription> = {
 export function genErrMsg (message: string, code: number | string, type?: ('demo1' | 'demo2')): string {
     return (message || `网络繁忙，请稍候再试`) + (code ? `(${code})` : ``)
 }
-```
-
-### enum
-```ts
-enum HttpCode {
-    /** 成功 */
-    '200_OK' = 200,
-    /** 已生成了新的资源 */
-    '201_Created' = 201,
-    /** 请求稍后会被处理 */
-    '202_Accepted' = 202,
-    /** 资源已经不存在 */
-    '204_NoContent' = 204,
-    /** 被请求的资源有一系列可供选择的回馈信息 */
-    '300_MultipleChoices' = 300,
-    /** 永久性转移 */
-    '301_MovedPermanently' = 301,
-    /** 暂时性转移 */
-    '302_MoveTemporarily' = 302,
-}
-
-// 相比于普通对象map，只能用key访问value，
-// enum能同时用key和value，访问到value和key
-HttpCode['200_OK']
-HttpCode[200]
 ```
 
 ### 其他骚操作
@@ -308,6 +410,43 @@ function swap<T, K>(v1: T, v2: K) {
 // 加上了 as const 就好了
 function swap<T, K>(v1: T, v2: K) {
   return [v2, v1] as const;
+}
+
+swap<string,number>('a', 1);
+```
+
+### 类型保护
+> 几个关键词可以做类型保护：typeof、instanceof、自定义
+
+```ts
+function fn(str: string|string[]) {
+  // 方式1：typeof
+  if (typeof str === 'string') {
+    return str.substring(1,2);
+  } else {
+    str.push();
+  }
+
+  // 方式2：instanceof
+  if (str instanceof String) {
+    return str.substring(1,2);
+  } else {
+    str.push();
+  }
+}
+```
+
+```ts
+// 方式3：自定义
+// is关键词可以让typescript识别为类型保护
+function canForEach(data: string|string[]): data is string[] {
+  return (<string[]>data).forEach !== undefined;
+}
+
+function fn(str: string|string[]) {
+  if (canForEach(str)) {
+    str.forEach
+  }
 }
 ```
 

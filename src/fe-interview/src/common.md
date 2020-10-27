@@ -48,6 +48,7 @@
 * [`实现sleep`](#实现sleep)
 * [`class/function`](#class/function)
 * [`普通函数/箭头函数`](#普通函数/箭头函数)
+* [`模板函数`](#模板函数)
 * [`求数组交集`](#求数组交集)
 * [`Promise.prototype.finally`](#Promise.prototype.finally)
 * [`es6->es5`](#es6->es5)
@@ -71,10 +72,13 @@
 * [`JSON.stringify`](#JSON.stringify)
 * [`连续赋值`](#连续赋值)
 * [`constructor.prototype.constructor`](#constructor.prototype.constructor)
-* [forEach和forof](#forEach和forof)
-* [金额format](#金额format)
-* [扁平数据转树状结构](#扁平数据转树状结构)
-* [模拟节流请求](#模拟节流请求)
+* [`forEach和forof`](#forEach和forof)
+* [`金额format`](#金额format)
+* [`扁平数据转树状结构`](#扁平数据转树状结构)
+* [`模拟节流请求`](#模拟节流请求)
+* [`没有momentjs怎么办`](#没有momentjs怎么办)
+* [`newFunction创建异步函数`](#newFunction创建异步函数)
+* [`Intl-相对时间格式化`](#Intl-相对时间格式化)
 
 **进阶 js**
 
@@ -3233,6 +3237,8 @@ process.on('SIGTERM', handleExit);
 
 ### 暗黑模式
 
+**方式一：直接改色值**
+
 ```css
 @media (prefers-color-scheme: dark) {
     body {
@@ -3241,6 +3247,24 @@ process.on('SIGTERM', handleExit);
     }
 }
 ```
+
+**方式二：直接反转**
+
+```css
+html[theme='dark-mode'] {
+    /* invert - 反转黑/白配色 */
+    /* hue-rotate - 将非黑/白配色的色相旋转180度 */
+    filter: invert(1) hue-rotate(180deg);
+    transition: filter 300ms;
+}
+
+/* 以上还会反转图片颜色，如果想避免此效果，需要对图片再做反转 */
+html[theme='dark-mode'] img {
+    filter: invert(1) hue-rotate(180deg);
+}
+```
+
+
 
 ---
 
@@ -3441,4 +3465,49 @@ async function test() {
 - [鸿蒙系统中的 JS 开发框架](https://mp.weixin.qq.com/s/IhACmlQ6Df0A2R-Y9Kkxig)
 
 ---
+
+### 没有momentjs怎么办
+原生的日期格式化[toLocaleString](https://elijahmanor.com/blog/format-js-dates-and-times)了解下
+
+---
+
+### newFunction创建异步函数
+
+```js
+const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+
+const fetchPage = new AsyncFunction("url", "return await fetch(url);");
+
+```
+
+---
+
+### Intl-相对时间格式化
+[参考](http://www.deathghost.cn/article/javascript/53)
+
+```js
+const rtf = new Intl.RelativeTimeFormat('ch');
+
+rtf.format(2, 'second'); // 2秒钟后
+rtf.format(-2, 'second'); // 2秒钟前
+```
+
+---
+
+### 模板函数
+
+```js
+function foo(tpl, ...value) {
+    console.log(tpl); // ['try catch', '.']
+    console.log(value); // ['foo']
+}
+
+foo`try catch ${foo.name}.`;
+```
+
+
+
+---
+
+
 

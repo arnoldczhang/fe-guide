@@ -140,50 +140,52 @@ module: {
 **推荐配置**
 
 ```js
-splitChunks: {
-  chunks: 'all',
-  minSize: 10000, // 提高缓存利用率，这需要在http2/spdy
-  maxSize: 0,//没有限制
-  minChunks: 3,// 共享最少的chunk数，使用次数超过这个值才会被提取
-  maxAsyncRequests: 5,//最多的异步chunk数
-  maxInitialRequests: 5,// 最多的同步chunks数
-  automaticNameDelimiter: '~',// 多页面共用chunk命名分隔符
-  name: true,
-  cacheGroups: {// 声明的公共chunk
-    vendor: {
-      // 过滤需要打入的模块
-      test: module => {
-        if (module.resource) {
-          const include = [/[\\/]node_modules[\\/]/].every(reg => {
-            return reg.test(module.resource);
-          });
-          const exclude = [/[\\/]node_modules[\\/](react|redux|antd)/].some(reg => {
-            return reg.test(module.resource);
-          });
-          return include && !exclude;
-        }
-        return false;
+module.exports = {
+  splitChunks: {
+    chunks: 'all',
+    minSize: 10000, // 提高缓存利用率，这需要在http2/spdy
+    maxSize: 0,//没有限制
+    minChunks: 3,// 共享最少的chunk数，使用次数超过这个值才会被提取
+    maxAsyncRequests: 5,//最多的异步chunk数
+    maxInitialRequests: 5,// 最多的同步chunks数
+    automaticNameDelimiter: '~',// 多页面共用chunk命名分隔符
+    name: true,
+    cacheGroups: {// 声明的公共chunk
+      vendor: {
+        // 过滤需要打入的模块
+        test: module => {
+          if (module.resource) {
+            const include = [/[\\/]node_modules[\\/]/].every(reg => {
+              return reg.test(module.resource);
+            });
+            const exclude = [/[\\/]node_modules[\\/](react|redux|antd)/].some(reg => {
+              return reg.test(module.resource);
+            });
+            return include && !exclude;
+          }
+          return false;
+        },
+        name: 'vendor',
+        priority: 50,// 确定模块打入的优先级
+        reuseExistingChunk: true,// 使用复用已经存在的模块
       },
-      name: 'vendor',
-      priority: 50,// 确定模块打入的优先级
-      reuseExistingChunk: true,// 使用复用已经存在的模块
-    },
-    react: {
-      test({ resource }) {
-        return /[\\/]node_modules[\\/](react|redux)/.test(resource);
+      react: {
+        test({ resource }) {
+          return /[\\/]node_modules[\\/](react|redux)/.test(resource);
+        },
+        name: 'react',
+        priority: 20,
+        reuseExistingChunk: true,
       },
-      name: 'react',
-      priority: 20,
-      reuseExistingChunk: true,
-    },
-    antd: {
-      test: /[\\/]node_modules[\\/]antd/,
-      name: 'antd',
-      priority: 15,
-      reuseExistingChunk: true,
+      antd: {
+        test: /[\\/]node_modules[\\/]antd/,
+        name: 'antd',
+        priority: 15,
+        reuseExistingChunk: true,
+      },
     },
   },
-},
+};
 ```
 
 #### minimizer
@@ -1239,45 +1241,93 @@ async loaderParse(entryPath) {
 
 
 ### less-loader
-- 使用@functions做px<->rem转换
-  * ```js
-    // webpack.config.js
-    // 设置javascriptEnabled
-    // ...
-    {
-      test: /\.less/,
-      exclude: /node_modules/,
-      use: ['style-loader', 'css-loader', {
-        loader: 'less-loader',
-        options: {
-          javascriptEnabled: true
-        }
+> 使用@functions做px<->rem转换
+```js
+// webpack.config.js
+// 设置javascriptEnabled
+// ...
+{
+  test: /\.less/,
+  exclude: /node_modules/,
+  use: ['style-loader', 'css-loader', {
+    loader: 'less-loader',
+    options: {
+      javascriptEnabled: true
+    }
+  }],
+},
+// ...
+```
+
+```less
+  .remMixin() {
+    @functions: ~`(function() {
+      var clientWidth = '375px';
+      function convert(size) {
+        return typeof size === 'string' ? 
+          +size.replace('px', '') : size;
+      }
+      this.rem = function(size) {
+        return convert(size) / convert(clientWidth) * 10 + 'rem';
+      }
+    })()`;
+  }
+
+  .remMixin();
+
+  .bb {
+    width: ~`rem("300px")`;
+    height: ~`rem(150)`;
+    background: blue;
+  }
+```
+
+### happypack
+> 由于 JavaScript 是单线程模型，要想发挥多核 CPU 的能力，只能通过多进程去实现，就需要happypack
+> 提示：由于HappyPack 对file-loader、url-loader 支持的不友好，所以不建议对该loader使用
+
+```js
+const HappyPack = require('happypack');
+const os = require('os');
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
+
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        //把对.js 的文件处理交给id为happyBabel 的HappyPack 的实例执行
+        loader: 'happypack/loader?id=happyBabel',
+        //排除node_modules 目录下的文件
+        exclude: /node_modules/
+      },
+    ]
+  },
+plugins: [
+    new HappyPack({
+        //用id来标识 happypack处理那里类文件
+      id: 'happyBabel',
+      //如何处理  用法和loader 的配置一样
+      loaders: [{
+        loader: 'babel-loader?cacheDirectory=true',
       }],
-    },
-    // ...
-    ```
-  * ```less
-    .remMixin() {
-      @functions: ~`(function() {
-        var clientWidth = '375px';
-        function convert(size) {
-          return typeof size === 'string' ? 
-            +size.replace('px', '') : size;
-        }
-        this.rem = function(size) {
-          return convert(size) / convert(clientWidth) * 10 + 'rem';
-        }
-      })()`;
-    }
+      //共享进程池
+      threadPool: happyThreadPool,
+      //允许 HappyPack 输出日志
+      verbose: true,
+    })
+  ]
+}
+```
 
-    .remMixin();
-
-    .bb {
-      width: ~`rem("300px")`;
-      height: ~`rem(150)`;
-      background: blue;
-    }
-    ```
+#### 参数
+id: String 用唯一的标识符 id 来代表当前的 HappyPack 是用来处理一类特定的文件
+loaders: Array 用法和 webpack Loader 配置中一样
+threads: Number 代表开启几个子进程去处理这一类型的文件，默认是3个，类型必须是整数
+verbose: Boolean 是否允许 HappyPack 输出日志，默认是 true
+threadPool: HappyThreadPool 代表共享进程池，即多个 HappyPack 实例都使用同一个共享进程池中的子进程去处理任务，以防止资源占用过多
+verboseWhenProfiling: Boolean 开启webpack --profile ,仍然希望HappyPack产生输出
+debug: Boolean 启用debug 用于故障排查。默认 false
 
 ---
 

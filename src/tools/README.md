@@ -20,9 +20,17 @@
 - [各大门户网站页面设计变革](https://www.webdesignmuseum.org/)
 - [在线将任意图片转为二维码](https://www.qrpicture.com/)
 - [在线工具集-超多](https://www.v2fy.com/p/readme-onlinetoolsbook/)
+- [在线水印](https://wewatermark.com/)
+- [在线绘图](https://app.wireflow.co/)
+- [在线ai手绘英文](https://www.calligrapher.ai/)
+- [email响应式模板](https://github.com/hunzaboy/codedmails)
+
+---
 
 ## 高德
 - [查两点间轨迹](https://restapi.amap.com/v3/direction/driving?origin=lng,lat643&destination=lng,lat&extensions=all&output=json&key=KEY)
+
+---
 
 ## utils库
 - [fullpage.js](https://alvarotrigo.com/fullPage/)
@@ -33,14 +41,25 @@
 - [otplib.js-单次验证](https://www.npmjs.com/package/otplib)
 - [skia-服务端画canvas](https://github.com/samizdatco/skia-canvas)
 
+---
+
 ## 常用工具
 - [Charles](https://www.newasp.net/soft/314929.html)
 - [Charles](http://www.sohu.com/a/303868014_120031027)
 - [docker](https://www.runoob.com/docker/macos-docker-install.html)
 
+---
+
 ## 开课吧
 
-react原理剖析：http://t.kuick.cn/RC08
-React源码扩展：http://t.kuick.cn/RC0n
-React 组件化： http://t.kuick.cn/RC04
+- [react原理剖析](http://t.kuick.cn/RC08)
+- [React源码扩展](http://t.kuick.cn/RC0n)
+- [React 组件化](http://t.kuick.cn/RC04)
+
+---
+
+## chrome插件
+- [任意图片编辑](https://chrome.google.com/webstore/detail/pixelixe-graphic-image-ed/hnddfemljlompbmggkablcffmonknpdh)
+
+---
 

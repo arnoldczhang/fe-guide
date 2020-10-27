@@ -198,6 +198,19 @@ script -> 清空微任务 -> 宏任务 -> 清空微任务 -> render -> 宏任务
 ### nodeVS浏览器
 ![node环境-事件循环](node环境-事件循环.png)
 
+> 在nodejs中，底层js引擎用的是v8，易步库是libuv
+
+#### libuv
+![libuv](libuv.png)
+
+- libuv提供了一个线程池，可用于运行用户代码并在循环线程中得到通知
+- 线程池默认大小为4，可以通过`UV_THREADPOOL_SIZE`设置为任何值（最大128）
+- 线程池是全局的，并在所有事件循环中共享
+- 导致相对较小的内存开销（128个线程约为1MB），但会增加运行时的线程性能
+
+
+#### 事件循环阶段
+
 `libuv`引擎中的事件循环（宏任务）分为 6 个阶段：
 
 * `timers`: 执行 setTimeout 和 setInterval 中到期的 callback。

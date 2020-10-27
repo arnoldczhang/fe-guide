@@ -679,6 +679,22 @@ flex-shrink: 0
 }
 ```
 
+**less中使用**
+
+```less
+.person__hand {
+  &--icon {
+    color: #FF7366;
+    position: relative;
+    top: 1px;
+  }
+  &--text {
+    font-size: 14px;
+    cursor: pointer;
+  }
+}
+```
+
 **多层嵌套**
 
 ```html

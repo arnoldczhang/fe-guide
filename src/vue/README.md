@@ -8,6 +8,8 @@
 - [codemirror](https://codemirror.net/doc/manual.html)
 - [深度使用vue](https://juejin.im/post/6862560722531352583?utm_source=gold_browser_extension)
 - [vue 虚拟滚动](https://github.com/Akryum/vue-virtual-scroller#variable-size-mode)
+- [vue-codemirror](https://github.surmon.me/vue-codemirror/)
+- [vue-property-decoration](https://github.com/kaorun343/vue-property-decorator)
 
 ## 目录
 
@@ -18,6 +20,7 @@
 * [`技巧`](#技巧)
 * [`vue3`](#vue3)
 * [`一些尝试`](#一些尝试)
+* [`组件`](#组件)
 
 </details>
 
@@ -56,9 +59,10 @@ vue ui
 
 ## 技巧
 
-[vue 还能这样写](https://juejin.im/post/5eef7799f265da02cd3b82fe?utm_source=gold_browser_extension)
+[vue还能这样写](https://juejin.im/post/5eef7799f265da02cd3b82fe?utm_source=gold_browser_extension)
 
-### slot
+### 1. slot
+> vue.runtime搜索`renderSlot`
 
 ```vue
 <!-- 组件 -->
@@ -77,20 +81,60 @@ vue ui
 <!-- 使用 -->
 <template>
   <comp>
+    <!-- 用法1 -->
     <template v-slot:header>
+      ...
+    </template>
+    <!-- 用法2 -->
+    <div slot="header">多行信息<br/>第二行信息</div>
+    <!-- 用法3 -->
+    <!--  #代替v-slot -->
+    <template #header>
       ...
     </template>
   </comp>
 </template>
 ```
 
-### keep-alive
+### 2. slot-scope
+``` vue
+<!-- 组件 -->
+<template>
+  <!-- 新建了一个slot，叫header -->
+  <div
+    v-if="$slots.header"
+    class="c-base-popup-header"
+  >
+    <!-- slot用v-bind绑定插槽数据，被替换后，可以直接读取这个值 -->
+    <slot v-bind="aa" />
+    <slot name="value" v-bind="{ value: 123 }" />
+  </div>
+</template>
 
-> vue 内置组件
->
-> 会缓存包裹的第一个子组件实例，下次根据组件 id 从缓存中拿实例（如果存在的话）
->
-> 注：如果没处理好，比如之前的组件实例没销毁，将会是内存泄漏的源头
+...
+
+<!-- 使用 -->
+<template>
+  <CustomTable :data="tableData">
+    <!-- 替换父组件中的默认<slot /> -->
+    <template v-slot="slotProp">
+      {{ slotProp.user.firstName }}
+    </template>
+    <!-- 替换父组件中的<slot name="value"/>，并且获取当前数据，命名为row -->
+    <template v-slot:value="row">
+      <!-- 由于slot绑定了{ value: 123}，所以这里可以直接操作属性value -->
+      {{ row.value.toFixed(3) }}
+    </template>
+  </CustomTable>
+</template>
+```
+
+### 3. keep-alive
+
+> 1. vue 内置抽象组件（父子关系会跳过该组件）
+>2. 根据LRU策略缓存第一个子组件实例，下次render时，根据组件 id 从缓存中拿实例（如果存在的话）
+> 
+>注：如果没处理好，比如之前的组件实例没销毁，将会是内存泄漏的源头
 
 ```html
 <keep-alive>
@@ -98,7 +142,7 @@ vue ui
 </keep-alive>
 ```
 
-### hook
+### 4. 优雅绑定hook
 
 ```js
 {
@@ -111,6 +155,175 @@ vue ui
   },
 }
 ```
+
+### 5. 覆盖外部组件scoped样式
+```vue
+<style lang="less" scoped>
+.aa {
+  /deep/ .el-alert__title {
+
+  }
+}
+</style>
+```
+
+### 6. 解耦操作组件生命周期
+
+```vue
+<template>
+	<v-chart
+      @hook:mounted="handleChartMounted"
+      @hook:beforeUpdated="loading = true"
+      @hook:updated="loading = false"
+      :data="data"
+  />
+</template>
+<script>
+export default {
+  data() {
+    return {
+      loading: false,
+    };
+  },
+  handleChartMounted() {
+    // do sth
+  },
+}
+</script>
+```
+
+### 7. `$props`、`$attrs`和`$listeners`
+
+```vue
+<template>
+	<!-- 传递父组件所有动态属性给子组件 -->
+  <input v-bind="$props" />
+
+  <!-- 传递父组件所有静态属性给子组件 -->
+  <input v-bind="$attrs" />
+
+	<!-- 将父组件 (不含 .native修饰器)的 v-on 事件监听器给子组件 -->
+	<childComponent v-on="$listeners" />
+</template>
+```
+
+### 8. 动态添加子组件
+
+```vue
+<template>
+	<!-- 利用内置component组件，记得绑定 is 属性 -->
+	<component v-for="(item,index) in componentList" :key="index" :is="item"></component>
+</template>
+<script>
+import ColorIn from '@/components/Magic/ColorIn.vue'
+import LineIn from "@/components/Magic/LineIn.vue";
+import Header from "@/components/Magic/Header.vue";
+import Footer from "@/components/Magic/Footer.vue";
+
+export default{
+  data() {
+    return {
+      componentList: ['ColorIn', 'LineIn', 'Header', 'Footer'],
+    };
+  },
+  components:{
+    ColorIn,
+    LineIn,
+    Header,
+    Footer
+  }
+}
+</script>
+```
+
+### 9. Vue.filter
+
+#### 注册
+
+```js
+// 方式一：全局注册
+Vue.filter('stampToYYMMDD', (value) =>{
+  // 处理逻辑
+});
+
+// 方式二：全局注册多个filter
+// ./common/filters/custom
+const dateServer = value => value.replace(/(\d{4})(\d{2})(\d{2})/g, '$1-$2-$3')
+export { dateServer }
+
+import * as custom from './common/filters/custom'
+Object.keys(custom).forEach(key => Vue.filter(key, custom[key]));
+
+// 方式三：局部注册
+export default {
+ 	filters: {
+    stampToYYMMDD: (value)=> {
+      // 处理逻辑
+    }
+  } 
+}
+```
+
+#### 使用
+
+```vue
+<template>
+	<!-- 在双花括号中 -->
+	{{ message | stampToYYMMDD }}
+
+	<!-- 在 `v-bind` 中 -->
+  <div v-bind:id="rawId | dateServer"></div>
+</template>
+```
+
+### 10. .sync - 子组件可修改props
+
+#### 父组件
+
+```vue
+<template>
+	<!-- 用sync定义属性 -->
+	<child :foo.sync="foo" />
+</template>
+<script>
+export default {
+  data() {
+    return {
+      foo: 'aaa',
+    };
+  },
+}
+</script>
+```
+
+#### 子组件
+
+```vue
+<script>
+//...
+{
+  // ...
+  // 通过事件更新，类似v-model
+  this.$emit('update:foo', newValue);
+}
+</script>
+```
+
+### 11. Object.freeze - 性能提升
+
+```js
+export default {
+  data: () => ({
+    users: {}
+  }),
+  async created() {
+    const users = await axios.get("/api/users");
+    this.users = Object.freeze(users);
+  }
+};
+```
+
+
 
 ---
 
@@ -262,3 +475,108 @@ render(ctx, cache) {
 
 - [懒加载通用组件](./datapanel/README.md)
 - [美化后的 tree 结构组件](./vue-pretty-tree/README.md)
+
+---
+
+## 组件
+
+### vue-code-diff
+> 类git风格代码对比，[参考](https://www.npmjs.com/package/vue-code-diff)
+
+#### 使用到的库
+```js
+<div v-html="html" v-highlight></div>
+
+// ..
+import { createPatch } from 'diff';
+import { Diff2Html } from 'diff2html';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/googlecode.css';
+import 'diff2html/dist/diff2html.css';
+
+{
+  // ...
+  computed: {
+    html() {
+      const oldString = 'hello world';
+      const newString = 'hello world2';
+      const args = ['', oldString, newString, '', ''];
+      // 这里获取了git diff 的结果
+      const dd = createPatch(...args);
+      // git diff 结果转 json
+      const outStr = Diff2Html.getJsonFromDiff(dd, {
+        inputFormat: 'diff',
+        outputFormat: 'side-by-side',
+        showFiles: false,
+        matching: 'lines',
+      });
+      // json 转 html
+      const html = Diff2Html.getPrettyHtml(outStr, {
+        inputFormat: 'json',
+        outputFormat: 'side-by-side',
+        showFiles: false,
+        matching: 'lines',
+      });
+      return html;
+    },
+  },
+  // ...
+}
+```
+
+### tiptap
+> 轻量级页面编辑器
+
+```vue
+<template>
+  <div>
+    <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
+        <button :class="{ 'is-active': isActive.bold() }" @click="commands.bold">
+          Bold
+        </button>
+    </editor-menu-bar>
+    <editor-content :editor="editor" />
+  </div>
+</template>
+
+<script>
+import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
+import {
+  Blockquote,
+  CodeBlock,
+  HardBreak,
+  Heading,
+} from 'tiptap-extensions'
+
+export default {
+  components: {
+    EditorMenuBar,
+    EditorContent,
+  },
+  data() {
+    return {
+      editor: new Editor({
+        extensions: [
+          new Blockquote(),
+          new CodeBlock(),
+          new HardBreak(),
+          new Heading({ levels: [1, 2, 3] }),
+          // ...按需注入扩展
+        ],
+        content: `
+          <h1>Yay Headlines!</h1>
+          <p>All these <strong>cool tags</strong> are working now.</p>
+        `,
+      }),
+    }
+  },
+  beforeDestroy() {
+    this.editor.destroy()
+  },
+}
+</script>
+```
+
+
+
+
