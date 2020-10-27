@@ -12,6 +12,7 @@
 
 * [`安装docker`](#安装docker)
 * [`安装jenkins`](#安装jenkins)
+* [`docker命令`](#docker命令)
 
 </details>
 
@@ -156,4 +157,13 @@ prom/alertmanager
 docker run -d -p 3000:3000 \
 -dit --network my-network \
 --name grafana grafana/grafana
+```
+
+---
+
+## docker命令
+
+```sh
+# 新建容器，将容器的3000 端口映射到本机的8000 端口
+docker container run -p 8000:3000 -it centos:7 /bin/bash
 ```
