@@ -13,6 +13,7 @@
 * [`npm script`](#npm-script)
 * [`npm link`](#npm-link)
 * [`npm view`](#npm-view)
+* [`npm的替代`](npm的替代)
 
 </details>
 
@@ -331,3 +332,12 @@ npm run serve -- params  // 将params参数添加到process.env.argv数组中
 ```cmd
 npm view xxx versions
 ```
+
+---
+
+## npm的替代
+
+- pnpm
+- npmd
+- Ied
+
