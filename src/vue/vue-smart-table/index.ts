@@ -108,7 +108,7 @@ export default class SmartTable extends Vue {
     }
 
     getTableCellError(
-        error: string | any[],
+        error: string | any[] | undefined,
     ) {
         if (typeof error === 'string') {
             return error;
@@ -305,7 +305,7 @@ export default class SmartTable extends Vue {
                 (key: string) => this.checkMsgValid(msg[key])
             );
         }
-        return !msg;
+        return false;
     }
 
     async updateRuleMessage<T = string>(
@@ -380,7 +380,7 @@ export default class SmartTable extends Vue {
             name: string,
         ) => {
             const oldListener = listeners[name];
-            newListeners[name] = (event: never) => {
+            newListeners[name] = (event: Event) => {
                 const validate = async <T = any>(...args: T[]) => {
                     return this.updateRuleMessage({
                         index, key, value: row[key]
@@ -470,9 +470,5 @@ export default class SmartTable extends Vue {
 
     getData() {
         return this.dataList;
-    }
-
-    mounted() {
-        (window as any).abc = this;
     }
 }
