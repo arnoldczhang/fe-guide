@@ -3,6 +3,7 @@
 ## 参考
 - [solid](https://learnsolid.cn/)
 - [rax-serveless实践](https://mp.weixin.qq.com/s/Hj1Py3_CNedxq0ZAy51Qqw)
+- [Node.js Serverless助力双11](https://mp.weixin.qq.com/s/l38ZhVP1RboOEsJI1lUHJQ)
 
 ## 名词解释
 
@@ -45,3 +46,9 @@
 网络策略优化，长连接优化，部分模块内部采用更高效的 RPC 调- 用；
 - 采用更高性能的实现方式，减少耗时；
 - 快慢请求分离，快请求同步慢请求异步的方式提高性能。
+
+
+
+## 容灾预案
+
+![容灾预案](./容灾预案.png)
