@@ -1,0 +1,32 @@
+{
+  "name": "compfinder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "scripts": {
+    "start": "tsc ./src/*.ts -outDir ./dist",
+    "test": ""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/babel__core": "^7.1.12",
+    "@types/fs-extra": "^9.0.4",
+    "@types/vue": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.9.0",
+    "@typescript-eslint/parser": "^4.9.0",
+    "@vue/eslint-config-typescript": "^7.0.0",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-formatter-friendly": "^7.0.0",
+    "eslint-plugin-vue": "^7.1.0",
+    "typescript": "^4.1.2"
+  },
+  "dependencies": {
+    "@babel/core": "^7.12.9",
+    "fs-extra": "^9.0.1",
+    "vue-eslint-parser": "^7.1.1",
+    "vue-template-compiler": "^2.6.12"
+  }
+}
