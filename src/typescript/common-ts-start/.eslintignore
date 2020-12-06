@@ -1,0 +1,6 @@
+build/*.js
+config/*.js
+node_modules
+src/*.png
+src/*.less
+src/*.css

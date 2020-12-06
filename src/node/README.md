@@ -51,6 +51,7 @@
 - [数据校验工具 schema-typed](https://juejin.im/post/5b87c8a5e51d4538e41067a8)
 - [图片压缩工具-optimizt](https://github.com/funbox/optimizt)
 - [自动生成mock数据-faker.js](https://github.com/Marak/faker.js)
+- [页面截屏-dom-to-image](https://www.npmjs.com/package/dom-to-image)
 
   * ```
     npm install -g verdaccio
