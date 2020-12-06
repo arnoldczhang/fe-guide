@@ -257,12 +257,12 @@
         NativeModule.wrap = function(script) {
           return NativeModule.wrapper[0] + script + NativeModule.wrapper[1];
         };
-      
+          
       NativeModule.wrapper = [
           '(function (exports, require, module, __filename, __dirname) { ',
           '\n});'
         ];
-    
+      
         NativeModule.prototype.compile = function() {
         var source = NativeModule.getSource(this.id);
           source = NativeModule.wrap(source);
@@ -285,7 +285,7 @@
       
         Module.prototype.load = function(filename) {
           debug('load %j for module %j', filename, this.id);
-    
+      
           assert(!this.loaded);
         this.filename = filename;
           this.paths = Module._nodeModulePaths(path.dirname(filename));
@@ -304,6 +304,7 @@
           // _compile
           module._compile(internalModule.stripBOM(content), filename);
         };
+      ```
 
 
         // Native extension for .json
@@ -558,6 +559,8 @@ throw new CommonError('abc');
 ---
 
 ## 进程线程
+
+[node集群](https://www.yuque.com/docs/share/3bed0240-047e-4a49-a989-f0a37fc28971)
 
 ### 概念
 > 进程：CPU 资源分配最小单位（资源分配和独立运行的最小单位）
