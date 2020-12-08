@@ -1239,6 +1239,12 @@ async loaderParse(entryPath) {
 }
 ```
 
+### ts-loader
+
+**appendTsSuffixTo**
+
+- 一般取值: [/.vue$/]
+- 解释：支持解析.vue文件中`<script lang="ts">`的内容（相当于把这不发内容提出来作为.ts）
 
 ### less-loader
 > 使用@functions做px<->rem转换
