@@ -29,8 +29,12 @@
 - [23中垂直方法](https://mp.weixin.qq.com/s/JL-9juZgbpz_Cnp6FnLVAQ)
 - [CSSOM](https://mp.weixin.qq.com/s/xST3cjumPrxdHbcZcYlLvQ)
 - [css与网络性能](https://mp.weixin.qq.com/s/OigM7dPFS3OGEBUE6KjHQA)
-- [clippy属性在线调试](https://bennettfeely.com/clippy/)
+- [clippy](https://bennettfeely.com/clippy/)
 - [一些新的布局方法](https://mp.weixin.qq.com/s/HYUgb8jEI-aQhbN4sBajNw)
+- [文字排布-text-combine-upright](http://www.deathghost.cn/article/css/86)
+
+### 其他
+- [2020css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
 
 ## 目录
 <details>
