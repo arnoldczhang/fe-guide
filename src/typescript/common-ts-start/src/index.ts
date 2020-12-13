@@ -20,5 +20,3 @@ import {
 //   const tplAst = transferVueTemplateToAst(template);
 //   const ast = transferJsToAst(script.content);  
 // };
-
-// readdir('/Users/zhangcheng08/website/kuaishou-fontend-abtest/src/common/');
