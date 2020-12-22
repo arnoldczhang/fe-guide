@@ -13,6 +13,7 @@ import {
 import {
   read,
   readdir,
+  write,
   getFilePath,
 } from './fs';
 import {
@@ -107,8 +108,6 @@ const traverseAst = (
        * @param p
        */
     ImportDeclaration(p: NodePath<t.ImportDeclaration>) {
-      const [specifier] = p.get('specifiers');
-      if (!specifier) return;
       const sourceValue = getOnly(p.get('source.value'));
       const { node: value } = sourceValue;
       if (typeof value !== 'string') return;
@@ -120,6 +119,21 @@ const traverseAst = (
       ));
     },
   });
+};
+
+const recurseNode = (
+  re: RegExp,
+  input: string[],
+  cach: string[],
+  times = 5,
+) => {
+  if (!times) return;
+  input.forEach((val) => {
+    if (re.test(val)) return cach.push(val);
+    if (!Array.isArray(treeNodes[val])) return;
+    recurseNode(re, treeNodes[val], cach, times - 1);
+  });
+  return cach;
 };
 
 /**
@@ -200,7 +214,7 @@ export const searchAllFiles = (
  *
  * @param re
  */
-export const filterVueFiles = async (re: RegExp) => {
+export const filterVueFiles = (re: RegExp) => {
   console.log(chalk.green('过滤.vue文件中'));
   const result: Record<string, string[]> = {};
   // 提取所有带.vue的key
@@ -213,12 +227,8 @@ export const filterVueFiles = async (re: RegExp) => {
   Object.keys(result).forEach((key) => {
     const value = result[key];
     const tempValue: string[] = [];
-    // 如果.vue文件引用的非.vue文件，需要继续寻找
-    value.forEach((val) => {
-      if (re.test(val)) return tempValue.push(val);
-      if (!Array.isArray(treeNodes[val])) return;
-      tempValue.push(...treeNodes[val].filter(v => re.test(v)));
-    });
+    // 递归查询.vue文件引用.vue文件的情况
+    recurseNode(re, value, tempValue);
     result[key] = tempValue;
   });
   treeNodes = result;
@@ -228,7 +238,7 @@ export const filterVueFiles = async (re: RegExp) => {
  *
  * @param replacer
  */
-export const prettifyFiles = async (
+export const prettifyFiles = (
   replacer: string[][],
 ) => {
   console.log(chalk.green('美化路径中'));
@@ -239,6 +249,36 @@ export const prettifyFiles = async (
     );
   });
   treeNodes = result;
+};
+
+/**
+ *
+ * @param path
+ * @param option
+ */
+export const searchRedundantComp = (
+  path: string,
+  option: { skip: RegExp[] }
+) => {
+  const { skip } = option;
+  const result: string[] = [];
+  Object.keys(treeNodes).forEach((key) => {
+    if (skip.some(re => re.test(key))) {
+      return;
+    }
+
+    const used = Object.keys(treeNodes).some((otherKey) => {
+      if (otherKey === key) return;
+      if (treeNodes[otherKey].includes(key)) {
+        return true;
+      }
+    });
+
+    if (!used) {
+      result.push(key);
+    }
+  });
+  write(path, JSON.stringify(result));
 };
 
 /**
