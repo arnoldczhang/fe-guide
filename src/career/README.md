@@ -14,6 +14,7 @@
 - [前端早早聊](https://www.yuque.com/zaotalk/posts/enec3e)
 - [vivo商场前后端架构演进](https://mp.weixin.qq.com/s/vD9yvYNaxTQBLABik6aqNg)
 - [[2020年Web前端最新导航](https://www.cnblogs.com/qianguyihao/p/10701923.html)]
+- [舒文-阿里前端成长史](https://zhuanlan.zhihu.com/p/91953428)
 
 ## 目录
 <details>
