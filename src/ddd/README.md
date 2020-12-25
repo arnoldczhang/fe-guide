@@ -227,7 +227,7 @@ class CarRepositoryImplement implements CarRepository {
 
 > 封装复杂对象的创建过程（复杂class）
 >
-> 聚合的根创建后，聚合包含的对象也随之创建
+> 聚合根创建后，聚合包含的对象也随之创建
 > 
 
 **资源库(Repositories)**
