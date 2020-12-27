@@ -10,7 +10,10 @@ import {
   searchAllFiles,
   filterVueFiles,
   prettifyFiles,
+  statisticData,
+  drawSplitDependencyImage,
   drawDependencyImage,
+  searchRedundantComp,
 } from './tree';
 
 const from = 'ROOT/src';
@@ -28,7 +31,11 @@ const generate = () => {
   // 复制源文件至 vuepress 目录
   copyOriginToVuepress(from, to);
   // 更新 vuepress 下各文件的依赖（文件路径、less 全局文件等）
-  updateDependencies(to, {
+  // 并生成依赖树
+  updateDependencies({
+    root: to,
+    npm: nodeModulePath,
+  }, {
     vue: [vueRe],
     js: [jsRe],
     css: [cssRe],
@@ -41,7 +48,7 @@ const generate = () => {
   finishGenerate();
 };
 
-// generate();
+generate();
 
 const drawTree = () => {
   // 找到文件夹下所有目标文件生成简易依赖树
@@ -50,14 +57,25 @@ const drawTree = () => {
     js: [jsRe],
   });
   // 读取vue文件
-  filterVueFiles(/(?:.+\.vue$|\/router\/index\.js$)/);
+  filterVueFiles(/(?:.+\.vue|\/router\/index\.(t|j)s|main\.tsx?)$/);
   // 美化路径
   prettifyFiles([
     [from, '@'],
     [nodeModulePath, ''],
   ]);
-  // 画依赖图
-  drawDependencyImage(imagePath, imageMiniPath);
+  // 找到冗余组件
+  searchRedundantComp(redundantPath, {
+    skip: [
+      /(?:\/router\/index\.(t|j)s|main\.tsx?)$/,
+      /App\.vue$/,
+    ],
+  });
+  // 统计数据
+  statisticData();
+  // 按页面模块画依赖图
+  drawSplitDependencyImage(imagePath);
+  // 画整体依赖图
+  drawDependencyImage(imageOutPath, imageMiniPath);
 };
 
-drawTree();
+// drawTree();

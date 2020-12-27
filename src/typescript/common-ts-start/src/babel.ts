@@ -2,6 +2,7 @@ import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import {
   VueResult,
+  PathInfo,
 } from './types';
 import * as nodePath from 'path';
 import {
@@ -9,6 +10,12 @@ import {
   replaceImport,
   getOnly,
 } from './helper';
+import{
+  getFilePath,
+} from './fs';
+import {
+  getRealPath,
+} from './tree';
 
 const { join } = nodePath;
 
@@ -16,24 +23,29 @@ const { join } = nodePath;
  * ImportDeclaration
  * @param p
  * @param result
- * @param path
+ * @param pathInfo
  */
 export function ImportDeclaration(
   p: NodePath<t.ImportDeclaration>,
   result: VueResult,
-  path: string,
+  pathInfo: PathInfo,
 ): VueResult {
+  const {
+    current: path = '',
+    npm: npmPath,
+    root: rootPath,
+  } = pathInfo;
   const [specifier] = p.get('specifiers');
   const isValidSpecifier = specifier
     && specifier.type === 'ImportDefaultSpecifier';
-
+  // import xx from 'xx';
   if (!isValidSpecifier) return result;
   const sourceValue = getOnly(p.get('source.value'));
   const { node: name } = getOnly(specifier.get('local.name'));
   const { node: value } = sourceValue;
-
+  // 'xx'
   if (typeof value !== 'string') return result;
-  const absPath = isRelativePath(value) ? join(path, value) : replaceImport(value, path);
+  const absPath = getRealPath(rootPath, npmPath, path, value);
   result.import.set(name, absPath);
   return result;
 }

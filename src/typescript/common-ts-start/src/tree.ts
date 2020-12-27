@@ -29,6 +29,23 @@ const { join } = nodePath;
 
 let treeNodes: Record<string, string[]> = {};
 
+const filterObjectKeys = (
+  target: Record<string, string[]>,
+  keys: string[],
+  output: Record<string, string[]>,
+): Record<string, string[]> => {
+  if (Array.isArray(keys)) {
+    keys.forEach((key) => {
+      if (output[key]) {
+        return;
+      }
+      output[key] = target[key] || [];
+      filterObjectKeys(target, target[key], output);
+    });
+  }
+  return output;
+};
+
 /**
  *
  * @param rootPath
@@ -36,7 +53,7 @@ let treeNodes: Record<string, string[]> = {};
  * @param path
  * @param value
  */
-const getRealPath = (
+export const getRealPath = (
   rootPath: string,
   npmPath: string,
   path: string,
@@ -282,7 +299,36 @@ export const searchRedundantComp = (
 };
 
 /**
- *
+ *统计数据
+ */
+export const statisticData = () => {
+  const list = [...new Set(treeNodes['@/router/index.js'])];
+  console.log(chalk.green(`页面共: ${list.length}`));
+  console.log(chalk.green(`组件共: ${Object.keys(treeNodes).length - list.length - 5}`));
+};
+
+/**
+ *按页面模块画依赖图
+ * @param to
+ */
+export const drawSplitDependencyImage = async (
+  to: string,
+) => {
+  const result = await madge('.');
+  const list = [...new Set(treeNodes['@/router/index.js'])];
+  for (const item of list) {
+    console.log(chalk.green(`生成图片：${item}`));
+    const newTreeNodes: Record<string, string[]> = filterObjectKeys(treeNodes, [item], {});
+    result.tree = newTreeNodes;
+    await result.image(`${to}/${
+      item.replace(/(?:\.vue$|@\/modules\/)/g, '')
+        .replace(/\//g, '_')
+    }.png`);
+  }
+};
+
+/**
+ * 画整体依赖图
  * @param to
  */
 export const drawDependencyImage = async (
@@ -293,10 +339,22 @@ export const drawDependencyImage = async (
   const result = await madge('.');
   result.tree = treeNodes;
   await result.image(to);
+  minifyImage(to, miniTo);
+};
+
+/**
+ *
+ * @param from
+ * @param to
+ */
+export const minifyImage = (
+  from: string,
+  to: string,
+) => {
   console.log(chalk.green('压缩图片中'));
-  jimp.read(to)
+  jimp.read(from)
     .then(res => {
       return res.quality(50)
-        .write(miniTo);
+        .write(to);
     });
 };

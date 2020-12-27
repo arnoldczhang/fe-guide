@@ -3,6 +3,7 @@ import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import {
   VueResult,
+  PathInfo,
 } from './types';
 import {
   GeneratorResult,
@@ -46,10 +47,11 @@ import {
 import * as chalk from 'chalk';
 
 const { join } = nodePath;
+const pathCach = new Map();
 
 const traverseJs = errorCatch((
   content: string,
-  path: string,
+  pathInfo: PathInfo,
 ): VueResult => {
   const result: VueResult = {
     import: new Map(),
@@ -77,7 +79,7 @@ const traverseJs = errorCatch((
      * @param p
      */
     ImportDeclaration(p: NodePath<t.ImportDeclaration>) {
-      errorCatch(ImportDeclaration)(p, result, path);
+      errorCatch(ImportDeclaration)(p, result, pathInfo);
     },
     /**
      * 处理vue初始化对象
@@ -104,15 +106,18 @@ const traverseVue = errorCatch((
 /**
  * vue的处理
  * - 提取所有data/props/computed(若可以)
- * - <style>头部插入~@/style/layout.less
  * - <template>提取组件的调用
+ * - <style>头部插入~@/style/layout.less
+ * - 更新依赖树
  */
 const updateVueDependencies = errorCatch((
-  rootPath: string,
+  pathInfo: PathInfo,
   suffix: RegExp[],
 ) => {
+  const {
+    root: rootPath,
+  } = pathInfo;
   const targetPaths = readdir(rootPath, { suffix });
-  const pathCach = new Map();
   targetPaths.slice().forEach((path: string) => {
     console.log(chalk.green(`now update file: ${path}`));
     const content = read(path);
@@ -123,14 +128,14 @@ const updateVueDependencies = errorCatch((
     // js
     if (script) {
       const { content, attrs } = script;
-      const cach = traverseJs(content, rootPath);
+      const cach = traverseJs(content, { ...pathInfo, current: path });
       pathCach.set(path, cach);
       jsContent = `<script ${getBlockAttrs(attrs)}>
         ${content}
         </script>
       `;
     }
-    //
+    // html
     if (template) {
       traverseVue(template, path);
       tplContent = template;
@@ -162,15 +167,19 @@ const updateVueDependencies = errorCatch((
  * - 提取所有data/props/computed(若可以)
  */
 const updateJsDependencies = errorCatch((
-  rootPath: string,
+  pathInfo: PathInfo,
   suffix: RegExp[],
 ) => {
+  const {
+    root: rootPath,
+  } = pathInfo;
   const targetPaths = readdir(rootPath, { suffix });
   targetPaths.forEach((path: string) => {
     if (isDeclaration(path)) return;
     console.log(chalk.green(`now update file: ${path}`));
     const content = read(path);
-    traverseJs(content, rootPath);
+    const cach = traverseJs(content, { ...pathInfo, current: path });
+    pathCach.set(path, cach);
   });
 });
 
@@ -226,16 +235,16 @@ export const copyOriginToVuepress = errorCatch((
  * @param option string
  */
 export const updateDependencies = (
-  rootPath: string,
+  pathInfo: PathInfo,
   option: {
     vue: RegExp[];
     js: RegExp[];
     css: RegExp[];
-  }
+  },
 ) => {
   const { vue, js, css } = option;
-  updateVueDependencies(rootPath, vue);
-  // updateJsDependencies(rootPath, js);
+  updateVueDependencies(pathInfo, vue);
+  // updateJsDependencies(pathInfo, js);
   // updateCssDependencies(rootPath, css);
 };
 

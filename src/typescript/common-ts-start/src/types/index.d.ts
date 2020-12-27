@@ -8,3 +8,9 @@ export interface Tree {
   children: Tree[];
   name: string;
 }
+
+export interface PathInfo {
+  root: string;
+  npm: string;
+  current?: string;
+}
