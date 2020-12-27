@@ -273,10 +273,16 @@ function call(key) {
   * transform
   * transformSync
   * transformAsync
-2. @babel/generator（babel6的babel-generator）
+2. [@babel/generator](https://babeljs.io/docs/en/babel-generator)（babel6的babel-generator）
   * default
 3. @babel/parser（babel6的babylon）
   * parse
+
+### @babel/generator
+```js
+// 将装饰器置于export前（比如应对vue使用ts的情况）
+babelGenerate(ast, { decoratorsBeforeExport: true });
+```
 
 ### options
 [官方文档](https://babeljs.io/docs/en/options)

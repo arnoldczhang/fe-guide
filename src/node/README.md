@@ -50,6 +50,10 @@
 - [搭建私有npm工具-verdaccio](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 - [数据校验工具 schema-typed](https://juejin.im/post/5b87c8a5e51d4538e41067a8)
 - [图片压缩工具-optimizt](https://github.com/funbox/optimizt)
+- [自动生成mock数据-faker.js](https://github.com/Marak/faker.js)
+- [页面截屏-dom-to-image](https://www.npmjs.com/package/dom-to-image)
+- [自动生成依赖结构-madge](https://github.com/pahen/madge)
+- [自动生成依赖结构-dependency-cruiser](https://github.com/sverweij/dependency-cruiser)
 
   * ```
     npm install -g verdaccio
@@ -255,12 +259,12 @@
         NativeModule.wrap = function(script) {
           return NativeModule.wrapper[0] + script + NativeModule.wrapper[1];
         };
-      
+          
       NativeModule.wrapper = [
           '(function (exports, require, module, __filename, __dirname) { ',
           '\n});'
         ];
-    
+      
         NativeModule.prototype.compile = function() {
         var source = NativeModule.getSource(this.id);
           source = NativeModule.wrap(source);
@@ -283,7 +287,7 @@
       
         Module.prototype.load = function(filename) {
           debug('load %j for module %j', filename, this.id);
-    
+      
           assert(!this.loaded);
         this.filename = filename;
           this.paths = Module._nodeModulePaths(path.dirname(filename));
@@ -302,6 +306,7 @@
           // _compile
           module._compile(internalModule.stripBOM(content), filename);
         };
+      ```
 
 
         // Native extension for .json
@@ -556,6 +561,8 @@ throw new CommonError('abc');
 ---
 
 ## 进程线程
+
+[node集群](https://www.yuque.com/docs/share/3bed0240-047e-4a49-a989-f0a37fc28971)
 
 ### 概念
 > 进程：CPU 资源分配最小单位（资源分配和独立运行的最小单位）

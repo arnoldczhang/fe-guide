@@ -1,29 +1,40 @@
 # css
 
 ## 参考
+
+### 资源
 - [图片库](https://remixicon.com/)
 - [icon库](https://mp.weixin.qq.com/s/vBzp8zMZ9he-3JsuAEpoxQ)
 - [bootstrap-icons](https://icons.getbootstrap.com/)
 - [特效库](https://cssfx.dev/)
+- [nb的配色库](https://color.adobe.com/zh/create/color-wheel)
+- [渐变色配色库](https://www.bestvist.com/css-gradient)
+- [创意海报库](https://www.chuangkit.com/designtools/designindex)
+- [卡通的网站](https://uglyduck.ca/articles/)
+- [配渐变色](https://www.gradientmagic.com/)
+- [生成3d字体](https://bennettfeely.com/ztext/)
+
+### 案例
+- [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
+- [前端换肤参考](https://blog.souche.com/untitled-17/)
+- [提高幸福感的 9 个 CSS 技巧](https://juejin.im/post/5cb45a06f265da03474df54e)
+- [Web开发者需要知道的CSS Tricks](https://juejin.im/post/5aab4f985188255582521c57)
+- [CSS 常用技巧](https://juejin.im/post/5b1f41246fb9a01e725131fb)
+- [csswg](https://drafts.csswg.org/)
+
+### 属性
 - [现代css性能优化](http://verymuch.site/2018/07/22/CSS%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%848%E4%B8%AA%E6%8A%80%E5%B7%A7/?nsukey=3eczM2FJ0JQ8aS2hEDt1CnIzmS32kXvEkjuE7I0lrEF7M8jW7k7PPZtuVxX%2BT%2FsRQqGQ7YhSV%2FicPVi%2FrRG%2BhGGQQn6y7EuHKuERI93Idzq2ziur8T8dZL3qgDT%2Bw5au3cocxOGnSC7pBI7bve9tigiinrZL8Xaac042IW%2FR%2FxqJp8Fk21Nm7YbVUczUdhD%2F)
 - [5个新css属性](https://zhuanlan.zhihu.com/p/40736286)
 - [flex](https://mp.weixin.qq.com/s/WtGzVMzh1RupixD_4474mg)
 - [23中垂直方法](https://mp.weixin.qq.com/s/JL-9juZgbpz_Cnp6FnLVAQ)
 - [CSSOM](https://mp.weixin.qq.com/s/xST3cjumPrxdHbcZcYlLvQ)
 - [css与网络性能](https://mp.weixin.qq.com/s/OigM7dPFS3OGEBUE6KjHQA)
-- [前端换肤参考](https://blog.souche.com/untitled-17/)
-- [clippy属性在线调试](https://bennettfeely.com/clippy/)
-- [提高幸福感的 9 个 CSS 技巧](https://juejin.im/post/5cb45a06f265da03474df54e)
-- [Web开发者需要知道的CSS Tricks](https://juejin.im/post/5aab4f985188255582521c57)
-- [CSS 常用技巧](https://juejin.im/post/5b1f41246fb9a01e725131fb)
-- [csswg](https://drafts.csswg.org/)
-- [nb的配色库](https://color.adobe.com/zh/create/color-wheel)
-- [渐变色配色库](https://www.bestvist.com/css-gradient)
-- [创意海报库](https://www.chuangkit.com/designtools/designindex)
-- [卡通的网站](https://uglyduck.ca/articles/)
+- [clippy](https://bennettfeely.com/clippy/)
 - [一些新的布局方法](https://mp.weixin.qq.com/s/HYUgb8jEI-aQhbN4sBajNw)
-- [自动配渐变色](https://www.gradientmagic.com/)
-- [生成3d字体](https://bennettfeely.com/ztext/)
+- [文字排布-text-combine-upright](http://www.deathghost.cn/article/css/86)
+
+### 其他
+- [2020css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
 
 ## 目录
 <details>

@@ -13,6 +13,7 @@
 * [`npm script`](#npm-script)
 * [`npm link`](#npm-link)
 * [`npm view`](#npm-view)
+* [`npm的替代`](npm的替代)
 
 </details>
 
@@ -22,6 +23,7 @@
 - [现代化 js 封装库标准配置](https://github.com/yanhaijing/jslib-base)
 - [node 依赖管理](https://mp.weixin.qq.com/s/XdOPPay8fpNBiH2ExW_EyQ)
 - [前端工程](https://juejin.im/post/5d08d3d3f265da1b7e103a4d?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+- [npm常用命令](https://blog.csdn.net/lianghecai52171314/article/details/109638556)
 
 ---
 
@@ -331,3 +333,12 @@ npm run serve -- params  // 将params参数添加到process.env.argv数组中
 ```cmd
 npm view xxx versions
 ```
+
+---
+
+## npm的替代
+
+- pnpm
+- npmd
+- Ied
+

@@ -93,6 +93,7 @@
 
 * [`webpack热更新`](#webpack热更新)
 * [`webpack的hashid规则`](#webpack的hashid规则)
+* [`webpack将import处理成了什么`](#webpack将import处理成了什么)
 
 **框架**
 
@@ -3509,5 +3510,19 @@ foo`try catch ${foo.name}.`;
 
 ---
 
+### webpack将import处理成了什么
 
+分为两种：
+
+```js
+import aa from 'aa';
+
+import('xxModule');
+```
+
+- 通过`__webpack_require__`将所有import转为map对象，key为路径，value为模块的可执行函数
+- 同步引用会直接打在包里；异步引用会单独打成一个包，动态插script，请求结束触发回调；
+- 两者使用前都会做缓存
+
+---
 

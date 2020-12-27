@@ -31,16 +31,23 @@ conf: 配置修改
 merge: 代码合并
 ```
 
-## git-blame
+## 命令
+
+### git-blame
 
 ```
 // 看差异
 git blame ./package.json
 ```
 
-## git-branch
+### git-branch
 
 ```
 // 查远程所有分支包含某次commit
 git branch -r --contains commitID
 ```
+
+---
+
+## github
+[你会用github的搜索吗？](https://juejin.im/post/6891056415440535565?utm_source=gold_browser_extension)
