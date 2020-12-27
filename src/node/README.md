@@ -25,6 +25,7 @@
 * [`库开发模式`](#库开发模式)
 * [`内存泄漏`](#内存泄漏)
 * [`其他`](#其他)
+* [`公司架构`](#公司架构)
 * [`一些尝试`](#一些尝试)
 
 ## 参数
@@ -1071,3 +1072,8 @@ top -pid 69608
 - [lighthouse-runner](./lighthouse/README.md)
 - [图像识别](../lighthouse/图像识别.js)
 - [sourcemap-compiler](../sourcemap/sourcemapCompiler/README.md)
+
+---
+
+## 公司架构
+![滴滴nodeX生态](滴滴nodeX生态.png)

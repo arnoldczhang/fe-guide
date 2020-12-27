@@ -18,7 +18,9 @@
 ---
 
 ## png
-png8、png24、png32
+> png8、png24、png32
+>
+> [图片 PNG 格式详解](https://juejin.cn/post/6905635070397612039)
 
 **png8**
 
