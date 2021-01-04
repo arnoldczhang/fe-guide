@@ -1,7 +1,14 @@
+import {
+  AST,
+} from 'vue-eslint-parser';
+
 export interface VueResult {
   import: Map<any, any>;
-  component: Map<any, any>;
+  component: Map<string, string>;
   data: Map<any, any>;
+  prop: Map<any, any>;
+  template: Map<any, Set<string>>;
+  src?: string,
 }
 
 export interface Tree {

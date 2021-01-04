@@ -22,7 +22,6 @@ import {
   isRelativePath,
   replaceImport,
   getOnly,
-  genTreeMap,
 } from './helper';
 
 const { join } = nodePath;
