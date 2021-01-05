@@ -70,6 +70,85 @@ export const getOnly = (
   return value;
 };
 
-export const genTreeMap = (map: Map<string, VueResult>) => {
-  // FIXME
+export const toLineLetter = (
+  letter: string,
+): string => letter.replace(/(.)([A-Z])/g, '$1-$2').toLowerCase();
+
+export const genVueResult = (): VueResult => ({
+  import: new Map(),
+  component: new Map(),
+  data: new Map(),
+  prop: new Map(),
+  src: '',
+  template: new Map(),
+});
+
+export const getReadmeTemplate = ({
+  title,
+  name,
+  prop,
+  parent,
+}: {
+  title: string;
+  name: string;
+  prop: Map<string, any>;
+  parent: Set<Record<string, any>>;
+}) => {
+  const keys = [...prop.keys()];
+  const keyProps = keys.map(key => `
+    ${key}: ${prop.get(key).default},
+  `);
+  return `## ${title}
+### 试一试
+<${name} ${
+  keys.map(key => `
+          :${key}="${key}"
+      `)
+}/>
+${
+  keys.map(key => `<el-input
+        v-model="model.${key}"
+        style="margin-top: 10px;"
+      ><template slot="prepend">${key}:</template></el-input>`)
+}
+<script>
+export default {
+  watch: {
+    model: {
+      deep: true,
+      async handler(val) {
+        setTimeout(() => {
+          Object.keys(val).forEach((key) => {
+            this[key] = val[key];
+          });
+        }, 1000);
+      }
+    },
+  },
+  data() {
+    return {
+      model: {
+        ${keyProps}
+      },
+      ${keyProps}
+    };
+  }
+}
+</script>
+### 哪里在用
+${[...parent].map(({
+    relativePath,
+    usage,
+  }) => `#### ${relativePath}
+\`\`\`html
+${Object.keys(usage).map((key) => {
+    const value = usage[key];
+    if (value && value.size) {
+      return [...value].map(val => val).join('\n');
+    }
+    return '';
+  }).join('\n')}
+\`\`\`
+`).join('\n')}
+`;
 };
