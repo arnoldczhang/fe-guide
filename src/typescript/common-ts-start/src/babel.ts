@@ -7,7 +7,7 @@ import {
 import * as nodePath from 'path';
 import {
   isRelativePath,
-  replaceImport,
+  errorCatch,
   toLineLetter,
   getOnly,
 } from './helper';
@@ -32,7 +32,7 @@ const addComponentKeyValue = (
  * @param result
  * @param content
  */
-const extractVueObjectProps = (
+const extractVueObjectProps = errorCatch((
   p: NodePath<t.ExportDefaultDeclaration>,
   result: VueResult,
   content: string,
@@ -49,33 +49,39 @@ const extractVueObjectProps = (
     const propProps = prop.get('value.properties');
     if (!Array.isArray(propProps)) return;
     // aa: { type: Boolean, default: xx }
-    let type = 'Object';
-    let defaultValue = 'null';
+    const typeProp = propProps.find(pp => String(getOnly(pp.get('key.name')).node) === 'type');
+    if (!typeProp) return;
+    const type = String(getOnly(typeProp.get('value.name')).node);
+    let defaultValue = null;
     propProps.forEach((pp) => {
       const ppKey = String(getOnly(pp.get('key.name')).node);
-      if (ppKey === 'type') {
-        return type = String(getOnly(pp.get('value.name')).node);
+      if (ppKey !== 'default') return;
+      let normal = true;
+      // default: xx
+      let defaultStruct = getOnly(pp.get('value')).node;
+      if (!defaultStruct) {
+        // default() { /** */ }
+        defaultStruct = getOnly(pp.get('body')).node;
+        normal = false;
       }
-
-      if (ppKey === 'default') {
-        let normal = true;
-        // default: xx
-        let defaultStruct = getOnly(pp.get('value')).node;
-        if (!defaultStruct) {
-          // default() { /** */ }
-          defaultStruct = getOnly(pp.get('body')).node;
-          normal = false;
+      const { start, end } = defaultStruct;
+      defaultValue = `${!normal ? '() =>' : ''}${content.substring(start || 0, end || 0)}`;
+      // type不是function的才需要执行
+      if (type && type !== 'Function') {
+        try {
+          defaultValue = eval(defaultValue)();
+        } catch(err) {
+          // defaultValue = eval('(' + defaultValue + ')');
         }
-        const { start, end } = defaultStruct;
-        return defaultValue = `${!normal ? '()' : ''}${content.substring(start || 0, end || 0)}`;
       }
+      return defaultValue;
     });
     result.prop.set(key, {
       type,
       default: defaultValue,
     });
   });
-};
+});
 
 /**
  * extractVueObjectComponentName
@@ -83,7 +89,7 @@ const extractVueObjectProps = (
  * @param result
  * @param content
  */
-const extractVueObjectComponentName = (
+const extractVueObjectComponentName = errorCatch((
   p: NodePath<t.ExportDefaultDeclaration>,
   result: VueResult,
   content: string,
@@ -96,7 +102,7 @@ const extractVueObjectComponentName = (
   const nameValue = getOnly(nameObject.get('value.value')).node;
   if (!nameValue) return result;
   result.data.set('name', nameValue);
-};
+});
 
 /**
  * extractVueObjectData
@@ -104,7 +110,7 @@ const extractVueObjectComponentName = (
  * @param result
  * @param content
  */
-const extractVueObjectData = (
+const extractVueObjectData = errorCatch((
   p: NodePath<t.ExportDefaultDeclaration>,
   result: VueResult,
   content: string,
@@ -126,7 +132,7 @@ const extractVueObjectData = (
       result.data.set(key, content.substring(start || 0, end || 0));
     });
   }
-};
+});
 
 /**
  * extractVueObjectComponents
@@ -134,7 +140,7 @@ const extractVueObjectData = (
  * @param result
  * @param content
  */
-const extractVueObjectComponents = (
+const extractVueObjectComponents = errorCatch((
   p: NodePath<t.ExportDefaultDeclaration>,
   result: VueResult,
   content: string,
@@ -155,7 +161,7 @@ const extractVueObjectComponents = (
       String(value),
     );
   });
-};
+});
 
 /**
  * extractComponentsProperty
@@ -163,7 +169,7 @@ const extractVueObjectComponents = (
  * @param result
  * @param content
  */
-const extractComponentsProperty = (
+const extractComponentsProperty = errorCatch((
   p: NodePath<t.ExportDefaultDeclaration>,
   result: VueResult,
   content: string,
@@ -173,18 +179,27 @@ const extractComponentsProperty = (
   if (!Array.isArray(klassChildren)) return result;
   klassChildren.forEach((klass) => {
     if (klass.type !== 'ClassProperty'
-      || 'accessibility' in klass.node && klass.node.accessibility === 'public'
+      || 'accessibility' in klass.node
+      && klass.node.accessibility === 'public'
     ) return;
     const decorators = klass.get('decorators');
-    // 不带装饰器的ClassProperty - data
+    // 不带装饰器的ClassProperty，这些都是data
     if (!Array.isArray(decorators) || !decorators.length) {
       const { node: name } = getOnly(klass.get('key.name'));
-      const { node: { start, end } } = getOnly(klass.get('value'));
+      const dataValue = getOnly(klass.get('value')).node;
+      // 只声明了参数类型，未做初始化，则跳过取值
+      if (!dataValue) return;
+      const { start, end } = dataValue;
       result.data.set(name, content.substring(start || 0, end || 0));
+    // 找装饰器是@Prop的
     } else {
       const [decorator] = decorators;
       const decoratorName = getOnly(decorator.get('expression.callee.name'));
       if (String(decoratorName.node) !== 'Prop') return;
+      let tsType = '';
+      try {
+        tsType = String(getOnly(klass.get('typeAnnotation.typeAnnotation.typeName.name')).node);
+      } catch(err) {}
       // @Prop({ default: /** */ }) aaa: string;
       const argument = getOnly(decorator.get('expression.arguments.0'));
       const properties = argument.get('properties');
@@ -192,16 +207,40 @@ const extractComponentsProperty = (
       const defaultValue = properties.find(
         pro => String(getOnly(pro.get('key.name')).node) === 'default'
       );
-      if (!defaultValue) return;
-      const { start, end } = getOnly(defaultValue.get('value')).node;
       const key = klass.get('key.name');
       if (!key) return;
+      if (!defaultValue) return;
+      const { type } = defaultValue;
+      let defaultContent;
+      // default() { /** */ }
+      if (type === 'ObjectMethod') {
+        const { start, end } = getOnly(defaultValue.get('body')).node;
+        defaultContent = `() => ${content.substring(start || 0, end || 0)}`;
+        if (tsType != 'Function') {
+          try {
+            defaultContent = eval(defaultContent)();
+          } catch(err) {
+            defaultContent = eval('(' + defaultContent + ')');
+          }
+        }
+      // default: () => { /** */ }
+      } else {
+        const { start, end } = getOnly(defaultValue.get('value')).node;
+        defaultContent = content.substring(start || 0, end || 0);
+        if (tsType != 'Function') {
+          try {
+            defaultContent = eval(defaultContent)();
+          } catch(err) {
+            defaultContent = eval('(' + defaultContent + ')');
+          }
+        }
+      }
       result.prop.set(String(getOnly(key).node), {
-        default: content.substring(start || 0, end || 0),
+        default: defaultContent,
       });
     }
   });
-};
+});
 
 /**
  * extractComponentsDecoration
@@ -209,7 +248,7 @@ const extractComponentsProperty = (
  * @param result
  * @param content
  */
-const extractComponentsDecoration = (
+const extractComponentsDecoration = errorCatch((
   p: NodePath<t.ExportDefaultDeclaration>,
   result: VueResult,
   content: string,
@@ -228,22 +267,33 @@ const extractComponentsDecoration = (
       // { Comp1, Comp2: Comp1, Comp3 }
       if (!components) return result;
       const compProperties = components.get('value.properties');
-      //
+      // Comp2: Comp1
       if (!Array.isArray(compProperties)) return result;
       compProperties.forEach((pro) => {
         const { node: key } = getOnly(pro.get('key.name'));
-        const { node: value } = getOnly(pro.get('value.name'));
+        let { node: value } = getOnly(pro.get('value.name'));
+        // 有可能组件外面加了wrapper，比如Comp2: Wrapper(Comp1)
+        if (!value) {
+          const { node: type } = getOnly(pro.get('value.type'));
+          if (String(type) === 'CallExpression') {
+            const args = pro.get('value.arguments');
+            // 这里简单处理，只取Wrapper里第一参数
+            if (Array.isArray(args)) {
+              value = args.map(p => getOnly(p.get('name')).node)[0];
+            }
+          }
+        }
         addComponentKeyValue(
           result.component,
           String(key),
-          String(value),
+          String(value || key),
         );
       });
     }
   } catch (err) {
     Promise.resolve('@Component未做组件绑定');
   }
-};
+});
 
 /**
  * ImportDeclaration
