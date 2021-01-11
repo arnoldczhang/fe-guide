@@ -7,6 +7,7 @@ import {
   unlinkSync,
   rmdirSync,
   existsSync,
+  removeSync,
 } from 'fs-extra';
 import {
   isStr,
@@ -147,3 +148,7 @@ export const getFilePath = (
     return result;
   }
 };
+
+export const remove = (dir: string) => removeSync(dir);
+
+export const exist = (dir: string) => existsSync(dir);
