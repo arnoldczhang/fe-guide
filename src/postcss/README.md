@@ -19,6 +19,26 @@ less -> css2ast -> postcss
 import postcss from 'postcss';
 import * as postcssLess from 'postcss-less';
 
+/**
+ * hook参考这里 
+ **/
+const PLUGIN_PROPS = {
+  postcssPlugin: true,
+  prepare: true,
+  Once: true,
+  Root: true,
+  Declaration: true,
+  Rule: true,
+  AtRule: true,
+  Comment: true,
+  DeclarationExit: true,
+  RuleExit: true,
+  AtRuleExit: true,
+  CommentExit: true,
+  RootExit: true,
+  OnceExit: true
+};
+
 function myPlugin(options: Record<string, any>) {
   return {
     postcssPlugin: 'postcss-myPlugin',
@@ -33,7 +53,7 @@ function myPlugin(options: Record<string, any>) {
         // type有几种：comment、selector、decl
       });
       // 相当于遍历type=rule的ast
-      css.walkRules(function(rule的ast: any) {
+      css.walkRules(function(ast: any) {
         // TODO
       });
     },
