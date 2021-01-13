@@ -30,14 +30,17 @@ import {
   readdir,
   copy,
   cleardir,
+  remove,
+  exist,
 } from './fs';
 import {
   errorCatch,
   isDeclaration,
-  isRelativePath,
   getReadmeTemplate,
   toLineLetter,
   genVueResult,
+  getVuepressCompName,
+  genHash,
 } from './helper';
 import {
   ImportDeclaration,
@@ -105,14 +108,18 @@ const traverseVue = errorCatch((
     VElement(
       node: AST.VElement,
     ) {
-      const { rawName, startTag } = node;
+      const { rawName, startTag, endTag } = node;
       const { component, template } = result;
       if (!component.has(rawName)) return;
       const {
         range: [start, end],
       } = startTag;
+      const {
+        range,
+      } = endTag || { range: [0, 0] };
       const value = template.get(rawName) || new Set();
-      value.add(tpl.substring(start, end));
+      const targetTpl = tpl.substring(start, end) + tpl.substring(range[0], range[1]);
+      value.add(targetTpl);
       template.set(rawName, value);
     },
   });
@@ -142,7 +149,7 @@ const updateVueDependencies = errorCatch((
     // 生成js转ast，生成特定树
     let jsContent = '';
     if (script) {
-      const { content, attrs } = script;
+      const { content, attrs = {} } = script;
       let current = path;
       let tempContent = content;
       if (attrs && attrs.src) {
@@ -150,10 +157,11 @@ const updateVueDependencies = errorCatch((
         current = result.src;
         tempContent = read(current);
         pathCach.set(current, result);
+        delete attrs.src;
       }
       traverseJs(tempContent, { ...pathInfo, current }, result);
       jsContent = `<script ${getBlockAttrs(attrs)}>
-        ${content}
+${tempContent}
         </script>
       `;
     }
@@ -171,8 +179,8 @@ const updateVueDependencies = errorCatch((
         if (pre) {
           const { attrs, content } = pre;
           // 全局样式应该由全局引入
-          // ${attrs.lang === 'less' ? '@import \'~@/style/layout.less\';' : ''}
           res += `<style ${getBlockAttrs(attrs)}>
+            ${attrs.lang === 'less' ? '@import \'~@/style/layout.less\';' : ''}
             ${content}
             </style>
           `;
@@ -181,8 +189,8 @@ const updateVueDependencies = errorCatch((
       }, '');
     }
     write(path, `${tplContent}
-      ${jsContent}
-      ${styleContent}
+${jsContent}
+${styleContent}
     `);
   });
 });
@@ -202,8 +210,14 @@ const updateJsDependencies = errorCatch((
   targetPaths.forEach((path: string) => {
     if (isDeclaration(path)) return;
     console.log(chalk.green(`now update file: ${path}`));
-    // .vue文件如果以外链方式注入js，两者公用cach，这里跳过即可
-    if (pathCach.has(path)) return;
+    /**
+     * .vue文件如果以外链方式注入js，两者公用cach，
+     * 这里需要删除原文件，避免vuepress默认使用.ts/.js
+     */
+    if (pathCach.has(path)) {
+      remove(path);
+      return;
+    }
     const content = read(path);
     const result = genVueResult();
     traverseJs(content, { ...pathInfo, current: path }, result);
@@ -237,8 +251,13 @@ const updateCssDependencies = errorCatch((
  * @param path string
  */
 export const startGenerate = (
-  path: string,
-): void => cleardir(path);
+  pathArray: string[],
+): void => {
+  pathArray.forEach((path) => {
+    console.log(chalk.green(`now clear path: ${path}`));
+    cleardir(path);
+  });
+};
 
 /**
  * 复制src下文件到components
@@ -251,9 +270,10 @@ export const copyOriginToVuepress = errorCatch((
     deep: false,
     absolute: false,
     suffix: [],
-    // suffix: [/\.(?:[jt]s|vue|(c|le)ss)$/],
   });
-  pathArr.forEach((p: string) => {
+
+  // FIXME
+  pathArr.slice().forEach((p: string) => {
     copy(join(from, p), join(to, p));
   });
 });
@@ -282,11 +302,13 @@ export const updateDependencies = (
  */
 export const updateComponentUsageFromImport = errorCatch((
   vuepressPath: string,
+  originPath: string,
   vueRe: RegExp
 ) => {
   console.log(chalk.green('now update component usage from import'));
   const keys = pathCach.keys();
   [...keys].forEach((key) => {
+    if (!vueRe.test(key)) return;
     const {
       import: importDependency,
       template,
@@ -299,7 +321,8 @@ export const updateComponentUsageFromImport = errorCatch((
         const lineDKey = toLineLetter(dKey);
         originValue.add({
           path: key,
-          relativePath: key.replace(`${vuepressPath}/`, ''),
+          originPath: key.replace(vuepressPath, originPath),
+          relativePath: key.replace(vuepressPath, '@'),
           usage: {
             [dKey]: template.get(dKey),
             [lineDKey]: template.get(lineDKey)
@@ -316,14 +339,16 @@ export const updateComponentUsageFromImport = errorCatch((
  */
 export const iterateInsertCompToVupress = errorCatch((
   vuepressPath: string,
-  outFile: string,
+  originPath: string,
+  outpath: string,
 ) => {
   console.log(chalk.green('now update mock data'));
-  let result = '';
-  [...compCach.keys()].forEach((key) => {
+  [...compCach.keys()].slice().forEach((key) => {
     const compInfo = pathCach.get(key);
     const parentInfo = compCach.get(key);
-    let compTitle = compInfo.data.get('name');
+    if (!compInfo) return;
+    const { data, prop: compProp } = compInfo;
+    let compTitle = data.get('name');
     // 如果组件未设置name，从引用处获取第一个importName
     if (!compTitle && parentInfo.size) {
       const [{
@@ -332,19 +357,25 @@ export const iterateInsertCompToVupress = errorCatch((
       compTitle = Object.keys(usage)[0];
     }
     // 组件名转为vuepress特定名
-    const compName = key
-      .replace(`${vuepressPath}/`, '')
-      .replace(/\//g, '-')
-      .replace(/\.vue$/, '');
-    const compProp = compInfo.prop;
-    result += getReadmeTemplate({
-      title: compTitle,
-      name: compName,
+    const title = compTitle.replace(/(?:^['"]|['"]$)/g, '');
+    const name = getVuepressCompName(vuepressPath, key);
+    let output = `${outpath}/${title}.md`;
+    try {
+      if (exist(output)) {
+        output = output.replace(/\.md/, `-${genHash(4)}.md`);
+      }
+    } catch(err) {}
+    write(output, getReadmeTemplate({
+      path: [
+        key.replace(vuepressPath, '@'),
+        key.replace(vuepressPath, originPath),
+      ],
+      title,
+      name,
       prop: compProp,
       parent: parentInfo,
-    });
+    }));
   });
-  write(outFile, result);
 });
 
 /**
