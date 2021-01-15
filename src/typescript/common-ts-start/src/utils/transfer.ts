@@ -23,7 +23,10 @@ import {
 } from '@babel/traverse';
 import generate from '@babel/generator';
 import { babelConfig } from './const';
-import { errorCatch } from './helper';
+import {
+  errorCatch,
+  errorCatchSync,
+} from './helper';
 
 export const transferTs2js = errorCatch((input = ''): string => {
   return ts.transpile(input, {
@@ -80,11 +83,10 @@ export const transferJsToAst = errorCatch((
   config?: Partial<TransformOptions>,
 ): t.Program | t.File | null => parse(script, config || babelConfig));
 
-export const transferLessToCss = errorCatch(async (
+export const transferLessToCss = errorCatchSync(async (
   content: string,
-): Promise<Less.RenderOutput> => less.render(content, {
-  plugins: [],
-}));
+  options?: Less.Options,
+): Promise<Less.RenderOutput> => less.render(content, options || {}));
 
 export const transferCssToAst = errorCatch((
   content: string,

@@ -3,8 +3,8 @@ import * as nodePath from 'path';
 import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import * as pathResolve from 'resolve';
-import * as chalk from 'chalk';
 import * as jimp from 'jimp';
+import { success } from './logger';
 import {
   parseVue,
   transferJsToAst,
@@ -18,7 +18,6 @@ import {
 } from './fs';
 import {
   errorCatch,
-  isDeclaration,
   isRelativePath,
   replaceImport,
   getOnly,
@@ -220,18 +219,18 @@ export const searchAllFiles = (
     js: RegExp[];
   }
 ) => {
-  console.log(chalk.green('寻找.vue、.ts、.js文件中'));
+  success('寻找.vue、.ts、.js文件中');
   const { vue, js } = option;
   searchVueFiles(rootPath, npmPath, vue);
   searchjsFiles(rootPath, npmPath, js);
 };
 
 /**
- *
+ * 递归查找所有.vue文件
  * @param re
  */
 export const filterVueFiles = (re: RegExp) => {
-  console.log(chalk.green('过滤.vue文件中'));
+  success('过滤.vue文件中');
   const result: Record<string, string[]> = {};
   // 提取所有带.vue的key
   Object.keys(treeNodes).forEach((key) => {
@@ -257,7 +256,7 @@ export const filterVueFiles = (re: RegExp) => {
 export const prettifyFiles = (
   replacer: string[][],
 ) => {
-  console.log(chalk.green('美化路径中'));
+  success('美化路径中');
   const result: Record<string, string[]> = {};
   Object.keys(treeNodes).forEach((key) => {
     result[getReplaceValue(key, replacer)] = treeNodes[key].map(
@@ -268,7 +267,7 @@ export const prettifyFiles = (
 };
 
 /**
- *
+ * 冗余组件
  * @param path
  * @param option
  */
@@ -294,16 +293,16 @@ export const searchRedundantComp = (
       result.push(key);
     }
   });
-  write(path, JSON.stringify(result));
+  write(path, JSON.stringify(result, null, 2));
 };
 
 /**
  *统计数据
  */
-export const statisticData = () => {
-  const list = [...new Set(treeNodes['@/router/index.js'])];
-  console.log(chalk.green(`页面共: ${list.length}`));
-  console.log(chalk.green(`组件共: ${Object.keys(treeNodes).length - list.length - 5}`));
+export const statisticData = (routerPath: string) => {
+  const list = [...new Set(treeNodes[routerPath])];
+  success(`页面共: ${list.length}`);
+  success(`组件共: ${Object.keys(treeNodes).length - list.length - 5}`);
 };
 
 /**
@@ -311,18 +310,18 @@ export const statisticData = () => {
  * @param to
  */
 export const drawSplitDependencyImage = async (
+  routerPath: string,
   to: string,
 ) => {
-  const result = await madge('.');
-  const list = [...new Set(treeNodes['@/router/index.js'])];
+  const list = [...new Set(treeNodes[routerPath])];
   for (const item of list) {
-    console.log(chalk.green(`生成图片：${item}`));
+    success(`生成页面模块图：${item}`);
     const newTreeNodes: Record<string, string[]> = filterObjectKeys(treeNodes, [item], {});
-    result.tree = newTreeNodes;
-    await result.image(`${to}/${
-      item.replace(/(?:\.vue$|@\/modules\/)/g, '')
+    const finalPath = `${to}/${
+      item.replace(/(?:\.vue$|@\/(modules|views|pages)\/)/g, '')
         .replace(/\//g, '_')
-    }.png`);
+    }.png`;
+    await drawDependencyImage(finalPath, { node: newTreeNodes });
   }
 };
 
@@ -332,17 +331,21 @@ export const drawSplitDependencyImage = async (
  */
 export const drawDependencyImage = async (
   to: string,
-  miniTo: string,
+  options: { compressPath?: string; node?: Record<string, string[]> },
 ) => {
-  console.log(chalk.green('生成图片中'));
+  const { compressPath, node } = options;
+  success(`生成图片 => ${to}`);
   const result = await madge('.');
-  result.tree = treeNodes;
+  result.tree = node || treeNodes;
   await result.image(to);
-  minifyImage(to, miniTo);
+  // 按需压缩图片
+  if (compressPath) {
+    minifyImage(to, compressPath);
+  }
 };
 
 /**
- *
+ *压缩图片中
  * @param from
  * @param to
  */
@@ -350,7 +353,7 @@ export const minifyImage = (
   from: string,
   to: string,
 ) => {
-  console.log(chalk.green('压缩图片中'));
+  success(`压缩图片 => ${to}`);
   jimp.read(from)
     .then(res => {
       return res.quality(50)
