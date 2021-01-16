@@ -1,7 +1,18 @@
 import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
-import { VueResult, Tree } from './types';
-import { write } from './fs';
+import {
+  Root,
+  Container,
+  Rule,
+  AtRule,
+} from 'postcss';
+import { VueResult } from '../../types';
+import {
+  CSS_AT_RULE,
+} from './const';
+import {
+  error,
+} from './logger';
 
 export const isType = (
   val: any,
@@ -16,36 +27,6 @@ export const isFunc = (val: any) => isType(val, 'function');
 export const isStr = (val: any) => isType(val, 'string');
 
 export const isRe = (val: any) => val instanceof RegExp;
-
-export const errorCatch = (
-  fn: any,
-  fnName?: string,
-): any => {
-  if (isFunc(fn)) {
-    return (...args: any[]) => {
-      try {
-        return fn(...args);
-      } catch (err) {
-        throw new Error(`捕获异常：${fnName || fn.name} -> ${err.message}`);
-      }
-    };
-  }
-  throw new Error('fn必须是function');
-};
-
-export const errorCatchSync = (fn: any): any => {
-  if (isFunc(fn)) {
-    return async (...args: any[]) => {
-      try {
-        const result = await fn(...args);
-        return result;
-      } catch (err) {
-        throw new Error(`捕获异常：${fn.name} -> ${err.message}`);
-      }
-    };
-  }
-  throw new Error('fn必须是function');
-};
 
 export const isDeclaration = (input: string): boolean =>
   /\.d\.ts$/.test(input)
@@ -63,11 +44,22 @@ export const isNullStr = (val: any): boolean =>
   val === null || val === undefined || val === ''
 ;
 
+/**
+ * 无内容或内容为类空字符
+ * @param content
+ */
+export const isBlankContent = (content: string): boolean =>
+  !content || /^[\s↵]+$/.test(content)
+;
 export const replaceImport = (
   value: string,
   path: string,
 ): string => value.replace(/~?@\//, `${path}/`);
 
+/**
+ * 处理babel-ast时，骗ts的常规手段
+ * @param value
+ */
 export const getOnly = (
   value: NodePath<t.Node> | NodePath<t.Node>[],
 ): NodePath<t.Node> => {
@@ -77,10 +69,17 @@ export const getOnly = (
   return value;
 };
 
+/**
+ * 驼峰转-
+ * @param letter
+ */
 export const toLineLetter = (
   letter: string,
 ): string => letter.replace(/(.)([A-Z])/g, '$1-$2').toLowerCase();
 
+/**
+ * 解析成vuepress所需要的默认结构
+ */
 export const genVueResult = (): VueResult => ({
   import: new Map(),
   component: new Map(),
@@ -90,6 +89,135 @@ export const genVueResult = (): VueResult => ({
   template: new Map(),
 });
 
+/**
+ * 异常捕获
+ * @param fn
+ * @param fnName
+ */
+export const errorCatch = (
+  fn: any,
+  fnName?: string,
+): any => {
+  let message = 'fn必须是function';
+  if (isFunc(fn)) {
+    return (...args: any[]) => {
+      try {
+        return fn(...args);
+      } catch (err) {
+        debugger;
+        message = `捕获异常：${fnName || fn.name} -> ${err.message}`;
+        error(message);
+      }
+    };
+  }
+  error(message);
+};
+
+/**
+ * 异步异常捕获
+ * @param fn
+ */
+export const errorCatchSync = (fn: any): any => {
+  let message = 'fn必须是function';
+  if (isFunc(fn)) {
+    return async (...args: any[]) => {
+      try {
+        const result = await fn(...args);
+        return result;
+      } catch (err) {
+        debugger;
+        message = `捕获异常：${fn.name} -> ${err.message}`;
+        error(message);
+      }
+    };
+  }
+  error(message);
+};
+
+/**
+ * .vue文件名转vuepress标题名
+ * @param path
+ * @param name
+ */
+export const getVuepressCompName = (
+  path: string,
+  name: string,
+) => name
+  .replace(`${path}/`, '')
+  .replace(/\//g, '-')
+  .replace(/\.vue$/, '');
+
+/**
+ * 递归获取postcss的上层selector
+ * @param container
+ * @param result
+ */
+export const getDeclSelector = (
+  container?: Container | Root | AtRule | Rule,
+  result = '',
+): string => {
+  if (!container) return result;
+  if (
+    !(container instanceof Rule)
+      && !(container instanceof AtRule)
+  ) return result;
+
+  const { parent } = container;
+
+  if (container instanceof Rule) {
+    const { selector } = container;
+    result = result ? result.replace(/&/g, selector) : selector;
+  }
+
+  if (container instanceof AtRule) {
+    const { name, params } = container;
+    result = `@${name} ${params} ${result}`;
+  }
+
+  return getDeclSelector(parent, result);
+};
+
+/**
+ * 将多个selector分割为数组
+ *
+ * 注：less运算函数跳过处理
+ *
+ * @param selector
+ */
+export const getSplitSelector = (
+  selector: string,
+): string[] => /[\(\)]/.test(selector) ? [selector] : selector.split(/,[↵\s+]/);
+
+/**
+ * 判断是否为css原生@
+ * @param rule
+ */
+export const isCssAtRule = (
+  rule: string,
+): boolean => {
+  return CSS_AT_RULE.some((cssRule: string | RegExp) => {
+    if (cssRule instanceof RegExp) {
+      return cssRule.test(rule);
+    }
+    return cssRule === rule;
+  });
+};
+
+/**
+ * 将对象key-value拼接为string输出
+ * @param input
+ */
+export const concatObjectKeyValue = (
+  input: Record<string, any>,
+): string => Object.entries(input).reduce((res, pre) => {
+  const [key, value] = pre;
+  res += ` ${key}="${value}"`;
+  return res;
+}, '').trim();
+
+/**
+ * readme模板中对各类型数据值的还原处理
+ */
 const typeEval: Record<string, string> = {
   Array: '(val => eval(val))',
   Object: '(val => eval("(" + val + ")"))',
@@ -99,6 +227,10 @@ const typeEval: Record<string, string> = {
   Function: '(val => eval("(" + val + ")"))',
 };
 
+/**
+ * 生成readme模板
+ * @param param0
+ */
 export const getReadmeTemplate = ({
   title,
   path,
@@ -208,11 +340,3 @@ ${Object.keys(usage).map((key) => {
 `).join('\n')}
 `;
 };
-
-export const getVuepressCompName = (
-  path: string,
-  name: string,
-) => name
-  .replace(`${path}/`, '')
-  .replace(/\//g, '-')
-  .replace(/\.vue$/, '');

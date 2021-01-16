@@ -96,7 +96,28 @@ vue ui
 </template>
 ```
 
-### 2. slot-scope
+### 2. 子组件嵌套slot
+```vue
+<template>
+  <smart-table
+      ref="table"
+      :config="metricConfig"
+  >
+    <!-- 将当前组件的slot再传递给smart-table -->
+      <template
+          v-for="slotName in customSlots"
+          v-slot:[slotName]="rowData"
+      >
+          <slot
+              v-bind="rowData"
+              :name="slotName"
+          ></slot>
+      </template>
+  </smart-table>
+</template>
+```
+
+### 3. slot-scope
 ``` vue
 <!-- 组件 -->
 <template>
@@ -129,7 +150,7 @@ vue ui
 </template>
 ```
 
-### 3. keep-alive
+### 4. keep-alive
 
 > 1. vue 内置抽象组件（父子关系会跳过该组件）
 >2. 根据LRU策略缓存第一个子组件实例，下次render时，根据组件 id 从缓存中拿实例（如果存在的话）
@@ -142,7 +163,7 @@ vue ui
 </keep-alive>
 ```
 
-### 4. 优雅绑定hook
+### 5. 优雅绑定hook
 
 ```js
 {
@@ -156,7 +177,7 @@ vue ui
 }
 ```
 
-### 5. 覆盖外部组件scoped样式
+### 6. 覆盖外部组件scoped样式
 ```vue
 <style lang="less" scoped>
 .aa {
@@ -167,7 +188,7 @@ vue ui
 </style>
 ```
 
-### 6. 解耦操作组件生命周期
+### 7. 解耦操作组件生命周期
 
 ```vue
 <template>
@@ -192,7 +213,7 @@ export default {
 </script>
 ```
 
-### 7. `$props`、`$attrs`和`$listeners`
+### 8. `$props`、`$attrs`和`$listeners`
 
 ```vue
 <template>
@@ -207,7 +228,7 @@ export default {
 </template>
 ```
 
-### 8. 动态添加子组件
+### 9. 动态添加子组件
 
 ```vue
 <template>
@@ -236,7 +257,7 @@ export default{
 </script>
 ```
 
-### 9. Vue.filter
+### 10. Vue.filter
 
 #### 注册
 

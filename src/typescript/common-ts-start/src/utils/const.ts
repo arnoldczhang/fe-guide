@@ -1,3 +1,5 @@
+import * as postcssLess from 'postcss-less';
+
 export const babelConfig = {
   presets: [
     ['@babel/env', {
@@ -30,3 +32,18 @@ export const babelConfig = {
     '@babel/plugin-proposal-function-bind',
   ],
 };
+
+export const defaultPostcssConfig = {
+  from: undefined,
+  syntax: postcssLess,
+};
+
+export const CSS_AT_RULE = [
+  /^\s*@([\-\w]+)?keyframes\s*$/,
+  '@charset',
+  '@font-face',
+  '@media',
+  '@import',
+  '@viewport',
+  '@supports',
+];

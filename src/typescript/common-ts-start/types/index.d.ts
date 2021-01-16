@@ -21,3 +21,11 @@ export interface PathInfo {
   npm: string;
   current?: string;
 }
+
+export type Func<T = any> = (...args: T[]) => any;
+
+export interface StyleReplacer {
+  key: string;
+  value: string;
+  replacer: string;
+}

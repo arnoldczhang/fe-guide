@@ -9,10 +9,10 @@ import {
   existsSync,
   removeSync,
 } from 'fs-extra';
+import * as nodePath from 'path';
 import {
   isStr,
 } from './helper';
-import * as nodePath from 'path';
 
 const {
   join,
