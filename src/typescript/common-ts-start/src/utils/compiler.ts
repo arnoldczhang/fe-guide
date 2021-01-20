@@ -2,25 +2,22 @@ import * as nodePath from 'path';
 import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import {
-  VueResult,
-  PathInfo,
-} from './types';
-import {
   AST,
 } from 'vue-eslint-parser';
 import {
   SFCBlock,
-  compile,
 } from 'vue-template-compiler';
+import {
+  VueResult,
+  PathInfo,
+} from '../../types';
+import { success } from './logger';
+import { hook, HOOK_NAME } from './hook';
 import {
   parseVue,
   transferJsToAst,
   traverseBabelAst,
-  babelGenerate,
   transferVueTemplateToAst,
-  transferLessToCss,
-  transferCssToAst,
-  transferTs2js,
   traverseVueTemplateAst,
   getBlockAttrs,
 } from './transfer';
@@ -47,7 +44,6 @@ import {
   ExportDefaultDeclaration,
   CallExpression,
 } from './babel';
-import * as chalk from 'chalk';
 
 const { join } = nodePath;
 // 所有文件的各自依赖情况
@@ -142,7 +138,7 @@ const updateVueDependencies = errorCatch((
   } = pathInfo;
   const targetPaths = readdir(rootPath, { suffix });
   targetPaths.forEach((path: string) => {
-    console.log(chalk.green(`now update file: ${path}`));
+    success(`now update file: ${path}`);
     const content = read(path);
     const { template, script, styles } =  parseVue(content);
     const result = genVueResult();
@@ -179,8 +175,9 @@ ${tempContent}
         if (pre) {
           const { attrs, content } = pre;
           // 全局样式应该由全局引入
+          const extraContent = hook.callIterateSync(HOOK_NAME.VUE_STYLE_UPDATE, attrs);
           res += `<style ${getBlockAttrs(attrs)}>
-            ${attrs.lang === 'less' ? '@import \'~@/style/layout.less\';' : ''}
+            ${extraContent}
             ${content}
             </style>
           `;
@@ -209,7 +206,7 @@ const updateJsDependencies = errorCatch((
   const targetPaths = readdir(rootPath, { suffix });
   targetPaths.forEach((path: string) => {
     if (isDeclaration(path)) return;
-    console.log(chalk.green(`now update file: ${path}`));
+    success(`now update file: ${path}`);
     /**
      * .vue文件如果以外链方式注入js，两者公用cach，
      * 这里需要删除原文件，避免vuepress默认使用.ts/.js
@@ -233,16 +230,10 @@ const updateCssDependencies = errorCatch((
   rootPath: string,
   suffix: RegExp[],
 ) => {
-  console.log(chalk.green('now update less/css files'));
+  success('now update less/css files');
   const targetPaths = readdir(rootPath, { suffix });
   targetPaths.forEach((path: string) => {
-    if (path.indexOf('style/theme/index.less') !== -1) {
-      const content = read(path);
-      write(path, `
-        @import '~@/style/layout.less';
-        ${content}
-      `);
-    }
+    hook.callSync(HOOK_NAME.STYLE_UPDATE, path, { read, write });
   });
 });
 
@@ -254,7 +245,7 @@ export const startGenerate = (
   pathArray: string[],
 ): void => {
   pathArray.forEach((path) => {
-    console.log(chalk.green(`now clear path: ${path}`));
+    success(`now clear path: ${path}`);
     cleardir(path);
   });
 };
@@ -272,8 +263,7 @@ export const copyOriginToVuepress = errorCatch((
     suffix: [],
   });
 
-  // FIXME
-  pathArr.slice().forEach((p: string) => {
+  pathArr.forEach((p: string) => {
     copy(join(from, p), join(to, p));
   });
 });
@@ -283,7 +273,7 @@ export const copyOriginToVuepress = errorCatch((
  * @param rootPath string
  * @param option string
  */
-export const updateDependencies = (
+export const updateDependencies = errorCatch((
   pathInfo: PathInfo,
   option: {
     vue: RegExp[];
@@ -295,7 +285,7 @@ export const updateDependencies = (
   updateVueDependencies(pathInfo, vue);
   updateJsDependencies(pathInfo, js);
   updateCssDependencies(pathInfo.root, css);
-};
+});
 
 /**
  * 找到各个组件的父引用
@@ -305,7 +295,7 @@ export const updateComponentUsageFromImport = errorCatch((
   originPath: string,
   vueRe: RegExp
 ) => {
-  console.log(chalk.green('now update component usage from import'));
+  success('now update component usage from import');
   const keys = pathCach.keys();
   [...keys].forEach((key) => {
     if (!vueRe.test(key)) return;
@@ -342,7 +332,7 @@ export const iterateInsertCompToVupress = errorCatch((
   originPath: string,
   outpath: string,
 ) => {
-  console.log(chalk.green('now update mock data'));
+  success('now update mock data');
   [...compCach.keys()].slice().forEach((key) => {
     const compInfo = pathCach.get(key);
     const parentInfo = compCach.get(key);
@@ -379,8 +369,8 @@ export const iterateInsertCompToVupress = errorCatch((
 });
 
 /**
- *
+ * 收尾处理
  */
 export const finishGenerate = errorCatch(() => {
-  console.log('todo');
+  // TODO
 });
