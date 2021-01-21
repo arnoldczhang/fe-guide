@@ -29,7 +29,7 @@ import {
 import {
   Func,
   StyleReplacer,
-} from '../../types';
+} from '../types';
 
 const {
   keys,
@@ -125,8 +125,15 @@ export const genLessUsageTree = errorCatchSync(async (
   root: string,
   {
     stylePath,
+    styleCompressPath,
     attrPath,
-  }: { stylePath: string; attrPath: string; },
+    attrCompressPath,
+  }: {
+    stylePath?: string;
+    styleCompressPath?: string;
+    attrPath?: string;
+    attrCompressPath?: string;
+  },
 ) => {
   const preParseAttrValue = (attr: any): string => attr.replace(/"/g, '\\"');
   // 样式树
@@ -166,13 +173,19 @@ export const genLessUsageTree = errorCatchSync(async (
     }
   });
   // 画样式树
-  await drawDependencyImage(stylePath, {
-    node: styleTreeNode,
-  });
+  if (stylePath) {
+    await drawDependencyImage(stylePath, {
+      node: styleTreeNode,
+      compressPath: styleCompressPath,
+    });
+  }
   // 画样式属性树
-  await drawDependencyImage(attrPath, {
-    node: attributeTreeNode,
-  });
+  if (attrPath) {
+    await drawDependencyImage(attrPath, {
+      node: attributeTreeNode,
+      compressPath: attrCompressPath,
+    });
+  }
 });
 
 /**
