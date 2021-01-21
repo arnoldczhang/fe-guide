@@ -12,12 +12,19 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": [
+    "skipDefaultLibCheck": true,
+    "downlevelIteration": true,
+    "strictFunctionTypes": true,
+    "types": [],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@babel/@types",
+      "./src/types"
     ],
     "paths": {
       "@/*": [
-        "src/*"
-      ]
+        "src/*",
+      ],
     },
     "lib": [
       "esnext",
@@ -28,10 +35,8 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
   ],
   "exclude": [
-    "node_modules"
+    "**/node_modules"
   ]
 }
