@@ -3,10 +3,8 @@ import * as t from '@babel/types';
 import {
   VueResult,
   PathInfo,
-} from './types';
-import * as nodePath from 'path';
+} from '../../types';
 import {
-  isRelativePath,
   errorCatch,
   toLineLetter,
   getOnly,
@@ -14,8 +12,6 @@ import {
 import {
   getRealPath,
 } from './tree';
-
-const { join } = nodePath;
 
 const addComponentKeyValue = (
   map: Map<string, string>,
@@ -92,7 +88,6 @@ const extractVueObjectProps = errorCatch((
 const extractVueObjectComponentName = errorCatch((
   p: NodePath<t.ExportDefaultDeclaration>,
   result: VueResult,
-  content: string,
 ) => {
   // name: xxx
   const nameObject = (p.get('declaration.properties') as NodePath<t.Node>[])
@@ -143,7 +138,6 @@ const extractVueObjectData = errorCatch((
 const extractVueObjectComponents = errorCatch((
   p: NodePath<t.ExportDefaultDeclaration>,
   result: VueResult,
-  content: string,
 ) => {
   const componentObject = (p.get('declaration.properties') as NodePath<t.Node>[])
     .filter(({ node }) => node.type === 'ObjectProperty')
@@ -251,7 +245,6 @@ const extractComponentsProperty = errorCatch((
 const extractComponentsDecoration = errorCatch((
   p: NodePath<t.ExportDefaultDeclaration>,
   result: VueResult,
-  content: string,
 ) => {
   try {
     const decorator = getOnly(p.get('declaration.decorators.0'));
