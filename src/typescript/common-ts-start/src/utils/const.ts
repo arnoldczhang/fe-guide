@@ -47,3 +47,16 @@ export const CSS_AT_RULE = [
   '@viewport',
   '@supports',
 ];
+
+export const vueRe = /.+\.vue$/;
+
+export const jsRe = /\.(t|j)sx?$/;
+
+export const lessRe = /\.(c|le|sc|sa)ss$/;
+// 默认节点树上保留的key，初心是希望过滤掉无关js，但是有需要保留入口文件key
+export const includeRe = /(?:.+\.vue|\/router\/index\.(t|j)s|main\.tsx?)$/;
+// 判断冗余时，默认剔除的正则
+export const excludeRes = [
+  /(?:\/router\/index\.(t|j)s|main\.tsx?)$/,
+  /App\.vue$/,
+];
