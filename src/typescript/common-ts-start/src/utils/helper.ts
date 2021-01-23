@@ -6,13 +6,38 @@ import {
   Rule,
   AtRule,
 } from 'postcss';
-import { VueResult } from '../../types';
+import { VueResult, Plugin } from '../types';
 import {
   CSS_AT_RULE,
 } from './const';
 import {
   error,
+  warn,
+  success,
 } from './logger';
+import {
+  hook,
+  HOOK_NAME,
+} from './hook';
+
+/**
+ * 通用抛错
+ * @param result
+ * @param msg
+ * @param force
+ */
+export const assert = (
+  result: boolean,
+  msg: string,
+  force = true,
+) => {
+  if (!result) {
+    if (force) {
+      throw new Error(msg);
+    }
+    warn(msg);
+  }
+};
 
 export const isType = (
   val: any,
@@ -26,7 +51,11 @@ export const isFunc = (val: any) => isType(val, 'function');
 
 export const isStr = (val: any) => isType(val, 'string');
 
+export const isUndef = (val: any) => isType(val, 'undefined');
+
 export const isRe = (val: any) => val instanceof RegExp;
+
+export const isObj = (val: any) => Object.prototype.toString.call(val) === '[object Object]';
 
 export const isDeclaration = (input: string): boolean =>
   /\.d\.ts$/.test(input)
@@ -104,7 +133,6 @@ export const errorCatch = (
       try {
         return fn(...args);
       } catch (err) {
-        debugger;
         message = `捕获异常：${fnName || fn.name} -> ${err.message}`;
         error(message);
       }
@@ -125,7 +153,6 @@ export const errorCatchSync = (fn: any): any => {
         const result = await fn(...args);
         return result;
       } catch (err) {
-        debugger;
         message = `捕获异常：${fn.name} -> ${err.message}`;
         error(message);
       }
@@ -216,6 +243,23 @@ export const concatObjectKeyValue = (
 }, '').trim();
 
 /**
+ * 注册插件
+ * @param plugin
+ */
+export const registerPlugins = (plugins: Plugin[]) => {
+  assert(Array.isArray(plugins), '类型参考{ plugin: Plugin[] }');
+  plugins.forEach((plugin) => {
+    if (plugin && isFunc(plugin.install)) {
+      plugin.install(hook, HOOK_NAME, {
+        error,
+        warn,
+        success,
+      });
+    }
+  });
+};
+
+/**
  * readme模板中对各类型数据值的还原处理
  */
 const typeEval: Record<string, string> = {
@@ -259,15 +303,19 @@ export const getReadmeTemplate = ({
   });
   //
   const keyProps = keys.map((key) => {
-    const { type, default: value } = prop.get(key);
+    const { default: value } = prop.get(key);
+    let finalValue = value;
+
+    if (isNullStr(value)) {
+      finalValue = '""';
+    }
+
+    while (!/^['"]/.test(finalValue)) {
+      finalValue = JSON.stringify(finalValue);
+    }
+
     return `
-      ${key}: ${isNullStr(value)
-  ? '""'
-  : type === 'String'
-    ? value
-    : !['Boolean', 'Number'].includes(type)
-      ? JSON.stringify(JSON.stringify(value))
-      : JSON.stringify(value)}`;
+      ${key}: ${finalValue}`;
   });
   //
   const keyTypes = keys.map((key) => {

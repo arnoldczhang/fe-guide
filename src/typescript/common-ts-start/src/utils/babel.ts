@@ -3,7 +3,7 @@ import * as t from '@babel/types';
 import {
   VueResult,
   PathInfo,
-} from '../../types';
+} from '../types';
 import {
   errorCatch,
   toLineLetter,
@@ -214,7 +214,11 @@ const extractComponentsProperty = errorCatch((
           try {
             defaultContent = eval(defaultContent)();
           } catch(err) {
-            defaultContent = eval('(' + defaultContent + ')');
+            try {
+              defaultContent = eval('(' + defaultContent + ')');
+            } catch(err) {
+              defaultContent = null;
+            }
           }
         }
       // default: () => { /** */ }
@@ -224,9 +228,7 @@ const extractComponentsProperty = errorCatch((
         if (tsType != 'Function') {
           try {
             defaultContent = eval(defaultContent)();
-          } catch(err) {
-            defaultContent = eval('(' + defaultContent + ')');
-          }
+          } catch(err) {}
         }
       }
       result.prop.set(String(getOnly(key).node), {

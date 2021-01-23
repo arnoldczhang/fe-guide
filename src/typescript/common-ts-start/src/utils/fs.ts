@@ -8,6 +8,7 @@ import {
   rmdirSync,
   existsSync,
   removeSync,
+  mkdirSync,
 } from 'fs-extra';
 import * as nodePath from 'path';
 import {
@@ -152,3 +153,9 @@ export const getFilePath = (
 export const remove = (dir: string) => removeSync(dir);
 
 export const exist = (dir: string) => existsSync(dir);
+
+export const mkdir = (dir: string) => {
+  try{
+    mkdirSync(dir);
+  } catch(e) {}
+};

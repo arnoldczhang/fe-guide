@@ -1,4 +1,4 @@
-import { Func } from '../../types';
+import { Func } from '../types';
 
 export const hook = Object.freeze({
   __cach__: new Map(),
@@ -55,4 +55,5 @@ export const hook = Object.freeze({
 export const HOOK_NAME = {
   STYLE_UPDATE: 'style:update',
   VUE_STYLE_UPDATE: 'vue-style:update',
+  FILTER_TREE_UPDATE: 'tree-filter:update',
 };
