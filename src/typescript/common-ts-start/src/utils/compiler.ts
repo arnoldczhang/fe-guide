@@ -10,7 +10,7 @@ import {
 import {
   VueResult,
   PathInfo,
-} from '../../types';
+} from '../types';
 import { success } from './logger';
 import { hook, HOOK_NAME } from './hook';
 import {
