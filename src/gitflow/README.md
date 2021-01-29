@@ -40,6 +40,18 @@ merge: 代码合并
 git blame ./package.json
 ```
 
+### git-log
+
+```
+//  在当前目录之外的地方执行查看日志
+git -C ${目录} log --all ${目录下某文件}
+
+// 输出美化，规则查看下图，比如只想看提交作者，format:%an
+git log --pretty=format:xxx ${某文件}
+```
+
+![git-log](./git-log.png)
+
 ### git-branch
 
 ```
