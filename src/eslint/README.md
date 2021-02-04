@@ -3,6 +3,7 @@
 ## 参考
 - [自定义eslint](https://mp.weixin.qq.com/s/zDTRB9BQFbzj6SeAM7mVcA)
 - [基于husky做的代码增量eslint](https://juejin.im/post/6865101730166767623?utm_source=gold_browser_extension)
+- [eslint有哪些规则](https://www.cnblogs.com/fqh123/p/9967771.html)
 
 ## 原理
 
@@ -31,3 +32,17 @@ module.exports = {
   },
 };
 ```
+
+
+
+---
+
+
+
+## 规则
+
+```js
+'no-trailing-spaces': 2, // 禁止行首
+'no-multiple-empty-lines': 1, // 禁止多空行
+```
+
