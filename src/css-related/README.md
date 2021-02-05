@@ -17,6 +17,7 @@
 ### 案例
 - [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
 - [前端换肤参考](https://blog.souche.com/untitled-17/)
+- [前端换肤-css变量方法](https://www.cnblogs.com/leiting/p/11203383.html)
 - [提高幸福感的 9 个 CSS 技巧](https://juejin.im/post/5cb45a06f265da03474df54e)
 - [Web开发者需要知道的CSS Tricks](https://juejin.im/post/5aab4f985188255582521c57)
 - [CSS 常用技巧](https://juejin.im/post/5b1f41246fb9a01e725131fb)
