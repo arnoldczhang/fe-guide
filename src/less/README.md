@@ -3,7 +3,7 @@
 ## node使用
 详见[postcss原理](../postcss/postcss.js)
 
-## 用法
+## 一些用法
 
 ### css变量替换
 
