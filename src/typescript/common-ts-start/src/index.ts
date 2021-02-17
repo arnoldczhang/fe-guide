@@ -2,25 +2,16 @@ import {
   startGenerate,
   copyOriginToVuepress,
   updateDependencies,
-  updateMockData,
+  updateComponentUsageFromImport,
   iterateInsertCompToVupress,
   finishGenerate,
 } from './compiler';
-import {
-  searchAllFiles,
-  filterVueFiles,
-  prettifyFiles,
-  statisticData,
-  drawSplitDependencyImage,
-  drawDependencyImage,
-  searchRedundantComp,
-} from './tree';
 
-const from = 'ROOT/src';
-const nodeModulePath = 'ROOT/node_modules/';
-const to = 'ROOT/docs/.vuepress/components';
-const imagePath = 'IMG_ROOT/tree.png';
-const imageMiniPath = 'IMG_ROOT/tree-mini.jpg';
+const rootPath = 'PROJECT_PATH';
+const from = `${rootPath}src`;
+const nodeModulePath = `${rootPath}node_modules/`;
+const to = `${rootPath}docs/.vuepress/components`;
+const readMeFile = `${rootPath}docs/help/README.md`;
 const vueRe = /.+\.vue$/;
 const jsRe = /\.(t|j)sx?$/;
 const cssRe = /\.(c|le|sc|sa)ss$/;
@@ -30,8 +21,7 @@ const generate = () => {
   startGenerate(to);
   // 复制源文件至 vuepress 目录
   copyOriginToVuepress(from, to);
-  // 更新 vuepress 下各文件的依赖（文件路径、less 全局文件等）
-  // 并生成依赖树
+  // 更新js/less/vue文件内容并生成依赖树
   updateDependencies({
     root: to,
     npm: nodeModulePath,
@@ -40,42 +30,12 @@ const generate = () => {
     js: [jsRe],
     css: [cssRe],
   });
-  // 读取各组件的 mock 数据（若有）
-  updateMockData();
+  // 找到各个组件的父引用
+  updateComponentUsageFromImport(to, vueRe);
   // 组件循环插入 vupress 页面
-  iterateInsertCompToVupress();
+  iterateInsertCompToVupress(to, readMeFile);
   // 生成结束处理（清理临时文件等）
   finishGenerate();
 };
 
 generate();
-
-const drawTree = () => {
-  // 找到文件夹下所有目标文件生成简易依赖树
-  searchAllFiles(from, nodeModulePath, {
-    vue: [vueRe],
-    js: [jsRe],
-  });
-  // 读取vue文件
-  filterVueFiles(/(?:.+\.vue|\/router\/index\.(t|j)s|main\.tsx?)$/);
-  // 美化路径
-  prettifyFiles([
-    [from, '@'],
-    [nodeModulePath, ''],
-  ]);
-  // 找到冗余组件
-  searchRedundantComp(redundantPath, {
-    skip: [
-      /(?:\/router\/index\.(t|j)s|main\.tsx?)$/,
-      /App\.vue$/,
-    ],
-  });
-  // 统计数据
-  statisticData();
-  // 按页面模块画依赖图
-  drawSplitDependencyImage(imagePath);
-  // 画整体依赖图
-  drawDependencyImage(imageOutPath, imageMiniPath);
-};
-
-// drawTree();

@@ -125,7 +125,7 @@
 * [`node垃圾回收`](#node垃圾回收)
 * [`http接口规范`](#http接口规范)
 
-**浏览器**
+**浏览器/网络**
 
 * [`同/异任务`](#同/异任务)
 * [`http2`](#http2)
@@ -154,6 +154,7 @@
 * [`X-Frame-Options`](#X-Frame-Options)
 * [`crossorigin`](#crossorigin)
 * [`中间人劫持`](#中间人劫持)
+* [`cdn资源请求失败降级`](#cdn资源请求失败降级)
 
 **算法**
 
@@ -3525,4 +3526,10 @@ import('xxModule');
 - 两者使用前都会做缓存
 
 ---
+
+### cdn资源请求失败降级
+[通用前端资源加载失败优化](https://mp.weixin.qq.com/s/0JMLZYgNAiyrHmzPBu5rYw)
+
+- onerror
+- 资源间依赖 + 重新加载
 

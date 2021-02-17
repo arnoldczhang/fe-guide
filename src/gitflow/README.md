@@ -40,6 +40,18 @@ merge: 代码合并
 git blame ./package.json
 ```
 
+### git-log
+
+```
+//  在当前目录之外的地方执行查看日志
+git -C ${目录} log --all ${目录下某文件}
+
+// 输出美化，规则查看下图，比如只想看提交作者，format:%an
+git log --pretty=format:xxx ${某文件}
+```
+
+![git-log](./git-log.png)
+
 ### git-branch
 
 ```
@@ -51,3 +63,6 @@ git branch -r --contains commitID
 
 ## github
 [你会用github的搜索吗？](https://juejin.im/post/6891056415440535565?utm_source=gold_browser_extension)
+
+[github-action](http://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html)
+

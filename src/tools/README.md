@@ -24,6 +24,9 @@
 - [在线绘图](https://app.wireflow.co/)
 - [在线ai手绘英文](https://www.calligrapher.ai/)
 - [email响应式模板](https://github.com/hunzaboy/codedmails)
+- [在线合并视频片段](https://slowapi.com/merge-videos-files/)
+- [在线翻译-js可调](https://github.com/uav4geo/LibreTranslate)
+- [在线生成随机头像-js可调用](https://multiavatar.com/)
 
 ---
 

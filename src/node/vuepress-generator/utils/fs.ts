@@ -7,10 +7,9 @@ import {
   unlinkSync,
   rmdirSync,
   existsSync,
+  removeSync,
+  mkdirSync,
 } from 'fs-extra';
-import {
-  isStr,
-} from './helper';
 import * as nodePath from 'path';
 
 const {
@@ -26,7 +25,7 @@ export const read = (
 ) => readFileSync(file, 'utf-8');
 
 /**
- *
+ * 递归清空目录
  * @param file
  */
 export const cleardir = (
@@ -38,7 +37,7 @@ export const cleardir = (
     files.forEach((file: string) => {
       const current = join(rootDir, '.', file);
       if (statSync(current).isDirectory()) {
-        cleardir(current);
+        cleardir(current, keep);
       } else {
         unlinkSync(current);
       }
@@ -71,14 +70,14 @@ export const copy = (
 ) => copySync(from, to);
 
 /**
- *
+ * 通用获取目录下文件
  * @param filePath
- * @param options
+ * @param option
  * @param cach
  */
 export const readdir = (
   rootPath: string,
-  options?: {
+  option?: {
     deep?: boolean;
     absolute?: boolean;
     suffix?: (string | RegExp)[];
@@ -89,7 +88,7 @@ export const readdir = (
     absolute = true,
     deep = true,
     suffix = [],
-  } = options || {};
+  } = option || {};
   cach = cach || [];
   readdirSync(rootPath).forEach((file) => {
     const filePath = join(rootPath, '.', file);
@@ -97,7 +96,7 @@ export const readdir = (
 
     if (statSync(filePath).isDirectory()) {
       if (deep) {
-        return readdir(filePath, options, cach);
+        return readdir(filePath, option, cach);
       }
     }
 
@@ -110,9 +109,11 @@ export const readdir = (
         return suf.test(filePath);
       }
 
-      if (isStr(suf)) {
+      if (typeof suf === 'string') {
         return filePath.includes(suf);
       }
+
+      return false;
     });
 
     if (match) {
@@ -122,6 +123,14 @@ export const readdir = (
   return cach;
 };
 
+/**
+ * 获取目录下特定后缀的文件
+ *
+ * - resolve.sync不满足这里的要求
+ *
+ * @param path
+ * @param suffix
+ */
 export const getFilePath = (
   path: string,
   suffix = ['js', 'ts', 'vue'],
@@ -146,4 +155,16 @@ export const getFilePath = (
   } finally {
     return result;
   }
+};
+
+export const remove = (dir: string) => removeSync(dir);
+
+export const exist = (dir: string) => existsSync(dir);
+
+export const mkdir = (dir: string) => {
+  try {
+    if (!exist(dir)) {
+      mkdirSync(dir);
+    }
+  } catch (e) {}
 };

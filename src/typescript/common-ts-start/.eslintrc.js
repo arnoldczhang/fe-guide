@@ -1,6 +1,6 @@
 const rules = {
     indent: ['error', 2],
-    'no-trailing-spaces': 2,
+    'no-trailing-spaces': 2, // 禁止行首
     'vue/require-component-is': 'off', // There is a bug, it always reports an error. See https://github.com/vuejs/eslint-plugin-vue/issues/869
     // 有效v-for指令
     'vue/valid-v-for': 0,
@@ -37,7 +37,8 @@ const rules = {
     'no-non-null-assertion': 0,
     '@typescript-eslint/no-non-null-assertion': 0,
     '@typescript-eslint/no-explicit-any': 0,
-    'vue/valid-v-slot':0
+    'vue/valid-v-slot':0,
+    'no-multiple-empty-lines': 1, // 禁止多空行
   };
   
   if (process.env.NODE_ENV === 'production') {
