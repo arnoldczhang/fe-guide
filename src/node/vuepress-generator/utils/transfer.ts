@@ -2,6 +2,7 @@ import {
   parseComponent,
   compile,
   SFCBlock,
+  SFCParserOptions,
 } from 'vue-template-compiler';
 import * as less from 'less';
 import * as css from 'css';
@@ -19,6 +20,11 @@ import {
   traverse,
 } from '@babel/core';
 import {
+  parseSync,
+  Module,
+} from '@swc/core';
+import Visitor from '@swc/core/Visitor';
+import {
   TraverseOptions,
 } from '@babel/traverse';
 import generate from '@babel/generator';
@@ -28,6 +34,9 @@ import {
   errorCatchSync,
 } from './helper';
 
+/**
+ * transferTs2js
+ */
 export const transferTs2js = errorCatch((input = ''): string => {
   return ts.transpile(input, {
     jsx: ts.JsxEmit.Preserve,
@@ -37,9 +46,12 @@ export const transferTs2js = errorCatch((input = ''): string => {
   });
 });
 
+/**
+ * parseVue
+ */
 export const parseVue = errorCatch((
   vueContent: string,
-  option = {},
+  option: SFCParserOptions,
 ): {
   template: string;
   script?: SFCBlock;
@@ -57,7 +69,6 @@ export const parseVue = errorCatch((
       styles,
     };
   }
-
   return {
     template: `<template>${template.content}</template>`,
     script,
@@ -65,33 +76,46 @@ export const parseVue = errorCatch((
   };
 });
 
-export const getBlockAttrs = (
-  attrs: Record<string, string>
-): string =>
-  Object.keys(attrs).reduce((res: string, pre: string) => {
-    res += ` ${pre}="${attrs[pre]}"`;
-    return res;
-  }, '')
-;
-
+/**
+ * transferVueTemplateToAst
+ */
 export const transferVueTemplateToAst = errorCatch((
   template: string,
 ): AST.VElement | undefined => vueParse(template, {}).templateBody);
 
+/**
+ * transferJsToAst
+ */
 export const transferJsToAst = errorCatch((
   script: string,
   config?: Partial<TransformOptions>,
 ): t.Program | t.File | null => parse(script, config || babelConfig));
 
+/**
+ * transferJsToSwcAst
+ */
+export const transferJsToSwcAst = errorCatch((
+  script: string,
+): Module => parseSync(script));
+
+/**
+ * transferLessToCss
+ */
 export const transferLessToCss = errorCatchSync(async (
   content: string,
-  options?: Less.Options,
-): Promise<Less.RenderOutput> => less.render(content, options || {}));
+  option?: Less.Options,
+): Promise<Less.RenderOutput> => less.render(content, option || {}));
 
+/**
+ * transferCssToAst
+ */
 export const transferCssToAst = errorCatch((
   content: string,
 ): css.Stylesheet => css.parse(content));
 
+/**
+ * traverseVueTemplateAst
+ */
 export const traverseVueTemplateAst = errorCatch((
   ast: AST.Node,
   hooks?: Partial<AST.Visitor>,
@@ -117,6 +141,9 @@ export const traverseVueTemplateAst = errorCatch((
   })
 );
 
+/**
+ * traverseBabelAst
+ */
 export const traverseBabelAst = errorCatch((
   ast: t.AnyTypeAnnotation,
   hooks?: Partial<TraverseOptions>,
@@ -124,6 +151,16 @@ export const traverseBabelAst = errorCatch((
   traverse(ast, {
     ...hooks || {}
   })
+);
+
+/**
+ * traverseSwcAst
+ */
+export const traverseSwcAst = errorCatch((
+  ast: Module,
+  AdaptVisitor: typeof Visitor,
+): Module =>
+  new AdaptVisitor().visitModule(ast)
 );
 
 export const babelGenerate = generate;
