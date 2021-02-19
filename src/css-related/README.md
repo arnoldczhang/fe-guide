@@ -5,8 +5,10 @@
 ### 资源
 - [图片库](https://remixicon.com/)
 - [icon库](https://mp.weixin.qq.com/s/vBzp8zMZ9he-3JsuAEpoxQ)
+- [矢量图片库](https://www.flaticon.com/)
 - [bootstrap-icons](https://icons.getbootstrap.com/)
 - [特效库](https://cssfx.dev/)
+- [通用配色库](https://colorhunt.co/)
 - [nb的配色库](https://color.adobe.com/zh/create/color-wheel)
 - [渐变色配色库](https://www.bestvist.com/css-gradient)
 - [创意海报库](https://www.chuangkit.com/designtools/designindex)
