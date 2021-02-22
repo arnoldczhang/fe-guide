@@ -230,7 +230,7 @@
 
 ```js
 const a = [1, 2, 3];
-const b = [1, 2, 3];
+const b = [1, 2, 3, 4];
 
 console.log(a == b); // 引用类型，false
 console.log(a === b); // 引用类型，false
