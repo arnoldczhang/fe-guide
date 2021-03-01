@@ -3,6 +3,7 @@
 ## 参考
 - [deno](http://www.ruanyifeng.com/blog/2020/01/deno-intro.html)
 - [官网](https://github.com/denoland/deno/releases)
+- [deno-std](https://deno.land/std@0.88.0/node)
 
 ## 安装
 > curl -fsSL https://deno.land/x/install/install.sh | sh -s v0.31.0
