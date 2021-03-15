@@ -56,6 +56,17 @@
 
 ## 常见用法
 
+### 增加权重（骚操作）
+
+```css
+/* 重复自己 */
+.foo.foo {
+
+}
+```
+
+
+
 ### border玩法
 [border](https://www.w3cplus.com/css/css-tips-0904-1.html)
 
