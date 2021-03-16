@@ -65,9 +65,56 @@
 }
 ```
 
+所以说，为什么element:hover会起效果？纯粹是因为权重比element高
+
+### 选择器大小写敏感性
+
+以下值对大小写敏感：
+
+- 属性选择器的值（attr=val）
+- class
+- Id
+
+如何设置不敏感那？
+
+```css
+[class="val" i] {
+  
+}
+```
+
+### 属性选择器
+
+#aa 和 [id="aa"] 是不一样的，前者优先级更高，高到无法用堆叠class逾越，非要用id选择器的话，推荐改用属性选择器
+
+### 如何高亮
+
+新增状态标志符，比如：
+
+- .active
+
+- .checked
+
+- .selected
+
+- .on
+
+- .disabled
+
+- .open
+
+用于交互控制，但是切记，这些类目不能含有自己的样式，配合其他class使用，用于提升权重
+
+```css
+.xx.active {
+  /**/
+}
+```
+
 
 
 ### border玩法
+
 [border](https://www.w3cplus.com/css/css-tips-0904-1.html)
 
 ### 伪元素/伪类
