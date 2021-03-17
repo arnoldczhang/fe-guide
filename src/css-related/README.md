@@ -228,6 +228,9 @@ document.link.disabled = false;
 ```
 
 ### 超出省略
+
+**重要：设置`display: flex`时，不会展示省略号，切记！！！**
+
 ```css
 /* optimize-css-assets-webpack-plugin会把-webkit-box-orient删掉，要加注释阻止 */
 .line-camp( @clamp:2 ) {
