@@ -180,6 +180,13 @@ vue ui
 ```
 
 ### 6. 覆盖外部组件scoped样式
+
+- [几种方式](https://www.jb51.net/article/188038.htm)
+- [chrome89之前对deep的支持](https://segmentfault.com/q/1010000039324714)
+- vue-scoped的原理
+  - 非scoped，直接走postcss --> css-loader
+  - scoped，postcss需要加plugin【 @vue/component-compiler-utils/lib/stylePlugins/scoped.ts】
+
 ```vue
 <style lang="less" scoped>
 .aa {
