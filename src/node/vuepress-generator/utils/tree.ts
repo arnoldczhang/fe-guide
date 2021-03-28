@@ -1,4 +1,4 @@
-import * as madge from 'madge';
+import madge from 'madge';
 import * as nodePath from 'path';
 import { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
@@ -28,7 +28,7 @@ import {
   includeRe,
   excludeRes
 } from './const';
-import { TreeNode } from '../types';
+import { TreeNode, DrawImageOption } from '../types';
 
 const { join } = nodePath;
 
@@ -120,12 +120,17 @@ const traverseAst = (
       if (p.get('callee').type === 'Import') {
         const [arg] = p.get('arguments');
         const value = getOnly(arg.get('value'));
-        treeNodes[path].push(getRealPath(
+        const realPath = getRealPath(
           rootPath,
           npmPath,
           path,
           String(value),
-        ));
+        );
+
+        // 路径去重
+        if (!treeNodes[path].includes(realPath)) {
+          treeNodes[path].push(realPath);
+        }
       }
     },
     /**
@@ -138,12 +143,17 @@ const traverseAst = (
     ImportDeclaration(p: NodePath<t.ImportDeclaration>) {
       const value = getOnly(p.get('source.value'));
       if (typeof value !== 'string') return;
-      treeNodes[path].push(getRealPath(
+      const realPath = getRealPath(
         rootPath,
         npmPath,
         path,
         value,
-      ));
+      );
+
+      // 路径去重
+      if (!treeNodes[path].includes(realPath)) {
+        treeNodes[path].push(realPath);
+      }
     },
   });
 };
@@ -239,7 +249,8 @@ export const searchAllFiles = (
   option: {
     vue: RegExp;
     js: RegExp;
-  }
+    css?: RegExp;
+  },
 ) => {
   success('寻找.vue、.ts、.js文件中...');
   const { vue, js } = option;
@@ -351,16 +362,19 @@ export const statisticData = (routerPath: string) => {
 export const drawSplitDependencyImage = async (
   to: string,
   routerPath?: string,
+  exclude?: RegExp | RegExp[],
 ) => {
   let list;
-
+  // 筛选入口文件
   if (typeof routerPath === 'string') {
     list = [...new Set(treeNodes[routerPath])] as string[];
   } else {
     list = Object.keys(treeNodes);
   }
 
+  // TODO 排除某些模块 - exclude
   mkdir(to);
+
   for (const item of list) {
     success(`找到页面模块 => ${item}`);
     /**
@@ -385,7 +399,7 @@ export const drawSplitDependencyImage = async (
  */
 export const drawDependencyImage = async (
   to: string,
-  option: { compressPath?: string; node?: TreeNode },
+  option: DrawImageOption,
 ) => {
   const { compressPath, node } = option;
   success(`生成图片 => ${to}`);
