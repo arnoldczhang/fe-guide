@@ -11,6 +11,8 @@
 ### chrome录制插件
 基于[puppeteer recorder](https://chrome.google.com/webstore/search/checkly?utm_source=chrome-ntp-icon)录制了页面的操作过程，一些微调后生成了测试案例，可以参考[项目](./test-case/README.md)
 
+还有[cypress recorder](https://chrome.google.com/webstore/detail/cypress-recorder/glcapdcacdfkokcmicllhcjigeodacab?utm_source=chrome-ntp-icon)
+
 ### 拦截请求
 [参考](https://github.com/puppeteer/puppeteer/blob/v1.8.0/docs/api.md#requestrespondresponse)
 
