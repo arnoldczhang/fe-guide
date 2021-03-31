@@ -1,4 +1,5 @@
-import { Root, Declaration, AtRule } from 'postcss';
+import { Root, Declaration, AtRule, Rule } from 'postcss';
+import postcssSelectorParser from 'postcss-selector-parser';
 import {
   Func,
   Replacer,
@@ -6,6 +7,7 @@ import {
 import {
   getSplitSelector,
   getDeclSelector,
+  isCssAtRule,
 } from './helper';
 
 /**
@@ -20,20 +22,19 @@ export function cachProps(callback: Func) {
       const info: Record<string, any> = {};
       // 递归 atRule 主要为了获取已有less变量，然后看是否有复用可能性
       css.walkAtRules((atRule: AtRule) => {
-        const { name, params, nodes } = atRule;
+        const { name, params } = atRule;
         const key = `@${name}`;
-        // 读取纯定义less变量（类似@keyframes，仍属于css范畴）
-        if (!nodes || !nodes.length) {
-          info[key] = params;
-        }
+        // 仅读取less变量
+        if (isCssAtRule(key)) return;
+        info[key] = params;
       });
       css.walkDecls((decl: Declaration) => {
         const { parent, prop, value } = decl;
         if (!parent) return;
         const selector: string = cach.get(parent) || getDeclSelector(parent);
-        getSplitSelector(selector).forEach((item: string) => {
-          info[item] = info[item] || {};
-          info[item][prop] = value;
+        getSplitSelector(selector).forEach((key: string) => {
+          info[key] = info[key] || {};
+          info[key][prop] = value;
         });
         cach.set(parent, selector);
       });
@@ -81,6 +82,82 @@ export function replaceProps(
             }
             return res.replace(target, replacer);
           }, value);
+        }
+      });
+    },
+  };
+}
+
+/**
+ * 检测less中的deep（/deep/、::v-deep、>>>）
+ *
+ * - 非scoped禁止deep
+ * - scoped禁止嵌套deep
+ *
+ * @param callback
+ */
+export function detectDeep(
+  scoped: boolean,
+  callback: Func,
+) {
+  return {
+    postcssPlugin: 'postcss-plugin-detect-deep',
+    OnceExit(css: Root) {
+      const cach = new WeakSet();
+      let passed = true;
+      css.walkRules((rule: Rule) => {
+        if (!passed) {
+          return passed;
+        }
+
+        postcssSelectorParser((selectors) => {
+          selectors.each((selector) => {
+            selector.each((node: any) => {
+              const isCombDeep = node.type === 'combinator' && (node.value === '>>>' || node.value === '/deep/');
+              const isPseuDeep = node.type === 'pseudo' && node.value === '::v-deep';
+              if (isCombDeep || isPseuDeep) {
+                // 非scoped禁止deep
+                if (!scoped) {
+                  callback();
+                  passed =false;
+                  return passed;
+                // scoped禁止嵌套deep
+                } else {
+                  let parent = rule.parent;
+
+                  while (parent) {
+                    if (cach.has(parent)) {
+                      callback();
+                      passed =false;
+                      return passed;
+                    }
+                    parent = parent.parent;
+                  }
+                  cach.add(rule);
+                }
+              }
+            });
+          });
+        }).processSync(rule.selector);
+      });
+    },
+  };
+}
+
+/**
+ * 查找less中的`@import`
+ * @param iterateDetect
+ */
+export function detectImport(
+  callback: Func,
+) {
+  return {
+    postcssPlugin: 'postcss-plugin-detect-deep',
+    OnceExit(css: Root) {
+      css.walkAtRules((atRule: AtRule) => {
+        const { name, params } = atRule;
+        if (name === 'import') {
+          callback(params.replace(/(^['"]|['"$])/g, ''));
         }
       });
     },
