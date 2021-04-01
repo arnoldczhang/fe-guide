@@ -95,9 +95,11 @@ const traverseJs = errorCatch((
   const babelAst = transferJsToAst(content);
   traverseBabelAst(babelAst, {
     /**
-     * 动态import
+     * 处理两种情况
      *
-     * - 暂不处理
+     * - import()
+     * - Vue.extend
+     *
      * @param p
      */
     CallExpression(p: NodePath<t.CallExpression>) {
@@ -175,7 +177,10 @@ const traverseVueTemplate = errorCatch((
     ) {
       const { rawName, startTag, endTag, loc } = node;
       const { component, template, location } = result;
-      // 如果当前节点不符合当前引用的组件和全局组件的名称，则判定为纯html标签
+      /**
+       * 如果当前节点不符合当前引用的组件和全局组件的名称，
+       * 则判定为纯html标签
+       */
       if (
         !component.has(rawName)
           && !globalCompCach.has(rawName)
@@ -201,13 +206,18 @@ const traverseVueTemplate = errorCatch((
  * 更新vue上的<style />标签内容
  * @param styles
  */
-const updateStyleContent = (styles: SFCBlock[]) => {
+const updateStyleContent = errorCatch((styles: SFCBlock[]) => {
   if (styles && styles.length) {
     return styles.reduce((res: string, pre: SFCBlock) => {
       if (pre) {
         const { attrs, content } = pre;
         // 全局样式应该由全局引入
-        const extraContent = hook.callIterateSync(HOOK_NAME.beforeIterateInsertVueStyle, attrs, globalCach) || '';
+        const extraContent = hook.callIterateSync(
+          HOOK_NAME.beforeIterateInsertVueStyle,
+          attrs,
+          globalCach,
+        ) || '';
+
         res += `<style${concatObjectKeyValue(attrs)}>
           ${extraContent}
           ${content}
@@ -218,7 +228,72 @@ const updateStyleContent = (styles: SFCBlock[]) => {
     }, '');
   }
   return '';
-};
+});
+
+/**
+ * 更新vue上的<script /> 内容
+ * @param path
+ * @param script
+ * @param pathInfo
+ * @param result
+ */
+const updateScriptContent = errorCatch((
+  path: string,
+  script: SFCBlock,
+  pathInfo: PathInfo,
+  result: VueResult,
+) => {
+  if (!script) return { jsContent: '', compResult: result };
+  const { content, attrs = {} } = script;
+  const {
+    root: rootPath,
+    vuepress,
+  } = pathInfo;
+  let current = path;
+  let tempJsContent = content;
+  // 外链脚本需要通过src获取源文件内容后解析
+  if (attrs && attrs.src) {
+    result.src = join(path, '..', attrs.src);
+    // 外链ts/js需要合并统计开发人员
+    result.author = [...new Set([...result.author || [], ...getFileAuthor(rootPath, vuepress, result.src)])];
+    current = result.src;
+    delete attrs.src;
+    const tempResult = pathCach.get(current);
+
+    if (typeof tempResult === 'undefined') {
+      throw new Error(`找不到 ${path} 对应的外部脚本：${current}`);
+    }
+
+    tempJsContent = read(current);
+    // 这里需要删除原文件，避免vuepress默认使用.ts/.js
+    remove(current);
+    const { src, author, short } = result;
+    result = {
+      ...tempResult,
+      src,
+      author,
+      path: result.path,
+      short,
+    };
+  // 非外链脚本，直接获取内容解析即可
+  } else {
+    traverseJs(tempJsContent, {
+      ...pathInfo,
+      global: globalCompCach,
+      current,
+    }, result);
+  }
+
+  const jsContent = `<script${concatObjectKeyValue(attrs)}>
+${tempJsContent}
+      </script>
+    `;
+
+  return {
+    jsContent,
+    compResult: result,
+  };
+});
 
 /**
  * vue的处理
@@ -240,58 +315,19 @@ const updateVueDependencies = errorCatch((
     success(`now update file: ${path}`);
     const content = read(path);
     const { template, script, styles } =  parseVue(content);
-    let result = genVueResult();
+    const result = genVueResult();
     // 设置配置文件基本信息
     result.author = getFileAuthor(rootPath, vuepress, path);
     result.path = path.replace(vuepress, '');
     result.short = path.replace(vuepress, '@');
     // 生成js转ast，生成特定树
-    let jsContent = '';
-    if (script) {
-      const { content, attrs = {} } = script;
-      let current = path;
-      let tempJsContent = content;
-      if (attrs && attrs.src) {
-        result.src = join(path, '..', attrs.src);
-        // 外链ts/js需要合并统计开发人员
-        result.author = [...new Set([...result.author, ...getFileAuthor(rootPath, vuepress, result.src)])];
-        current = result.src;
-        delete attrs.src;
-        const tempResult = pathCach.get(current);
-
-        if (typeof tempResult === 'undefined') {
-          throw new Error(`找不到 ${path} 对应的外部脚本：${current}`);
-        }
-
-        tempJsContent = read(current);
-        // 这里需要删除原文件，避免vuepress默认使用.ts/.js
-        remove(current);
-        const { src, author, short } = result;
-        result = {
-          ...tempResult,
-          src,
-          author,
-          path: result.path,
-          short,
-        };
-      } else {
-        traverseJs(tempJsContent, {
-          ...pathInfo,
-          global: globalCompCach,
-          current,
-        }, result);
-      }
-      jsContent = `<script${concatObjectKeyValue(attrs)}>
-${tempJsContent}
-        </script>
-      `;
-    }
+    const { jsContent, compResult } = updateScriptContent(path, script, pathInfo, result);
     // template转 ast 做遍历处理
-    traverseVueTemplate(template, path, result);
+    traverseVueTemplate(template, path, compResult);
     // less可能要做内容变更（比如插入全局less）
     const styleContent  = updateStyleContent(styles);
     // 更新缓存
-    pathCach.set(path, result);
+    pathCach.set(path, compResult);
     write(path, `${template}
 ${jsContent}
 ${styleContent}
@@ -344,7 +380,7 @@ const updateCssDependencies = errorCatch((
  * 清空制定目录下的内容包括文件夹
  * @param path string
  */
-export const clearEntryPath = (
+export const clearEntryPath = errorCatch((
   pathArray: string[],
 ): void => {
   pathArray.forEach((path) => {
@@ -352,7 +388,7 @@ export const clearEntryPath = (
     cleardir(path, false);
     mkdir(path);
   });
-};
+});
 
 /**
  * 复制src下文件到components
