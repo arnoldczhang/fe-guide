@@ -1,4 +1,5 @@
-import postcss from 'postcss';
+import postcss, { atRule, AcceptedPlugin } from 'postcss';
+import Processor from 'postcss/lib/processor.js';
 import * as nodePath from 'path';
 import { SFCBlock } from 'vue-template-compiler';
 import {
@@ -14,6 +15,7 @@ import {
 } from './helper';
 import {
   defaultPostcssConfig,
+  vueRe,
 } from './const';
 import {
   drawDependencyImage,
@@ -25,6 +27,8 @@ import { success } from './logger';
 import {
   cachProps,
   replaceProps,
+  detectDeep,
+  detectImport,
 } from './postcss';
 import {
   Func,
@@ -42,6 +46,26 @@ const styleCach: Map<string, Record<string, any>> = new Map();
 const errorCatchCachProps = errorCatch(cachProps);
 
 const errorCatchReplaceProps = errorCatch(replaceProps);
+
+const errorCatchDetectDeep = errorCatch(detectDeep);
+
+const errorCatchDetectImport = errorCatch(detectImport);
+
+/**
+ * 快捷运行postcss
+ * @param plugins
+ * @param content
+ */
+const runPostcss = async (
+  plugins: AcceptedPlugin[],
+  content: string,
+  config?: Record<any, any>,
+) => {
+  const instance = plugins.reduce((res: Processor, plugin) => {
+    return res.use(plugin);
+  }, postcss());
+  return instance.process(content, config || defaultPostcssConfig);
+};
 
 /**
  * 替换自定义样式&输出使用情况
@@ -280,4 +304,53 @@ export const replaceVueProps = errorCatchSync(async (
   ): string => `<style${concatObjectKeyValue(styles[index].attrs)}>${content}</style>`).join('\n');
   const scriptContent = script ? `<script${concatObjectKeyValue(script.attrs)}>${script.content}</script>` : '';
   write(path, `${template}\n${scriptContent}\n${styleContent}`);
+});
+
+/**
+ * 检测.vue中的非scoped的deep
+ */
+export const detectDeepWithScoped = errorCatch(async (
+  rootPath: string,
+  skip: RegExp[],
+): Promise<string[]> => {
+  const result: string[] = [];
+  const targetPaths = readdir(rootPath, { suffix: [vueRe] })
+    .filter((p: string) =>
+      !skip.some((re) => re.test(p))
+    );
+
+  await Promise.all(targetPaths.map(async (path: string) => {
+    const content = read(path);
+    if (!content) return;
+    const { styles } =  parseVue(content);
+    if (!styles || !styles.length) return;
+    await Promise.all(styles.map(async (style: SFCBlock) => {
+      const { attrs = {} } = style;
+      let { content: styleContent } = style;
+      const { scoped, lang, src } = attrs;
+      if (src) {
+        path = nodePath.resolve(path, '..', src);
+        styleContent = read(path);
+      }
+      const isBlankOrNotLess = isBlankContent(styleContent) || lang !== 'less';
+      if (isBlankOrNotLess) return;
+      // 将所有@import合并到当前style代码中
+      await runPostcss([
+        errorCatchDetectImport((url: string) => {
+          styleContent = read(nodePath.resolve(path, '..', url)) + styleContent;
+        }),
+      ], styleContent);
+      // 查找非scoped中使用deep的情况和scoped中的嵌套deep
+      return runPostcss([
+        errorCatchDetectDeep(scoped, () => {
+          if (result.includes(path)) {
+            return;
+          }
+          result.push(path);
+        }),
+      ], styleContent);
+    }));
+  }));
+  debugger;
+  return result;
 });
