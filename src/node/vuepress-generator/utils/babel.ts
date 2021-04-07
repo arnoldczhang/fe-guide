@@ -275,6 +275,7 @@ const extractComponentsProperty = errorCatch((
         }
       }
       result.prop.set(getOnlyStr(key), {
+        type: tsType,
         default: defaultContent,
       });
     }
