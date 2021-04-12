@@ -12,6 +12,7 @@ import {
   analyseLessUsage,
   genLessUsageTree,
   replaceCommonLess,
+  detectDeepWithScoped,
 } from './utils/less';
 import {
   searchAllFiles,
@@ -38,7 +39,15 @@ import {
   cleardir,
 } from './utils/fs';
 export { hook, HOOK_NAME } from './utils/hook';
-import { TreeNode, FridayConfig } from './types';
+import {
+  TreeNode,
+  FridayConfig,
+} from './types';
+
+/**
+ * 通用画依赖图
+ */
+export const drawImage = drawDependencyImage;
 
 /**
  * 查找目录下所有vue、js
@@ -91,7 +100,7 @@ export const findAllFilesDependency = (param: FridayConfig): TreeNode => {
 /**
  * 查找目录下冗余文件
  */
-export const findeRedudantFiles = (param: FridayConfig) => {
+export const findRedudantFiles = (param: FridayConfig) => {
   findAllFilesDependency(param);
   const {
     output,
@@ -157,6 +166,7 @@ export const drawDependencySplit = async (param: FridayConfig) => {
   const {
     entry: { router },
     output,
+    regExp,
   } = param;
   assert(isObj(output), '需要传入 output - 输出对象');
   const {
@@ -167,7 +177,11 @@ export const drawDependencySplit = async (param: FridayConfig) => {
     return Promise.resolve(result);
   }
 
-  await drawSplitDependencyImage(dir, router);
+  const {
+    exclude,
+  } = regExp || {};
+
+  await drawSplitDependencyImage(dir, router, exclude);
 };
 
 /**
@@ -344,5 +358,25 @@ export const extractLessVariable = async (param: FridayConfig) => {
     skip,
     replacements,
   });
+  return result;
+};
+
+/**
+ * 检测.vue中的非scoped的deep
+ * @param param
+ */
+export const detectDeepSelector = async (param: FridayConfig) => {
+  const {
+    entry,
+    skip = [],
+  } = param;
+  assert(isObj(entry), '需要传入 entry - 输入对象');
+  const {
+    src,
+  } = entry;
+  if (skip) {
+    assert(Array.isArray(skip), 'skip - 跳过的文件，类型必须是RegExp[]');
+  }
+  const result = await detectDeepWithScoped(src, skip);
   return result;
 };
