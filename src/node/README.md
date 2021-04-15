@@ -563,7 +563,8 @@ throw new CommonError('abc');
 
 ## 进程线程
 
-[node集群](https://www.yuque.com/docs/share/3bed0240-047e-4a49-a989-f0a37fc28971)
+- [node集群](https://www.yuque.com/docs/share/3bed0240-047e-4a49-a989-f0a37fc28971)
+- [node多进程守护](https://zhuanlan.zhihu.com/p/100550801)
 
 ### 概念
 > 进程：CPU 资源分配最小单位（资源分配和独立运行的最小单位）
