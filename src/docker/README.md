@@ -169,6 +169,9 @@ docker run -d -p 3000:3000 \
 docker pull centos:7
 # 新建容器，将容器的3000 端口映射到本机的8000 端口
 docker container run -p 8000:3000 -it centos:7 /bin/bash
+
+# 查看内存占用
+top -p 5140
 ```
 
 
