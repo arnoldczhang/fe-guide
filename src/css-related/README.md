@@ -5,6 +5,7 @@
 ### 资源
 - [图片库](https://remixicon.com/)
 - [icon库](https://mp.weixin.qq.com/s/vBzp8zMZ9he-3JsuAEpoxQ)
+- [免费icon库-lineicons](https://lineicons.com/)
 - [矢量图片库](https://www.flaticon.com/)
 - [bootstrap-icons](https://icons.getbootstrap.com/)
 - [特效库](https://cssfx.dev/)
