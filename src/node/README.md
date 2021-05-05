@@ -54,8 +54,8 @@
 - [自动生成mock数据-faker.js](https://github.com/Marak/faker.js)
 - [页面截屏-dom-to-image](https://www.npmjs.com/package/dom-to-image)
 - [自动生成依赖结构-madge](https://github.com/pahen/madge)
+- [图像比对-自动化测试](https://www.npmjs.com/package/jest-image-snapshot)
 - [自动生成依赖结构-dependency-cruiser](https://github.com/sverweij/dependency-cruiser)
-
   * ```
     npm install -g verdaccio
 
@@ -563,7 +563,8 @@ throw new CommonError('abc');
 
 ## 进程线程
 
-[node集群](https://www.yuque.com/docs/share/3bed0240-047e-4a49-a989-f0a37fc28971)
+- [node集群](https://www.yuque.com/docs/share/3bed0240-047e-4a49-a989-f0a37fc28971)
+- [node多进程守护](https://zhuanlan.zhihu.com/p/100550801)
 
 ### 概念
 > 进程：CPU 资源分配最小单位（资源分配和独立运行的最小单位）

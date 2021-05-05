@@ -7,6 +7,7 @@
 * [`快捷键`](#快捷键)
 * [`安装列表`](#安装列表)
 * [`指令`](#指令)
+* [`位置`](#位置)
 
 </details>
 
@@ -69,3 +70,11 @@ shift+cmd+.
 ```cmd
 ssh-keygen -t rsa -C "zhangcheng10682@xxx.com"
 ```
+
+---
+
+## 位置
+
+**chrome-extentions**
+> ~/Library/Application Support/Google/Chrome/Default/Extensions
+

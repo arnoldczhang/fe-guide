@@ -39,6 +39,7 @@ export const defaultPostcssConfig = {
   syntax: postcssLess,
 };
 
+// https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule
 export const CSS_AT_RULE = [
   /^\s*@([\-\w]+)?keyframes\s*$/,
   '@charset',
@@ -47,6 +48,12 @@ export const CSS_AT_RULE = [
   '@import',
   '@viewport',
   '@supports',
+  '@counter-style',
+  '@namespace',
+  '@page',
+  '@document',
+  '@font-feature-values',
+  '@property',
 ];
 
 export const vueRe = /.+\.vue$/;

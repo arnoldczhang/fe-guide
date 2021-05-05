@@ -13,8 +13,9 @@
 - [技术主管之路](https://segmentfault.com/a/1190000018894283?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 - [前端早早聊](https://www.yuque.com/zaotalk/posts/enec3e)
 - [vivo商场前后端架构演进](https://mp.weixin.qq.com/s/vD9yvYNaxTQBLABik6aqNg)
-- [[2020年Web前端最新导航](https://www.cnblogs.com/qianguyihao/p/10701923.html)]
+- [2020年Web前端最新导航](https://www.cnblogs.com/qianguyihao/p/10701923.html)
 - [舒文-阿里前端成长史](https://zhuanlan.zhihu.com/p/91953428)
+- [2020前端hot](https://risingstars.js.org/2020/en)
 
 ## 目录
 <details>

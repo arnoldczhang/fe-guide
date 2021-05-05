@@ -377,7 +377,7 @@ export const getFileAuthor = (
  */
 export const getSplitSelector = (
   selector: string,
-): string[] => /[\(\)]/.test(selector) ? [selector] : selector.split(/,[↵\s+]/);
+): string[] => /[\(\)]/.test(selector) ? [selector] : selector.split(/,[↵\s]*/);
 
 /**
  * 判断是否为css原生@
@@ -427,12 +427,16 @@ export const registerPlugins = (plugins: Plugin[]) => {
  * readme模板中对各类型数据值的还原处理
  */
 const typeEval: Record<string, string> = {
-  Array: '(val => eval(val))',
-  Object: '(val => eval("(" + val + ")"))',
-  String: '(val => val)',
-  Boolean: '(val => eval(val))',
-  Number: '(val => Number(val))',
-  Function: '(val => eval("(" + val + ")"))',
+  array: '(val => eval(val))',
+  ['TSArrayType'.toLowerCase()]: '(val => eval(val))',
+  object: '(val => eval("(" + val + ")"))',
+  string: '(val => val)',
+  ['TSStringKeyword'.toLowerCase()]: '(val => val)',
+  boolean: '(val => eval(val))',
+  ['TSBooleanKeyword'.toLowerCase()]: '(val => eval(val))',
+  number: '(val => Number(val))',
+  ['TSNumberKeyword'.toLocaleLowerCase()]: '(val => Number(val))',
+  function: '(val => eval("(" + val + ")"))',
 };
 
 /**
@@ -585,9 +589,9 @@ export const genReadmeTemplate = ({
   });
   // 值转换类型
   const keyTypes = keys.map((key) => {
-    const { type } = prop.get(key);
+    const { type = '' } = prop.get(key);
     return `
-    ${key}: ${typeEval[type] || typeEval.Object}`;
+    ${key}: ${typeEval[type.toLowerCase()] || typeEval.object}`;
   });
   //
   const [pathTitle, originPath, gitlabPath] = path;

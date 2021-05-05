@@ -36,6 +36,11 @@ export interface ReplaceLessOption {
   replacements: Replacer[];
 }
 
+export interface DrawImageOption {
+  compressPath?: string;
+  node?: TreeNode;
+}
+
 export interface ErrorOption {
   fnName?: string;
   quiet?: boolean;

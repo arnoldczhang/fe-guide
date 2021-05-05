@@ -10,6 +10,7 @@
 - [vue 虚拟滚动](https://github.com/Akryum/vue-virtual-scroller#variable-size-mode)
 - [vue-codemirror](https://github.surmon.me/vue-codemirror/)
 - [vue-property-decoration](https://github.com/kaorun343/vue-property-decorator)
+- [vue全资源搜索](https://bestofvue.com/)
 
 ## 目录
 
@@ -59,7 +60,8 @@ vue ui
 
 ## 技巧
 
-[vue还能这样写](https://juejin.im/post/5eef7799f265da02cd3b82fe?utm_source=gold_browser_extension)
+- [vue还能这样写](https://juejin.im/post/5eef7799f265da02cd3b82fe?utm_source=gold_browser_extension)
+- [vue性能优化](https://mp.weixin.qq.com/s/iQwTr5T95wPflJMT87ZObg)
 
 ### 1. slot
 > vue.runtime搜索`renderSlot`
@@ -178,6 +180,13 @@ vue ui
 ```
 
 ### 6. 覆盖外部组件scoped样式
+
+- [几种方式](https://www.jb51.net/article/188038.htm)
+- [chrome89之前对deep的支持](https://segmentfault.com/q/1010000039324714)
+- vue-scoped的原理
+  - 非scoped，直接走postcss --> css-loader
+  - scoped，postcss需要加plugin【 @vue/component-compiler-utils/lib/stylePlugins/scoped.ts】
+
 ```vue
 <style lang="less" scoped>
 .aa {
@@ -344,7 +353,15 @@ export default {
 };
 ```
 
-
+### 12.functional
+```vue
+<template functional>
+  <div class="cell">
+    <div v-if="props.value" class="on"></div>
+    <section v-else class="off"></section>
+  </div>
+</template>
+```
 
 ---
 

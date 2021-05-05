@@ -5,8 +5,11 @@
 ### 资源
 - [图片库](https://remixicon.com/)
 - [icon库](https://mp.weixin.qq.com/s/vBzp8zMZ9he-3JsuAEpoxQ)
+- [免费icon库-lineicons](https://lineicons.com/)
+- [矢量图片库](https://www.flaticon.com/)
 - [bootstrap-icons](https://icons.getbootstrap.com/)
 - [特效库](https://cssfx.dev/)
+- [通用配色库](https://colorhunt.co/)
 - [nb的配色库](https://color.adobe.com/zh/create/color-wheel)
 - [渐变色配色库](https://www.bestvist.com/css-gradient)
 - [创意海报库](https://www.chuangkit.com/designtools/designindex)
@@ -22,6 +25,7 @@
 - [Web开发者需要知道的CSS Tricks](https://juejin.im/post/5aab4f985188255582521c57)
 - [CSS 常用技巧](https://juejin.im/post/5b1f41246fb9a01e725131fb)
 - [csswg](https://drafts.csswg.org/)
+- [移动端-css实现自由拖拽](https://mp.weixin.qq.com/s/gxe5QOVt9kRFWvXx-gugbg)
 
 ### 属性
 - [现代css性能优化](http://verymuch.site/2018/07/22/CSS%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%848%E4%B8%AA%E6%8A%80%E5%B7%A7/?nsukey=3eczM2FJ0JQ8aS2hEDt1CnIzmS32kXvEkjuE7I0lrEF7M8jW7k7PPZtuVxX%2BT%2FsRQqGQ7YhSV%2FicPVi%2FrRG%2BhGGQQn6y7EuHKuERI93Idzq2ziur8T8dZL3qgDT%2Bw5au3cocxOGnSC7pBI7bve9tigiinrZL8Xaac042IW%2FR%2FxqJp8Fk21Nm7YbVUczUdhD%2F)
@@ -53,7 +57,65 @@
 
 ## 常见用法
 
+### 增加权重（骚操作）
+
+```css
+/* 重复自己 */
+.foo.foo {
+
+}
+```
+
+所以说，为什么element:hover会起效果？纯粹是因为权重比element高
+
+### 选择器大小写敏感性
+
+以下值对大小写敏感：
+
+- 属性选择器的值（attr=val）
+- class
+- Id
+
+如何设置不敏感那？
+
+```css
+[class="val" i] {
+  
+}
+```
+
+### 属性选择器
+
+#aa 和 [id="aa"] 是不一样的，前者优先级更高，高到无法用堆叠class逾越，非要用id选择器的话，推荐改用属性选择器
+
+### 如何高亮
+
+新增状态标志符，比如：
+
+- .active
+
+- .checked
+
+- .selected
+
+- .on
+
+- .disabled
+
+- .open
+
+用于交互控制，但是切记，这些类目不能含有自己的样式，配合其他class使用，用于提升权重
+
+```css
+.xx.active {
+  /**/
+}
+```
+
+
+
 ### border玩法
+
 [border](https://www.w3cplus.com/css/css-tips-0904-1.html)
 
 ### 伪元素/伪类
@@ -167,6 +229,9 @@ document.link.disabled = false;
 ```
 
 ### 超出省略
+
+**重要：设置`display: flex`时，不会展示省略号，切记！！！**
+
 ```css
 /* optimize-css-assets-webpack-plugin会把-webkit-box-orient删掉，要加注释阻止 */
 .line-camp( @clamp:2 ) {

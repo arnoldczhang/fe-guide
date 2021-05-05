@@ -35,6 +35,7 @@
 * [`loader`](#loader)
 * [`require.context`](#require.context)
 * [`manifest.json`](#manifest.json)
+* [`webpack-dev-server`](#webpack-dev-server)
 * [`热更新`](#热更新)
 * [`其他`](#其他)
 
@@ -1485,4 +1486,14 @@ module.exports = utils;
 > webpack编译完成会生成这个文件，用于记录源文件和打包文件之间映射关系
 >
 > 在优化打包速度时（比如根据`Md5Hash`判断是否使用缓存文件），会用到这个配置
+
+---
+
+## webpack-dev-server
+
+### 入参
+node_modules/webpack-dev-server/lib/options.json
+
+#### writeToDisk
+默认启动 dev-server，文件放在内存中，需要加这个参数落到硬盘上
 
