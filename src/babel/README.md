@@ -6,6 +6,7 @@
 - [ast-tree字段参考](https://github.com/babel/babylon/blob/master/ast/spec.md)
 - [alloyTeam出的babel总览](http://www.alloyteam.com/2017/04/analysis-of-babel-babel-overview/)
 - https://github.com/babel/minify/packages/...
+- [语义化ast替换-gogocode](https://github.com/thx/gogocode)
 
 ## 目录
 <details>
