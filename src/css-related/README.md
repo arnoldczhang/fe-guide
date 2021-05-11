@@ -17,6 +17,7 @@
 - [配渐变色](https://www.gradientmagic.com/)
 - [生成3d字体](https://bennettfeely.com/ztext/)
 - [图片任意变换](https://trekhleb.dev/js-image-carver/)
+- [图片转换为三角形](https://rh12503.github.io/triangula/)
 
 ### 案例
 - [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
