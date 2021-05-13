@@ -1,5 +1,21 @@
 # 测试工具
 
+---
+
+## 参考
+
+- [cucumber帮助手册](http://cuketest.com/zh-cn/cucumber/concepts#feature%E5%89%A7%E6%9C%AC)
+
+---
+
+## cucumber
+
+![cucumber语法中文映射](./cucumber语法中文映射.png)
+
+
+
+---
+
 ## webdriver
 
 ---
@@ -29,6 +45,14 @@ RUN yum install -y xorg-x11-server-Xvfb gtk2-devel gtk3-devel libnotify-devel GC
 ```sh
 RUN yum install -y google-chrome-stable
 ```
+
+### mozilla
+
+```sh
+RUN yum install -y firefox
+```
+
+
 
 ### 中文字体
 
