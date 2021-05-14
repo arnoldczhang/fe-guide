@@ -27,6 +27,8 @@
 - [在线合并视频片段](https://slowapi.com/merge-videos-files/)
 - [在线翻译-js可调](https://github.com/uav4geo/LibreTranslate)
 - [在线生成随机头像-js可调用](https://multiavatar.com/)
+- [在线访问windows虚拟机](http://www.boxedwine.org/demo/)
+- [在线markdonw转ppt](https://mark.show/#/1)
 
 ---
 
