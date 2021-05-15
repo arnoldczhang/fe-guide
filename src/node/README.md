@@ -29,32 +29,57 @@
 * [`一些尝试`](#一些尝试)
 
 ## 参数
-* --async-stack-traces
-  - 示例：`node --async-stack-traces index.js`
-  - 异步堆栈跟踪
+
+**--async-stack-traces**
+> 示例：`node --async-stack-traces index.js`
+> 异步堆栈跟踪
+
+--inspect
+> 开启调试
+
+```sh
+node --inspect test.js
+```
 
 ---
 
 ## 好用的库
 - [监听文件夹变化](https://github.com/dt-fe/weekly/blob/master/59.%E7%B2%BE%E8%AF%BB%E3%80%8A%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%20Nodejs%20%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E3%80%8B.md)
+
 - [调试工具-ndb](https://zhuanlan.zhihu.com/p/45851471)
+
 - [JSON.stringify工具-fast-json-stringify](https://github.com/fastify/fast-json-stringify)
   
   - 预设字段类型，加速stringify
+  
 - [promise工具-bluebird](https://github.com/petkaantonov/bluebird)
   - V8 原生实现的 Promise 比 bluebird 这样第三方实现的 Promise 库要慢很多
   - 可以在代码中把全局的 Promise 换为 bluebird 的实现，比如
+  
 - [打包工具-ncc](https://zeit.co/blog/ncc)
+
 - [图片压缩工具-sharp](https://github.com/lovell/sharp?utm_source=75weekly&utm_medium=75weekly)
+
 - [检查库的两个版本间的diff](https://diff.intrinsic.com/)
+
 - [npm源管理工具-nrm/yrm](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+
 - [搭建私有npm工具-verdaccio](https://juejin.im/post/5cc81991f265da036d79c8ca?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
+
 - [数据校验工具 schema-typed](https://juejin.im/post/5b87c8a5e51d4538e41067a8)
+
 - [图片压缩工具-optimizt](https://github.com/funbox/optimizt)
+
 - [自动生成mock数据-faker.js](https://github.com/Marak/faker.js)
+
 - [页面截屏-dom-to-image](https://www.npmjs.com/package/dom-to-image)
+
 - [自动生成依赖结构-madge](https://github.com/pahen/madge)
+
 - [图像比对-自动化测试](https://www.npmjs.com/package/jest-image-snapshot)
+
+- [终端滚动菜单-console-menu](https://www.npmjs.com/package/console-menu)
+
 - [自动生成依赖结构-dependency-cruiser](https://github.com/sverweij/dependency-cruiser)
   * ```
     npm install -g verdaccio
@@ -70,16 +95,25 @@
 
     npm publish
     ```
+  
 - [DOM转canvas工具-html2canvas、dom-to-image](https://segmentfault.com/a/1190000019035021?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
   ```js
   global.Promise = require('bluebird');
   ```
+  
 - [pipeline-stream](https://nodejs.org/dist/latest-v10.x/docs/api/stream.html#stream_stream_pipeline_streams_callback)
+
 - [性能诊断node-clinic](https://github.com/nearform/node-clinic)
+
 - [服务器性能测试-autocannon](https://github.com/mcollina/autocannon)
+
 - [压测autocannon](https://github.com/mcollina/autocannon)
+
 - [jest可视化-majestic](https://github.com/Raathigesh/majestic)
+
 - [在线查看npm包文件-npmview](https://npmview.now.sh/)
+
+- [nvm的后继者？-nvs](https://mp.weixin.qq.com/s/Wnv6AupkNEDlSJz82krbXg)
 
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
