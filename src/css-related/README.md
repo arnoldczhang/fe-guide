@@ -899,6 +899,10 @@ border: 0 - 边框宽度为0，会渲染，占内存
 ### background-blend-mode
 [参考](https://www.zhangxinxu.com/wordpress/2020/07/css-background-blend-mode/)
 
+### display
+
+**inline-table**: 在`form-item`中，即使元素间没有 margin，但默认还是有一定不可控的间距，其实本质是个换行符，用 inline-table 可以去除掉。
+
 ### font-smoothing
 ```css
 -webkit-font-smoothing: none; # 无抗锯齿
