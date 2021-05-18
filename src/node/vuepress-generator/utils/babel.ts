@@ -11,6 +11,8 @@ import {
   getOnly,
   getOnlyNodePath,
   getOnlyStr,
+  toCamelLetter,
+  hasLineLetter,
 } from './helper';
 import {
   getRealPath,
@@ -28,7 +30,11 @@ const addComponentKeyValue = (
   value: string,
 ) => {
   map.set(key, value);
-  map.set(toLineLetter(key), value);
+  if (hasLineLetter(key)) {
+    map.set(toCamelLetter(key), value);
+  } else {
+    map.set(toLineLetter(key), value);
+  }
 };
 
 /**
@@ -230,15 +236,26 @@ const extractComponentsProperty = errorCatch((
           klass.get('typeAnnotation.typeAnnotation.type')
         );
       }
-      // @Prop({ default: /** */ }) aaa: string;
+
+      // aaa: string
+      const key = klass.get('key.name');
+      if (!key) return;
+
+      // @Prop() aaa: string;
       const argument = getOnlyNodePath(decorator.get('expression.arguments.0'));
+      if (!argument) {
+        return result.prop.set(getOnlyStr(key), {
+          type: tsType,
+          default: null,
+        });
+      }
+
+      // @Prop({ default: /** */ }) aaa: string;
       const properties = argument.get('properties');
       // { default: /** */ }
       const defaultValue = properties.find(
         pro => getOnlyStr(pro.get('key.name')) === 'default'
       );
-      const key = klass.get('key.name');
-      if (!key) return;
       if (!defaultValue) return;
       const { type } = defaultValue;
       let defaultContent: any = null;
