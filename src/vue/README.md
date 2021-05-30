@@ -10,7 +10,7 @@
 - [vue 虚拟滚动](https://github.com/Akryum/vue-virtual-scroller#variable-size-mode)
 - [vue编辑器-vue-codemirror](https://github.surmon.me/vue-codemirror/)
 - [vue-property-decoration](https://github.com/kaorun343/vue-property-decorator)
-  - [vue全资源搜索](https://bestofvue.com/)
+- [vue全资源搜索](https://bestofvue.com/)
 
 ## 目录
 
@@ -22,6 +22,7 @@
 * [`vue3`](#vue3)
 * [`一些尝试`](#一些尝试)
 * [`组件`](#组件)
+* [`坑点`](#坑点)
 
 </details>
 
@@ -619,6 +620,23 @@ export default {
 </script>
 ```
 
+---
+
+## 坑点
+
+### [this.getOptions is not a function](https://stackoverflow.com/questions/66082397/typeerror-this-getoptions-is-not-a-function)
+
+```json
+{
+	"sass-loader": "^10",
+}
+```
 
 
+
+### Error: PostCSS received undefined instead of CSS string
+
+```sh
+yarn add node-sass@4.14.1
+```
 
