@@ -119,6 +119,8 @@ node --inspect test.js
 
 - [生成多种uuid-id128](https://github.com/aarondcohen/id128)
 
+- [逻辑编排node-red](https://github.com/node-red/node-red)
+
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
