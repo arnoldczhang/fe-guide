@@ -1,4 +1,4 @@
-# 测试工具
+# 自动化测试
 
 ---
 
@@ -9,11 +9,19 @@
 
 ---
 
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`cucumber`](#cucumber)
+* [`cypress`](#cypress)
+* [`常用工具`](#常用工具)
+
+</details>
+
 ## cucumber
 
 ![cucumber语法中文映射](./cucumber语法中文映射.png)
-
-
 
 ---
 
@@ -63,9 +71,14 @@ COPY ./你的字体.ttc /usr/share/fonts/
 RUN fc-cache -vf
 ```
 
-
-
-
-
 ---
+
+## 常用工具
+
+### 屏幕录制
+[https://segmentfault.com/a/1190000020266708](https://segmentfault.com/a/1190000020266708)
+
+```js
+navigator.mediaDevices.getDisplayMedia();
+```
 
