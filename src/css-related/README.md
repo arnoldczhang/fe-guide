@@ -39,6 +39,7 @@
 - [clippy](https://bennettfeely.com/clippy/)
 - [一些新的布局方法](https://mp.weixin.qq.com/s/HYUgb8jEI-aQhbN4sBajNw)
 - [文字排布-text-combine-upright](http://www.deathghost.cn/article/css/86)
+- [纯CSS实现分栏宽度拉伸调整-resize](https://www.zhangxinxu.com/study/201903/css-idea/behavior-stretch.php)
 
 ### 其他
 - [2020css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
