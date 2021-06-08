@@ -328,6 +328,12 @@
 
 > 跨域安全列表
 
+#### Content-Security-Policy
+
+- same-origin
+- same-site
+- cross-origin
+
 ---
 
 ## http1.0
