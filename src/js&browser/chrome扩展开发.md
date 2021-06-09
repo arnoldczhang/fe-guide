@@ -9,3 +9,11 @@
 
 
 
+## 一些配置
+
+> `chrome://flags`里面
+
+- [iframe的cookie跨域问题](https://segmentfault.com/a/1190000039706607)
+
+默认对 same-site cookie有比较严格的限制，只能通过开发者选项绕过
+
