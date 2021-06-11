@@ -8,6 +8,7 @@
 - [node性能提升！！](https://zhuanlan.zhihu.com/p/50055740)
 - [node实际中的应用](https://juejin.im/post/5ca321f76fb9a05e5d09bb8a?utm_source=gold_browser_extension)
 - [NodeJS和命令行程序](https://mp.weixin.qq.com/s/-jxYbmcbdt5IvpJC0BYOjg)
+- [浏览器运行node.js](https://blog.stackblitz.com/posts/introducing-webcontainers/)
 
 ## 目录
 * [`好用的库`](#好用的库)
