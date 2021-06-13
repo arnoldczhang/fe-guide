@@ -76,7 +76,7 @@ RUN fc-cache -vf
 
 ## 常用工具
 
-### 屏幕录制
+### 录像、录屏
 [https://segmentfault.com/a/1190000020266708](https://segmentfault.com/a/1190000020266708)
 
 ```js
