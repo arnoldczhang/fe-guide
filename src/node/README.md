@@ -75,6 +75,8 @@ node --inspect test.js
 
 - [页面截屏-dom-to-image](https://www.npmjs.com/package/dom-to-image)
 
+- [页面截图2-html2canvas](https://html2canvas.hertzen.com/configuration)
+
 - [自动生成依赖结构-madge](https://github.com/pahen/madge)
 
 - [图像比对-自动化测试](https://www.npmjs.com/package/jest-image-snapshot)
