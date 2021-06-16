@@ -79,6 +79,7 @@
 * [`没有momentjs怎么办`](#没有momentjs怎么办)
 * [`newFunction创建异步函数`](#newFunction创建异步函数)
 * [`Intl-相对时间格式化`](#Intl-相对时间格式化)
+* [`canvas计算宽度`](#canvas计算宽度)
 
 **进阶 js**
 
@@ -3533,3 +3534,17 @@ import('xxModule');
 - onerror
 - 资源间依赖 + 重新加载
 
+---
+
+### canvas计算宽度
+```js
+const c=document.getElementById("myCanvas");
+const ctx=c.getContext("2d");
+ctx.font="30px Arial";
+const txt="Hello World"
+console.log(ctx.measureText(txt).width);
+```
+
+`canvasContext.font`格式请[参考](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/font)
+
+---
