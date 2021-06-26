@@ -1,5 +1,9 @@
 # webComponent
 
+## 参考
+
+- [组件库-shoelace](https://shoelace.style/components/dropdown)
+
 ## 组件库
 - [shoelace](https://shoelace.style/getting-started/installation)
 
