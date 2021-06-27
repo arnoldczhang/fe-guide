@@ -187,6 +187,7 @@
 * [`图片加载失败处理`](#图片加载失败处理)
 * [`暗黑模式`](#暗黑模式)
 * [`抗锯齿`](#抗锯齿)
+* [`css-in-js`](#css-in-js)
 
 **html**
 
@@ -3548,3 +3549,14 @@ console.log(ctx.measureText(txt).width);
 `canvasContext.font`格式请[参考](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/font)
 
 ---
+
+### css-in-js
+
+[比较css和css-in-js的性能差异](https://pustelto.com/blog/css-vs-css-in-js-perf/)
+
+结论：css-in-js 对性能影响比较大
+
+---
+
+
+
