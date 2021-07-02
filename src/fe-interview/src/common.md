@@ -80,6 +80,7 @@
 * [`newFunction创建异步函数`](#newFunction创建异步函数)
 * [`Intl-相对时间格式化`](#Intl-相对时间格式化)
 * [`canvas计算宽度`](#canvas计算宽度)
+* [图片复制到剪贴板](#图片复制到剪贴板)
 
 **进阶 js**
 
@@ -3557,6 +3558,58 @@ console.log(ctx.measureText(txt).width);
 结论：css-in-js 对性能影响比较大
 
 ---
+
+### 图片复制到剪贴板
+
+一般分两种：
+
+1. document.execCommand('Copy');
+2. ClipboardAPI
+
+`document.execCommand`已被 MDN 不推荐使用，而且调用经常会出现莫名的false，不明原因，这里主要讲下 `ClipboardAPI`;
+
+### ClipboardAPI
+
+**参考**
+
+- [Async Clipboard API](https://webkit.org/blog/10855/)
+- [web-dev-async-clipboard](https://web.dev/async-clipboard/)  （clipboard的兼容性可以在该网页最下方测试）
+- [w3c-async-clipboard](https://w3c.github.io/clipboard-apis/#async-clipboard-api)
+
+
+
+**MIME type**
+
+- "text/plain"
+- "text/html"
+- "text/uri-list"
+- "image/png"
+
+目前safari（13.1+）的图片复制到剪贴板有bug，待浏览器侧解决，未来的兼容写法可以是：
+
+```javascript
+try {
+    // Safari treats user activation differently:
+    // https://bugs.webkit.org/show_bug.cgi?id=222262.
+    navigator.clipboard.write([
+      new ClipboardItem({
+        'image/png': new Promise(async (resolve) => {
+          const svg = svgOutput.innerHTML;
+          resolve(new Blob([svg], { type: 'image/png' }));
+        }),
+      }),
+    ]);
+  } catch {
+    // Chromium
+    const svg = svgOutput.innerHTML;    
+    const blob = new Blob([svg], { type: 'image/png' });
+    navigator.clipboard.write([
+      new ClipboardItem({
+        [blob.type]: blob,
+      }),
+    ]);
+  }
+```
 
 
 
