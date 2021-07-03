@@ -11,6 +11,7 @@
 - [浏览器运行node.js](https://blog.stackblitz.com/posts/introducing-webcontainers/)
 
 ## 目录
+* [`调试参数`](#调试参数)
 * [`好用的库`](#好用的库)
 * [`require原理`](#require原理)
 * [`eventLoop`](#eventLoop)
@@ -29,18 +30,30 @@
 * [`公司架构`](#公司架构)
 * [`一些尝试`](#一些尝试)
 
-## 参数
+## 调试参数
 
 **--async-stack-traces**
+
 > 示例：`node --async-stack-traces index.js`
 > 异步堆栈跟踪
 
---inspect
+**--inspect**
+
 > 开启调试
 
 ```sh
 node --inspect test.js
 ```
+
+**--inspect-brk**
+
+> 同上，开启 chrome://inspect 调试
+
+```sh
+node --inspect-brk dist/app.js
+```
+
+
 
 ---
 
@@ -800,6 +813,12 @@ uglify-js
 ---
 
 ## 库源码解析
+
+### Async_hook
+
+[参考](https://mp.weixin.qq.com/s/08AVmJLMdMNm4yNWQwk-DA)
+
+因为 Node.js 基于事件循环的异步非阻塞 I/O 模型，发起一次异步调用，回调在之后的循环中才被调用，此时已经无法追踪到是谁发起了这个异步调用。
 
 ### ws
 [ws](https://github.com/websockets/ws)
