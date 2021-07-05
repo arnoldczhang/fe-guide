@@ -55,6 +55,7 @@
 * [`须知`](#须知)
 * [`答疑`](#答疑)
 * [`草案`](#草案)
+* [`选择器`](#选择器)
 
 </details>
 
@@ -1277,3 +1278,18 @@ img:after {
 
 ## 草案
 - [折叠屏api](https://github.com/w3c/csswg-drafts/issues/4736)
+
+---
+
+## 选择器
+
+### xxx:nth-child(n)
+
+> 表示：xxx 的父元素的第 n 个子元素，是xxx
+
+### xxx:nth-of-type(n)
+
+> 表示：假设 xxx 的 tagName 是 T，那么 xxx 父元素的第 n 个 tagName 是 T 的子元素，是xxx。
+
+
+
