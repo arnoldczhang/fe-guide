@@ -22,6 +22,8 @@
 * [`vue3`](#vue3)
 * [`一些尝试`](#一些尝试)
 * [`组件`](#组件)
+* [`修饰符`](#修饰符)
+* [`vue-property-decoration`](#vue-property-decoration)
 * [`坑点`](#坑点)
 
 </details>
@@ -639,4 +641,80 @@ export default {
 ```sh
 yarn add node-sass@4.14.1
 ```
+
+---
+
+## 修饰符
+
+[参考](https://juejin.cn/post/6981628129089421326?utm_source=gold_browser_extension#heading-1)
+
+### lazy
+
+> blur后才触发值更新
+
+```vue
+<input type="text" v-model.lazy="value">
+<div>{{value}}</div>
+
+data() {
+        return {
+            value: '222'
+        }
+    }
+
+```
+
+### trim
+
+### number
+
+### left,middle,right
+
+### keycode
+
+---
+
+## vue-property-decoration
+
+### Provider/Inject
+
+Parent.vue
+
+```vue
+// Parent.vue
+<template>
+  <div>The parents value: {{this.providedValue}}</div>
+  <child />
+</template>
+
+<script lang="ts">
+  import { Component, Vue, Provide} from 'vue-property-decorator';
+  import Child from './Child.vue';
+
+  @Component({components: Child})
+  export default class Parent extends Vue {
+    @Provide('key') private providedValue: string = 'The value';
+  }
+</script>
+```
+
+Child.vue
+
+```vue
+// Child.vue
+<template>
+  <div>The childs value: {{this.injectedValue}}</div>
+</template>
+
+<script lang="ts>
+  import { Component, Vue, Inject } from 'vue-property-decorator';
+
+  @Component
+  export default class Child extends Vue {
+    @Inject('key') private injectedValue!: string;
+  }
+</script>
+```
+
+
 
