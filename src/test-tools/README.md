@@ -76,6 +76,49 @@ RUN fc-cache -vf
 
 ## 常用工具
 
+### 测试报告
+
+- [cucumber-html-report](https://github.com/gkushang/cucumber-html-reporter)
+- [multiple-cucumber-html-report](https://www.npmjs.com/package/multiple-cucumber-html-reporter)
+
+**注：使用前记得在`package.json`里配置**
+
+```json
+{
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": true,
+    "cucumberJson": {
+      "generate": true,
+      "outputFolder": "cypress/reports",
+      "filePrefix": "",
+      "fileSuffix": ".cucumber"
+    }
+  }
+}
+```
+
+**multiple-cucumber-html-reporter用法**
+
+```js
+import * as reporter from 'multiple-cucumber-html-reporter';
+
+const options: any = {
+  jsonDir: 'cypress/cucumber-json',
+  reportPath: 'cypress/reports/cucumber_mt_report',
+  openReportInBrowser: false,
+  displayDuration: true,
+  displayReportTime: true,
+  useCDN: true,
+  staticFilePath: false,
+};
+
+reporter.generate(options);
+```
+
+
+
+
+
 ### 录像、录屏
 [https://segmentfault.com/a/1190000020266708](https://segmentfault.com/a/1190000020266708)
 
