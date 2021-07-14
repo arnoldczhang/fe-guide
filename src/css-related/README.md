@@ -18,6 +18,7 @@
 - [生成3d字体](https://bennettfeely.com/ztext/)
 - [图片任意变换](https://trekhleb.dev/js-image-carver/)
 - [图片转换为玻璃碎片效果](https://rh12503.github.io/triangula/)
+- [在线调试css特效](https://animista.net/)
 
 ### 案例
 - [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
