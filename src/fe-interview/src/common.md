@@ -80,7 +80,8 @@
 * [`newFunction创建异步函数`](#newFunction创建异步函数)
 * [`Intl-相对时间格式化`](#Intl-相对时间格式化)
 * [`canvas计算宽度`](#canvas计算宽度)
-* [图片复制到剪贴板](#图片复制到剪贴板)
+* [`图片复制到剪贴板`](#图片复制到剪贴板)
+* [`拖拽`](#拖拽)
 
 **进阶 js**
 
@@ -3610,6 +3611,12 @@ try {
     ]);
   }
 ```
+
+---
+
+### 拖拽
+
+各种类型的拖拽，参考[google-transmat](https://github.com/google/transmat)
 
 
 
