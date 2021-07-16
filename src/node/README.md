@@ -142,6 +142,8 @@ node --inspect-brk dist/app.js
   - [cron表达式示例](https://segmentfault.com/a/1190000021574315)
   - [cron表达式示例2](https://www.cnblogs.com/linjiqin/p/3178452.html)
   - [Date对象方法](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date)
+  
+- [轻量级提示框popular-message](https://github.com/nihaojob/popular-message)
 
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
