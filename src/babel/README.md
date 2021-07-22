@@ -6,6 +6,7 @@
 - [ast-tree字段参考](https://github.com/babel/babylon/blob/master/ast/spec.md)
 - [alloyTeam出的babel总览](http://www.alloyteam.com/2017/04/analysis-of-babel-babel-overview/)
 - https://github.com/babel/minify/packages/...
+- [语义化ast替换-gogocode](https://github.com/thx/gogocode)
 
 ## 目录
 <details>
@@ -19,6 +20,7 @@
 * [`babel-plugin学习`](#babel-plugin学习)
 * [`babel-macro`](#babel-macro)
 * [`babel-register`](#babel-register)
+* [`babel在线编译`](#babel在线编译)
 
 </details>
 
@@ -745,5 +747,12 @@ var ONE_DAY = 86400000;
 - presets配置同babel配置
 - 请用于开发环境
 - 示例参考[ssr](./babel-register.js)，或[完整示例](https://flaviocopes.com/react-server-side-rendering)
+
+---
+
+## babel在线编译
+> 具体效果[参考](./sandbox.html)
+
+主要通过`@babel/plugin-transform-modules-commonjs`将 `ESM`语法转为`CommonJS`语法。
 
 ---

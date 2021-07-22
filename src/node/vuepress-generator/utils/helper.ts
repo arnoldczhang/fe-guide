@@ -110,6 +110,13 @@ export const isNullStr = (val: any): boolean =>
 ;
 
 /**
+ * 去重
+ * @param arr
+ * @returns
+ */
+export const deduplicate = <T=any>(arr: T[]) => [...new Set(arr || [])];
+
+/**
  * 无内容或内容为类空字符
  * @param content
  */
@@ -162,12 +169,29 @@ export const getOnlyStr = (
 ): string => String(getOnly(value));
 
 /**
+ * 判断是否是-形式
+ * @param letter
+ * @returns
+ */
+export const hasLineLetter = (
+  letter: string,
+): boolean => letter.indexOf('-') > -1;
+
+/**
  * 驼峰转-
  * @param letter
  */
 export const toLineLetter = (
   letter: string,
 ): string => letter.replace(/(.)([A-Z])/g, '$1-$2').toLowerCase();
+
+/**
+ * -转驼峰
+ * @param letter
+ */
+export const toCamelLetter = (
+  letter: string,
+): string => letter.replace(/(?:^(\w)|-(\w))/g, (m, $1, $2 = $1) => $2.toUpperCase());
 
 /**
  * 解析成vuepress所需要的默认结构
@@ -450,7 +474,31 @@ ${author.map((au) => {
     return `<a target="_blank" style="margin-right: 10px" href="=${au}" >
       <img style="height: 16px;margin-right: 5px" src=""/>${au}
 </a>`;
-  }).join('\n')}`;
+  }).join('\n')}
+  
+  ---`;
+
+/**
+ * 生成预览图
+ * @param avatar
+ */
+export const genAvatar = (
+  avatar: string,
+) => `### 预览图
+<img src="${avatar}"/>
+
+---`;
+
+/**
+ * 生成组件描述
+ * @param avatar
+ */
+export const genDesc = (
+  desc: string,
+) => `### 组件描述
+> ${desc}
+
+---`;
 
 /**
  * 获取模板出现的行数
@@ -504,15 +552,17 @@ ${[...parent].map(({
   }) => {
     const line = getUsageLine(usage, location);
     const href = gitlabPath ? `${gitlabPath}#${line}` : originPath;
+    const unUsed = Object.keys(usage).every(key => !usage[key]);
+    const msg = '组件没用到或者以动态components方式使用';
     return `
 ### <a target="_blank" href="${href}">${relativePath}</a>
 
 \`\`\`html
 ${
-  Object.keys(usage).map((key) => {
+  unUsed ? msg : Object.keys(usage).map((key) => {
     const value = usage[key];
     if (value && value.size) {
-      return [...value].map(val => val || '组件没用到或者以动态components方式使用').join('\n');
+      return [...value].map(val => val || msg).join('\n');
     }
     return '';
   }).join('\n')}
@@ -534,7 +584,12 @@ export const genReadmeTemplate = ({
   localConfig,
   parent,
 }: ReadmeInput) => {
-  const { default: defaultProp = {} } = localConfig;
+  const {
+    default: defaultProp = {},
+    avatar,
+    description,
+    nameCh,
+  } = localConfig;
   const { prop, author = [] } = compInfo;
   const keys = [...prop.keys()];
   const singleQuotaRe = /^['"]/;
@@ -595,14 +650,18 @@ export const genReadmeTemplate = ({
   });
   //
   const [pathTitle, originPath, gitlabPath] = path;
-  return `# ${title}
+  return `# ${nameCh || title}
 
 ## 我是谁
 <a target="_blank" href="${gitlabPath || originPath}">${pathTitle}</a>
 
+---
+
 ${genAuthorTemplate(author)}
 
----
+${avatar ? genAvatar(avatar) : ''}
+
+${description ? genDesc(description) : ''}
 
 ## 试一试
 <div style="position: relative">

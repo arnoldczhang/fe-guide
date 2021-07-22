@@ -15,8 +15,11 @@
 * [`基础类型`](#基础类型)
 * [`常用语法`](#常用语法)
 * [`SOLID`](#SOLID)
+* [`编译器`](#编译器)
 
 </details>
+
+---
 
 ## 介绍
 
@@ -72,6 +75,7 @@ b = a; // 这样不行
 
 ### enum
 > enum 枚举名称{ key1=value1, key2=value2 }
+>
 > 1. key不能是数字
 
 ```ts
@@ -567,3 +571,25 @@ class CreateUserController extends BaseController {
 ```
 
 ### D: Dependency Inversion Principle
+
+
+
+---
+
+## 编译器
+
+[参考](https://mp.weixin.qq.com/s/nLG43aDSomGjCS5iIT8Gmg)
+
+```js
+import * as ts from "TypeScript";
+
+const program = ts.createProgram(fileNames, options); // 创建一个 program 应用
+
+const { emitSkipped, diagnostics } = program.emit();
+
+```
+
+
+
+
+

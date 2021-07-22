@@ -16,6 +16,9 @@
 - [卡通的网站](https://uglyduck.ca/articles/)
 - [配渐变色](https://www.gradientmagic.com/)
 - [生成3d字体](https://bennettfeely.com/ztext/)
+- [图片任意变换](https://trekhleb.dev/js-image-carver/)
+- [图片转换为玻璃碎片效果](https://rh12503.github.io/triangula/)
+- [在线调试css特效](https://animista.net/)
 
 ### 案例
 - [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
@@ -26,6 +29,7 @@
 - [CSS 常用技巧](https://juejin.im/post/5b1f41246fb9a01e725131fb)
 - [csswg](https://drafts.csswg.org/)
 - [移动端-css实现自由拖拽](https://mp.weixin.qq.com/s/gxe5QOVt9kRFWvXx-gugbg)
+- [10个后台管理模板](https://segmentfault.com/a/1190000038323430)
 
 ### 属性
 - [现代css性能优化](http://verymuch.site/2018/07/22/CSS%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%848%E4%B8%AA%E6%8A%80%E5%B7%A7/?nsukey=3eczM2FJ0JQ8aS2hEDt1CnIzmS32kXvEkjuE7I0lrEF7M8jW7k7PPZtuVxX%2BT%2FsRQqGQ7YhSV%2FicPVi%2FrRG%2BhGGQQn6y7EuHKuERI93Idzq2ziur8T8dZL3qgDT%2Bw5au3cocxOGnSC7pBI7bve9tigiinrZL8Xaac042IW%2FR%2FxqJp8Fk21Nm7YbVUczUdhD%2F)
@@ -37,6 +41,7 @@
 - [clippy](https://bennettfeely.com/clippy/)
 - [一些新的布局方法](https://mp.weixin.qq.com/s/HYUgb8jEI-aQhbN4sBajNw)
 - [文字排布-text-combine-upright](http://www.deathghost.cn/article/css/86)
+- [纯CSS实现分栏宽度拉伸调整-resize](https://www.zhangxinxu.com/study/201903/css-idea/behavior-stretch.php)
 
 ### 其他
 - [2020css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
@@ -52,6 +57,7 @@
 * [`须知`](#须知)
 * [`答疑`](#答疑)
 * [`草案`](#草案)
+* [`选择器`](#选择器)
 
 </details>
 
@@ -897,6 +903,10 @@ border: 0 - 边框宽度为0，会渲染，占内存
 ### background-blend-mode
 [参考](https://www.zhangxinxu.com/wordpress/2020/07/css-background-blend-mode/)
 
+### display
+
+**inline-table**: 在`form-item`中，即使元素间没有 margin，但默认还是有一定不可控的间距，其实本质是个换行符，用 inline-table 可以去除掉。
+
 ### font-smoothing
 ```css
 -webkit-font-smoothing: none; # 无抗锯齿
@@ -1270,3 +1280,18 @@ img:after {
 
 ## 草案
 - [折叠屏api](https://github.com/w3c/csswg-drafts/issues/4736)
+
+---
+
+## 选择器
+
+### xxx:nth-child(n)
+
+> 表示：xxx 的父元素的第 n 个子元素，是xxx
+
+### xxx:nth-of-type(n)
+
+> 表示：假设 xxx 的 tagName 是 T，那么 xxx 父元素的第 n 个 tagName 是 T 的子元素，是xxx。
+
+
+

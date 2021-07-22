@@ -44,6 +44,8 @@ import {
   isDeclaration,
   genReadmeTemplate,
   toLineLetter,
+  toCamelLetter,
+  hasLineLetter,
   genVueResult,
   genVuepressCompName,
   genVuepressCompTitle,
@@ -54,6 +56,7 @@ import {
   checkConfigContentValid,
   getFileAuthor,
   genConfigStruct,
+  deduplicate,
 } from './helper';
 import {
   ImportDeclaration,
@@ -468,25 +471,45 @@ export const updateComponentUsageFromImport = errorCatch((
     if (!vueRe.test(key)) return;
     const {
       import: importDependency,
+      component,
       template,
       location,
     } = pathCach.get(key) as VueResult;
-    // 如果当前组件有import，或有全局组件
-    if (importDependency.size || globalCompSize) {
-      [...globalCompCach.keys(), ...importDependency.keys()].forEach((dKey) => {
+    // 如果当前组件有引用外部组件，或至少有全局组件
+    if (component.size || globalCompSize) {
+      // 记录已经统计过的组件名
+      const added: string[] = [];
+      // 全局+文件组件名去重
+      const dedupKeys = deduplicate([
+        ...globalCompCach.keys(),
+        ...component.keys(),
+      ]);
+
+      dedupKeys.forEach((dKey) => {
+        if (added.includes(dKey)) {
+          return;
+        }
+        // 当前文件引用的子组件，优先级高于同名全局组件
         const compPath = importDependency.get(dKey) || globalCompCach.get(dKey);
         // 这里只处理.vue文件的依赖，其他不管
         if (!vueRe.test(compPath)) return;
         const originValue = compCach.get(compPath) || genCompResult();
-        const lineDKey = toLineLetter(dKey);
+        const lineDKey = hasLineLetter(dKey) ? toCamelLetter(dKey) : toLineLetter(dKey);
         const tpl = template.get(dKey);
         const lineTpl = template.get(lineDKey);
-        // FIXME 这块还要思考下
-        // 如果当前.vue中没有使用到import的组件，也应该标识出来
-        if (!tpl && !lineTpl) {
-          if (globalCompCach.has(dKey) || globalCompCach.has(lineDKey)) {
-            return;
-          }
+        added.push(dKey);
+        added.push(lineDKey);
+
+        const unUsed = !tpl && !lineTpl;
+        const isCurrComp = component.has(dKey) || component.has(lineDKey);
+        const isGlobal = globalCompCach.has(dKey) || globalCompCach.has(lineDKey);
+        /**
+         * 如果当前.vue中没有使用到 import 的组件，
+         * 而这个组件是全局组件，则视为正常（全局组件不用很正常），
+         * 否则就要记录下来，视为当前文件的冗余组件引入
+         */
+        if (unUsed && !isCurrComp && isGlobal) {
+          return;
         }
 
         originValue.add({

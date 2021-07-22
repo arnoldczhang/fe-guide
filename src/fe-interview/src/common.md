@@ -79,6 +79,9 @@
 * [`没有momentjs怎么办`](#没有momentjs怎么办)
 * [`newFunction创建异步函数`](#newFunction创建异步函数)
 * [`Intl-相对时间格式化`](#Intl-相对时间格式化)
+* [`canvas计算宽度`](#canvas计算宽度)
+* [`图片复制到剪贴板`](#图片复制到剪贴板)
+* [`拖拽`](#拖拽)
 
 **进阶 js**
 
@@ -186,6 +189,7 @@
 * [`图片加载失败处理`](#图片加载失败处理)
 * [`暗黑模式`](#暗黑模式)
 * [`抗锯齿`](#抗锯齿)
+* [`css-in-js`](#css-in-js)
 
 **html**
 
@@ -3532,4 +3536,87 @@ import('xxModule');
 
 - onerror
 - 资源间依赖 + 重新加载
+
+---
+
+### canvas计算宽度
+```js
+const c=document.getElementById("myCanvas");
+const ctx=c.getContext("2d");
+ctx.font="30px Arial";
+const txt="Hello World"
+console.log(ctx.measureText(txt).width);
+```
+
+`canvasContext.font`格式请[参考](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/font)
+
+---
+
+### css-in-js
+
+[比较css和css-in-js的性能差异](https://pustelto.com/blog/css-vs-css-in-js-perf/)
+
+结论：css-in-js 对性能影响比较大
+
+---
+
+### 图片复制到剪贴板
+
+一般分两种：
+
+1. document.execCommand('Copy');
+2. ClipboardAPI
+
+`document.execCommand`已被 MDN 不推荐使用，而且调用经常会出现莫名的false，不明原因，这里主要讲下 `ClipboardAPI`;
+
+### ClipboardAPI
+
+**参考**
+
+- [Async Clipboard API](https://webkit.org/blog/10855/)
+- [web-dev-async-clipboard](https://web.dev/async-clipboard/)  （clipboard的兼容性可以在该网页最下方测试）
+- [w3c-async-clipboard](https://w3c.github.io/clipboard-apis/#async-clipboard-api)
+
+
+
+**MIME type**
+
+- "text/plain"
+- "text/html"
+- "text/uri-list"
+- "image/png"
+
+目前safari（13.1+）的图片复制到剪贴板有bug，待浏览器侧解决，未来的兼容写法可以是：
+
+```javascript
+try {
+    // Safari treats user activation differently:
+    // https://bugs.webkit.org/show_bug.cgi?id=222262.
+    navigator.clipboard.write([
+      new ClipboardItem({
+        'image/png': new Promise(async (resolve) => {
+          const svg = svgOutput.innerHTML;
+          resolve(new Blob([svg], { type: 'image/png' }));
+        }),
+      }),
+    ]);
+  } catch {
+    // Chromium
+    const svg = svgOutput.innerHTML;    
+    const blob = new Blob([svg], { type: 'image/png' });
+    navigator.clipboard.write([
+      new ClipboardItem({
+        [blob.type]: blob,
+      }),
+    ]);
+  }
+```
+
+---
+
+### 拖拽
+
+各种类型的拖拽，参考[google-transmat](https://github.com/google/transmat)
+
+
 

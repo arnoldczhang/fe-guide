@@ -351,6 +351,5 @@ export const detectDeepWithScoped = errorCatch(async (
       ], styleContent);
     }));
   }));
-  debugger;
   return result;
 });

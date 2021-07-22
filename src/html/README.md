@@ -2,6 +2,7 @@
 
 ## 参考
 1. [html所有语义标签](https://blog.csdn.net/microcosmv/article/details/51644998)
+2. [html原生属性/元素](https://markodenic.com/html-tips/)
 
 ## 目录
 <details>
@@ -11,6 +12,7 @@
 * [`src和href`](#src和href)
 * [`rel`](#rel)
 * [`移动端开发经验`](#移动端开发经验)
+* [`html5`](#html5)
 
 </details>
 
@@ -70,7 +72,7 @@ IE8Compat：近乎标准模式
   src="low-density-photo.jpg"
   srcset="small-photo.jpg 480w, big-photo.jpg 1024w, high-density-photo.jpg 1024w 2x"
 />
-``` 
+```
 
 **类似srcset**
 
@@ -212,3 +214,17 @@ document.querySelectorAll('link[title]').forEach((link) => {
 [参考](./移动端开发经验.md)
 
 ---
+
+## html5
+
+### 校验元素内拼写
+
+> 拼写错误的元素，默认底部会有弯曲或点点的红色线。
+
+```html
+<!-- 不校验拼写 -->
+<input spellcheck="false"/>
+```
+
+
+

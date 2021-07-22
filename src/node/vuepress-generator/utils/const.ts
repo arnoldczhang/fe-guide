@@ -34,7 +34,7 @@ export const babelConfig = {
   ],
 };
 
-export const defaultPostcssConfig = {
+export const defaultPostcssConfig: any = {
   from: undefined,
   syntax: postcssLess,
 };

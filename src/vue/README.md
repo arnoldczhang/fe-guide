@@ -5,10 +5,10 @@
 - [vue2.0开发须知](https://juejin.im/post/5d9d386fe51d45784d3f8637)
 - [一份超级详细的 Vue-cli3.0 使用教程](http://obkoro1.com/web_accumulate/accumulate/tool/%E4%B8%80%E4%BB%BD%E8%B6%85%E7%BA%A7%E8%AF%A6%E7%BB%86%E7%9A%84Vue-cli3.0%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B.html#node%E7%89%88%E6%9C%AC%E8%A6%81%E6%B1%82%EF%BC%9A)
 - [ts + vue](https://segmentfault.com/a/1190000011878086?utm_source=tag-newest)
-- [codemirror](https://codemirror.net/doc/manual.html)
+- [编辑器-editor-codemirror](https://codemirror.net/doc/manual.html)
 - [深度使用vue](https://juejin.im/post/6862560722531352583?utm_source=gold_browser_extension)
 - [vue 虚拟滚动](https://github.com/Akryum/vue-virtual-scroller#variable-size-mode)
-- [vue-codemirror](https://github.surmon.me/vue-codemirror/)
+- [vue编辑器-vue-codemirror](https://github.surmon.me/vue-codemirror/)
 - [vue-property-decoration](https://github.com/kaorun343/vue-property-decorator)
 - [vue全资源搜索](https://bestofvue.com/)
 
@@ -22,6 +22,9 @@
 * [`vue3`](#vue3)
 * [`一些尝试`](#一些尝试)
 * [`组件`](#组件)
+* [`修饰符`](#修饰符)
+* [`vue-property-decoration`](#vue-property-decoration)
+* [`坑点`](#坑点)
 
 </details>
 
@@ -619,6 +622,99 @@ export default {
 </script>
 ```
 
+---
+
+## 坑点
+
+### [this.getOptions is not a function](https://stackoverflow.com/questions/66082397/typeerror-this-getoptions-is-not-a-function)
+
+```json
+{
+	"sass-loader": "^10",
+}
+```
+
+
+
+### Error: PostCSS received undefined instead of CSS string
+
+```sh
+yarn add node-sass@4.14.1
+```
+
+---
+
+## 修饰符
+
+[参考](https://juejin.cn/post/6981628129089421326?utm_source=gold_browser_extension#heading-1)
+
+### lazy
+
+> blur后才触发值更新
+
+```vue
+<input type="text" v-model.lazy="value">
+<div>{{value}}</div>
+
+data() {
+        return {
+            value: '222'
+        }
+    }
+
+```
+
+### trim
+
+### number
+
+### left,middle,right
+
+### keycode
+
+---
+
+## vue-property-decoration
+
+### Provider/Inject
+
+Parent.vue
+
+```vue
+// Parent.vue
+<template>
+  <div>The parents value: {{this.providedValue}}</div>
+  <child />
+</template>
+
+<script lang="ts">
+  import { Component, Vue, Provide} from 'vue-property-decorator';
+  import Child from './Child.vue';
+
+  @Component({components: Child})
+  export default class Parent extends Vue {
+    @Provide('key') private providedValue: string = 'The value';
+  }
+</script>
+```
+
+Child.vue
+
+```vue
+// Child.vue
+<template>
+  <div>The childs value: {{this.injectedValue}}</div>
+</template>
+
+<script lang="ts>
+  import { Component, Vue, Inject } from 'vue-property-decorator';
+
+  @Component
+  export default class Child extends Vue {
+    @Inject('key') private injectedValue!: string;
+  }
+</script>
+```
 
 
 

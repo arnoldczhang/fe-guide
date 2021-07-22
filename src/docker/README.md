@@ -177,3 +177,23 @@ top -p 5140
 
 ### sonarqube
 https://www.testim.io/blog/sonarqube-javascript/
+
+
+
+---
+
+
+
+## centos命令
+
+```sh
+# 查看系统版本
+cat /etc/os-release
+
+# 安装xrandr
+yum install xorg-x11-server-utils.x86_64
+
+# 通过 Xvfb 设置屏幕分辨率
+Xvfb -screen 0 1536x960x16 :99 &
+```
+
