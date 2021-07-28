@@ -370,8 +370,11 @@ export default {
 
 ## vue3
 
+### 参考
+
 - [vue3-reactive](https://zhuanlan.zhihu.com/p/146097763)
 - [vue3-compiler](https://zhuanlan.zhihu.com/p/150732926)
+- [mini-vue3 by Evan You](https://codepen.io/collection/DkxpbE)
 
 ### compiler
 
