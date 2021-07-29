@@ -20,7 +20,7 @@
 - [图片转换为玻璃碎片效果](https://rh12503.github.io/triangula/)
 - [在线调试css特效](https://animista.net/)
 
-### 案例
+### 各种案例
 - [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
 - [前端换肤参考](https://blog.souche.com/untitled-17/)
 - [前端换肤-css变量方法](https://www.cnblogs.com/leiting/p/11203383.html)
@@ -31,7 +31,7 @@
 - [移动端-css实现自由拖拽](https://mp.weixin.qq.com/s/gxe5QOVt9kRFWvXx-gugbg)
 - [10个后台管理模板](https://segmentfault.com/a/1190000038323430)
 
-### 属性
+### 各种属性
 - [现代css性能优化](http://verymuch.site/2018/07/22/CSS%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%848%E4%B8%AA%E6%8A%80%E5%B7%A7/?nsukey=3eczM2FJ0JQ8aS2hEDt1CnIzmS32kXvEkjuE7I0lrEF7M8jW7k7PPZtuVxX%2BT%2FsRQqGQ7YhSV%2FicPVi%2FrRG%2BhGGQQn6y7EuHKuERI93Idzq2ziur8T8dZL3qgDT%2Bw5au3cocxOGnSC7pBI7bve9tigiinrZL8Xaac042IW%2FR%2FxqJp8Fk21Nm7YbVUczUdhD%2F)
 - [5个新css属性](https://zhuanlan.zhihu.com/p/40736286)
 - [flex](https://mp.weixin.qq.com/s/WtGzVMzh1RupixD_4474mg)
@@ -913,6 +913,17 @@ border: 0 - 边框宽度为0，会渲染，占内存
 
 -webkit-font-smoothing: antialiased # 抗锯齿
 ```
+
+### i18n
+
+```css
+# 全站中繁体切换
+font-variant-east-asian: traditional;
+```
+
+
+
+
 
 ---
 
