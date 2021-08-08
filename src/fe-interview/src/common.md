@@ -3270,6 +3270,14 @@ html[theme='dark-mode'] img {
 }
 ```
 
+**其他反转**
+
+```css
+html[theme='dark-mode'] {
+  filter: invert(1) contrast(0.95) saturate(0.5) hue-rotate(180deg);
+}
+```
+
 
 
 ---
