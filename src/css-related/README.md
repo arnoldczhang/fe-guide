@@ -59,6 +59,7 @@
 * [`答疑`](#答疑)
 * [`草案`](#草案)
 * [`选择器`](#选择器)
+* [`伪元素`](伪元素)
 
 </details>
 
@@ -924,8 +925,6 @@ font-variant-east-asian: traditional;
 
 
 
-
-
 ---
 
 ## 布局
@@ -1304,6 +1303,21 @@ img:after {
 ### xxx:nth-of-type(n)
 
 > 表示：假设 xxx 的 tagName 是 T，那么 xxx 父元素的第 n 个 tagName 是 T 的子元素，是xxx。
+
+---
+
+## 伪元素
+
+### input-placeholder
+
+```css
+input::placeholder {
+  font-family: PingFangSC-Regular;
+  color: #8E8E90;
+  font-size: 12px;
+  font-weight: normal;
+}
+```
 
 
 
