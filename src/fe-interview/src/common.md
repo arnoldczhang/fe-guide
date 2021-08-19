@@ -980,7 +980,7 @@ Promise.all2 = function(promises) {
 #### 方式一
 
 ```js
-const falttenArray = (arr, result = []) => {
+const flattenArray = (arr, result = []) => {
   arr.forEach((item) => {
     if (Array.isArray(item)) {
       falttenArray(item, result)
