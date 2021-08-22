@@ -34,6 +34,7 @@
 - [在线文字代码转图片](https://text2image.jaychen.fun/)
 - [在线生成同一个短链](https://zws.im/)
 - [在线调试css特效](https://animista.net/)
+- [在线画计算机示意图](https://honzaap.github.io/Systemizer/)
 - [docker搭建自己的文档系统](https://github.com/star7th/showdoc)
 
 ---

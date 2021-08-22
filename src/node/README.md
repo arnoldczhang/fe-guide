@@ -9,6 +9,7 @@
 - [node实际中的应用](https://juejin.im/post/5ca321f76fb9a05e5d09bb8a?utm_source=gold_browser_extension)
 - [NodeJS和命令行程序](https://mp.weixin.qq.com/s/-jxYbmcbdt5IvpJC0BYOjg)
 - [浏览器运行node.js](https://blog.stackblitz.com/posts/introducing-webcontainers/)
+- [最小化类node运行时-txiki](https://github.com/saghul/txiki.js)
 
 ## 目录
 * [`调试参数`](#调试参数)
