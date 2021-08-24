@@ -696,6 +696,8 @@ data() {
 
 ### Provider/Inject
 
+注：provide的对象，未实现响应式（即变动无法更新inject的地方）
+
 Parent.vue
 
 ```vue
