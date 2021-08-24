@@ -9,6 +9,7 @@
 - [90% 的前端都会踩的坑](https://juejin.im/post/5dfb3e73f265da33b12ea9d3?utm_source=gold_browser_extension#heading-16)
 - [javascript-questions](https://github.com/lydiahallie/javascript-questions/blob/master/zh-CN/README-zh_CN.md)
 - [我在近期求职中遇到的前端面试问题及其解法](https://mp.weixin.qq.com/s/vFTAoSDKcjrgf34vRARyKw)
+- [钉钉前端题](https://juejin.cn/post/6987549240436195364)
 
 ## 目录
 
@@ -979,7 +980,7 @@ Promise.all2 = function(promises) {
 #### 方式一
 
 ```js
-const falttenArray = (arr, result = []) => {
+const flattenArray = (arr, result = []) => {
   arr.forEach((item) => {
     if (Array.isArray(item)) {
       falttenArray(item, result)
@@ -3267,6 +3268,14 @@ html[theme='dark-mode'] {
 /* 以上还会反转图片颜色，如果想避免此效果，需要对图片再做反转 */
 html[theme='dark-mode'] img {
     filter: invert(1) hue-rotate(180deg);
+}
+```
+
+**其他反转**
+
+```css
+html[theme='dark-mode'] {
+  filter: invert(1) contrast(0.95) saturate(0.5) hue-rotate(180deg);
 }
 ```
 

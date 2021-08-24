@@ -356,7 +356,7 @@ export default {
 };
 ```
 
-### 12.functional
+### 12. functional
 ```vue
 <template functional>
   <div class="cell">
@@ -366,12 +366,30 @@ export default {
 </template>
 ```
 
+### 13. .native
+
+有些组件未绑定你需要的事件（比如el-input，默认没有绑定keyup事件），则可以通过.native方式直接在元素上绑定
+
+```vue
+<template>
+	<!-- 监听键盘的【下】键 -->
+  <el-input
+    @keyup.down.native="handlePressDown"
+  ></el-input>
+</template>
+```
+
+
+
 ---
 
 ## vue3
 
+### 参考
+
 - [vue3-reactive](https://zhuanlan.zhihu.com/p/146097763)
 - [vue3-compiler](https://zhuanlan.zhihu.com/p/150732926)
+- [mini-vue3 by Evan You](https://codepen.io/collection/DkxpbE)
 
 ### compiler
 
@@ -677,6 +695,8 @@ data() {
 ## vue-property-decoration
 
 ### Provider/Inject
+
+注：provide的对象，未实现响应式（即变动无法更新inject的地方）
 
 Parent.vue
 

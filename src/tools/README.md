@@ -4,6 +4,7 @@
 - [程序员专用搜索引擎](https://quickref.dev/)
 - [在线绘图](https://app.diagrams.net/)
 - [短信在线接收](https://www.materialtools.com/?page=4)
+- [在线生成wifi二维码](https://wificard.io/)
 - [任意文件格式在线转换](http://www.alltoall.net/)
 - [在线配色库](https://color.adobe.com/zh/create/color-wheel)
 - [在线文字提取](https://web.baimiaoapp.com/)
@@ -33,6 +34,8 @@
 - [在线文字代码转图片](https://text2image.jaychen.fun/)
 - [在线生成同一个短链](https://zws.im/)
 - [在线调试css特效](https://animista.net/)
+- [在线画计算机示意图](https://honzaap.github.io/Systemizer/)
+- [docker搭建自己的文档系统](https://github.com/star7th/showdoc)
 
 ---
 
@@ -73,3 +76,6 @@
 
 ---
 
+## 团队协作工具
+
+- [cornerstone](https://www.cornerstone365.cn/cooperation.html)

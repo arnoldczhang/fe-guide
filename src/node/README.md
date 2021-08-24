@@ -9,6 +9,7 @@
 - [node实际中的应用](https://juejin.im/post/5ca321f76fb9a05e5d09bb8a?utm_source=gold_browser_extension)
 - [NodeJS和命令行程序](https://mp.weixin.qq.com/s/-jxYbmcbdt5IvpJC0BYOjg)
 - [浏览器运行node.js](https://blog.stackblitz.com/posts/introducing-webcontainers/)
+- [最小化类node运行时-txiki](https://github.com/saghul/txiki.js)
 
 ## 目录
 * [`调试参数`](#调试参数)
@@ -144,6 +145,16 @@ node --inspect-brk dist/app.js
   - [Date对象方法](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date)
   
 - [轻量级提示框popular-message](https://github.com/nihaojob/popular-message)
+
+- [富文本编辑器slate](https://github.com/ianstormtaylor/slate)
+
+- [类型安全的node服务-farrowJs（兼容koa）](https://github.com/farrow-js/farrow)
+
+- [前端数据压缩-**fflate**](https://www.npmjs.com/package/fflate)
+
+- [数据库orm-sequelize](https://www.bookstack.cn/read/sequelize-5.x-zh/spilt.7.transactions.md)
+
+- [前端操作cookie-js-cookie](https://github.com/js-cookie/js-cookie)
 
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
