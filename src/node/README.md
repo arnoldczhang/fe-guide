@@ -605,6 +605,8 @@ function promiseRejectHandler(type, promise, reason) {
 
 ## 最佳实践
 
+[最佳实践](./最佳实践.md)
+
 ### 服务器瓶颈
 * CPU
 * 内存
