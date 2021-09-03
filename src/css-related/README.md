@@ -142,8 +142,9 @@
 - :link
 - :first-child
 
-
 **伪元素**
+
+- [伪元素各种用法-1](https://echeverra.cn/2021/08/06/css-content/)
 
 ::Pseudo-elements
 元素内容的丰富
