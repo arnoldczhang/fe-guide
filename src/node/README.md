@@ -829,6 +829,15 @@ uglify-js
 
 ## 库源码解析
 
+### carlo
+> node内置浏览器
+
+比较坑，每次都会自动下载 chrome，浪费时间，推荐保存下载结果，后面再手动把 chrome 拷进去。
+
+目录在 /carlo/lib/.local-data/（记得 shift + cmd + . 显示隐藏文件）
+
+把 mac-62892 和 profile-62892 拷进去
+
 ### Async_hook
 
 [参考](https://mp.weixin.qq.com/s/08AVmJLMdMNm4yNWQwk-DA)
@@ -1141,10 +1150,10 @@ RSS(Resident Set Size): 常驻内存占用
 
 #### mac
 ```sh
-#htop
+# htop
 htop -p 进程的pid
 
-#top
+# top
 top -pid 69608
 ```
 
