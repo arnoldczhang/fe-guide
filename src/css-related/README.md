@@ -925,6 +925,24 @@ border: 0 - 边框宽度为0，会渲染，占内存
 font-variant-east-asian: traditional;
 ```
 
+### filter
+
+[巧用CSS filter，让你的网站更加酷炫！](https://juejin.cn/post/7002829486806794276)
+
+```css
+# 电影特效
+@keyframes fade-away {
+    30%{
+        filter: brightness(1);
+    }
+    100%{
+        filter: brightness(0);
+    }
+}
+```
+
+
+
 
 
 ---
