@@ -55,6 +55,7 @@
 - [otplib.js-单次验证](https://www.npmjs.com/package/otplib)
 - [skia-服务端画canvas](https://github.com/samizdatco/skia-canvas)
 - [自动生成mock数据-faker.js](https://github.com/Marak/faker.js)
+- [iDraw.js-网页绘图](https://idraw.js.org/docs/en/guide/quickstart.html#the-first-example)
 
 ---
 
