@@ -38,6 +38,7 @@
 - [docker搭建自己的文档系统](https://github.com/star7th/showdoc)
 - [在线数据转可视化图表](https://rawgraphs.io/)
 - [程序员在线各种资源](https://www.thosefree.com/)
+  - [在线可视化看代码执行过程](https://pythontutor.com/visualize.html#mode=edit)
 
 ---
 
