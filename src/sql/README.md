@@ -17,3 +17,14 @@ from s in studentList
 where s.Age > 12 && s.Age < 20
 select s;
 ```
+
+---
+
+## 常用命令
+
+### 碎片整理
+
+```sql
+alter table TABLE_NAME engine=innodb;
+```
+
