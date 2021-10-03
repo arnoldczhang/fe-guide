@@ -1,6 +1,9 @@
 # sql
 
-## sql执行顺序
+## 概念
+
+### sql执行顺序
+
 1. FROM + JOIN
 2. WHERE
 3. GROUP BY
@@ -9,7 +12,14 @@
 6. ORDER BY
 7. LIMIT
 
-## linq执行顺序
+### order by优先级
+
+**就近原则**
+
+order by a,b,c desc，表示：先按a排，再按b，然后c。
+
+### linq执行顺序
+
 FROM...WHERE...SELECT
 
 ```sql
