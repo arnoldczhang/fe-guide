@@ -4,6 +4,7 @@
 - [自定义eslint](https://mp.weixin.qq.com/s/zDTRB9BQFbzj6SeAM7mVcA)
 - [基于husky做的代码增量eslint](https://juejin.im/post/6865101730166767623?utm_source=gold_browser_extension)
 - [eslint有哪些规则](https://www.cnblogs.com/fqh123/p/9967771.html)
+- [eslint插件和babel的异同](https://mp.weixin.qq.com/s/73TYS14n_J4nRZrj9pCt0g)
 
 ## 原理
 
