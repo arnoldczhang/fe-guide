@@ -500,7 +500,7 @@ unhandledRejection
 #### 处理
 ```js
 process.on('unhandledRejection', (reason, p) => {
-    console.log('Unhandled Rejection at:', p, 'reason:', reason);
+  console.log('Unhandled Rejection at:', p, 'reason:', reason);
 });
 ```
 
@@ -770,7 +770,7 @@ pm2 start test.js -i 2
 ## 打印日志
 - [node如何打印日志](https://juejin.im/post/5f0e5701f265da230e6b68c8?utm_source=gold_browser_extension)
 
-[winston](https://www.npmjs.com/package/winston)
+- [winston](https://www.npmjs.com/package/winston)
 
 ```js
 import winston, { format } from 'winston';
