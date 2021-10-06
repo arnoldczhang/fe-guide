@@ -25,6 +25,7 @@
 * [`修饰符`](#修饰符)
 * [`vue-property-decoration`](#vue-property-decoration)
 * [`坑点`](#坑点)
+* [vite](#vite)
 
 </details>
 
@@ -738,3 +739,10 @@ Child.vue
 
 
 
+---
+
+
+
+## vite
+
+[webpack-to-vite](https://github.com/originjs/webpack-to-vite)

@@ -500,7 +500,7 @@ unhandledRejection
 #### 处理
 ```js
 process.on('unhandledRejection', (reason, p) => {
-    console.log('Unhandled Rejection at:', p, 'reason:', reason);
+  console.log('Unhandled Rejection at:', p, 'reason:', reason);
 });
 ```
 
@@ -604,6 +604,8 @@ function promiseRejectHandler(type, promise, reason) {
 ---
 
 ## 最佳实践
+
+[最佳实践](./最佳实践.md)
 
 ### 服务器瓶颈
 * CPU
@@ -768,7 +770,7 @@ pm2 start test.js -i 2
 ## 打印日志
 - [node如何打印日志](https://juejin.im/post/5f0e5701f265da230e6b68c8?utm_source=gold_browser_extension)
 
-[winston](https://www.npmjs.com/package/winston)
+- [winston](https://www.npmjs.com/package/winston)
 
 ```js
 import winston, { format } from 'winston';
@@ -826,6 +828,15 @@ uglify-js
 ---
 
 ## 库源码解析
+
+### carlo
+> node内置浏览器
+
+比较坑，每次都会自动下载 chrome，浪费时间，推荐保存下载结果，后面再手动把 chrome 拷进去。
+
+目录在 /carlo/lib/.local-data/（记得 shift + cmd + . 显示隐藏文件）
+
+把 mac-62892 和 profile-62892 拷进去
 
 ### Async_hook
 
@@ -1139,10 +1150,10 @@ RSS(Resident Set Size): 常驻内存占用
 
 #### mac
 ```sh
-#htop
+# htop
 htop -p 进程的pid
 
-#top
+# top
 top -pid 69608
 ```
 

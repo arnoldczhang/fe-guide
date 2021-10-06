@@ -36,6 +36,9 @@
 - [在线调试css特效](https://animista.net/)
 - [在线画计算机示意图](https://honzaap.github.io/Systemizer/)
 - [docker搭建自己的文档系统](https://github.com/star7th/showdoc)
+- [在线数据转可视化图表](https://rawgraphs.io/)
+- [程序员在线各种资源](https://www.thosefree.com/)
+  - [在线可视化看代码执行过程](https://pythontutor.com/visualize.html#mode=edit)
 
 ---
 
@@ -53,6 +56,7 @@
 - [otplib.js-单次验证](https://www.npmjs.com/package/otplib)
 - [skia-服务端画canvas](https://github.com/samizdatco/skia-canvas)
 - [自动生成mock数据-faker.js](https://github.com/Marak/faker.js)
+- [iDraw.js-网页绘图](https://idraw.js.org/docs/en/guide/quickstart.html#the-first-example)
 
 ---
 

@@ -862,7 +862,7 @@ module.exports = {
 };
 ```
 
- ---
+---
 
 ## treeshaking
 - [基本原理](https://juejin.im/post/5a4dc842518825698e7279a9)
@@ -1388,6 +1388,8 @@ debug: Boolean 启用debug 用于故障排查。默认 false
 ---
 
 ## webpack5
+
+- [webpack5优化策略](https://mp.weixin.qq.com/s/pwynolH0pTtT38f-xBUsXw)
 
 ### module federation
 > 使 JavaScript 应用得以在客户端或服务器上动态运行另一个 bundle 的代码。
