@@ -67,3 +67,7 @@ names中的第一个变量
     "sourceRoot": ""
 }
 ```
+
+## 安全
+
+>  SourceMappingURL 可以通过 js 修改，所以可能存在  CSP 安全问题，不过生效的前提是开启了开发者模式，详情[参考](https://weizman.github.io/?javascript-anti-debugging-some-next-level-shit-part-1)
