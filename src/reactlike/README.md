@@ -1,5 +1,10 @@
 # reactlike-anujs
 
+## 类似库
+
+- [mithril.js](https://mithril.js.org/index.html) // 无 jsx，纯手写，很奇怪
+- 
+
 ## 待废弃生命周期
   - componentWillReceiveProps
   - componentWillUpdate
