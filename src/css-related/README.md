@@ -950,7 +950,7 @@ font-variant-east-asian: traditional;
 ## 布局
 
 ### 垂直居中
-[参考](../../css-related/README.md#垂直居中)
+[参考](./README.md#垂直居中)
 
 - 优先line-height
 - [vertical-align](https://www.zhangxinxu.com/wordpress/2015/08/css-deep-understand-vertical-align-and-line-height/)
