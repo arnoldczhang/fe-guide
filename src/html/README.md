@@ -13,6 +13,7 @@
 * [`rel`](#rel)
 * [`移动端开发经验`](#移动端开发经验)
 * [`html5`](#html5)
+* [`shadowdom`](#shadowdom)
 
 </details>
 
@@ -226,5 +227,9 @@ document.querySelectorAll('link[title]').forEach((link) => {
 <input spellcheck="false"/>
 ```
 
+---
 
+## shadowdom
+
+[从slider组件看shadowdom](https://mp.weixin.qq.com/s?__biz=MzI1ODE4NzE1Nw==&mid=2247490742&idx=1&sn=c355ea7e4c406a287d8bc01c3d9eacd5&scene=21#wechat_redirect)
 
