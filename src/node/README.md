@@ -156,6 +156,8 @@ node --inspect-brk dist/app.js
 
 - [前端操作cookie-js-cookie](https://github.com/js-cookie/js-cookie)
 
+- [html和json互转](https://github.com/Jxck/html2json)
+
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
