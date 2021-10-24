@@ -402,6 +402,13 @@ loadEventStart - domContentLoadedEventEnd
 
 - [京喜小程序优化指南](https://segmentfault.com/a/1190000022164644)
 
+
+
+### 要点
+
+- 耦合的、通用的内容，打一个包
+- 基于1，尽可能的拆包（合理利用HTTP2.0）
+
 ---
 
 ## 常见设计
