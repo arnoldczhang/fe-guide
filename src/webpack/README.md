@@ -1292,6 +1292,12 @@ async loaderParse(entryPath) {
 ### happypack
 > 由于 JavaScript 是单线程模型，要想发挥多核 CPU 的能力，只能通过多进程去实现，就需要happypack
 > 提示：由于HappyPack 对file-loader、url-loader 支持的不友好，所以不建议对该loader使用
+>
+> 注：happypack作者已不再维护，建议使用官方的thread-loader
+
+#### 多进程构建
+
+关于多进程构建，可以[参考](https://mp.weixin.qq.com/s/Jh37R0ooECzK2VDTTorgzA)。简言之，小项目单进程构建即可，毕竟多进程启动也要时间成本。
 
 ```js
 const HappyPack = require('happypack');
