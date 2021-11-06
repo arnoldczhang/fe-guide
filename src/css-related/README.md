@@ -472,47 +472,50 @@ filter:blur（数值）
 对比则使用filter:contrast（数值）
 
 ### 1px
-- border-image
-  * ```css
-    .border_1px{
-    border-bottom: 1px solid #000;
-    }
-    @media only screen and (-webkit-min-device-pixel-ratio:2){
-      .border_1px{
-          border-bottom: none;
-          border-width: 0 0 1px 0;
-          border-image: url(../img/1pxline.png) 0 0 2 0 stretch;
-      }
-    }
-    ```
-  ```
-  
-  ```
-- background-image
-  
-  * 同border-image
-- 伪类 + scaleY(0.5)
-  * ```css
+
+**border-image**
+
+```css
+.border_1px{
+  border-bottom: 1px solid #000;
+}
+@media only screen and (-webkit-min-device-pixel-ratio:2){
+  .border_1px{
+      border-bottom: none;
+      border-width: 0 0 1px 0;
+      border-image: url(../img/1pxline.png) 0 0 2 0 stretch;
+  }
+}
+```
+
+**background-image**
+
+> 同border-image
+
+伪类 + scaleY(0.5)
+
+```css
+.border_1px:before{
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 1px;
+  width: 100%;
+  background-color: #000;
+  transform-origin: 50% 0%;
+}
+@media only screen and (-webkit-min-device-pixel-ratio:2){
     .border_1px:before{
-      content: '';
-      position: absolute;
-      top: 0;
-      height: 1px;
-      width: 100%;
-      background-color: #000;
-      transform-origin: 50% 0%;
+        transform: scaleY(0.5);
     }
-    @media only screen and (-webkit-min-device-pixel-ratio:2){
-        .border_1px:before{
-            transform: scaleY(0.5);
-        }
+}
+@media only screen and (-webkit-min-device-pixel-ratio:3){
+    .border_1px:before{
+        transform: scaleY(0.33);
     }
-    @media only screen and (-webkit-min-device-pixel-ratio:3){
-        .border_1px:before{
-            transform: scaleY(0.33);
-        }
-    }
-    ```
+}
+```
+
 - svg
   * 借助PostCSS的postcss-write-svg
   * ```css
@@ -938,6 +941,20 @@ font-variant-east-asian: traditional;
     100%{
         filter: brightness(0);
     }
+}
+```
+
+### accent-color
+
+> 设置 checkbox 或 radio 被选中时的颜色
+
+```css
+input {
+  accent-color: blue;
+}
+
+input[type=checkbox] {
+  accent-color: red;
 }
 ```
 
