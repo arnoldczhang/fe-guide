@@ -97,6 +97,7 @@
 - [团队规范](https://juejin.im/post/5d3a7134f265da1b5d57f1ed)
 
 ### 基建
+
 - 代码仓库（自建gitlab）
 - 版本管理（git-flow）
 - 自动编译（jenkins/travis）
