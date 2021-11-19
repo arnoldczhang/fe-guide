@@ -746,4 +746,5 @@ Child.vue
 
 ## vite
 
-[webpack-to-vite](https://github.com/originjs/webpack-to-vite)
+- [webpack-to-vite](https://github.com/originjs/webpack-to-vite)
+- [vite实践](https://mp.weixin.qq.com/s/pUzUr1lTfX3wkzJL_Xv1oQ)
