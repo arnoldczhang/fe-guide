@@ -162,6 +162,10 @@ node --inspect-brk dist/app.js
 
 - [基于web Animation的动画库](https://motion.dev/)
 
+- [类chalk颜色库-yoctocolors](https://github.com/sindresorhus/yoctocolors)
+
+- [神奇的对象深拷贝-weird-json](https://github.com/i5ik/weird-json)
+
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
@@ -1081,6 +1085,32 @@ function promisify(original) {
 ---
 
 ## 库开发模式
+
+### 模块引用
+
+[模块引用方式-exports 参考](https://mp.weixin.qq.com/s/zZnXaBbsADoBNPCc4mD_HA)
+
+从 node12.7 开始支持`exports`精确导出（相对于**main**）
+
+```json
+{
+  "name": "demo",
+  "exports": "./demo.js"
+}
+
+/* 同时定义 commonjs 和 esmodule 入口 */
+{
+  "name": "demo",
+  "exports": {
+    ".": {
+      "import": "./foo.mjs",
+      "require": "./foo.js"
+    }
+  }
+}
+```
+
+
 
 ### TDD
 > Test-driven development 即测试驱动的开发模式
