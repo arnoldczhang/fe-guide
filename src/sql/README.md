@@ -1,5 +1,16 @@
 # sql
 
+## 目录
+<details>
+<summary>展开更多</summary>
+
+* [`概念`](#概念)
+* [`索引`](#索引)
+* [`拓展`](#拓展)
+
+
+</details>
+
 ## 概念
 
 ### sql执行顺序
@@ -54,10 +65,6 @@ alter table TABLE_NAME engine=innodb;
 - = 和 in 可以乱序，mysql会自动优化
 - 尽量扩展索引，替代新增
 
-
-
-
-
 ### 语法参考
 
 ```sql
@@ -66,3 +73,17 @@ ALTER TABLE xxx.表名 ADD INDEX 索引名(字段,...可以多个)
 ALTER TABLE xxx.表名 DROP INDEX 索引名;
 ```
 
+---
+
+## 拓展
+
+### 最简单的数据库
+```sh
+#!/bin/bash
+db_set () {
+    echo "$1,$2" >> database
+}
+db_get () {
+  grep "^$1," database | sed -e "s/^$1,//" | tail -n 1
+}
+```
