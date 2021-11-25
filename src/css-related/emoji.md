@@ -1,6 +1,7 @@
 # emoji -> 单色icon
 
 ## 参考
+  - [openemoji](https://openmoji.org/)
   - https://zhuanlan.zhihu.com/p/38767488
 
 

@@ -391,6 +391,7 @@ export default {
 - [vue3-reactive](https://zhuanlan.zhihu.com/p/146097763)
 - [vue3-compiler](https://zhuanlan.zhihu.com/p/150732926)
 - [mini-vue3 by Evan You](https://codepen.io/collection/DkxpbE)
+- [vue3脚手架](https://juejin.cn/post/7018344866811740173)
 
 ### compiler
 
@@ -745,4 +746,5 @@ Child.vue
 
 ## vite
 
-[webpack-to-vite](https://github.com/originjs/webpack-to-vite)
+- [webpack-to-vite](https://github.com/originjs/webpack-to-vite)
+- [vite实践](https://mp.weixin.qq.com/s/pUzUr1lTfX3wkzJL_Xv1oQ)

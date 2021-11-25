@@ -3,6 +3,8 @@
 ## 参考
 - [mac安装mysql.tgz](https://www.cnblogs.com/yjmyzz/p/how-to-install-mysql8-on-mac-using-tar-gz.html)
 
+
+
 ## 安装（mysql8）
 ```sh
 # 解压下载的 tgz，得到文件夹 mysql-8.0.22-macos10.15-x86_64（假如这个名字）

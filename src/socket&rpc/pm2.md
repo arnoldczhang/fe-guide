@@ -13,6 +13,7 @@
 * [`pm2(v0.4.10)流程`](#pm2(v0.4.10)流程)
 * [`pm2(v3.2.2)流程`](#pm2(v3.2.2)流程)
 * [`rpc流程`](#rpc流程)
+* [`配置`](#配置)
 * [`总结`](#总结)
 
 </details>
@@ -243,7 +244,61 @@ class KMDaemon {
 }
 ```
 
+
+
+## 配置
+
+- [pm2全配置参考](https://libin1991.github.io/2019/01/03/Pm2-%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E5%8F%8A%E5%91%BD%E4%BB%A4/)
+- [pm2重启策略](https://pm2.keymetrics.io/docs/usage/restart-strategies/#restart-at-cron-time)
+
+docker 建议使用配置文件的形式，比如：
+
+```json
+// package.json
+{
+ "start-pm2": "pm2 start pm2.config.js" 
+}
+```
+
+```js
+// pm2.config.js
+module.exports = {
+  apps : [
+    {
+      name: 'pm2-app',
+      script: './dist/app.js',
+      /**
+       * true: 监听到变更会导致 pm2 重启
+       *
+       * 由于现在 node-server 和测试运行放在一起，
+       * 一旦执行测试（会有中间产物出现），导致自动重启，测试运行失败
+       * 故置 false
+       *
+       */
+      watch: false,
+      // 改用 cluster 模式（默认 fork，fork的优点是能执行非 javascript 代码）
+      exec_mode: 'cluster_mode',
+      // 每两分钟重启一次
+      cron_restart: '*/2 * * * *',
+      // 启动进程实例数
+      instances: 1,
+      log_date_format: 'YY-MM-DD HH:mm:ss Z',
+      env: {
+        NODE_ENV: 'production',
+        HTTP_PROXY: 'http://127.0.0.1:11080',
+        NO_PROXY: 'localhost',
+      }
+    }
+  ]
+};
+```
+
+
+
+---
+
 ## 总结
+
 1. pm2也是采用cluster.fork实现的集群，由于God Deamon这个Master进程一直执行，
 可以保证对每一个子进程监听事件，从而进行相应的操作。
 2. pm2的master挂了，会根据pm2_env判断，如果是强制关闭，会重启，如果正常kill，相关子进程也会关闭。
