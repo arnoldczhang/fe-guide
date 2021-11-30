@@ -6,6 +6,7 @@
 
 * [`概念`](#概念)
 * [`索引`](#索引)
+* [`join`](#join)
 * [`拓展`](#拓展)
 
 
@@ -53,9 +54,13 @@ alter table TABLE_NAME engine=innodb;
 
 ## 索引
 
-原理：[B+tree](https://blog.csdn.net/yin767833376/article/details/81511377)
+### 原理
 
-### 关键点
+[B+tree](https://blog.csdn.net/yin767833376/article/details/81511377)
+
+
+
+### 适用场景&关键点
 
 具体[参考](https://tech.meituan.com/2014/06/30/mysql-index.html)
 
@@ -64,6 +69,25 @@ alter table TABLE_NAME engine=innodb;
 - 最左前缀匹配原则（比如a,b,c，会先按a找，再b，最后c），直至遇到范围查询（>、<、between、like）
 - = 和 in 可以乱序，mysql会自动优化
 - 尽量扩展索引，替代新增
+
+
+
+### 不适用场景
+
+> 极大数据量（上亿）
+
+- 行存储，仍然会将所有行从磁盘加载到内存，再过滤不符合要求的行，很耗时
+- 列存储，按列单独存储在一个文件，查询按需读取，耗时低，适合**大批量**操作
+
+![列存储](./列存储.jpeg)
+
+
+
+### 列存储索引
+
+[参考](./列存储#列压缩)
+
+
 
 ### 语法参考
 
@@ -87,3 +111,12 @@ db_get () {
   grep "^$1," database | sed -e "s/^$1,//" | tail -n 1
 }
 ```
+
+---
+
+## join
+
+> 图片来源于《设计数据密集型应用》
+
+![join示例](./join示例.jpeg)
+
