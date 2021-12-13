@@ -1,6 +1,7 @@
 # 好用的工具
 
 - [在线资源免费存储](https://sendfiles.online/)
+- [在线自动化测试平台-metersphere](https://demo.metersphere.com/#/workstation/dash-board)
 - [程序员专用搜索引擎](https://quickref.dev/)
 - [在线绘图](https://app.diagrams.net/)
 - [短信在线接收](https://www.materialtools.com/?page=4)
@@ -38,6 +39,7 @@
 - [docker搭建自己的文档系统](https://github.com/star7th/showdoc)
 - [在线数据转可视化图表](https://rawgraphs.io/)
 - [在线画avatar](https://notion-avatar.vercel.app/zh)
+- [在线代码转图片-codepng](https://www.codepng.app/)
 - [程序员在线各种资源](https://www.thosefree.com/)
   - [在线可视化看代码执行过程](https://pythontutor.com/visualize.html#mode=edit)
 
