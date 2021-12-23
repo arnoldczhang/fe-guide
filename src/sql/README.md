@@ -6,9 +6,9 @@
 
 * [`概念`](#概念)
 * [`索引`](#索引)
-* [`join`](#join)
+* [`多表联查`](#join)
+* [`锁`](#锁)
 * [`拓展`](#拓展)
-
 
 </details>
 
@@ -44,6 +44,16 @@ select s;
 
 ## 常用命令
 
+### 显示分区
+
+```sql
+SELECT PARTITION_NAME,TABLE_ROWS
+FROM INFORMATION_SCHEMA.PARTITIONS
+WHERE TABLE_NAME = 'task';
+```
+
+
+
 ### 碎片整理
 
 ```sql
@@ -57,6 +67,12 @@ alter table TABLE_NAME engine=innodb;
 ### 原理
 
 [B+tree](https://blog.csdn.net/yin767833376/article/details/81511377)
+
+
+
+### 二级索引&分区
+
+![索引示意](./索引示意图.jpeg)
 
 
 
@@ -82,6 +98,12 @@ alter table TABLE_NAME engine=innodb;
 ![列存储](./列存储.jpeg)
 
 
+
+### 快照索引
+
+[参考](../book/设计数据密集型应用.md#3.5 隔离级别)
+
+做法类似 immer 的选择性深拷贝
 
 ### 列存储索引
 
@@ -119,4 +141,24 @@ db_get () {
 > 图片来源于《设计数据密集型应用》
 
 ![join示例](./join示例.jpeg)
+
+---
+
+## 锁
+
+### 悲观锁
+
+> 默认一定出现并发操作，重并发的场景。
+
+#### 共享锁
+
+> 读锁，多个事务可以读取同一数据，但是不可修改
+
+#### 排他锁
+
+> 写锁，同时只有一个事务可以对单个数据读写
+
+### 乐观锁
+
+> 默认不会出现冲突，如果冲突，让用户解决，重读多写少的场景。
 
