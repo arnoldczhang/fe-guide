@@ -47,6 +47,7 @@
 
 ### 其他
 - [2020css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
+- [防御性css](https://ishadeed.com/article/defensive-css/)
 
 ## 目录
 <details>
@@ -958,7 +959,9 @@ input[type=checkbox] {
 }
 ```
 
+### outline
 
+[outline](https://mp.weixin.qq.com/s/m_e37kJvaVvnOmzVm3H6Pg)
 
 
 
