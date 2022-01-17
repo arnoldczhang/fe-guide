@@ -1369,6 +1369,8 @@ debug: Boolean 启用debug 用于故障排查。默认 false
 },
 ```
 
+**注：node-sass 已不再维护（2020年起），后续由 dart-sass 替代**
+
 ---
 
 ## 热更新
