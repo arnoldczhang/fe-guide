@@ -1191,9 +1191,23 @@ function __webpack_require__(moduleId) {
 
 ## loader
 
+[normalLoader和pitchLoader](https://juejin.cn/post/6992754161221632030)
+
 - 单一转译原则
 - this.async(): 生成callback函数，callback输出转译的内容
 - this.cacheable(): 直接透传缓存文件
+
+
+
+### 执行顺序
+
+> **Pitching Loader** 的执行顺序是 **从左到右**
+>
+>  **Normal Loader** 的执行顺序是 **从右到左**
+
+![pitch&normal-loader](./pitch&normal-loader.jpeg)
+
+
 
 ### 实现原理
 
