@@ -392,6 +392,7 @@ export default {
 - [vue3-compiler](https://zhuanlan.zhihu.com/p/150732926)
 - [mini-vue3 by Evan You](https://codepen.io/collection/DkxpbE)
 - [vue3脚手架](https://juejin.cn/post/7018344866811740173)
+- [vue3学习教程](https://github.com/chengpeiquan/learning-vue3)
 
 ### compiler
 
