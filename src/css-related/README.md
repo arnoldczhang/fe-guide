@@ -48,6 +48,7 @@
 ### 其他
 - [2020css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
 - [防御性css](https://ishadeed.com/article/defensive-css/)
+- [推荐的css初始化属性设置](https://www.joshwcomeau.com/css/custom-css-reset/)
 
 ## 目录
 <details>
