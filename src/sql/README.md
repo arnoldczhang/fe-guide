@@ -172,7 +172,7 @@ alter table TABLE_NAME engine=innodb;
 # 新增索引
 ALTER TABLE xxx.表名 ADD INDEX 索引名(字段,...可以多个)
 
-ALTER TABLE xxx.表名 DROP INDEX 索引名;
+ALTER TABLE xxx.表名 DROP INDEX 索引名, DROP INDEX 索引名2;
 
 # 显示索引
 show keys from xxx.表名;

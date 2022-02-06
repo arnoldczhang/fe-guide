@@ -1,5 +1,6 @@
 # 好用的工具
 
+- [在线中文转emoji](https://translate.yandex.com/?lang=zh-emj)
 - [在线资源免费存储](https://sendfiles.online/)
 - [接口自动化测试工具-apifox](https://www.apifox.cn/)
 - [在线自动化测试平台-metersphere](https://demo.metersphere.com/#/workstation/dash-board)
@@ -44,6 +45,8 @@
 - [程序员在线各种资源](https://www.thosefree.com/)
   - [在线可视化看代码执行过程](https://pythontutor.com/visualize.html#mode=edit)
   - [在线把代码翻译成文字](https://denigma.app/#demo)
+  - [在线开源的低代码平台-Dooring](https://github.com/H5-Dooring/dooringx)
+  - [在线中国古籍图书馆（繁体版）](https://ctext.org/zh)
 
 ---
 
