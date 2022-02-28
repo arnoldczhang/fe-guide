@@ -168,6 +168,12 @@ node --inspect-brk dist/app.js
 
 - [汉字转拼音-pinyin-pro](https://github.com/zh-lx/pinyin-pro)
 
+- [代码逻辑转流程图-code2flow](https://github.com/scottrogowski/code2flow)
+
+- [视频录制-FFmpeg](https://github.com/leandromoreira/ffmpeg-libav-tutorial)
+
+- [实时同步-syncedStore](https://github.com/yousefed/SyncedStore)
+
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
