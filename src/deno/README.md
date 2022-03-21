@@ -5,6 +5,7 @@
 - [官网](https://github.com/denoland/deno/releases)
 - [deno-std](https://deno.land/std@0.88.0/node)
 - [deno-db](https://github.com/eveningkid/denodb)
+- [deno-examples](https://examples.deno.land/)
 
 ## 安装
 > curl -fsSL https://deno.land/x/install/install.sh | sh -s v0.31.0
