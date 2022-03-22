@@ -21,6 +21,7 @@
 - [react hook](https://juejin.im/post/5e38cca251882549003d07e7?utm_source=gold_browser_extension)
 - [react hook 最佳实践](https://juejin.im/post/5ec7372cf265da76de5cd0c9)
 - [react技术揭秘](https://react.iamkasong.com/#%E7%AB%A0%E8%8A%82%E5%88%97%E8%A1%A8)
+- [借鉴react的库-solidjs](https://www.solidjs.com/)
 
 ## 目录
 

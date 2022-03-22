@@ -11,6 +11,7 @@
 * [`拓展`](#拓展)
 * [`分表`](#分表)
 * [`分区`](#分区)
+* [`灾备`](#灾备)
 
 </details>
 
@@ -240,3 +241,11 @@ db_get () {
 
 
 ---
+
+## 灾备
+
+[3-2-1备份策略](https://www.vmwareblog.org/3-2-1-backup-rule-data-will-always-survive/)
+
+- 3份拷贝
+- 2种媒介
+- 1份异地

@@ -14,6 +14,7 @@
 * [`npm link`](#npm-link)
 * [`npm view`](#npm-view)
 * [`npm的替代`](npm的替代)
+* [`pnpm`](pnpm)
 
 </details>
 
@@ -341,6 +342,24 @@ npm view xxx versions
 - pnpm
 - npmd
 - Ied
+
+---
+
+## pnpm
+
+### pnpm link
+
+**1. 将当前包链接到全局**
+
+```sh
+pnpm link --global
+```
+
+**2. 使用全局已链接好的包**
+
+```sh
+pnpm link --global <包名>
+```
 
 
 
