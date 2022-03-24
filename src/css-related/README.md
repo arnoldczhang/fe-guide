@@ -1333,6 +1333,14 @@ img:after {
 ## 草案
 - [折叠屏api](https://github.com/w3c/csswg-drafts/issues/4736)
 
+
+
+### @layer
+
+> 管理样式优先级
+
+[CSS5 @layer](https://mp.weixin.qq.com/s/ah4SSomENbFvLasH-WuP5A)
+
 ---
 
 ## 选择器
