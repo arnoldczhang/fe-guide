@@ -21,6 +21,7 @@
 - [在线调试css特效](https://animista.net/)
 - [react-旅游风格组件库](https://orbit.kiwi/components/button/)
 - [daisyUI（基于tailwind）](https://daisyui.com/components/avatar)
+- [无类化css-simple.css](https://github.com/kevquirk/simple.css)
 
 ### 各种案例
 - [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
