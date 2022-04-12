@@ -243,6 +243,8 @@ yarn：直接输出安装结果，报错日志清晰
 
 #### 6.postinstall+prepublish+prepare
 
+[npm hooks](https://segmentfault.com/a/1190000008832423)
+
 ### npm 模块安装机制
 
 1. 查询 node_modules 是否已存在
