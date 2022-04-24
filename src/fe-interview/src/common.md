@@ -198,6 +198,7 @@
 * [`src和href`](#src和href)
 * [`实现一个轮播组件`](#实现一个轮播组件)
 * [`rel属性`](#rel属性)
+* [`html头部几个属性`](#html头部几个属性)
 
 **typescript**
 
@@ -3627,5 +3628,13 @@ try {
 
 各种类型的拖拽，参考[google-transmat](https://github.com/google/transmat)
 
+---
 
+### html头部几个属性
+
+Q：说下前10行什么意思
+
+A：[解答](https://css-tricks.com/explain-the-first-10-lines-of-twitter-source-code/)
+
+![html头部](html头部.jpg)
 
