@@ -2241,6 +2241,14 @@ function fun(num){
 - NFA：非确定性有限状态自动机
 - DFA：确定性有限状态自动机
 
+
+
+#### \w和[A-Za-z0-9_]的区别
+
+[参考](https://blog.csdn.net/sinat_34719507/article/details/54430555)
+
+
+
 ---
 
 ### node 异步错误捕获
