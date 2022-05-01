@@ -965,7 +965,11 @@ input[type=checkbox] {
 
 [outline](https://mp.weixin.qq.com/s/m_e37kJvaVvnOmzVm3H6Pg)
 
+---
 
+### calc
+
+[现代 CSS 解决方案：CSS 数学函数之 calc](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247491089&idx=1&sn=84aecbf783859c930bf57660b46d06ef&chksm=ce257de7f952f4f17b49c890910d995362a1a7247fdf20bd427d868a15cef08e1c3d9e68eba1&token=363949812&lang=zh_CN#rd)
 
 ---
 
