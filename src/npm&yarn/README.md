@@ -14,6 +14,7 @@
 * [`npm link`](#npm-link)
 * [`npm view`](#npm-view)
 * [`npm的替代`](npm的替代)
+* [`npm ci`](npm ci)
 * [`pnpm`](pnpm)
 
 </details>
@@ -243,6 +244,8 @@ yarn：直接输出安装结果，报错日志清晰
 
 #### 6.postinstall+prepublish+prepare
 
+[npm hooks](https://segmentfault.com/a/1190000008832423)
+
 ### npm 模块安装机制
 
 1. 查询 node_modules 是否已存在
@@ -361,5 +364,24 @@ pnpm link --global
 pnpm link --global <包名>
 ```
 
+---
+
+## npm ci
+
+参考[npm doc](https://docs.npmjs.com/cli/v8/commands/npm-ci)
+
+npm ci 和 npm i 的区别如下：
+
+- ci 要求项目已有 package-lock.json 或 npm-shrinkwrap.json
+- 如果 package-lock.json 和 package.json 的依赖项不匹配，ci 会报错退出，而非更新 lock 文件
+- ci 用于一次性安装依赖，而非新增某个依赖
+- 如果 node_modules 文件夹已存在，ci 在开始安装前会删掉该文件夹
+- ci 安装过程，不涉及 package-lock.json 和 package.json 的改动
 
 
+
+### npm-shrinkwrap.json
+
+> npm5 版本之前对 package-lock.json 的兼容，
+>
+> 主要用于做精确的版本控制（依赖包、依赖包的依赖包），避免多人协作出现不同依赖包版本冲突问题

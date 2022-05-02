@@ -12,6 +12,7 @@
 * [`分表`](#分表)
 * [`分区`](#分区)
 * [`灾备`](#灾备)
+* [`字符集`](#字符集)
 
 </details>
 
@@ -249,3 +250,35 @@ db_get () {
 - 3份拷贝
 - 2种媒介
 - 1份异地
+
+---
+
+## 字符集
+
+### 历史
+
+mysql5.5.3之前，收录的字符用3个字节存储已足够，所以把utf8（也就是utf8mb3）作为3字节存储，
+
+后面字符多了，比如emoji，就需要4字节存储，因此5.5.3之后提供了utf8mb4编码，兼容4字节。
+
+### 查看
+
+```sql
+# 查看库
+SHOW CREATE DATABASE `库名`
+
+# 查看表
+SHOW CREATE TABLE `表名`;
+
+# 查看字段
+SHOW FULL COLUMNS FROM `表名`;
+```
+
+### 修改
+
+```sql
+ALTER DATABASE `库名` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
+
+alter table 表名 convert to character set utf8mb4 COLLATE utf8mb4_bin;
+```
+

@@ -22,3 +22,4 @@
 - [js工作原理](https://segmentfault.com/a/1190000018854431?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 - [代码加密工具](https://github.com/javascript-obfuscator/javascript-obfuscator/)
 - [quickJS](https://zhuanlan.zhihu.com/p/161722203)
+- [哪些必看的js库](https://www.zhihu.com/question/429436558/answer/2348777302)

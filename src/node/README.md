@@ -32,6 +32,7 @@
 * [`其他`](#其他)
 * [`公司架构`](#公司架构)
 * [`一些尝试`](#一些尝试)
+* [`版本日志`](#版本日志)
 
 ## 调试参数
 
@@ -177,6 +178,8 @@ node --inspect-brk dist/app.js
 - [给图片加滤镜-pixi-color-effects](https://github.com/PixiColorEffects/pixi-color-effects)
 
 - [将网页保存为单个文件-SingleFile](https://chrome.google.com/webstore/detail/singlefile/mpiodijhokgodhhofbcjdecpffjipkle)
+
+- [npm包检测更新-npm-check-updates](https://www.jianshu.com/p/f4b5f22426fd)
 
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
@@ -1218,3 +1221,11 @@ top -pid 69608
 
 ## 公司架构
 ![滴滴nodeX生态](滴滴nodeX生态.png)
+
+---
+
+### 版本日志
+
+#### 13.2.0
+
+支持[ES Module](https://zhuanlan.zhihu.com/p/337796076)

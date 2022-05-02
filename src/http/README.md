@@ -286,6 +286,8 @@
 
 ### POST 和 PUT
 
+[关于两者区别的一些争论](https://stackoverflow.com/questions/630453/what-is-the-difference-between-post-and-put-in-http)
+
 - PUT 方法是幂等的，连续调用一次或者多次的效果相同
 - PUT 指向单一资源，POST 指向资源集合
 

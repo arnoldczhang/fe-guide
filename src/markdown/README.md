@@ -6,6 +6,7 @@
 
 - [md生成视频](http://mdvideo.gshll.com/guide)
 - [md树生成器](https://devtool.tech/tree)
+- [md生产静态网站](https://blog.thomaspuppe.de/static-sites-from-markdown-with-caddy-server)
 
 # 标题
 ## 标题
