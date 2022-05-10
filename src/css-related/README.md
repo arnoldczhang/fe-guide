@@ -965,6 +965,21 @@ input[type=checkbox] {
 
 [outline](https://mp.weixin.qq.com/s/m_e37kJvaVvnOmzVm3H6Pg)
 
+
+
+### mask
+
+通过遮罩层，可以做很多动画转场效果
+
+```css
+.mask {
+  background: url(image.png) ;
+  mask: linear-gradient(90deg, transparent, #fff);
+}
+```
+
+
+
 ---
 
 ### calc
