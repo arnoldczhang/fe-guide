@@ -12,6 +12,9 @@
 - [vue编辑器-vue-codemirror](https://github.surmon.me/vue-codemirror/)
 - [vue-property-decoration](https://github.com/kaorun343/vue-property-decorator)
 - [vue全资源搜索](https://bestofvue.com/)
+- [vue3-后台管理系统示例1](http://admin.spicyboy.cn/#/login)
+
+
 
 ## 目录
 
