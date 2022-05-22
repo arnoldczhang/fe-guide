@@ -2009,7 +2009,7 @@ function solution(arr1, ...rest) {
 
 ---
 
-### webpack 热更新
+### webpack热更新
 
 [参考](../../webpack/README.md#热更新)
 
