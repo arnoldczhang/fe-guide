@@ -9,6 +9,7 @@
 - [https 连接的前几毫秒发生了什么](https://fed.renren.com/2017/02/03/https/)
 - [流量劫持](https://zhuanlan.zhihu.com/p/40682772)
 - [http3.0](https://mp.weixin.qq.com/s?__biz=MzA5NzkwNDk3MQ==&mid=2650589264&idx=1&sn=6ff446e3029c40eaabcff373c070e0f7&chksm=8891d874bfe6516261a18cdd029aa5e8730f0e955641ac7468f6bbae27e3b6acf8b4fb3813a3&mpshare=1&scene=1&srcid=&key=cb09f7b1396893c712194eeb7d524d812aaa1d6fd932852583a9a7574e6641a4a96b4f1563570eb1d4082bccaeade398aa998d7795c039cc6f06a1adc02a6e8236aeca8dd63d762fb6ffe09a33f210c1&ascene=1&uin=MjkyNDMwMjUwNg%3D%3D&devicetype=Windows+10&version=62060728&lang=zh_CN&pass_ticket=iFII9Td9YjjFZBzWoNyPFItjPfv26zZMyl%2By%2ByRZ3h5qwAJTlx0MoRSGaGIS%2B2jK)
+- [http的缓存为什么这样设计？](https://mp.weixin.qq.com/s/0P8_lnVf2_zMzIBJ20qajA)
 
 ## 目录
 
@@ -278,6 +279,26 @@
 - p3p
 - x-aspnet-version
 - x-ua-compatible
+
+### 为什么expires被废弃？
+
+```
+Expires: Wed, 21 Oct 2021 07:28:00 GMT
+```
+
+- 使用GMT时间（格林尼治时间），不存在时区问题
+- 取的客户端浏览器时间，如果客户端时间不准那？
+- 应该让服务端来算时间
+
+**http1.1**被**cach-control**取代
+
+```
+Cache-Control: max-age=600
+```
+
+由服务端计算最大缓存时间
+
+
 
 ### 未来头部新字段
 
