@@ -11,6 +11,9 @@
 
 ## 一些配置
 
+### chrome隐私
+thisisunsafe
+
 > `chrome://flags`里面
 
 - [iframe的cookie跨域问题](https://segmentfault.com/a/1190000039706607)

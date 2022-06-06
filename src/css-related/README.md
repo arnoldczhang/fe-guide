@@ -22,6 +22,7 @@
 - [react-旅游风格组件库](https://orbit.kiwi/components/button/)
 - [daisyUI（基于tailwind）](https://daisyui.com/components/avatar)
 - [无类化css-simple.css](https://github.com/kevquirk/simple.css)
+- [2022css发展](https://mp.weixin.qq.com/s/jh9dVWGzFTp9a1tNgFZ2yw)
 
 ### 各种案例
 - [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
@@ -964,6 +965,21 @@ input[type=checkbox] {
 ### outline
 
 [outline](https://mp.weixin.qq.com/s/m_e37kJvaVvnOmzVm3H6Pg)
+
+
+
+### mask
+
+通过遮罩层，可以做很多动画转场效果
+
+```css
+.mask {
+  background: url(image.png) ;
+  mask: linear-gradient(90deg, transparent, #fff);
+}
+```
+
+
 
 ---
 

@@ -12,6 +12,9 @@
 - [vue编辑器-vue-codemirror](https://github.surmon.me/vue-codemirror/)
 - [vue-property-decoration](https://github.com/kaorun343/vue-property-decorator)
 - [vue全资源搜索](https://bestofvue.com/)
+- [vue3-后台管理系统示例1](http://admin.spicyboy.cn/#/login)
+
+
 
 ## 目录
 
@@ -381,7 +384,47 @@ export default {
 </template>
 ```
 
+### 14. 模拟v-model
 
+**子组件**
+```vue
+<template>
+  <el-select v-model="model"></el-select>
+</template>
+<script lang="ts">
+import {
+  Component,
+  Prop,
+  Watch,
+  Emit,
+  Vue,
+} from 'vue-property-decorator';
+@Component({})
+export default class Demo extends Vue {
+  name = 'Demo';
+
+  @Prop({
+    type: Array,
+    default: () => [],
+  })
+  value: any;
+
+  get model() {
+    return this.value;
+  }
+
+  set model(value: any) {
+    this.$emit('input', value);
+  }
+}
+```
+
+**父组件**
+```vue
+<template>
+  <Demo v-model="aa">
+</template>
+```
 
 ---
 
