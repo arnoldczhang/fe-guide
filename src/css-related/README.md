@@ -966,8 +966,6 @@ input[type=checkbox] {
 
 [outline](https://mp.weixin.qq.com/s/m_e37kJvaVvnOmzVm3H6Pg)
 
-
-
 ### mask
 
 通过遮罩层，可以做很多动画转场效果
@@ -978,6 +976,21 @@ input[type=checkbox] {
   mask: linear-gradient(90deg, transparent, #fff);
 }
 ```
+
+### content-visibility
+
+[参考](https://mp.weixin.qq.com/s/o9lpl7CTwcbjM0q3QMRLTg)
+
+- visible - 默认值，无效果
+- hidden - 类似`display:none`，但是保留渲染状态，子元素都会被隐藏
+- auto - 如果该元素不在页面内or与用户行为无关，则等同于hidden，否则正常渲染
+
+
+
+#### 用途
+
+- 原生懒加载
+- 利用 `contain-intrinsic-size` 解决滚动条抖动问题
 
 
 
