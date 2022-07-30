@@ -30,6 +30,7 @@
 * [`vue-property-decoration`](#vue-property-decoration)
 * [`坑点`](#坑点)
 * [`vite`](#vite)
+* [`好用的npm`](#好用的npm)
 
 </details>
 
@@ -801,3 +802,9 @@ export default class Child extends Vue {
 
 - [webpack-to-vite](https://github.com/originjs/webpack-to-vite)
 - [vite实践](https://mp.weixin.qq.com/s/pUzUr1lTfX3wkzJL_Xv1oQ)
+
+---
+
+## 好用的npm
+
+点击外部：v-click-outside
