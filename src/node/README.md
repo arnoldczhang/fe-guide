@@ -12,6 +12,7 @@
 - [最小化类node运行时-txiki](https://github.com/saghul/txiki.js)
 - [crone表达式-在线调试](https://crontab.guru/#)
 - [cron表达式-含义解释](https://tool.lu/crontab/)
+- [嵌入设备的微型node](https://github.com/yodaos-project/ShadowNode)
 
 ## 目录
 * [`调试参数`](#调试参数)
@@ -180,6 +181,14 @@ node --inspect-brk dist/app.js
 - [将网页保存为单个文件-SingleFile](https://chrome.google.com/webstore/detail/singlefile/mpiodijhokgodhhofbcjdecpffjipkle)
 
 - [npm包检测更新-npm-check-updates](https://www.jianshu.com/p/f4b5f22426fd)
+
+- [浏览器原生截图-screenshot](https://github.com/xataio/screenshot)
+
+- [拖拽-dnd](https://www.npmjs.com/package/smooth-dnd)
+
+- [js写shell-zx](https://github.com/google/zx)
+
+- [超声波-quiet.js](https://quiet.github.io/quiet-js/)
 
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
