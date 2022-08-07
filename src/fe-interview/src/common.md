@@ -1527,6 +1527,13 @@ arr instanceof Array; // false
 #### 优化
 
 - 浏览器多使用队列方式，批量更新布局，至少一个浏览器刷新（16.6ms）才会清空队列
+- 频繁focus
+- 频繁`document.elementFromPoint(x,y)`获取元素
+- contenteditable元素内有大量内容（比如图片）
+- 频繁获取Range
+  - (new Range).getBoundingClientRect()
+- 频繁获取鼠标位置
+  - mouseEvt.layerX、mouseEvt.offsetX
 - 获取全局属性或方法，会强制清空队列，应避免频繁调用
   + offsetTop、offsetLeft、offsetWidth、offsetHeight
   + scrollTop、scrollLeft、scrollWidth、scrollHeight
@@ -1534,16 +1541,45 @@ arr instanceof Array; // false
   + width、height
   + getComputedStyle()
   + getBoundingClientRect()
+  + window.scrollX、window.scrollY
+  + window.innerHeight、window.innerWidth
+  + window.visualViewport
 
 #### 如何减少触发
 
 - transform 代替 top
+
 - visibility 代替 display：none
+
 - 避免使用 table（通常要花 3 倍于同等元素的时间）
+
 - 避免多次样式嵌套
+
 - 动画效果尽量加载 `absolute` 或 `fixed` 元素上
+
 - 使用 GPU 加速
+
 - 频繁重绘或回流的单拉一个图层，例 will-change
+
+- 读写分离（统一获取，集中写入）
+
+  - ```js
+    import fastdom from 'fastdom';
+    
+    // 不拆分代码的前提下，使用fastdom做读写分离
+    ids.forEach(id => {
+      // 获取
+      fastdom.measure(() => {
+        const top = elements[id].offsetTop;
+        // 写入
+        fastdom.mutate(() => {
+          elements[id].setLeft(top);
+        });
+      });
+    });
+    ```
+
+    
 
 ---
 

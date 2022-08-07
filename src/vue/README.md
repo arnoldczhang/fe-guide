@@ -29,7 +29,8 @@
 * [`修饰符`](#修饰符)
 * [`vue-property-decoration`](#vue-property-decoration)
 * [`坑点`](#坑点)
-* [vite](#vite)
+* [`vite`](#vite)
+* [`好用的npm`](#好用的npm)
 
 </details>
 
@@ -417,9 +418,11 @@ export default class Demo extends Vue {
     this.$emit('input', value);
   }
 }
+</script>
 ```
 
 **父组件**
+
 ```vue
 <template>
   <Demo v-model="aa">
@@ -589,6 +592,12 @@ render(ctx, cache) {
 ---
 
 ## 组件
+
+### vue3-smooth-dnd
+
+> 基于smooth-dnd的vue3拖拽库
+
+
 
 ### vue-code-diff
 > 类git风格代码对比，[参考](https://www.npmjs.com/package/vue-code-diff)
@@ -773,13 +782,13 @@ Child.vue
   <div>The childs value: {{this.injectedValue}}</div>
 </template>
 
-<script lang="ts>
-  import { Component, Vue, Inject } from 'vue-property-decorator';
+<script lang="ts">
+import { Component, Vue, Inject } from 'vue-property-decorator';
 
-  @Component
-  export default class Child extends Vue {
-    @Inject('key') private injectedValue!: string;
-  }
+@Component
+export default class Child extends Vue {
+  @Inject('key') private injectedValue!: string;
+}
 </script>
 ```
 
@@ -793,3 +802,9 @@ Child.vue
 
 - [webpack-to-vite](https://github.com/originjs/webpack-to-vite)
 - [vite实践](https://mp.weixin.qq.com/s/pUzUr1lTfX3wkzJL_Xv1oQ)
+
+---
+
+## 好用的npm
+
+点击外部：v-click-outside

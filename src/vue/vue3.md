@@ -1,5 +1,9 @@
 # vue3
 
+## 参考
+
+- [react16、vue2、vue3 diff算法对比](https://juejin.cn/post/7116141318853623839)
+
 
 
 ## 目录

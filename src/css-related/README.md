@@ -46,6 +46,7 @@
 - [一些新的布局方法](https://mp.weixin.qq.com/s/HYUgb8jEI-aQhbN4sBajNw)
 - [文字排布-text-combine-upright](http://www.deathghost.cn/article/css/86)
 - [纯CSS实现分栏宽度拉伸调整-resize](https://www.zhangxinxu.com/study/201903/css-idea/behavior-stretch.php)
+- [各种换行用法](https://mp.weixin.qq.com/s/D4dn4ot55f7ISzHxwu2H5Q)
 
 ### 其他
 - [2020css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
@@ -890,6 +891,16 @@ border: 0 - 边框宽度为0，会渲染，占内存
 - static
   * 默认，没有定位，元素处于正常流中，类似`left:20px`无效
 
+
+
+#### sticky
+
+> 会创建一个层叠上下文，并“固定”在离他最近的具有“滚动机制”的父元素上。
+>
+> Q：何为【具有“滚动机制”】？
+>
+> A：该元素的overflow值是**hidden、scroll、auto或overlay**
+
 ### cross-fade
 [参考](https://www.zhangxinxu.com/wordpress/2020/07/css-cross-fade-background-image-opacity/)
 
@@ -991,6 +1002,26 @@ input[type=checkbox] {
 
 - 原生懒加载
 - 利用 `contain-intrinsic-size` 解决滚动条抖动问题
+
+### scroll-snap-type
+
+[参考](https://www.zhangxinxu.com/wordpress/2018/11/know-css-scroll-snap/)
+
+> 网页容器滚动停止的时候，自动平滑定位到指定元素的指定位置
+
+```css
+scroll-snap-type: x/y
+scroll-snap-align: start/end/center
+
+```
+
+
+
+### css houdini
+
+[CSS Houdini：用浏览器引擎实现高级CSS效果](https://mp.weixin.qq.com/s/4owfsfX6bMzvgwvVxaCmzQ)
+
+> 一系列与CSS引擎相关的浏览器API的总称
 
 
 
