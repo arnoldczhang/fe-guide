@@ -3,6 +3,7 @@
 ## 参考
 1. [html所有语义标签](https://blog.csdn.net/microcosmv/article/details/51644998)
 2. [html原生属性/元素](https://markodenic.com/html-tips/)
+3. [html前身-sgml](https://www.techtarget.com/whatis/definition/SGML-Standard-Generalized-Markup-Language#:~:text=SGML%20(Standard%20Generalized%20Markup%20Language "SGML")%20is%20a%20standard%20for%20how,It%20is%20metadata.)
 
 ## 目录
 <details>
@@ -14,6 +15,7 @@
 * [`移动端开发经验`](#移动端开发经验)
 * [`html5`](#html5)
 * [`shadowdom`](#shadowdom)
+* [`元素布局`](#元素布局)
 
 </details>
 
@@ -232,4 +234,54 @@ document.querySelectorAll('link[title]').forEach((link) => {
 ## shadowdom
 
 [从slider组件看shadowdom](https://mp.weixin.qq.com/s?__biz=MzI1ODE4NzE1Nw==&mid=2247490742&idx=1&sn=c355ea7e4c406a287d8bc01c3d9eacd5&scene=21#wechat_redirect)
+
+---
+
+## 元素布局
+
+```html
+<!-- 文档主体 -->
+<main>
+  <h1>Web 浏览器</h1>
+  <!-- 导航链接区域 -->
+  <nav>
+    <a></a>
+    <a></a>
+  </nav>
+  <!-- 文档内容外，但和内容相关的区域 -->
+  <aside></aside>
+  <!-- 文档内容 -->
+  <article>
+    <!-- 文档头部区域 -->
+  	<header></header>
+    <!-- 文档区域 -->
+    <section>
+      <!-- 段落 -->
+		  <p>
+        <!-- 为表单元素定义标注 -->
+        <label></label>
+        <input />
+      </p>
+      <!-- 定义列表 -->
+      <dl>
+        <!-- 列表项 -->
+        <dt></dt>
+        <!-- 列表项描述 -->
+        <dd></dd>
+      </dl>
+      <!-- 定义无序列表 -->
+      <ul></ul>
+      <!-- 定义有序列表 -->
+      <ol></ol>
+    </section>
+    <!-- 无意义文档区域 -->
+    <div></div>
+    <!-- 行内文档区域 -->
+    <span></span>
+    <!-- 文档底部区域 -->
+    <footer></footer>
+  </article>
+  <article></article>
+</main>
+```
 
