@@ -23,6 +23,7 @@
 - [daisyUI（基于tailwind）](https://daisyui.com/components/avatar)
 - [无类化css-simple.css](https://github.com/kevquirk/simple.css)
 - [2022css发展](https://mp.weixin.qq.com/s/jh9dVWGzFTp9a1tNgFZ2yw)
+- [headless-ui](https://headlessui.com/vue/tabs)
 
 ### 各种案例
 - [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
@@ -34,6 +35,7 @@
 - [csswg](https://drafts.csswg.org/)
 - [移动端-css实现自由拖拽](https://mp.weixin.qq.com/s/gxe5QOVt9kRFWvXx-gugbg)
 - [10个后台管理模板](https://segmentfault.com/a/1190000038323430)
+- [各种按钮](https://github.com/ui-buttons/core)
 
 ### 各种属性
 - [现代css性能优化](http://verymuch.site/2018/07/22/CSS%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%848%E4%B8%AA%E6%8A%80%E5%B7%A7/?nsukey=3eczM2FJ0JQ8aS2hEDt1CnIzmS32kXvEkjuE7I0lrEF7M8jW7k7PPZtuVxX%2BT%2FsRQqGQ7YhSV%2FicPVi%2FrRG%2BhGGQQn6y7EuHKuERI93Idzq2ziur8T8dZL3qgDT%2Bw5au3cocxOGnSC7pBI7bve9tigiinrZL8Xaac042IW%2FR%2FxqJp8Fk21Nm7YbVUczUdhD%2F)
@@ -978,6 +980,8 @@ input[type=checkbox] {
 [outline](https://mp.weixin.qq.com/s/m_e37kJvaVvnOmzVm3H6Pg)
 
 ### mask
+
+[渐隐](https://mp.weixin.qq.com/s/qADnUx3G2tKyMT7iv6qFwg)
 
 通过遮罩层，可以做很多动画转场效果
 
