@@ -42,6 +42,7 @@
 - [在线数据转可视化图表](https://rawgraphs.io/)
 - [在线画avatar](https://notion-avatar.vercel.app/zh)
 - [在线代码转图片-codepng](https://www.codepng.app/)
+- [在线图片转favicon](https://favicon.io/favicon-converter)
 - [程序员在线各种资源](https://www.thosefree.com/)
   - [在线可视化看代码执行过程](https://pythontutor.com/visualize.html#mode=edit)
   - [在线把代码翻译成文字](https://denigma.app/#demo)
