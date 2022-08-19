@@ -103,12 +103,37 @@ HttpCode[200]
 ```
 
 ### any
-> 可以赋值给任意类型
+> 1. 可以赋值给任意类型
+> 2. 可用unknown替代
+> 3. 这是最后选择
 
 ### unknown
 > 1. 更安全的any
 > 2. 仅能赋值给unknown、any
 > 3. 没有任何属性、方法
+
+```ts
+function format2(value: unknown) {
+    value.toFixed(2); // 代码会飘红，阻止你这么做
+
+    // 你需要收窄类型范围，例如：
+
+    // 1、类型断言 —— 不飘红，但执行时可能错误
+    (value as Number).toFixed(2);
+
+    // 2、类型守卫 —— 不飘红，且确保正常执行
+    if (typeof value === 'number') {
+        // 推断出类型: number
+        value.toFixed(2);
+    }
+
+    // 3、类型断言函数，抛出错误 —— 不飘红，且确保正常执行
+    assertIsNumber(value);
+    value.toFixed(2);
+}
+```
+
+
 
 ---
 
