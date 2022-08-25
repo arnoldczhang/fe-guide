@@ -1029,6 +1029,16 @@ scroll-snap-align: start/end/center
 
 
 
+### 毛玻璃 backdrop-filter
+
+```css
+background-image: radial-gradient(transparent 1px,#fff 1px);
+background-size: 4px 4px;
+backdrop-filter: saturate(50%) blur(4px);
+```
+
+
+
 ---
 
 ### calc
