@@ -581,6 +581,30 @@ render(ctx, cache) {
 
 @vue/composition-api
 
+### 一些用法
+
+```typescript
+import { ComputedRef, InjectionKey } from 'vue';
+
+
+// 封装既有el-input
+import { useVModel } from '@vueuse/core';
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void;
+}>();
+const _modelValue = useVModel(props, 'modelValue', emit);
+
+
+// 入参情况
+import { MaybeRef } from '@vueuse/core';
+const fn = (list: MaybeRef<Record<string, any>[]>) => {};
+
+
+```
+
+
+
 
 ---
 
