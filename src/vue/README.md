@@ -581,6 +581,30 @@ render(ctx, cache) {
 
 @vue/composition-api
 
+### 一些用法
+
+```typescript
+import { ComputedRef, InjectionKey } from 'vue';
+
+
+// 封装既有el-input
+import { useVModel } from '@vueuse/core';
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void;
+}>();
+const _modelValue = useVModel(props, 'modelValue', emit);
+
+
+// 入参情况
+import { MaybeRef } from '@vueuse/core';
+const fn = (list: MaybeRef<Record<string, any>[]>) => {};
+
+
+```
+
+
+
 
 ---
 
@@ -802,6 +826,7 @@ export default class Child extends Vue {
 
 - [webpack-to-vite](https://github.com/originjs/webpack-to-vite)
 - [vite实践](https://mp.weixin.qq.com/s/pUzUr1lTfX3wkzJL_Xv1oQ)
+- [webpack和vite在开发阶段的区别](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247492637&idx=1&sn=3b2403d0c66f1e5cdd5226fb5f06afd3&scene=21#wechat_redirect)
 
 ---
 

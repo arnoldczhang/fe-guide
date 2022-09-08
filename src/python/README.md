@@ -5,8 +5,9 @@
   - ...
 
 - 启动
-```python
+```sh
 python3 ./src/python/super_cat.py
+```
 - 安装py2app
 ```python
 pip3 install py2app
