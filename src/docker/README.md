@@ -15,6 +15,7 @@
 * [`安装docker`](#安装docker)
 * [`安装jenkins`](#安装jenkins)
 * [`docker命令`](#docker命令)
+* [`docker原理`](#docker原理)
 
 </details>
 
@@ -197,3 +198,10 @@ yum install xorg-x11-server-utils.x86_64
 Xvfb -screen 0 1536x960x16 :99 &
 ```
 
+---
+
+## docker原理
+
+- namespace：实现资源隔离
+- control group：实现容器进程资源限制
+- unionFS：实现容器文件系统分层存储、写时复制、镜像合并
