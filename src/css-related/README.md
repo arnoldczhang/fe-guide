@@ -37,6 +37,7 @@
 - [10个后台管理模板](https://segmentfault.com/a/1190000038323430)
 - [各种按钮](https://github.com/ui-buttons/core)
 - [纯css实现悬浮box-shadow](https://mp.weixin.qq.com/s/kk5oXTAe72hbe72hnc0Jrg)
+- [纯css轮播图](https://mp.weixin.qq.com/s/84eYQjIWk8W0hEgQ8daeSg)
 
 ### 各种属性
 - [现代css性能优化](http://verymuch.site/2018/07/22/CSS%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%848%E4%B8%AA%E6%8A%80%E5%B7%A7/?nsukey=3eczM2FJ0JQ8aS2hEDt1CnIzmS32kXvEkjuE7I0lrEF7M8jW7k7PPZtuVxX%2BT%2FsRQqGQ7YhSV%2FicPVi%2FrRG%2BhGGQQn6y7EuHKuERI93Idzq2ziur8T8dZL3qgDT%2Bw5au3cocxOGnSC7pBI7bve9tigiinrZL8Xaac042IW%2FR%2FxqJp8Fk21Nm7YbVUczUdhD%2F)
@@ -55,6 +56,7 @@
 - [2020css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
 - [防御性css](https://ishadeed.com/article/defensive-css/)
 - [推荐的css初始化属性设置](https://www.joshwcomeau.com/css/custom-css-reset/)
+- [2022css现状](https://mp.weixin.qq.com/s/N33CBhVRwETgbtr3oSW-TA)
 
 ## 目录
 <details>
@@ -1037,6 +1039,21 @@ scroll-snap-align: start/end/center
 background-image: radial-gradient(transparent 1px,#fff 1px);
 background-size: 4px 4px;
 backdrop-filter: saturate(50%) blur(4px);
+```
+
+
+
+### @scope
+
+> 微前端样式冲突，终极解决方案
+
+```css
+/* 这样.card里的header样式就被固定了，不受外部影响 */
+@scope (.card) {
+  header {
+    color: var(--text);
+  }
+}
 ```
 
 
