@@ -275,6 +275,9 @@ script -> 清空微任务 -> 宏任务 -> 清空微任务 -> render -> 宏任务
 ---
 
 ## RenderStep
+
+> requestAnimationFrame既不算宏任务也不算微任务
+
 - Structure - 构建 DOM 树的结构
 - Layout - 确认每个 DOM 的大致位置（排版）
 - Paint - 绘制每个 DOM 具体的内容（绘制）
