@@ -190,6 +190,8 @@ node --inspect-brk dist/app.js
 
 - [超声波-quiet.js](https://quiet.github.io/quiet-js/)
 
+- [保持手机不暗屏-nosleep.js](https://github.com/richtr/NoSleep.js)
+
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
