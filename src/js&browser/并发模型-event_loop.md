@@ -6,6 +6,7 @@
 - https://juejin.im/entry/59082301a22b9d0065f1a186
 - [深入浏览器事件循环](https://zhuanlan.zhihu.com/p/45111890)
 - [Tasks, microtasks](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)
+- [通过performance工具了解event loop](https://mp.weixin.qq.com/s/22tS74K5JQr1V98Q4DPqJg)
 - [一次搞懂系列](https://mp.weixin.qq.com/s?__biz=MzA5NzkwNDk3MQ==&mid=2650590471&idx=1&sn=eb38606d9fbcf91e443cf5ca063fa89c&chksm=8891dd23bfe654350263cc4c534b775e22f3795581695d220691516b194aef6ee15479c23436&scene=38#wechat_redirect)
 
 ![运行机制](2954145-5bb92d1fbdb9df41.png)
@@ -24,6 +25,7 @@
 * [`任务队列`](#task)
 * [`回调队列`](#CallQueue)
 * [`await`](#await)
+* [`精要`](#宏任务和微任务)
 * [`一些题目`](#交互事件触发)
 
 </details>
@@ -81,7 +83,7 @@ function checkscope(){
 
 var foo = checkscope();
 foo();
-​
+
 // f
 fContext = {
     AO: {
@@ -242,6 +244,13 @@ script -> 清空微任务 -> 宏任务 -> 清空微任务 -> render -> 宏任务
 
 1. 进入到timers中，如果时间已到，也就是超时，则会执行回调
 2. poll队列为空且代码没有被setImmediate()时，若检测到timers队列中有timer已经超时，则回到timers阶段中，执行超时的timer回调
+
+### 浏览器API支持
+
+- [宏任务 schedule.postTask](https://developer.mozilla.org/en-US/docs/Web/API/Scheduler/postTask)
+- [微任务 queueMicrotask](https://developer.mozilla.org/zh-CN/docs/Web/API/queueMicrotask)
+
+
 
 ---
 
@@ -484,4 +493,92 @@ function f() {
 - ![await](await.jpg)
 
 
+
+---
+
+## 宏任务和微任务
+
+[通过performance工具了解event loop](https://mp.weixin.qq.com/s/22tS74K5JQr1V98Q4DPqJg)
+
+> microTask只是Task的一部分
+
+
+
+### 宏任务
+
+- requestAnimationFrame（每一帧的渲染前触发，一般刷新率在60hz到120hz，所以每次渲染间隔在**8.3~16.7ms**）
+- Major GC（垃圾回收）
+- requestIdleCallback（每一帧空闲时间触发，优先级较低，可能不被调用）
+- setTimeout（最小间隔4ms，且4ms以下随机触发）
+- postMessage（可模拟实现setTimeout(0)的效果）
+- MessageChannel
+- scheduler.postTask
+- Evaluate Script（执行js也是宏任务）
+
+### 微任务
+
+- runAllMicroTasks 部分
+
+
+
+### scheduler.postTask
+
+> 真正的调度
+
+[参考](https://medium.com/airbnb-engineering/building-a-faster-web-experience-with-the-posttask-scheduler-276b83454e91)
+
+#### priority
+
+| 优先级        | 描述                                                         | polyfill实现                                  |
+| ------------- | ------------------------------------------------------------ | --------------------------------------------- |
+| user-blocking | 最高优先级，可能会阻塞用户交互                               | 1. MessageChannel <br />2. setTimeout         |
+| user-visible  | 第二优先级，对用户可见，但不会阻塞用户交互。比如：渲染第二屏内容。这是默认优先级 | 同上，加队列控制                              |
+| background    | 最低优先级，通常执行不紧急任务，例如记录日志                 | 1. requestIdleCallback <br />2. setTimeout(0) |
+
+**举例**
+
+```js
+scheduler.postTask(() => console.log('Hello, postTask'), {
+   priority: 'background',
+});
+```
+
+
+
+### MessageChannel
+
+> [react16 scheduler](https://github.com/facebook/react/blob/v16.10.0/packages/scheduler/src/Scheduler.js) 使用 messageChannel 模拟实现了 schedule.postTask。
+
+
+
+**举例**
+
+```js
+ const schduler = (tasks) => {
+     const DEFAULT_RUNTIME = 16;
+     const { port1, port2 } = new MessageChannel();
+     let sum = 0;
+
+     // 运行器
+     const runner = () => {
+         const prevTime = performance.now();
+         do {
+             if (tasks.length === 0) {
+                 return;
+             }
+             const task = tasks.shift();
+             const value = task();
+             sum += value;
+         } while (performance.now() - prevTime < DEFAULT_RUNTIME);
+         // 当前分片执行完成后开启下一个分片
+         port2.postMessage('');
+     };
+
+     port1.onmessage = function () {
+         runner();
+     };
+
+     port2.postMessage('');
+ };
+```
 
