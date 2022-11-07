@@ -53,10 +53,10 @@
 - [各种换行用法](https://mp.weixin.qq.com/s/D4dn4ot55f7ISzHxwu2H5Q)
 
 ### 其他
-- [2020css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
+- [2020-css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
 - [防御性css](https://ishadeed.com/article/defensive-css/)
 - [推荐的css初始化属性设置](https://www.joshwcomeau.com/css/custom-css-reset/)
-- [2022css现状](https://mp.weixin.qq.com/s/N33CBhVRwETgbtr3oSW-TA)
+- [2022-css现状](https://mp.weixin.qq.com/s/N33CBhVRwETgbtr3oSW-TA)
 
 ## 目录
 <details>
