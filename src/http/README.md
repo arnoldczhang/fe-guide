@@ -132,6 +132,7 @@
 - 启动时会限制连接的最大速度，数据传输成功，传输速度不断提升
 - 当新建连接时，cwnd 初始化为 1 个最大报文段(MSS)大小
 - 之后随着报文段确认，就新增一个 MSS，最终 cwnd 呈指数型增长
+- 阈值为[**14KB**](https://endtimes.dev/why-your-website-should-be-under-14kb-in-size/)（即网页首屏超过14KB，传输速度会明显下滑），**http2**、**http3**和**QUIC**同样有此规则
 
 开始 ---> cwnd = 1
 经过 1 个 RTT 后 ---> cwnd = 1 * 2 = 2
