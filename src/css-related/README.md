@@ -38,6 +38,7 @@
 - [各种按钮](https://github.com/ui-buttons/core)
 - [纯css实现悬浮box-shadow](https://mp.weixin.qq.com/s/kk5oXTAe72hbe72hnc0Jrg)
 - [纯css轮播图](https://mp.weixin.qq.com/s/84eYQjIWk8W0hEgQ8daeSg)
+- [自适应文本头像](https://segmentfault.com/a/1190000042675552)
 
 ### 各种属性
 - [现代css性能优化](http://verymuch.site/2018/07/22/CSS%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%848%E4%B8%AA%E6%8A%80%E5%B7%A7/?nsukey=3eczM2FJ0JQ8aS2hEDt1CnIzmS32kXvEkjuE7I0lrEF7M8jW7k7PPZtuVxX%2BT%2FsRQqGQ7YhSV%2FicPVi%2FrRG%2BhGGQQn6y7EuHKuERI93Idzq2ziur8T8dZL3qgDT%2Bw5au3cocxOGnSC7pBI7bve9tigiinrZL8Xaac042IW%2FR%2FxqJp8Fk21Nm7YbVUczUdhD%2F)
@@ -51,6 +52,7 @@
 - [文字排布-text-combine-upright](http://www.deathghost.cn/article/css/86)
 - [纯CSS实现分栏宽度拉伸调整-resize](https://www.zhangxinxu.com/study/201903/css-idea/behavior-stretch.php)
 - [各种换行用法](https://mp.weixin.qq.com/s/D4dn4ot55f7ISzHxwu2H5Q)
+- [现代各种at-rule](https://mp.weixin.qq.com/s/LkM_Y-9OfgXatocVsM6m6g)
 
 ### 其他
 - [2020-css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
