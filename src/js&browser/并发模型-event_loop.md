@@ -506,7 +506,7 @@ function f() {
 
 ### 宏任务
 
-- requestAnimationFrame（每一帧的渲染前触发，一般刷新率在60hz到120hz，所以每次渲染间隔在**8.3~16.7ms**）
+- requestAnimationFrame（每一帧的**渲染前**触发，一般刷新率在60hz到120hz，所以每次渲染间隔在**8.3~16.7ms**）
 - Major GC（垃圾回收）
 - requestIdleCallback（每一帧空闲时间触发，优先级较低，可能不被调用）
 - setTimeout（最小间隔4ms，且4ms以下随机触发）
