@@ -508,7 +508,7 @@ function f() {
 
 - requestAnimationFrame（每一帧的**渲染前**触发，一般刷新率在60hz到120hz，所以每次渲染间隔在**8.3~16.7ms**）
 - Major GC（垃圾回收）
-- requestIdleCallback（每一帧空闲时间触发，优先级较低，可能不被调用）
+- requestIdleCallback（每一帧空闲时间触发，优先级较低，可能长时间不被调用，需要设超时时间）
 - setTimeout（最小间隔4ms，且4ms以下随机触发）
 - postMessage（可模拟实现setTimeout(0)的效果）
 - MessageChannel
