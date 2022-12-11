@@ -192,6 +192,8 @@ node --inspect-brk dist/app.js
 
 - [保持手机不暗屏-nosleep.js](https://github.com/richtr/NoSleep.js)
 
+- [ts版本的lodash-froebel](https://github.com/MathisBullinger/froebel)
+
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 

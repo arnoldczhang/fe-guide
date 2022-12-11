@@ -8,11 +8,9 @@
 
 ## 目录
 
-<details>
-<summary>展开更多</summary>
+[TOC]
 
-
-* [`组件二次封装`](#组件二次封装)
+---
 
 ## 组件二次封装
 
@@ -65,4 +63,12 @@ onUnmounted(() => {
 </script>
 
 ```
+
+---
+
+## 开发者调试
+
+### console格式化
+
+> Settings -> Preferences -> Enable custom formatters
 
