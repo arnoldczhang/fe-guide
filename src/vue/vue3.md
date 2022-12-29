@@ -162,3 +162,29 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 **异质对象**
 
 > 非普通对象
+
+
+
+### 数组
+
+**读取**
+
+- arr[0]
+- arr.length
+- **不改变**数组的原型方法（concat、find、some）
+- for...in
+- for...of
+
+
+
+**写入**
+
+- arr[100] = 1
+- arr.length = 100
+- 栈方法：push、pop
+- 修改原数组方法：splice、sort
+
+
+
+### Set和Map
+
