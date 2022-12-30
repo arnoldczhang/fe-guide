@@ -188,3 +188,4 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 
 ### Set和Map
 
+- map.set响应式数据会污染原数据
