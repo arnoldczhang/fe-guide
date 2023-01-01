@@ -58,6 +58,7 @@
 ### 其他
 - [2020-css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
 - [防御性css](https://ishadeed.com/article/defensive-css/)
+- [防御性css2](https://defensivecss.dev/tips)
 - [推荐的css初始化属性设置](https://www.joshwcomeau.com/css/custom-css-reset/)
 - [2022-css现状](https://mp.weixin.qq.com/s/N33CBhVRwETgbtr3oSW-TA)
 
@@ -77,6 +78,8 @@
 * [`常识`](常识)
 
 </details>
+
+[TOC]
 
 ## 常见用法
 
@@ -968,6 +971,16 @@ font-variant-east-asian: traditional;
 }
 ```
 
+**黑白/悼念模式**
+
+```css
+.gray {
+  filter: grayscale(100%);
+}
+```
+
+
+
 ### accent-color
 
 > 设置 checkbox 或 radio 被选中时的颜色
@@ -1046,6 +1059,28 @@ backdrop-filter: saturate(50%) blur(4px);
 
 
 
+### 悼念灰色模式
+
+[灰色模式](https://mp.weixin.qq.com/s/pwXyZ-MAemaBhlPC6KM0hA)
+
+```css
+html {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+}
+html::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    backdrop-filter: grayscale(95%);
+    z-index: 10;
+}
+```
+
+
+
 ### @scope
 
 > 微前端样式冲突，终极解决方案
@@ -1058,6 +1093,58 @@ backdrop-filter: saturate(50%) blur(4px);
   }
 }
 ```
+
+
+
+### pointer-events
+
+> none：阻止元素成为鼠标事件目标（子元素可以单独加pointer-events: all或其他，来破除这个限制）
+>
+> auto：初始值
+>
+> **注：很巧妙，能从css层面实现[节流](https://mp.weixin.qq.com/s/9_53TqxExIfvsxSFfOnEsA)**
+
+```css
+.button{
+  animation: throttle 2s step-end forwards;
+}
+.button:active{
+  animation: none;
+}
+@keyframes throttle {
+  from {
+    pointer-events: none;
+  }
+  to {
+    pointer-events: all;
+  }
+}
+```
+
+### font-family
+
+[css字体](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247494195&idx=1&sn=96e613dbd336f603b4fa217751684b8b&chksm=ce2689c5f95100d33d283599b841f8850e8dcd7c2015742e721dc37efbfccbbad8cd5a53ab23&token=805012839&lang=zh_CN&scene=21#wechat_redirect)
+
+**使用建议**
+
+- 尽量使用系统自带字体（加载性能考虑）
+- 西文优先，中文随后加载
+- 兼容多操作系统
+- 以字体族系列 serif（**衬线字体**） 和 sans-serif（**非衬线字体**） 结尾，确保字体风格统一
+
+
+
+**什么时候需要引号？**
+
+> 当字体名字中间有空格、中文名字体及 Unicode 字符编码表示的中文字体时，需要。
+
+```css
+font-family: 'Microsoft Yahei';
+```
+
+### @property
+
+[这里用到了@property](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247494281&idx=1&sn=2a3e8083a0ada47f926d511b0163bf3c&chksm=ce26897ff951006910a52ae34695d3383e4ab90ab644ed97915e1d8a2067d87490a33e9cc550&token=805012839&lang=zh_CN&scene=21#wechat_redirect)
 
 
 
