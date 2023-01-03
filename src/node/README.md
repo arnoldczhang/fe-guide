@@ -194,6 +194,12 @@ node --inspect-brk dist/app.js
 
 - [ts版本的lodash-froebel](https://github.com/MathisBullinger/froebel)
 
+- [新手引导-Intro.js/Shepherd/Joyride/Vue-Tour](https://mp.weixin.qq.com/s/loTDmZKR8_hF76xCkB0ehQ)
+
+- [链接加速打开-quicklink](https://github.com/GoogleChromeLabs/quicklink)
+
+- [有限状态机-xstate](https://xstate.js.org/docs/packages/xstate-vue/#quick-start)
+
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
@@ -1131,8 +1137,11 @@ function promisify(original) {
   "name": "demo",
   "exports": {
     ".": {
-      "import": "./foo.mjs",
-      "require": "./foo.js"
+      "types": "index.d.ts",
+      "module": "index.js",
+      "import": "index.js",
+      "require": "index.cjs",
+      "default": "index.js"
     }
   }
 }
