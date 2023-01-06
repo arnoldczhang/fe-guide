@@ -76,7 +76,7 @@
     - http 三次握手协议
     - http 状态码
     - json 与 xml
-    - 前端性能优化
+    - 前端性能优化（[每年性能优化文章，年底更新](https://calendar.perfplanet.com/2022/)）
     - nodejs/npm/yarn 相关内容
     - 页面加载过程
 - 算法
