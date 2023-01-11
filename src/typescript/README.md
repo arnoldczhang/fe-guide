@@ -616,5 +616,9 @@ const { emitSkipped, diagnostics } = program.emit();
 
 
 
+### 增量编译
 
+incremental
+
+[ts3.4-增量编译](https://mp.weixin.qq.com/s/830njEJhNGSSvYO7zHXg8A)
 
