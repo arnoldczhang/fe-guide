@@ -37,6 +37,7 @@
 * [`manifest.json`](#manifest.json)
 * [`webpack-dev-server`](#webpack-dev-server)
 * [`热更新`](#热更新)
+* [`加速优化`](#加速优化)
 * [`其他`](#其他)
 
 </details>
@@ -1521,3 +1522,80 @@ node_modules/webpack-dev-server/lib/options.json
 #### writeToDisk
 默认启动 dev-server，文件放在内存中，需要加这个参数落到硬盘上
 
+---
+
+## 加速优化
+
+### 1.合理使用loader
+> 用`include`或`exclude`来帮我们避免不必要的转译，优化loader的管辖范围，比如 webpack 官方在介绍 babel-loader 时给出的示例：
+
+```JS
+module: {
+  rules: [
+    {
+      test: /\.js$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env']
+        }
+      }
+    }
+  ]
+}
+```
+
+### 2.cache-loader
+> 在一些性能开销较大的 loader 之前添加 cache-loader，将结果缓存中磁盘中。默认保存在 node_modueles/.cache/cache-loader 目录下。
+
+```js
+module.exports = {
+    //...
+    
+    module: {
+        //我的项目中,babel-loader耗时比较长，所以我给它配置了`cache-loader`
+        rules: [
+            {
+                test: /\.jsx?$/,
+                use: ['cache-loader','babel-loader']
+            }
+        ]
+    }
+}
+```
+
+### 3.happypack
+> 多进程构建
+
+由于有大量文件需要解析和处理，构建是文件读写和计算密集型的操作，特别是当文件数量变多后，Webpack 构建慢的问题会显得严重。文件读写和计算操作是无法避免的，那能不能让 Webpack 同一时刻处理多个任务，发挥多核 CPU 电脑的威力，以提升构建速度呢？
+
+HappyPack 就能让 Webpack 做到这点，它把任务分解给多个子进程去并发的执行，子进程处理完后再把结果发送给主进程。
+
+### 4.thread-loader
+
+除了使用 Happypack 外，我们也可以使用 thread-loader ，把 thread-loader 放置在其它 loader 之前，那么放置在这个 loader 之后的 loader 就会在一个单独的 worker 池中运行。
+
+在 worker 池(worker pool)中运行的 loader 是受到限制的。例如：
+
+这些 loader 不能产生新的文件。
+这些 loader 不能使用定制的 loader API（也就是说，通过插件）。
+这些 loader 无法获取 webpack 的选项设置。
+
+### 5.DllPlugin类库引入
+
+处理第三方库的姿势有很多，其中，Externals 会引发重复打包的问题；而CommonsChunkPlugin 每次构建时都会重新构建一次 vendor；出于对效率的考虑，我DllPlugin是最佳选择。
+
+DllPlugin 是基于 Windows 动态链接库（dll）的思想被创作出来的。这个插件会把第三方库单独打包到一个文件中，这个文件就是一个单纯的依赖库。这个依赖库不会跟着你的业务代码一起被重新打包，只有当依赖自身发生版本变化时才会重新打包。
+
+用 DllPlugin 处理文件，要分两步走：
+
+基于 dll 专属的配置文件，打包 dll 库
+基于 webpack.config.js 文件，打包业务代码
+
+### 6.tree Shaking 删除冗余代码
+
+### 7.按需加载
+
+
+---

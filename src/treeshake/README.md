@@ -1,4 +1,4 @@
-# tree shake
+# treeshake
 
 ## 参考
   - https://www.zhihu.com/question/41922432
@@ -79,3 +79,6 @@ getContent({ runtimeTemplate, runtimeRequirements }) {
 2. 生成抽象语法树（Acorn），建立语句间的关联关系
 3. 为每个节点打标，标记是否被使用
 4. 生成代码（MagicString+ position）去除无用代码
+
+---
+
