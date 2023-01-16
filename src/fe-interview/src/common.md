@@ -191,6 +191,7 @@
 * [`暗黑模式`](#暗黑模式)
 * [`抗锯齿`](#抗锯齿)
 * [`css-in-js`](#css-in-js)
+* [`盒模型`](#盒模型)
 
 **html**
 
@@ -3713,3 +3714,17 @@ A：[解答](https://css-tricks.com/explain-the-first-10-lines-of-twitter-source
 
 ![html头部](html头部.jpg)
 
+---
+
+### 盒模型
+
+#### 非标准（怪异模式）
+> IE5.x和IE6
+
+width = 内容、padding-left/right、border-left/right的宽度总和
+
+#### 标准盒模型
+
+总width = width + padding-left/right + border-left/right + margin-left/right
+
+总元素的高度 = height + padding-top/bottom + border-top/bottom + margin-top/bottom

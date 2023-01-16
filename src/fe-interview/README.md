@@ -12,6 +12,7 @@
 - [重绘重排](./src/common.md#重绘和回流)
 - [GPU渲染和复合图层](./src/common.md#GPU加速)
 - [VO和AO](../js&browser/并发模型-event_loop.md#执行上下文和作用域链)
+- [盒模型](./src/common.md#盒模型)
 
 ## 2. 手写源码
 
