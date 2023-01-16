@@ -14,8 +14,9 @@
 * [`npm link`](#npm-link)
 * [`npm view`](#npm-view)
 * [`npm的替代`](npm的替代)
-* [`npm ci`](npm ci)
-* [`pnpm`](pnpm)
+* [`npm ci`](#npm-ci)
+* [`pnpm`](#pnpm)
+* [`yarn&pnpm`](#yarn&pnpm)
 
 </details>
 
@@ -366,7 +367,7 @@ pnpm link --global <包名>
 
 ---
 
-## npm ci
+## npm-ci
 
 参考[npm doc](https://docs.npmjs.com/cli/v8/commands/npm-ci)
 
@@ -385,3 +386,15 @@ npm ci 和 npm i 的区别如下：
 > npm5 版本之前对 package-lock.json 的兼容，
 >
 > 主要用于做精确的版本控制（依赖包、依赖包的依赖包），避免多人协作出现不同依赖包版本冲突问题
+
+---
+
+## yarn&pnpm
+
+### npm3+和yarn
+- 依赖半扁平（同一个包不同版本，包的安装位置不确定，依据package.json的顺序）
+
+### pnpm
+- 依赖完全扁平（包以软链形式链接到.pnpm包下扁平的各版本包）
+- 扁平化算法简单很多，节省时间
+- 当依赖了同一个包的不同版本时，只对变更的文件进行更新，不需要重复下载没有变更的部分

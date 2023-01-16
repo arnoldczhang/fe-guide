@@ -829,6 +829,17 @@ export default class Child extends Vue {
 - [vite实践](https://mp.weixin.qq.com/s/pUzUr1lTfX3wkzJL_Xv1oQ)
 - [webpack和vite在开发阶段的区别](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247492637&idx=1&sn=3b2403d0c66f1e5cdd5226fb5f06afd3&scene=21#wechat_redirect)
 
+### 优势
+> 冷启动快，热更新快
+
+### 冷启动快的原因
+- 依赖`esbuild`做预构建：`esbuild`使用GO语言写的，比js编写的打包器快10-100倍
+- 按需编译返回：基于浏览器原生esm的依赖关系，将文件打包成多个单独模块；当浏览器请求到某个模块（即原生import）某个模块时，才会按需返回源码
+
+### 热更新快的原因
+- 通过`chokidar`监听文件变化，单独编译发生变更的模块&返回
+- 而webpack会以当前修改文件为入口，重新编译所有涉及到的依赖
+
 ---
 
 ## 好用的npm

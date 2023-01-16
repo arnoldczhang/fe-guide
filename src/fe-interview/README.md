@@ -19,15 +19,23 @@
 - promise.all
 - eventBus
 - 模拟请求池
+- 深拷贝
+- 数据结构扁平化
+- 正则解析url
+- 防抖节流
 
 ## 3. 打包工具
 
 - [webpack加速优化](../webpack/README.md#加速优化)
 - [webpack和rollup的treeshake的区别](../treeshake/README.md)
+- [vite对比webpack的优势](../vue/README.md#vite)
+- [yarn和pnpm](../npm&yarn/README.md#yarn&pnpm)
+- vite3解决巨量刷新
 
 ## 4. 网络
 
 - 网页请求展示全过程
+- [get和post](../js&browser/页面过程与浏览器缓存.md#GETvsPOST)
 
 ## 5. 前端框架
 
@@ -42,6 +50,12 @@
 
 
 ## 8. 算法
+
+
+
+## 9. 技术方案
+
+- [离线包更新方案](./src/common.md#移动端离线包)
 
 
 

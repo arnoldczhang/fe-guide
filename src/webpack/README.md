@@ -1391,7 +1391,7 @@ debug: Boolean 启用debug 用于故障排查。默认 false
 ## 热更新
 1. 利用 webpack-dev-server（express），建立 HMR server
 2. 页面 dev-server/client 和 HMR server 建立 websocket 通信
-3. webpack 编译生成的新代码，通过 HMR server 发送给页面
+3. webpack 会以当前修改文件为入口，重新编译所有涉及到的依赖，生成的新代码，通过 HMR server 发送给页面
 4. 页面根据 socket 获取的 chunk 头进行比较，获知需要更新的模块
 5. 模块根据 module.hot.accpet，判断能否更新，若无法更新，强刷页面
 
