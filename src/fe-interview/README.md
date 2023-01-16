@@ -19,11 +19,12 @@
 - [LRU](../algorithm/leetcode/双向链表-LRU缓存机制.js)
 - promise.all
 - eventBus
-- 模拟请求池
-- 深拷贝
-- 数据结构扁平化
+- [模拟请求池](./src/模拟节流请求.js)
+- [深拷贝](./src/深拷贝.md)
+- [数据结构扁平化](./src/扁平数据转树状结构.js)
 - 正则解析url
-- 防抖节流
+- [防抖](./src/debounce.js)
+- [节流](./src/throttle.js)
 
 ## 3. 打包工具
 
