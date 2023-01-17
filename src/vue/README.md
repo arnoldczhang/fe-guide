@@ -840,6 +840,15 @@ export default class Child extends Vue {
 - 通过`chokidar`监听文件变化，单独编译发生变更的模块&返回
 - 而webpack会以当前修改文件为入口，重新编译所有涉及到的依赖
 
+### vite3对首次全量加载的优化
+参考这次[pr](https://github.com/vitejs/vite/pull/8869)
+
+vite3.0之前：是全量爬取需要优化的文件给浏览器，然后依次加载
+vite3.0之后：优先爬取静态import（这个3.0能获取）给浏览器，后面再加载动态引用的资源
+
+差异：10秒~
+
+
 ---
 
 ## 好用的npm
