@@ -18,7 +18,7 @@
 
 - [LRU](../algorithm/leetcode/双向链表-LRU缓存机制.js)
 - promise.all
-- eventBus
+- [eventBus](./src/eventBus.js)
 - [模拟请求池](./src/模拟节流请求.js)
 - [深拷贝](./src/深拷贝.md)
 - [数据结构扁平化](./src/扁平数据转树状结构.js)
