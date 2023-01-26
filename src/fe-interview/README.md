@@ -25,6 +25,7 @@
 - 正则解析url
 - [防抖](./src/debounce.js)
 - [节流](./src/throttle.js)
+- [promise](./src/promise.js)
 
 ## 3. 打包工具
 

@@ -1342,7 +1342,7 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b});
 
 ---
 
-### 描述网页从输入 url 到渲染的过程
+### 描述网页从输入url到渲染的过程
 
 [过程](../../js&browser/页面过程与浏览器缓存.md#过程简述)
 
@@ -2394,7 +2394,7 @@ function handle(req, res) {
 
 ---
 
-### css 影响页面加载
+### css影响页面加载
 
 [参考](../../js&browser/页面过程与浏览器缓存.md#js/css对dom解析渲染的影响)
 
