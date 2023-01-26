@@ -13,11 +13,14 @@
 - [GPU渲染和复合图层](./src/common.md#GPU加速)
 - [VO和AO](../js&browser/并发模型-event_loop.md#执行上下文和作用域链)
 - [盒模型](./src/common.md#盒模型)
+- [get和post](../js&browser/页面过程与浏览器缓存.md)
+- [mjs和cjs](../js&browser/esm.md)
+- [跨域](../http/跨域.md)
+- [性能优化](../js&browser/性能优化2020.md)
 
 ## 2. 手写源码
 
 - [LRU](../algorithm/leetcode/双向链表-LRU缓存机制.js)
-- promise.all
 - [eventBus](./src/eventBus.js)
 - [模拟请求池](./src/模拟节流请求.js)
 - [深拷贝](./src/深拷贝.md)
@@ -26,6 +29,7 @@
 - [防抖](./src/debounce.js)
 - [节流](./src/throttle.js)
 - [promise](./src/promise.js)
+- [bind](./src/bind.js)
 
 ## 3. 打包工具
 
