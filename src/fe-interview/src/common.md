@@ -1691,7 +1691,7 @@ define(function(require, exports, module) {
 
 ---
 
-### cookie 和 token 都存放在 header 中，为什么不会劫持 token
+### cookie和token都存放在header中，为什么不会劫持token
 
 [参考](../../js&browser/网络安全.md#CSRF)
 
@@ -1700,7 +1700,7 @@ define(function(require, exports, module) {
 
 ---
 
-### 如何实现 token 加密
+### 如何实现token加密
 
 [参考](../../js&browser/网络安全.md#CSRF)
 
