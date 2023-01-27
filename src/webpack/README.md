@@ -1526,6 +1526,10 @@ node_modules/webpack-dev-server/lib/options.json
 
 ## 加速优化
 
+- 少打包
+- 缓存
+- 多路打包
+
 ### 1.合理使用loader
 > 用`include`或`exclude`来帮我们避免不必要的转译，优化loader的管辖范围，比如 webpack 官方在介绍 babel-loader 时给出的示例：
 

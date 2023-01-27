@@ -78,7 +78,7 @@ getContent({ runtimeTemplate, runtimeRequirements }) {
 1. 从入口文件开始，组织依赖关系，并按文件生成 Module
 2. 生成抽象语法树（Acorn），建立语句间的关联关系
 3. 为每个节点打标，标记是否被使用
-4. 生成代码（MagicString+ position）去除无用代码
+4. 生成代码（MagicString + position）去除无用代码
 
 ---
 
