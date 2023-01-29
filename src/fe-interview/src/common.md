@@ -778,7 +778,7 @@ const resize = (size) => {
 
 - HTML5 事件
 - 初始的 HTML 文件被完整读取时触发
-- 异步加载的 css，不会影响 DOMContentLoaded
+- 异步加载的 css和js，不会影响 DOMContentLoaded
 
 **几种说法**
 
@@ -806,7 +806,7 @@ const resize = (size) => {
 
 - DOM 事件
 - 所有内容加载完，包括 js 中的 js、css、图片、iframe
-- 不包括请求
+- 请求和异步的js，不影响onload
 
 ---
 
