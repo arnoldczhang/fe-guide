@@ -70,4 +70,5 @@
 - [abest](../career/ab实验.md)
 - [微前端](../microservice/微前端.md)
 - [监控平台](../career/前端埋点和监控方案.md)
+- [前端自动化测试](../career/前端自动化测试.md)
 
