@@ -29,7 +29,19 @@ const curry2 = (fn, arr = []) => (...args) => (
   arg => arg.length === fn.length
     ? fn(...arg)
     : curry(fn, arg)
-)([...arr, ...args])
+)([...arr, ...args]);
+
+//
+const curry3 = (fn, givenArgs = []) => {
+  const { length } = fn;
+  return (...args) => {
+    givenArgs = givenArgs.concat(args);
+    if (givenArgs.length >= length) {
+      return fn(...givenArgs);
+    }
+    return curry(fn, givenArgs);
+  };
+};
 
 // test
 // function multiFn(a, b, c) {
