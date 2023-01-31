@@ -4,6 +4,20 @@
 
 - [JavaScript模块](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Modules)
 
+## 解释
+一般来讲分两种：.mjs和.cjs
+
+**.cjs**：就是原来的 commonjs 方式（module.exports）
+
+**.mjs**：ecmascript module system（export defalt），通过<script type="module" src="..."></script>加载
+
+- Commonjs是拷贝输出，ES6模块化是引用输出
+- Commonjs是运行时加载，ES6模块化是编译时输出接口
+- Commonjs是单个值导出，ES6模块化可以多个值导出
+- Commonjs是动态语法可写在函数体中，ES6模块化静态语法只能写在顶层
+- Commonjs的this是当前模块化，ES6模块化的this是undefined
+
+
 ## 例子
 
 ### 基础用法

@@ -52,7 +52,16 @@ where s.Age > 12 && s.Age < 20
 select s;
 ```
 
+
+
+### 日期类型
+
+- **datetime**：无时区时间
+- **long**：就是一个整数
+- **timestamp**：标准 unix 时间戳，上限2038年
+
 ### 分类
+
 - 数据定义语言 DDL
 - 数据操纵语言 DML
 - 数据查询语言 DQL

@@ -47,7 +47,7 @@
 
 ## 执行上下文和作用域链
 * 函数被调用
-* 创建执行上下文
+* 创建执行期上下文（Activation Object，即作用域，叫AO）
     - a) 词法环境（LexicalEnviroment，以前叫VO）：变量、函数和参数
     - b) 作用域链：Scope
     - c) this
@@ -59,6 +59,11 @@
     - ...
 * 执行完成，往上一层 执行上下文  返回数据
 * 从执行上下文栈pop出一个新的执行上下文执行
+
+### AO和VO区别
+- AO是执行时上下文，VO提供函数中所有变量的模板
+- VO(context) === AO
+- 最简解释：函数调用时，VO被激活（实例化）成了AO
 
 ### 执行上下文
 
@@ -508,7 +513,7 @@ function f() {
 
 - requestAnimationFrame（每一帧的**渲染前**触发，一般刷新率在60hz到120hz，所以每次渲染间隔在**8.3~16.7ms**）
 - Major GC（垃圾回收）
-- requestIdleCallback（每一帧空闲时间触发，优先级较低，可能长时间不被调用，需要设超时时间）
+- requestIdleCallback（每一帧空闲时间触发，优先级较低，可能长时间不被调用，需要设**超时时间**）
 - setTimeout（最小间隔4ms，且4ms以下随机触发）
 - postMessage（可模拟实现setTimeout(0)的效果）
 - MessageChannel
@@ -517,7 +522,9 @@ function f() {
 
 ### 微任务
 
-- runAllMicroTasks 部分
+- Promise
+- process.nextTick（node）
+- MutaionObserver
 
 
 

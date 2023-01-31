@@ -40,6 +40,7 @@
 - [纯css实现悬浮box-shadow](https://mp.weixin.qq.com/s/kk5oXTAe72hbe72hnc0Jrg)
 - [纯css轮播图](https://mp.weixin.qq.com/s/84eYQjIWk8W0hEgQ8daeSg)
 - [自适应文本头像](https://segmentfault.com/a/1190000042675552)
+- [chrome官方css教程](https://web.dev/learn/css/lists/)
 
 ### 各种属性
 - [现代css性能优化](http://verymuch.site/2018/07/22/CSS%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%848%E4%B8%AA%E6%8A%80%E5%B7%A7/?nsukey=3eczM2FJ0JQ8aS2hEDt1CnIzmS32kXvEkjuE7I0lrEF7M8jW7k7PPZtuVxX%2BT%2FsRQqGQ7YhSV%2FicPVi%2FrRG%2BhGGQQn6y7EuHKuERI93Idzq2ziur8T8dZL3qgDT%2Bw5au3cocxOGnSC7pBI7bve9tigiinrZL8Xaac042IW%2FR%2FxqJp8Fk21Nm7YbVUczUdhD%2F)
@@ -158,6 +159,7 @@
 - :focus
 - :link
 - :first-child
+- :has
 
 **伪元素**
 
@@ -1531,7 +1533,7 @@ img:after {
 
 ---
 
-## 选择器
+## 伪类选择器
 
 ### xxx:nth-child(n)
 
@@ -1540,6 +1542,25 @@ img:after {
 ### xxx:nth-of-type(n)
 
 > 表示：假设 xxx 的 tagName 是 T，那么 xxx 父元素的第 n 个 tagName 是 T 的子元素，是xxx。
+
+### xxx:has(selector)
+
+> 匹配父、兄、子元素，css在chrome105开始生效，querySelector早就生效了。
+>
+> 因为DOM 的渲染是从上往下，从内往外的，所以这个规则落地前要解决css回溯问题。
+>
+> 
+>
+> - [css invalidation in blink](https://chromium.googlesource.com/chromium/src/+/refs/tags/90.0.4430.54/third_party/blink/renderer/core/css/style-invalidation.md)
+> - [:has在表单的运用](https://webkit.org/blog/13096/css-has-pseudo-class/#styling-form-states-without-js)
+
+介绍：[张鑫旭-css:has](https://www.zhangxinxu.com/wordpress/2022/08/css-has-pseudo-class/)
+
+性能测试：[css has](https://css-has.glitch.me/)
+
+官方解释：[github](https://github.com/Igalia/explainers/tree/main/css/has#design)
+
+
 
 ---
 

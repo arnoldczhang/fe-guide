@@ -229,6 +229,30 @@ document.querySelectorAll('link[title]').forEach((link) => {
 <input spellcheck="false"/>
 ```
 
+### template
+
+```html
+<template id="burger-template">
+  <button type="button" aria-expanded="false" aria-label="Menu" aria-controls="mainnav">
+    <svg width="24" height="24" aria-hidden="true">
+      <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z">
+    </svg>
+  </button>
+</template>
+<article id="app"></article>
+<script>
+const template = document.querySelector('#id-of-template');
+const content = template.content.cloneNode(true);
+
+const container = document.querySelector('#app');
+container.append(content);
+</script>
+```
+
+
+
+
+
 ---
 
 ## shadowdom

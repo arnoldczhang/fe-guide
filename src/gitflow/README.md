@@ -63,6 +63,9 @@ git log --pretty=format:xxx ${某文件}
 git branch -r --contains commitID
 ```
 
+### git-reset
+[reset还是revert](https://zhuanlan.zhihu.com/p/137856034)
+
 ---
 
 ## github

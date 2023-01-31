@@ -13,6 +13,7 @@
 - [vue-property-decoration](https://github.com/kaorun343/vue-property-decorator)
 - [vue全资源搜索](https://bestofvue.com/)
 - [vue3-后台管理系统示例1](http://admin.spicyboy.cn/#/login)
+- [vue中的设计模式](https://mp.weixin.qq.com/s?__biz=Mzg3ODAyNDI0OQ==&mid=2247490496&idx=1&sn=23503fdf27e5254daab8c157e7246752&scene=21#wechat_redirect)
 
 
 
@@ -827,6 +828,26 @@ export default class Child extends Vue {
 - [webpack-to-vite](https://github.com/originjs/webpack-to-vite)
 - [vite实践](https://mp.weixin.qq.com/s/pUzUr1lTfX3wkzJL_Xv1oQ)
 - [webpack和vite在开发阶段的区别](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247492637&idx=1&sn=3b2403d0c66f1e5cdd5226fb5f06afd3&scene=21#wechat_redirect)
+
+### 优势
+> 冷启动快，热更新快
+
+### 冷启动快的原因
+- 依赖`esbuild`做预构建：`esbuild`使用GO语言写的，比js编写的打包器快10-100倍
+- 按需编译返回：基于浏览器原生esm的依赖关系，将文件打包成多个单独模块；当浏览器请求到某个模块（即原生import）某个模块时，才会按需返回源码
+
+### 热更新快的原因
+- 通过`chokidar`监听文件变化，单独编译发生变更的模块&返回
+- 而webpack会以当前修改文件为入口，重新编译所有涉及到的依赖
+
+### vite3对首次全量加载的优化
+参考这次[pr](https://github.com/vitejs/vite/pull/8869)
+
+vite3.0之前：是全量爬取需要优化的文件给浏览器，然后依次加载
+vite3.0之后：优先爬取静态import（这个3.0能获取）给浏览器，后面再加载动态引用的资源
+
+差异：10秒~
+
 
 ---
 

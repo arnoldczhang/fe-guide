@@ -191,6 +191,7 @@
 * [`暗黑模式`](#暗黑模式)
 * [`抗锯齿`](#抗锯齿)
 * [`css-in-js`](#css-in-js)
+* [`盒模型`](#盒模型)
 
 **html**
 
@@ -259,7 +260,7 @@ Number([]) === 0
 
 ---
 
-### let、const 以及 var 的区别
+### let、const以及var的区别
 
 | 声明方式 | 变量提升 | 暂时死区 | 重复声明 | 块作用有效 |
 | :-: | :-: | :-: | :-: | :-: |
@@ -777,7 +778,7 @@ const resize = (size) => {
 
 - HTML5 事件
 - 初始的 HTML 文件被完整读取时触发
-- 异步加载的 css，不会影响 DOMContentLoaded
+- 异步加载的 css和js，不会影响 DOMContentLoaded
 
 **几种说法**
 
@@ -805,7 +806,7 @@ const resize = (size) => {
 
 - DOM 事件
 - 所有内容加载完，包括 js 中的 js、css、图片、iframe
-- 不包括请求
+- 请求和异步的js，不影响onload
 
 ---
 
@@ -1341,7 +1342,7 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b});
 
 ---
 
-### 描述网页从输入 url 到渲染的过程
+### 描述网页从输入url到渲染的过程
 
 [过程](../../js&browser/页面过程与浏览器缓存.md#过程简述)
 
@@ -1579,7 +1580,35 @@ arr instanceof Array; // false
     });
     ```
 
-    
+#### GPU加速
+> [参考](https://www.haorooms.com/post/css3_gpu)，即css3硬件加速，利用GPU渲染，减少CPU操作
+
+**分工**
+
+CPU：负责布局分层（合成层的位图处理）
+GPU：负责绘制渲染
+
+**渲染图层和复合图层**
+
+- 渲染图层：纯2D
+- 复合图层：层叠上下文
+
+**如何开启复合图层？**
+
+- will-change
+- filter
+- transfrom
+- opacity
+
+**复合图层的作用？**
+
+- 合成层的位图交由GPU渲染，会比CPU快
+- 重绘重排只会影响当前层
+- `transform`和`opacity`不会触发重绘重排，直接进入合成线程
+
+**注意点**
+
+GPU加载太多纹理后可能造成内容错乱，所以尽量将大量重绘重排的元素单独分层
 
 ---
 
@@ -1662,7 +1691,7 @@ define(function(require, exports, module) {
 
 ---
 
-### cookie 和 token 都存放在 header 中，为什么不会劫持 token
+### cookie和token都存放在header中，为什么不会劫持token
 
 [参考](../../js&browser/网络安全.md#CSRF)
 
@@ -1671,7 +1700,7 @@ define(function(require, exports, module) {
 
 ---
 
-### 如何实现 token 加密
+### 如何实现token加密
 
 [参考](../../js&browser/网络安全.md#CSRF)
 
@@ -1968,7 +1997,7 @@ LazyMan.prototype = {
 
 #### 结构
 
-|   | 从渲染树中消失 | 渲染时占空间 | 事件监听 | 影响计数 |
+|   | 从渲染树中消失 | 渲染时占空间 | 事件监听 | 影响计数（ol里的li） |
 | - | -: | :-: | :-: | :-: |
 | display: none | √ | × | × | √ |
 | opacity: 0 | × | √ | √ | × |
@@ -2365,7 +2394,7 @@ function handle(req, res) {
 
 ---
 
-### css 影响页面加载
+### css影响页面加载
 
 [参考](../../js&browser/页面过程与浏览器缓存.md#js/css对dom解析渲染的影响)
 
@@ -3268,7 +3297,10 @@ process.on('SIGTERM', handleExit);
 
 ### 移动端离线包
 
-将文件缓存到本地，过段时间拉取新版本，检查是否需要更新，此外，预加载、按需加载、执行流程编排也可以谈谈
+- 定义config文件（离线包版本、覆盖哪些url、降级状态、本地缓存映射关系）
+- 预加载（比如app初次下载完、冷启动）
+- 按需加载（比如webview首次打开h5页面，先检查资源是否有更新，没有的话再检查本地缓存，最后都没有再请求）
+- 文件缓存（请求完，资源zip包存到本地）
 
 ---
 
@@ -3682,3 +3714,17 @@ A：[解答](https://css-tricks.com/explain-the-first-10-lines-of-twitter-source
 
 ![html头部](html头部.jpg)
 
+---
+
+### 盒模型
+
+#### 非标准（怪异模式）
+> IE5.x和IE6
+
+width = 内容width、padding-left/right、border-left/right的宽度总和
+
+#### 标准盒模型
+
+width = 内容width + padding-left/right + border-left/right + margin-left/right
+
+总元素的高度 = height + padding-top/bottom + border-top/bottom + margin-top/bottom
