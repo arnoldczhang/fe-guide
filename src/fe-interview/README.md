@@ -31,6 +31,7 @@
 - [节流](./src/throttle.js)
 - [promise](./src/promise.js)
 - [bind](./src/bind.js)
+- [字符串全匹配](./src/字符串全匹配.js)
 
 ## 3. 打包工具
 
