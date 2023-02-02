@@ -61,8 +61,8 @@
 - [领导力](../career/领导力.md)
 
 ## 8. 算法
-- [最长回文子串](../algorithm/leetcode/dp-最长回文子串.js)
-- [nSum](../algorithm/leetcode/双指针-nSum.js)
+- [双指针-最长回文子串](../algorithm/leetcode/dp-最长回文子串.js)
+- [双指针-nSum](../algorithm/leetcode/双指针-nSum.js)
 
 
 ## 9. 技术方案
