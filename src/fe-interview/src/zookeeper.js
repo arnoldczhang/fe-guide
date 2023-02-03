@@ -54,35 +54,44 @@ class ZooKeeper {
     return this.iterateInsert(other, newNode);
   }
 
-  iterateDelete(list, node = this.root) {
+  checkExisted(list, node = this.root) {
     const [first, ...other] = list;
     const existed = node.children.find(({ path }) => path === first);
     if (existed) {
       if (other.length) {
-        return this.iterateDelete(other, existed);
+        return this.checkExisted(other, existed);
       }
-      node.children.splice(node.children.indexOf(existed), 1);
-      return existed;
+      return [node, existed];
     }
     return -1;
   }
 
   create(path) {
     const pathList = path.split('/').filter(v => v);
-    this.iterateInsert(pathList);
+    return this.iterateInsert(pathList);
   }
 
   delete(path) {
     const pathList = path.split('/').filter(v => v);
-    this.iterateDelete(pathList);
+    const existed = this.checkExisted(pathList);
+    if (existed !== -1) {
+      const [parent, child] = existed;
+      parent.children.splice(parent.children.indexOf(child), 1);
+      return existed;
+    }
+    return false;
   }
 
   getValue(path) {
-
+    const pathList = path.split('/').filter(v => v);
+    const existed = this.checkExisted(pathList);
+    if (existed) return existed[1].value;
+    throw new Error('not existed');
   }
   
   setValue(path, value) {
-
+    const node = this.create(path);
+    node.value = value;
   }
 
   getRoot() {
@@ -94,5 +103,10 @@ class ZooKeeper {
 const zookeeper = new ZooKeeper();
 zookeeper.create('/app/p_1/p_1_1');
 zookeeper.create('/app/p_1/p_1_2');
-zookeeper.delete('/app/p_1');
+zookeeper.delete('/app/p_1/p_1_2');
+console.log(zookeeper.getValue('/app/p_1/p_1_1'));
+zookeeper.setValue('/app/p_1/p_1_1', 100);
+zookeeper.delete('/app/p_2');
+zookeeper.delete('/app/p_2');
+console.log(zookeeper.getValue('/app/p_1/p_1_1'));
 console.log(JSON.stringify(zookeeper.getRoot(), null, 4));
