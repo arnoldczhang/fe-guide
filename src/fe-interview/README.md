@@ -32,7 +32,7 @@
 - [promise](./src/promise.js)
 - [bind](./src/bind.js)
 - [字符串全匹配](./src/字符串全匹配.js)
-- [zookeeper](./src/zookeeper.js)
+- [zookeeper增删改查](./src/zookeeper.js)
 
 ## 3. 打包工具
 
