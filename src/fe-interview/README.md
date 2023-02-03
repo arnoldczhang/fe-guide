@@ -64,6 +64,7 @@
 ## 8. 算法
 - [双指针-最长回文子串](../algorithm/leetcode/dp-最长回文子串.js)
 - [双指针-nSum](../algorithm/leetcode/双指针-nSum.js)
+- [回溯-各种排列组合](../algorithm/leetcode/回溯-排列组合all.js)
 
 
 ## 9. 技术方案
