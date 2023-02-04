@@ -147,7 +147,7 @@
 //   for (let index = 0; index < arr.length; index += 1) {
 //     if (used.includes(index)) continue;
 //     // 相邻元素相同且已被用过，去重
-//     if (index > 0 && arr[index] === arr[index - 1] && used.includes(index - 1)) {
+//     if (index > 0 && arr[index] === arr[index - 1] && !used.includes(index - 1)) {
 //       continue;
 //     }
 //     const current = cach.concat(arr[index]);
@@ -163,3 +163,45 @@
 // // test
 // console.log(backtrace([1, 2, 2]));
 // // [ [ 1, 2, 2 ], [ 2, 1, 2 ], [ 2, 2, 1 ] ]
+
+
+
+/**
+ * Q7：返回无重复数组，元素和为目标值的所有组合（元素可重复）
+ */
+// const backtrace = (arr = [], sum = 0, result = []) => {
+//   arr.sort((pre, next) => pre - next);
+
+//   const iterate = (cach = [], cachSum = 0, index = 0) => {
+//     for ( ; index < arr.length; index += 1) {
+//       const nextSum = cachSum + arr[index];
+//       if (nextSum > sum) {
+//         continue;
+//       }
+  
+//       const nextCach = cach.concat(arr[index]);
+//       if (nextSum === sum) {
+//         result.push(nextCach);
+//         continue;
+//       }
+//       iterate(nextCach, nextSum, index);
+//     }
+//   };
+  
+//   iterate();
+//   return result;
+// };
+
+// // test
+// console.log(backtrace([1, 2, 3], 3));
+// // [ [ 1, 1, 1 ], [ 1, 2 ], [ 3 ] ]
+// console.log(backtrace([1, 2, 3], 6));
+// // [
+// //   [ 1, 1, 1, 1, 1, 1 ],
+// //   [ 1, 1, 1, 1, 2 ],
+// //   [ 1, 1, 1, 3 ],
+// //   [ 1, 1, 2, 2 ],
+// //   [ 1, 2, 3 ],
+// //   [ 2, 2, 2 ],
+// //   [ 3, 3 ]
+// // ]
