@@ -109,6 +109,8 @@
 // console.log(backtrace([1, 2, 2]));
 // // [ [ 1 ], [ 1, 2 ], [ 1, 2, 2 ], [ 2 ], [ 2, 2 ] ]
 
+
+
 /**
  * Q5：返回有重复数组内，元素和（不重复）为某个值的组合
  * 
@@ -134,3 +136,30 @@
 // //   [1, 5],
 // //   [2, 4],
 // // ]
+
+
+
+/**
+ * Q6：返回有重复的数组的全排列组合
+ */
+// const backtrace = (arr = [], result = [], cach = [], used = []) => {
+//   arr.sort((pre, next) => pre - next);
+//   for (let index = 0; index < arr.length; index += 1) {
+//     if (used.includes(index)) continue;
+//     // 相邻元素相同且已被用过，去重
+//     if (index > 0 && arr[index] === arr[index - 1] && used.includes(index - 1)) {
+//       continue;
+//     }
+//     const current = cach.concat(arr[index]);
+//     if (current.length === arr.length) {
+//       result.push(current);
+//       continue;
+//     }
+//     backtrace(arr, result, current, used.concat(index));
+//   }
+//   return result;
+// };
+
+// // test
+// console.log(backtrace([1, 2, 2]));
+// // [ [ 1, 2, 2 ], [ 2, 1, 2 ], [ 2, 2, 1 ] ]
