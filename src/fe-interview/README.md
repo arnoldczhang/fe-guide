@@ -62,13 +62,13 @@
 - [领导力](../career/领导力.md)
 
 ## 8. 算法
-- [双指针-nSum](../algorithm/leetcode/双指针-nSum.js)
-- 双指针-链表
-- [双指针-滑动窗口](../algorithm/leetcode/双指针-滑动窗口.js)
+- [双指针-各种数组](../algorithm/leetcode/双指针-数组.js)
+- [双指针-各种滑动窗口](../algorithm/leetcode/双指针-滑动窗口.js)
 - [回溯-各种排列组合](../algorithm/leetcode/回溯-排列组合all.js)
-- 动态规划
+- [动态规划](../algorithm/leetcode/dp-通解.js)
 - 深度遍历
 - [并查集](../algorithm/leetcode/并查集.js)
+- 双指针-链表
 
 ## 9. 技术方案
 
