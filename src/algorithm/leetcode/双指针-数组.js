@@ -73,3 +73,23 @@
 
 
 
+/**
+ * Q4：判断回文
+ */
+// const palindrome = (str = '') => {
+//   const { length } = str;
+//   if (!length) return false;
+//   let start = 0;
+//   let end = length - 1;
+
+//   while (start < end) {
+//     if (str[start] !== str[end]) {
+//       return false;
+//     }
+//     start += 1;
+//     end -= 1;
+//   }
+//   return true;
+// };
+
+
