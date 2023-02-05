@@ -98,3 +98,19 @@
 
 
 
+/**
+ * Q5：最大子数组和
+ * 
+ * - 输入一个整数数组 nums，请你找在其中找一个和最大的子数组，返回这个子数组的和
+ */
+// const maxSubArray = (nums = []) => {
+//   let result = Array.from({ length: nums.length }).fill(-Infinity);
+//   result[0] = nums[0];
+//   for (let i = 1; i < nums.length - 1; i += 1) {
+//     result[i] = Math.max(nums[i], nums[i] + result[i - 1]);
+//   }
+//   return Math.max(...result);
+// };
+
+// // test
+// console.log(maxSubArray([-3,1,3,-1,2,-4,2])); // 5
