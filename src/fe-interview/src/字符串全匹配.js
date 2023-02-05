@@ -14,23 +14,28 @@
  * 输出： false
  * 
  */
-const reverse = (str = '', cach = []) => {
-  const { length } = str;
-  for (let i = 0; i < length; i += 1) {
-    cach.push(str.substring(i, length));
+const transform = (str = '', arr = []) => {
+  if (!str.length || !arr.length) return false;
+  const dict = arr.reduce((res, pre) => {
+    res[pre] = true;
+    return res;
+  }, {});
+  let result = false;
+  let left = 0;
+  let right = 1;
+  while (right <= str.length) {
+    const tempStr = str.substring(left, right);
+    if (tempStr in dict) {
+      left = right;
+      right = left + 1;
+      result = true;
+    } else {
+      right += 1;
+      result = false;
+    }
   }
-  return cach;
+  return result;
 };
-
-const transform = (str, match = []) => {
-  const cach = [];
-  for (let i = 0; i <= str.length; i += 1) {
-    cach.push(...reverse(str.substring(0, i)));
-  }
-  return match.every((item) => cach.includes(item));
-};
-
-
-// test
 console.log(transform('abcde', ['ab', 'cde'])); // true
+console.log(transform('abcdef', ['ab', 'cde'])); // false
 console.log(transform('abcde', ['ab', 'cdde'])); // false
