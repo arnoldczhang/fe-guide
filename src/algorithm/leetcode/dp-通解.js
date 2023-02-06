@@ -191,3 +191,32 @@
 /**
  * Q8：最小路径和
  */
+// const minPathSum = (arr = []) => {
+//   const l1 = arr.length;
+//   const l2 = arr[0].length;
+//   const table = Array.from({ length: l1 }, (v, i) => Array.from({ length: l2 }).fill(1));
+
+//   table[0][0] = arr[0][0];
+
+//   for (let i = 1; i < l1; i += 1) {
+//     table[i][0] = table[i - 1][0] + arr[i][0];
+//   }
+
+//   for (let i = 1; i < l2; i += 1) {
+//     table[0][i] = table[0][i - 1] + arr[0][i];
+//   }
+
+//   for (let i = 1; i < l1; i += 1) {
+//     for (let j = 1; j < l2; j += 1) {
+//       table[i][j] = Math.min(
+//         table[i - 1][j],
+//         table[i][j - 1],
+//       ) + arr[i][j];
+//     }
+//   }
+
+//   return table[l1 - 1][l2 - 1];
+// };
+
+// // test
+// console.log(minPathSum([[1,3,1],[1,5,1],[4,2,1]])); // 7
