@@ -114,3 +114,49 @@
 
 // // test
 // console.log(maxSubArray([-3,1,3,-1,2,-4,2])); // 5
+
+
+
+/**
+ * Q6：最长公共子序列
+ * 
+ * https://mp.weixin.qq.com/s/ZhPEchewfc03xWv9VP3msg
+ * 
+ * - 字母顺序也要一致
+ */
+// const longestCommonSubsequence = (str1, str2) => {
+//   const table = Array.from({ length: str1.length + 1 }).fill(
+//     Array.from({ length: str2.length + 1 }).fill(0)
+//   );
+
+//   for (let i = 1; i <= str1.length; i += 1) {
+//     for (let j = 1; j <= str2.length; j += 1) {
+//       if (str1[i - 1] === str2[j - 1]) {
+//         table[i][j] = table[i - 1][j - 1] + 1;
+//       } else {
+//         table[i][j] = Math.max(table[i][j - 1], table[i - 1][j]);
+//       }
+//     }
+//   }
+//   return table[str1.length][str2.length];
+// };
+
+// // test
+// console.log(longestCommonSubsequence("zabcde", "acez")); // 3 -> ace
+
+
+
+/**
+ * Q7：两个字符串的删除操作
+ * 
+ * - 使两个字符串相同所需要的删除操作步数
+ * - 即求两个字符串变成最长公共子序列最少步数
+ */
+// const minDistance = (str1 = '', str2 = '') => {
+//   const step = longestCommonSubsequence(str1, str2);
+//   return str1.length - step + str2.length - step;
+// };
+// console.log(minDistance('sea', 'ear')); // 2
+
+
+
