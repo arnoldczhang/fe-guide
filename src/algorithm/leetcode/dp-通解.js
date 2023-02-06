@@ -124,6 +124,8 @@
  * 
  * - 字母顺序也要一致
  */
+
+// // 自底向上
 // const longestCommonSubsequence = (str1, str2) => {
 //   const table = Array.from({ length: str1.length + 1 }).fill(
 //     Array.from({ length: str2.length + 1 }).fill(0)
@@ -139,6 +141,32 @@
 //     }
 //   }
 //   return table[str1.length][str2.length];
+// };
+
+// // 自顶向下
+// const longestCommonSubsequence = (str1, str2) => {
+//   const table = Array.from({ length: str1.length + 1 }).fill(
+//     Array.from({ length: str2.length + 1 }).fill(0)
+//   );
+
+//   const dp = (i, j) => {
+//     if (i >= str1.length || j >= str2.length) {
+//       return 0;
+//     }
+
+//     if (table[i][j]) return table[i][j];
+
+//     if (str1[i] === str2[j]) {
+//       table[i][j] = 1 + dp(i + 1, j + 1);
+//     } else {
+//       table[i][j] = Math.max(
+//         dp(i + 1, j),
+//         dp(i, j + 1),
+//       );
+//     }
+//     return table[i][j];
+//   };
+//   return dp(0, 0);
 // };
 
 // // test
@@ -160,3 +188,6 @@
 
 
 
+/**
+ * Q8：最小路径和
+ */

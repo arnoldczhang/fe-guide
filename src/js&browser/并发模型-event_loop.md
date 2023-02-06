@@ -505,7 +505,7 @@ function f() {
 
 [通过performance工具了解event loop](https://mp.weixin.qq.com/s/22tS74K5JQr1V98Q4DPqJg)
 
-> microTask只是Task的一部分
+> microTask和macroTask都是Task的一部分
 
 
 
@@ -518,13 +518,14 @@ function f() {
 - postMessage（可模拟实现setTimeout(0)的效果）
 - MessageChannel
 - scheduler.postTask
-- Evaluate Script（执行js也是宏任务）
+- Evaluate Script（执行同步js也是宏任务）
 
 ### 微任务
 
 - Promise
 - process.nextTick（node）
 - MutaionObserver
+- IntersectionObserver
 
 
 
