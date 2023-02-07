@@ -357,7 +357,7 @@ var obj = {
             var num = this.number;
             this.number *= 2; // window.number = 20
             console.log(num);
-            number *= 3;
+            number *= 3; // 对应 (function() {})作用域的number
             console.log(number);
         }
     })(),
