@@ -83,6 +83,7 @@
 * [`canvas计算宽度`](#canvas计算宽度)
 * [`图片复制到剪贴板`](#图片复制到剪贴板)
 * [`拖拽`](#拖拽)
+* [`Promise.allSettled`](#Promise.allSettled)
 
 **进阶 js**
 
@@ -924,7 +925,8 @@ n 秒内高频触发，只会执行一次
 
 ---
 
-### Promise.all 实现
+### Promise.all实现
+> 全部resolve才返回promise数组，但凡有reject，直接返回reject
 
 ```js
 Promise.all = function all(arr = {}) {
@@ -973,6 +975,24 @@ Promise.all2 = function(promises) {
     }
   });
 };
+```
+
+---
+
+### Promise.allSettled
+> 返回promise数组，不判断是否reject
+
+```js
+const promise1 = Promise.resolve(3);
+const promise2 = new Promise((resolve, reject) => setTimeout(reject, 100, 'foo'));
+const promises = [promise1, promise2];
+
+Promise.allSettled(promises).
+  then((results) => results.forEach((result) => console.log(result.status)));
+
+// Expected output:
+// "fulfilled"
+// "rejected"
 ```
 
 ---
