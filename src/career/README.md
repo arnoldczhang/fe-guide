@@ -17,6 +17,7 @@
 - [舒文-阿里前端成长史](https://zhuanlan.zhihu.com/p/91953428)
 - [2020前端hot](https://risingstars.js.org/2020/en)
 - [2021年前端趋势参考](https://www.yuque.com/imove/blog/bee1ki)
+- [2023前端趋势分析](https://mp.weixin.qq.com/s/SicYTABGjXcJJTqYEbL5dQ)
 
 ## 目录
 <details>
