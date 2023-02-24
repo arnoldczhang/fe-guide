@@ -2,7 +2,7 @@
  * 题目：
  * 巧技-计数质数
  * 
- * [高效寻找质数](https://labuladong.gitbook.io/algo/gao-pin-mian-shi-xi-lie/da-yin-su-shu)
+ * [高效寻找质数](https://labuladong.github.io/algo)
  * 
  * 统计所有小于非负整数 n 的质数的数量
  * 

@@ -102,6 +102,8 @@ onUnmounted(() => {
 
 ## 宏方法
 
+[安装宏方法](https://github.com/antfu/unplugin-auto-import)
+
 ### watch
 
 **flush**

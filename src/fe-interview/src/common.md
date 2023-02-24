@@ -83,6 +83,7 @@
 * [`canvas计算宽度`](#canvas计算宽度)
 * [`图片复制到剪贴板`](#图片复制到剪贴板)
 * [`拖拽`](#拖拽)
+* [`Promise.allSettled`](#Promise.allSettled)
 
 **进阶 js**
 
@@ -357,7 +358,7 @@ var obj = {
             var num = this.number;
             this.number *= 2; // window.number = 20
             console.log(num);
-            number *= 3;
+            number *= 3; // 对应 (function() {})作用域的number
             console.log(number);
         }
     })(),
@@ -924,7 +925,8 @@ n 秒内高频触发，只会执行一次
 
 ---
 
-### Promise.all 实现
+### Promise.all实现
+> 全部resolve才返回promise数组，但凡有reject，直接返回reject
 
 ```js
 Promise.all = function all(arr = {}) {
@@ -973,6 +975,24 @@ Promise.all2 = function(promises) {
     }
   });
 };
+```
+
+---
+
+### Promise.allSettled
+> 返回promise数组，不判断是否reject
+
+```js
+const promise1 = Promise.resolve(3);
+const promise2 = new Promise((resolve, reject) => setTimeout(reject, 100, 'foo'));
+const promises = [promise1, promise2];
+
+Promise.allSettled(promises).
+  then((results) => results.forEach((result) => console.log(result.status)));
+
+// Expected output:
+// "fulfilled"
+// "rejected"
 ```
 
 ---
@@ -3080,6 +3100,20 @@ String('1234567890').replace(/(\d)(?=(\d{3})+\b)/g, '$1,');
 // 同上
 String('1234567890').replace(/(\d{1,3})(?=(\d{3})+$)/g, '$1,');
 ```
+
+**?=和?:的区别？**
+
+> **(?=exp)**：也叫零宽度正预测先行断言，它断言自身出现的位置的后面能匹配表达式exp
+> **(?:exp)**：表示非捕获性分组，它不会存在匹配成功后的分组里
+
+选自网上回复：
+> 先说结论，区别在于 ?= 是正向肯定 断言，进行的匹配是不占查询长度的；而 ?: 是非获取 匹配，进行的匹配是占据查询长度的。
+>
+> 题述的正则查询每一个非单词边界，然后对后面的一个或多个连续三组数字+一组非数字进行匹配。对于 1234567 而言，就会匹配到 1 和 2 中间的这个非单词边界，因为后面的 234567$ 满足正向肯定预查的 (\d{3})+(?!\d) 形式；之后会匹配到 4 和 5 中间的非单词边界，因为后面的 567$ 也满足上一形式。所以是正确的。
+>
+> 而你尝试将 + 去掉，使得断言只能匹配到 567$ 这样的形式——注意到你强调了 g 全局查询参数，但是我们要注意到 (?!\d) 的存在，这是一个正向否定断言，表示连续三个数字之后不能存在数字，所以 234 显然是不满足的，因为其后的 5 正是一个数字。假使你去掉了这个否定断言，那这个正则也不能工作——因为断言是 零宽 的，是不占据匹配长度的，查完 1 之后 234 满足，还会继续查 2，2 之后 345 也是满足的。因此结果就会变成 "1,2,3,4,567"。
+>
+> 最后你尝试使用了 ?: 这个非获取匹配实际上是占据匹配长度的，当执行了第一次匹配时，实际上就匹配到了行尾，直接将 234567 全替换成了 ,，然后完成了匹配。所以就出现了上面的结果。
 
 ---
 

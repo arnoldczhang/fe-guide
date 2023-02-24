@@ -14,6 +14,7 @@ class Rolling {
     this.q = q;
     this.max = max;
     this.pending = 0;
+    this.on = true;
   }
   
   start() {
@@ -26,9 +27,10 @@ class Rolling {
         this.pending += 1;
       }
   }
+
   
   stop() {
-    //
+    this.on = false;
   }
   
   request(url) {
