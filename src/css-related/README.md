@@ -1562,6 +1562,93 @@ img:after {
 
 
 
+### :picture-in-picture
+
+> 画中画
+
+```css
+#video-container:has(video:picture-in-picture)::before {
+  bottom: 36px;
+  color: #ddd;
+  content: 'Video is now playing in a Picture-in-Picture window';
+  position: absolute;
+  right: 36px;
+}
+```
+
+### :where
+
+> 会选择所有能被该选择器列表中任何一条规则选中的元素
+>
+> - 选择器优先级：0
+> - 安全性：无敌，会自动忽略规则集中无效的选择器
+
+**原代码**
+
+```css
+/* first list */
+header a:hover,
+main a:hover,
+footer a:hover {
+  color: green;
+  text-decoration: underline;
+}
+
+/* second list */
+article header > p,
+article footer > p{
+ color: gray;
+}
+
+/* third list */
+.dark-theme button,
+.dark-theme a,
+.dim-theme button,
+.dim-theme a{
+ color: purple;
+}
+```
+
+**通过:where简化**
+
+```css
+:where(header, main, footer) a:hover {
+  color: green;
+  text-decoration: underline;
+}
+
+/* 任意位置 */
+article :where(header, footere) > p {
+  color: gray;
+}
+
+/* 支持叉乘 */
+:where(.dark-theme, .dim-theme) :where(button, a) {
+  color: purple;
+}
+```
+
+### :is
+
+> 几乎和**:where**一致，但是选择器优先级不锁定为0了，完全按照规则集来
+
+```css
+header p {
+  color: blue;
+}
+
+/* color还是green，因为这句在后面，有效的 */
+:is(header, section) p {
+  color: green;
+}
+```
+
+
+
+
+
+
+
 ---
 
 ## 伪元素
