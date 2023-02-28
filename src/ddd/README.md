@@ -2,8 +2,14 @@
 
 ![ddd模型](ddd模型+依赖倒置.jpg)
 
+[TOC]
+
+---
+
 ## 参考
+
 - [ddd-car](https://github.com/Sayi/ddd-cargo)
+- [基于领域模型拆解一个react组件](https://martinfowler.com/articles/modularizing-react-apps.html)
 - 《领域驱动设计精粹》
 
 ---
@@ -470,6 +476,14 @@ public void changeCustomerName(
 }
 ```
 
+
+
+### 拆解一个react组件
+
+前端 = 视图 + 逻辑
+
+![过程](./refactoring-3.png)
+
 ---
 
 ## 常用命名
@@ -493,3 +507,6 @@ public void changeCustomerName(
 | Analyser 分析器        | Inspector 检查器 | Linker 链接器         | Editor 编辑器       | Recognizer 识别器   | Decompiler 反编译器        |
 | Translator 解释器      | Lexer 词法分析器 | Tracker 追踪器        | Constructor 构造器  | Destructor 析构器   | Executor 执行器            |
 | Synchronizer 同步器    | Barrier 障碍器   | Allocator 分配器      | Bundler 打包器      | Applier 分发器      | Trigger 触发器             |
+
+---
+
