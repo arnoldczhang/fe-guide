@@ -878,6 +878,10 @@ elm.animate([
 
 ## 属性
 
+### color
+
+[所有color介绍](https://www.joshwcomeau.com/css/color-formats/)
+
 ### font-size
 - px
 - rem
