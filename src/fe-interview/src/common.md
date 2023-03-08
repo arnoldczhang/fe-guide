@@ -2625,6 +2625,50 @@ intersectionObserver
 
 - 目标元素和视口有一个交叉区，可以判断是否可见
 
+
+
+#### 图片加载优化
+
+参考[现代图片性能优化](https://mp.weixin.qq.com/s/_tctOen1NM9f_mHQFClBsA)
+
+- 懒加载：loading=lazy
+- 异步解码：decoding=async
+
+```html
+<html>
+  <head>
+  </head>
+  <body>
+    <style>
+      .article {
+        height: 100vh;
+        overflow-y: auto;
+      }
+      .box {
+        content-visibility: auto;
+      }
+      .img {
+        display: block;
+        height: 200px;
+        width: 200px;
+      }
+    </style>
+    <article class="article">
+      <section class="box">
+        <img class="img" src="xx.jpg" loading="lazy" decoding="async"/>
+      </section>
+      <section class="box">
+        <img class="img" src="xx.jpg" loading="lazy" decoding="async"  />
+      </section>
+      <!-- n多图片 -->
+    </article>
+  </body>
+</html>
+
+```
+
+
+
 ---
 
 ### css 布局
