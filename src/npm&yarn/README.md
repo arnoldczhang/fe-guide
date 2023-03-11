@@ -24,6 +24,7 @@
 
 - https://github.com/diamont1001/blog/issues/11
 - [现代化 js 封装库标准配置](https://github.com/yanhaijing/jslib-base)
+- [npm标准库字段配置](https://mp.weixin.qq.com/s/AiyVOwdYLwAecaJXqoGj6w)
 - [node 依赖管理](https://mp.weixin.qq.com/s/XdOPPay8fpNBiH2ExW_EyQ)
 - [前端工程-npm](https://juejin.im/post/5d08d3d3f265da1b7e103a4d?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 - [npm常用命令](https://blog.csdn.net/lianghecai52171314/article/details/109638556)
