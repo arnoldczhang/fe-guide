@@ -352,6 +352,87 @@ npm view xxx versions
 
 ## pnpm
 
+### pnpm --filter
+
+> 简版monorepo，参考[基于 pnpm + changesets 的 monorepo 最佳实践](https://juejin.cn/post/7181409989670961207#heading-5)
+>
+> Git: [monorepo-example](https://github.com/luhc228/pnpm-changsets-monorepo-example)
+
+#### 目录结构
+
+```mark
+pnpm-changsets-monorepo-example
+
+├── LICENSE
+├── package.json
+├── packages
+|  ├── a
+|  |  ├── CHANGELOG.md
+|  |  ├── index.ts
+|  |  └── package.json
+|  ├── b
+|  |  ├── CHANGELOG.md
+|  |  ├── index.ts
+|  |  └── package.json
+|  └── c
+|     ├── CHANGELOG.md
+|     ├── index.ts
+|     └── package.json
+```
+
+**package.json（最外层）**
+
+> pnpm i直接在最外层运行即可
+
+```json
+{
+  "name": "test-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "pnpm --parallel -r run watch",
+    "build": "pnpm -r run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+**pnpm-workspace.yaml**
+
+```yaml
+packages:
+  # all packages in subdirs of packages/ and components/
+  - 'packages/**'
+```
+
+**package.json（pkg1）**
+
+> pkg相互直接可以直接引用，pnpm会处理 node_modules 依赖
+
+```json
+{
+  "name": "pkg1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "echo \"pkg1 watch\"",
+    "build": "echo \"pkg1 builded\""
+  },
+  "dependencies": {
+    "pkg2": "^1.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+
+
 ### pnpm link
 
 **1. 将当前包链接到全局**
