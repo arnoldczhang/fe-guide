@@ -1018,6 +1018,10 @@ input[type=checkbox] {
 }
 ```
 
+### initial-letter
+
+https://developer.chrome.com/blog/control-your-drop-caps-with-css-initial-letter/
+
 ### content-visibility
 
 [参考](https://mp.weixin.qq.com/s/o9lpl7CTwcbjM0q3QMRLTg)
