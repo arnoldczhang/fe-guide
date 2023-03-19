@@ -1661,7 +1661,7 @@ header p {
 
 ## 伪元素
 
-### input-placeholder
+### ::input-placeholder
 
 ```css
 input::placeholder {
@@ -1671,6 +1671,50 @@ input::placeholder {
   font-weight: normal;
 }
 ```
+
+### ::highlight
+
+> 可以在不改变 `dom` 结构的情况下自定义任意文本的样式
+
+**支持的样式**
+
+- 文本颜色 `color`
+- 背景颜色 `background-color`
+- 文本修饰 `text-decoration`
+- 文本阴影 `text-shadow`
+- 文本描边 `-webkit-text-stroke`
+- 文本填充 `-webkit-text-fill-color`
+
+
+
+**示例1：高亮首字母**
+
+```html
+<html>
+  <head></head>
+  <body>
+    <p id="foo">
+      <span>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+    </p>
+    <script>
+      // 选节点的文本子节点
+      const parentNode = document.getElementById("foo").childNodes[1].firstChild;
+      const range1 = new Range();
+      range1.setStart(parentNode, 0);
+      range1.setEnd(parentNode, 1);
+      const highlight1 = new Highlight(range1);
+      CSS.highlights.set("highlight1", highlight1);
+    </script>
+    <style>
+      ::highlight(highlight1) {
+        color: blue;
+      }
+    </style>
+  </body>
+</html>
+```
+
+
 
 
 
