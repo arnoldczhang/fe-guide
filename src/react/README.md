@@ -700,6 +700,7 @@ export default React.memo(MyComponent, areEqual);
 - useEffect - mounted后触发
 - useCallback - 缓存方法（useMemo可替代）
 - useRef - 缓存数据（useMemo可替代）
+- 更多可[参考](https://react.dev/reference/react)
 
 ### 实现
 
