@@ -1051,6 +1051,33 @@ scroll-snap-align: start/end/center
 
 
 
+**举例**
+
+```html
+<div class="scroll-x">
+    <img src="./mm.jpg">
+    <img src="./mm2.jpg">
+    <img src="./mm3.jpg">
+    <img src="./mm4.jpg">
+    <img src="./mm5.jpg">
+</div>
+<style>
+ .scroll-x {
+    width: 300px;
+   	/**/
+    scroll-snap-type: x mandatory;
+    white-space: nowrap;
+    overflow: auto;
+}
+.scroll-x img { 
+  	/* 滚动结束，停留在img标签开始的位置 */
+    scroll-snap-align: start;
+}
+</style>
+```
+
+
+
 ### css houdini
 
 [CSS Houdini：用浏览器引擎实现高级CSS效果](https://mp.weixin.qq.com/s/4owfsfX6bMzvgwvVxaCmzQ)
@@ -1535,9 +1562,35 @@ img:after {
 
 ### @layer
 
-> 管理样式优先级
+> 手动管理各样式域优先级，避免样式到处散落，只能用 **!important** 相互覆盖的情况。
 
-[CSS5 @layer](https://mp.weixin.qq.com/s/ah4SSomENbFvLasH-WuP5A)
+参考[CSS5 @layer](https://mp.weixin.qq.com/s/ah4SSomENbFvLasH-WuP5A)
+
+```css
+/* 各层样式域的优先级固定为 A > C > B */
+@layer B, C, A;
+div {
+    width: 200px;
+    height: 200px;
+}
+@layer A {
+    div {
+        background: blue;
+    }
+}
+@layer B {
+    div {
+        background: green;
+    }
+}
+@layer C {
+    div {
+        background: orange;
+    }
+}
+```
+
+
 
 ---
 
