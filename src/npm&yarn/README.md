@@ -24,6 +24,7 @@
 
 - https://github.com/diamont1001/blog/issues/11
 - [现代化 js 封装库标准配置](https://github.com/yanhaijing/jslib-base)
+- [npm标准库字段配置](https://mp.weixin.qq.com/s/AiyVOwdYLwAecaJXqoGj6w)
 - [node 依赖管理](https://mp.weixin.qq.com/s/XdOPPay8fpNBiH2ExW_EyQ)
 - [前端工程-npm](https://juejin.im/post/5d08d3d3f265da1b7e103a4d?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 - [npm常用命令](https://blog.csdn.net/lianghecai52171314/article/details/109638556)
@@ -350,6 +351,93 @@ npm view xxx versions
 ---
 
 ## pnpm
+
+### pnpm --filter
+
+> 简版monorepo，参考[基于 pnpm + changesets 的 monorepo 最佳实践](https://juejin.cn/post/7181409989670961207#heading-5)
+>
+> Git: [monorepo-example](https://github.com/luhc228/pnpm-changsets-monorepo-example)
+
+#### 目录结构
+
+```mark
+pnpm-changsets-monorepo-example
+
+├── LICENSE
+├── package.json
+├── packages
+|  ├── a
+|  |  ├── CHANGELOG.md
+|  |  ├── index.ts
+|  |  └── package.json
+|  ├── b
+|  |  ├── CHANGELOG.md
+|  |  ├── index.ts
+|  |  └── package.json
+|  └── c
+|     ├── CHANGELOG.md
+|     ├── index.ts
+|     └── package.json
+```
+
+**package.json（最外层）**
+
+> pnpm i直接在最外层运行即可
+
+```json
+{
+  "name": "test-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "pnpm --parallel -r run watch",
+    "build": "pnpm -r run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+**pnpm-workspace.yaml**
+
+```yaml
+packages:
+  # all packages in subdirs of packages/ and components/
+  - 'packages/**'
+```
+
+**package.json（pkg1）**
+
+> pkg相互直接可以直接引用，pnpm会处理 node_modules 依赖
+
+```json
+{
+  "name": "pkg1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "echo \"pkg1 watch\"",
+    "build": "echo \"pkg1 builded\""
+  },
+  "dependencies": {
+    "pkg2": "^1.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+
+
+### pnpm publish
+
+[自动更新版本号](https://github.com/umijs/umi/pull/10719/files#diff-32824c984905bb02bc7ffcef96a77addd1f1602cff71a11fbbfdd7f53ee026bb)
+
+
 
 ### pnpm link
 

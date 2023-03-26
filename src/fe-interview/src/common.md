@@ -278,7 +278,7 @@ Number([]) === 0
   * ```js
     typeof x; // ReferenceError(暂时性死区，抛错)
     let x;
-
+    
     typeof y; // 值是 undefined, 不会报错
     ```
 
@@ -586,6 +586,36 @@ const 当前元素最终宽度 = 当前元素 flex-basis - (超出宽度 * 当�
 @media screen and (max-width: 320px){
 }
 ```
+
+#### 容器查询
+
+> chrome105+支持
+
+```html
+<div class="post">
+  <div class="card">
+    <h2>Card title</h2>
+    <p>Card content</p>
+  </div>
+</div>
+<style>
+/* A container context based on inline size */
+.post {
+  container-type: inline-size; /* 必须 */
+}
+
+/* Apply styles if the container is narrower than 650px */
+@container (width < 650px) {
+  .card {
+    width: 50%;
+    background-color: gray;
+    font-size: 1em;
+  }
+}
+</style>
+```
+
+
 
 #### 百分比
 
@@ -2170,7 +2200,7 @@ https://jsperf.com
       // ...
     ])
   }
-
+  
   // ==> vnode
   {
     tagName,
@@ -2350,12 +2380,12 @@ function fun(num){
 - ```js
   const domain = require('domain');
   const d = domain.create();
-
+  
   d.on('error', (err) => {
     console.log('err', err.message);
     console.log(needSend.message);
   });
-
+  
   const needSend = { message: '需要传递给错误处理的一些信息' };
   d.add(needSend);
   d.run(() => {
@@ -2594,6 +2624,50 @@ function handle(req, res) {
 intersectionObserver
 
 - 目标元素和视口有一个交叉区，可以判断是否可见
+
+
+
+#### 图片加载优化
+
+参考[现代图片性能优化](https://mp.weixin.qq.com/s/_tctOen1NM9f_mHQFClBsA)
+
+- 懒加载：loading=lazy
+- 异步解码：decoding=async
+
+```html
+<html>
+  <head>
+  </head>
+  <body>
+    <style>
+      .article {
+        height: 100vh;
+        overflow-y: auto;
+      }
+      .box {
+        content-visibility: auto;
+      }
+      .img {
+        display: block;
+        height: 200px;
+        width: 200px;
+      }
+    </style>
+    <article class="article">
+      <section class="box">
+        <img class="img" src="xx.jpg" loading="lazy" decoding="async"/>
+      </section>
+      <section class="box">
+        <img class="img" src="xx.jpg" loading="lazy" decoding="async"  />
+      </section>
+      <!-- n多图片 -->
+    </article>
+  </body>
+</html>
+
+```
+
+
 
 ---
 

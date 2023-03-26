@@ -13,6 +13,7 @@
 - [crone表达式-在线调试](https://crontab.guru/#)
 - [cron表达式-含义解释](https://tool.lu/crontab/)
 - [嵌入设备的微型node](https://github.com/yodaos-project/ShadowNode)
+- [nodejs运行过程](https://mp.weixin.qq.com/s/_1YdX2wavRJhy2aOCsHP4w)
 
 ## 目录
 * [`调试参数`](#调试参数)
@@ -104,16 +105,16 @@ node --inspect-brk dist/app.js
 - [自动生成依赖结构-dependency-cruiser](https://github.com/sverweij/dependency-cruiser)
   * ```
     npm install -g verdaccio
-
+    
     verdaccio
     // warn --- http address - http://localhost:4873/ - verdaccio/3.0.0
-
+    
     nrm add verdaccio http://localhost:4873
-
+    
     nrm use verdaccio
-
+    
     npm adduser
-
+    
     npm publish
     ```
   
@@ -322,33 +323,33 @@ node --inspect-brk dist/app.js
         if (parent) {
           debug('Module._load REQUEST %s parent: %s', request, parent.id);
         }
-
+      
         var filename = Module._resolveFilename(request, parent, isMain);
-
+      
         var cachedModule = Module._cache[filename];
         // 有缓存则直接返回
         if (cachedModule) {
           return cachedModule.exports;
         }
-
+      
         // 判断该模块是否为核心模块，如果则调用核心模块的加载方法NativeModule.require
         if (NativeModule.nonInternalExists(filename)) {
           debug('load native module %s', request);
           return NativeModule.require(filename);
         }
-
+      
         // 如果不是核心模块，新创建一个 Module 对象
         var module = new Module(filename, parent);
-
+      
         if (isMain) {
           process.mainModule = module;
           module.id = '.';
         }
-
+      
         Module._cache[filename] = module;
-
+      
         tryModuleLoad(module, filename);
-
+      
         return module.exports;
       };
       ```

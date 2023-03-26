@@ -878,6 +878,10 @@ elm.animate([
 
 ## 属性
 
+### color
+
+[所有color介绍](https://www.joshwcomeau.com/css/color-formats/)
+
 ### font-size
 - px
 - rem
@@ -1014,6 +1018,10 @@ input[type=checkbox] {
 }
 ```
 
+### initial-letter
+
+https://developer.chrome.com/blog/control-your-drop-caps-with-css-initial-letter/
+
 ### content-visibility
 
 [参考](https://mp.weixin.qq.com/s/o9lpl7CTwcbjM0q3QMRLTg)
@@ -1039,6 +1047,33 @@ input[type=checkbox] {
 scroll-snap-type: x/y
 scroll-snap-align: start/end/center
 
+```
+
+
+
+**举例**
+
+```html
+<div class="scroll-x">
+    <img src="./mm.jpg">
+    <img src="./mm2.jpg">
+    <img src="./mm3.jpg">
+    <img src="./mm4.jpg">
+    <img src="./mm5.jpg">
+</div>
+<style>
+ .scroll-x {
+    width: 300px;
+   	/**/
+    scroll-snap-type: x mandatory;
+    white-space: nowrap;
+    overflow: auto;
+}
+.scroll-x img { 
+  	/* 滚动结束，停留在img标签开始的位置 */
+    scroll-snap-align: start;
+}
+</style>
 ```
 
 
@@ -1527,9 +1562,35 @@ img:after {
 
 ### @layer
 
-> 管理样式优先级
+> 手动管理各样式域优先级，避免样式到处散落，只能用 **!important** 相互覆盖的情况。
 
-[CSS5 @layer](https://mp.weixin.qq.com/s/ah4SSomENbFvLasH-WuP5A)
+参考[CSS5 @layer](https://mp.weixin.qq.com/s/ah4SSomENbFvLasH-WuP5A)
+
+```css
+/* 各层样式域的优先级固定为 A > C > B */
+@layer B, C, A;
+div {
+    width: 200px;
+    height: 200px;
+}
+@layer A {
+    div {
+        background: blue;
+    }
+}
+@layer B {
+    div {
+        background: green;
+    }
+}
+@layer C {
+    div {
+        background: orange;
+    }
+}
+```
+
+
 
 ---
 
@@ -1562,11 +1623,98 @@ img:after {
 
 
 
+### :picture-in-picture
+
+> 画中画
+
+```css
+#video-container:has(video:picture-in-picture)::before {
+  bottom: 36px;
+  color: #ddd;
+  content: 'Video is now playing in a Picture-in-Picture window';
+  position: absolute;
+  right: 36px;
+}
+```
+
+### :where
+
+> 会选择所有能被该选择器列表中任何一条规则选中的元素
+>
+> - 选择器优先级：0
+> - 安全性：无敌，会自动忽略规则集中无效的选择器
+
+**原代码**
+
+```css
+/* first list */
+header a:hover,
+main a:hover,
+footer a:hover {
+  color: green;
+  text-decoration: underline;
+}
+
+/* second list */
+article header > p,
+article footer > p{
+ color: gray;
+}
+
+/* third list */
+.dark-theme button,
+.dark-theme a,
+.dim-theme button,
+.dim-theme a{
+ color: purple;
+}
+```
+
+**通过:where简化**
+
+```css
+:where(header, main, footer) a:hover {
+  color: green;
+  text-decoration: underline;
+}
+
+/* 任意位置 */
+article :where(header, footere) > p {
+  color: gray;
+}
+
+/* 支持叉乘 */
+:where(.dark-theme, .dim-theme) :where(button, a) {
+  color: purple;
+}
+```
+
+### :is
+
+> 几乎和**:where**一致，但是选择器优先级不锁定为0了，完全按照规则集来
+
+```css
+header p {
+  color: blue;
+}
+
+/* color还是green，因为这句在后面，有效的 */
+:is(header, section) p {
+  color: green;
+}
+```
+
+
+
+
+
+
+
 ---
 
 ## 伪元素
 
-### input-placeholder
+### ::input-placeholder
 
 ```css
 input::placeholder {
@@ -1576,6 +1724,50 @@ input::placeholder {
   font-weight: normal;
 }
 ```
+
+### ::highlight
+
+> 可以在不改变 `dom` 结构的情况下自定义任意文本的样式
+
+**支持的样式**
+
+- 文本颜色 `color`
+- 背景颜色 `background-color`
+- 文本修饰 `text-decoration`
+- 文本阴影 `text-shadow`
+- 文本描边 `-webkit-text-stroke`
+- 文本填充 `-webkit-text-fill-color`
+
+
+
+**示例1：高亮首字母**
+
+```html
+<html>
+  <head></head>
+  <body>
+    <p id="foo">
+      <span>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+    </p>
+    <script>
+      // 选节点的文本子节点
+      const parentNode = document.getElementById("foo").childNodes[1].firstChild;
+      const range1 = new Range();
+      range1.setStart(parentNode, 0);
+      range1.setEnd(parentNode, 1);
+      const highlight1 = new Highlight(range1);
+      CSS.highlights.set("highlight1", highlight1);
+    </script>
+    <style>
+      ::highlight(highlight1) {
+        color: blue;
+      }
+    </style>
+  </body>
+</html>
+```
+
+
 
 
 

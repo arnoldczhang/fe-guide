@@ -4,7 +4,11 @@
 
 [TOC]
 
+
+
 ## useQuery
+
+> 优雅的处理一个请求，[tanStack](https://blog.logrocket.com/deep-dive-mutations-tanstack-query/)这样处理。
 
 ### stale-while-revalidate策略
 
