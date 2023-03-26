@@ -73,4 +73,5 @@ git branch -r --contains commitID
 - [github-action](http://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html)
 - [从原项目合分支到fork项目](https://segmentfault.com/q/1010000004228020)
 - [facebook版本管理工具](https://sapling-scm.com/docs/introduction/getting-started/)
+- [集成chatgpt到git action](https://github.com/umijs/umi/pull/10779/files)
 
