@@ -1185,6 +1185,22 @@ font-family: 'Microsoft Yahei';
 
 
 
+### text-fill-color
+
+> 可用于设置段落文字渐变色
+
+```css
+background: -webkit-linear-gradient(-70deg, #8250df 0%, #d42a32 100%);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: rgba(0,0,0,0);
+-webkit-box-decoration-break: clone;
+```
+
+
+
+
+
 ---
 
 ### calc
