@@ -1,5 +1,7 @@
 # vue
 
+[TOC]
+
 ## 参考
 
 - [vue3代码流程](https://mp.weixin.qq.com/s/hYYNbMUkheHVgzi26rnWPQ)
@@ -603,6 +605,41 @@ const fn = (list: MaybeRef<Record<string, any>[]>) => {};
 
 
 ```
+
+
+
+### directive
+
+```ts
+// 自动激活
+export default {
+  updated(el: any, binding: any) {
+    const { oldValue, value } = binding;
+    const input =
+      el?.querySelector('input,textarea,*[contenteditable="true"]') || el;
+    if (!input) return;
+    const { length } = input.value || input.textContent;
+    if (!oldValue && (value || typeof value === 'undefined')) {
+      nextTick(() => {
+        input.focus();
+        // contentEditable单独处理
+        if (input.contentEditable === 'true') {
+          const range = document.createRange();
+          range.selectNodeContents(input);
+          window.getSelection()?.removeAllRanges();
+          window.getSelection()?.addRange(range);
+        // 处理input和textarea
+        } else if (length) {
+          input.setSelectionRange(0, length);
+        }
+      });
+    }
+  },
+};
+
+```
+
+
 
 
 
