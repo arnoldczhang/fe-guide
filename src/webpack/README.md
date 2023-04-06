@@ -1,5 +1,7 @@
 # webpack
 
+[TOC]
+
 ## 参考
 - [tapable插件机制解析](https://segmentfault.com/a/1190000017420937)
 - [webpack4js拆包](https://mp.weixin.qq.com/s/a946nG0oNYnDBMMwgtDBpA)
@@ -191,6 +193,10 @@ module.exports = {
 ```
 
 #### minimizer
+
+#### concatenateModules
+
+> 使用scope hoisting模式，合并函数作用域，减少闭包，[参考](https://mp.weixin.qq.com/s?__biz=Mzg3OTYzMDkzMg==&mid=2247495335&idx=1&sn=182401dcc0651fdca415c3a0a2d8f586&scene=21#wechat_redirect)
 
 ### resolve
 ```js
@@ -588,7 +594,24 @@ mainTemplate.hooks.hash -> tap("SetVarMainTemplatePlugin", hash => {
  */
 ```
 
+#### LimitChunkCountPlugin
+
+> 限制打包结果的chunk数，1则为不拆包
+
+```js
+{
+  plugins: [
+	  new webpack.optimize.LimitChunkCountPlugin({
+        maxChunks: 1,
+    }),
+	],
+}
+```
+
+
+
 #### xxx
+
 **作用**
 **调用位置**
 **hook**
@@ -830,7 +853,7 @@ console.log(new V8Engine().toString())
   ```json
   {
     "dependencies": {
-
+  
     },
     "browserslist": [
       "> 1%",
@@ -897,10 +920,10 @@ module.exports = {
   ```js
   function Menu() {
   }
-
+  
   Menu.prototype.show = function() {
   }
-
+  
   var a = 'Arr' + 'ay'
   var b
   if(a == 'Array') {
@@ -908,11 +931,11 @@ module.exports = {
   } else {
       b = Menu
   }
-
+  
   b.prototype.unique = function() {
       // 将 array 中的重复元素去除
   }
-
+  
   export default Menu;
   ```
 
@@ -983,7 +1006,7 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
       optimizationBailout: true
     }
   };
-
+  
   // 或
   webpack --display-optimization-bailout
   ```
