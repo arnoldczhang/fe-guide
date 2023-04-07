@@ -191,3 +191,21 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 ### Set和Map
 
 - map.set响应式数据会污染原数据
+
+
+
+---
+
+## 插件
+
+### unplugin-vue-macros
+
+> vue3原型方法拓展
+
+[参考](https://vue-macros.sxzz.moe/guide/getting-started.html) 
+
+### unplugin-vue-define-options
+
+>新增`defineOptions`，可在setup里定义组件基本信息（不用单独搞个<script>定义组件name了）
+
+[参考](https://www.npmjs.com/package/unplugin-vue-define-options)
