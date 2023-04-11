@@ -1,5 +1,7 @@
 # esm
 
+[TOC]
+
 ## 参考
 
 - [JavaScript模块](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Modules)
@@ -46,6 +48,28 @@ export default function() {
   import('链接.mjs').then(({ default: setup }) => {
   	setup(/* ... */);
   });
+</script>
+```
+
+
+
+### import map
+
+> 以 mapping 方式，预定义**esm引用名 <--> esm资源路径**，以便后续在 module 里的使用。
+
+```html
+<!-- 定义-->
+<script type="importmap">
+  {
+    "imports": {
+      "browser-fs-access": "https://unpkg.com/browser-fs-access@0.33.0/dist/index.modern.js"
+    }
+  }
+</script>
+<!-- 使用 -->
+<script type="module">
+  import { fileOpen } from 'browser-fs-access';
+  fileOpen(/* 使用 */)
 </script>
 ```
 
