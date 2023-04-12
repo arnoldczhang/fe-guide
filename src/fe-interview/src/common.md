@@ -1739,6 +1739,16 @@ define(function(require, exports, module) {
 
 兼容 AMD，CommonJS 模块化语法
 
+```js
+(function(global, factory) {
+  factory(global.xx, global.xx);
+}(window, function(a, b) {
+  // ...
+}))
+```
+
+
+
 ---
 
 ### cookie和token都存放在header中，为什么不会劫持token
