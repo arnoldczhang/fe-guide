@@ -257,6 +257,8 @@ container.append(content);
 
 **图片降级**
 
+[现代图片性能优化及体验优化指南](https://mp.weixin.qq.com/s/YfJSqUYsJvlTXH6gRHhrmw)
+
 > - 考虑像素比
 > - 考虑图片兼容性
 > - 考虑屏幕大小
