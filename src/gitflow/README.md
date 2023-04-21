@@ -66,6 +66,12 @@ git branch -r --contains commitID
 ### git-reset
 [reset还是revert](https://zhuanlan.zhihu.com/p/137856034)
 
+### git-mv
+
+> 暂存区改文件名（mac不识别文件名大小写，可以试这个方法）
+
+https://www.runoob.com/git/git-mv.html
+
 ---
 
 ## github

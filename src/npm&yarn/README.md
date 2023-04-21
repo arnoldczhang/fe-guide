@@ -1,5 +1,7 @@
 # npm
 
+[TOC]
+
 ## 目录
 
 <details>
@@ -164,6 +166,18 @@ npm publish --tag beta
 
 - npm owner rm 用户名 项目名
 
+
+
+### 安全性
+
+**[socket-npm](https://socket.dev/blog/introducing-safe-npm)**
+
+> 保护开发人员在使用 npm install 时免受恶意软件、拼写错误、安装脚本、抗议软件和遥测等方面的影响。
+>
+> 暂不支持yarn和pnpm
+
+
+
 ---
 
 ## package.json 属性
@@ -289,6 +303,10 @@ npm dedupe
 - 本地自动新建一个 shell
 - 将 node_modules/.bin 的绝对路径加入 PATH，执行
 - 结束后 PATH 恢复原样
+
+### npm script执行提速
+
+[方案](https://marvinh.dev/blog/speeding-up-javascript-ecosystem-part-4/)
 
 ### 参数传递
 

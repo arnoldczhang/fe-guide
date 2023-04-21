@@ -1,6 +1,6 @@
 # node
 
-[git](https://github.com/nodejs/node.git)
+[TOC]
 
 ## 参考
 - [源码分析](http://efe.baidu.com/blog/nodejs-module-analyze/)
@@ -1178,6 +1178,12 @@ function promisify(original) {
 ### node实现websocket
 [参考](https://mp.weixin.qq.com/s/jrXsXch-wnlTcS2JEKe32Q)
 
+
+
+### nodemon
+
+竞品：[turbowatch]((https://github.com/gajus/turbowatch/))
+
 ---
 
 ## 内存泄漏
@@ -1249,7 +1255,7 @@ top -pid 69608
 
 ---
 
-### 版本日志
+## 版本日志
 
 #### 13.2.0
 

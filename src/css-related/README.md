@@ -1185,6 +1185,22 @@ font-family: 'Microsoft Yahei';
 
 
 
+### text-fill-color
+
+> 可用于设置段落文字渐变色
+
+```css
+background: -webkit-linear-gradient(-70deg, #8250df 0%, #d42a32 100%);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: rgba(0,0,0,0);
+-webkit-box-decoration-break: clone;
+```
+
+
+
+
+
 ---
 
 ### calc
@@ -1800,3 +1816,43 @@ input::placeholder {
 ### 浏览器渲染顺序
 
 > 先父元素，后子元素
+
+---
+
+## CSS in JS
+
+- [@emotion/react](https://www.npmjs.com/package/@emotion/react)
+
+- [@emotion](https://github.com/emotion-js/emotion)
+
+
+
+**将 className 转为 css-hash化 的随机类名**
+
+```jsx
+import { css } from '@emotion/css';
+
+const color = 'white';
+
+render(
+  <div
+    className={css`
+      padding: 32px;
+      background-color: hotpink;
+      font-size: 24px;
+      border-radius: 4px;
+      &:hover {
+        color: ${color};
+      }
+    `}
+  >
+    Hover to change color.
+  </div>
+)
+```
+
+---
+
+## 原子css库
+
+- [unocss](https://github.com/unocss/unocss)

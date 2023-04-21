@@ -253,6 +253,55 @@ container.append(content);
 
 
 
+### picture
+
+**图片降级**
+
+[现代图片性能优化及体验优化指南](https://mp.weixin.qq.com/s/YfJSqUYsJvlTXH6gRHhrmw)
+
+> - 考虑像素比
+> - 考虑图片兼容性
+> - 考虑屏幕大小
+
+```html
+<picture>
+  <source
+    type="image/avif"
+    media="(-webkit-min-device-pixel-ratio: 1.5)"
+    srcset="2x-800.avif 800w, 2x-1200.avif 1200w, 2x-1598.avif 1598w"
+    sizes="
+      (min-width: 1066px) 743px,
+      (min-width: 800px) calc(75vw - 57px),
+      100vw
+    "
+  />
+  <source
+    type="image/webp"
+    media="(-webkit-min-device-pixel-ratio: 1.5)"
+    srcset="2x-800.webp 800w, 2x-1200.webp 1200w, 2x-1598.webp 1598w"
+    sizes="
+      (min-width: 1066px) 743px,
+      (min-width: 800px) calc(75vw - 57px),
+      100vw
+    "
+  />
+  <source
+    media="(-webkit-min-device-pixel-ratio: 1.5)"
+    srcset="2x-800.jpg 800w, 2x-1200.jpg 1200w, 2x-1598.jpg 1598w"
+    sizes="
+      (min-width: 1066px) 743px,
+      (min-width: 800px) calc(75vw - 57px),
+      100vw
+    "
+  />
+  <source type="image/avif" srcset="1x-743.avif" />
+  <source type="image/webp" srcset="1x-743.webp" />
+  <img src="1x-743.jpg" width="743" height="477" alt="A red panda" />
+</picture>
+```
+
+
+
 
 
 ---
