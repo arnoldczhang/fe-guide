@@ -3717,6 +3717,19 @@ foo`try catch ${foo.name}.`;
 
 
 
+### Intl-文本分割
+
+> 按词的类型（名、动、介等），分割成不同词组，这是split做不到的，不过目前版本（chrome112）试下来，识别还是有问题。
+
+```js
+var str = 'Intl.Segmenter 是浏览器内置的 API，支持各种语言的分词（包括中文），本文介绍它的简单用法。';
+var segmenterCn = new Intl.Segmenter('zh-Hans-CN', { granularity: 'word' });
+var segments = segmenterCn.segment(str);
+console.log(Array.from(segments));
+```
+
+
+
 ---
 
 ### webpack将import处理成了什么
