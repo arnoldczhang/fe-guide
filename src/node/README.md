@@ -207,6 +207,8 @@ node --inspect-brk dist/app.js
 
 - [打字过程录制-rety](https://rety.verou.me/)
 
+- [指纹库-fingerprint](https://github.com/fingerprintjs/fingerprintjs)
+
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
