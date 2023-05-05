@@ -209,3 +209,11 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 >新增`defineOptions`，可在setup里定义组件基本信息（不用单独搞个<script>定义组件name了）
 
 [参考](https://www.npmjs.com/package/unplugin-vue-define-options)
+
+---
+
+## tsx
+
+```tsx
+```
+
