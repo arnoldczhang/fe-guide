@@ -451,6 +451,25 @@ packages:
 
 
 
+### 使用changeset管理版本&发布
+
+```json
+{
+  "scripts": {
+    <!-- 统一为packages/* 升级版本号 -->
+    "publish:first": "changeset",
+    <!-- 更新 package.json 和 CHANGELOG.md -->
+    "publish:second": "pnpm changeset version",
+    <!-- 更新workspace依赖版本 -->
+    "publish:third": "pnpm install",
+    <!-- 发布所有package/* -->
+    "publish:final": "pnpm changeset publish"
+  },
+}
+```
+
+
+
 ### pnpm publish
 
 [自动更新版本号](https://github.com/umijs/umi/pull/10719/files#diff-32824c984905bb02bc7ffcef96a77addd1f1602cff71a11fbbfdd7f53ee026bb)
