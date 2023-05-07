@@ -470,6 +470,24 @@ packages:
 
 
 
+#### 发beta版
+
+```sh
+pnpm changeset pre enter beta
+changeset
+pnpm changeset version
+pnpm changeset publish
+
+<!-- 改了一些代码 -->
+changeset
+pnpm changeset version
+pnpm changeset publish
+```
+
+
+
+
+
 ### pnpm publish
 
 [自动更新版本号](https://github.com/umijs/umi/pull/10719/files#diff-32824c984905bb02bc7ffcef96a77addd1f1602cff71a11fbbfdd7f53ee026bb)
