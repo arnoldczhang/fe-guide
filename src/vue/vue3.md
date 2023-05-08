@@ -214,6 +214,26 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 
 ## tsx
 
+### props
+
+```tsx
+import { defineComponent, PropType } from 'vue';
+
+defineComponent({
+  props: {
+    a: {
+      type: Object as PropType<具体类型>,
+      required: true,
+    },
+    b: {
+      type: Function as PropType<(arg: 具体类型) => void>,
+    },
+  },
+})
+```
+
+### inject/provide
+
 ```tsx
 ```
 
