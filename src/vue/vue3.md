@@ -214,7 +214,11 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 
 ## tsx
 
-### props
+### PropType
+
+> 用于在用运行时 props 声明时给一个 prop 标注更精确的类型定义
+>
+> 参考[vue3-PropType](https://cn.vuejs.org/api/utility-types.html#proptype-t)
 
 ```tsx
 import { defineComponent, PropType } from 'vue';
