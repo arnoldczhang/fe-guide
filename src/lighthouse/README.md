@@ -297,8 +297,6 @@ initLighthouseConfig: (config: ICO) => ({
 
 ---
 
-
-
 ## rrweb
 
 [屏幕录制rrweb](https://mp.weixin.qq.com/s/5RUjvKOBjqX5Btrse-C3Jg)
@@ -329,4 +327,10 @@ let stopFn = rrweb.record({
 const replayer = new rrweb.Replayer(events);
 replayer.play(); // 播放
 ```
+
+---
+
+## 优化
+
+[LCP、FID等指标对应的优化手段](https://mp.weixin.qq.com/s?__biz=Mzk0MDMwMzQyOA==&mid=2247497549&idx=1&sn=61d32d8d207806a5889eb60ceb1b4a99&scene=21#wechat_redirect)
 
