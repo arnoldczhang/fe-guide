@@ -247,7 +247,30 @@ width: max-content/min-content
 }
 ```
 
+### 花式文字显示效果
+
+[参考](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247495645&idx=1&sn=6a4fecbe4638636274512804938ee13b&scene=21#wechat_redirect)
+
+- 通过 `background-size` 与 `background-position` 实现酷炫的文字下划线效果
+- 通过 `background-size` 与 `background-position` 以及 `background-clip` 实现文字逐个渐现的效果
+
+```css
+a {    
+    background: linear-gradient(90deg, #fc0, #fc0);
+    background-size: 0 100px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    color: transparent;
+    background-clip: text;
+}
+.button:hover ~ p a {
+    transition: .8s all linear;
+    background-size: 0 100px, 100% 100%;
+}
+```
+
 ### 虚拟滚动
+
 https://fusion.design/component/virtual-list?themeid=1
 
 ### 换肤

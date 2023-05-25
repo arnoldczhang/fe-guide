@@ -209,3 +209,35 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 >新增`defineOptions`，可在setup里定义组件基本信息（不用单独搞个<script>定义组件name了）
 
 [参考](https://www.npmjs.com/package/unplugin-vue-define-options)
+
+---
+
+## tsx
+
+### PropType
+
+> 用于在用运行时 props 声明时给一个 prop 标注更精确的类型定义
+>
+> 参考[vue3-PropType](https://cn.vuejs.org/api/utility-types.html#proptype-t)
+
+```tsx
+import { defineComponent, PropType } from 'vue';
+
+defineComponent({
+  props: {
+    a: {
+      type: Object as PropType<具体类型>,
+      required: true,
+    },
+    b: {
+      type: Function as PropType<(arg: 具体类型) => void>,
+    },
+  },
+})
+```
+
+### inject/provide
+
+```tsx
+```
+

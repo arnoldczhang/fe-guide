@@ -1,4 +1,8 @@
-# echart
+# echarts
+
+## 参考
+
+- [基于echarts的可视化大屏](https://github.com/food-billboard/create-chart)
 
 ## 用法
 

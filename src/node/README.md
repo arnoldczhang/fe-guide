@@ -203,6 +203,12 @@ node --inspect-brk dist/app.js
 
 - [获取文件夹大小-go-get-fold-size](https://github.com/markthree/go-get-folder-size)
 
+- [甘特图-gantt](https://mp.weixin.qq.com/s?__biz=MzU2MTIyNDUwMA==&mid=2247513760&idx=1&sn=b52bae81336d31dd633adeec8a24c810&chksm=fc7ef8fbcb0971ed30d2abccee9ca9e3419927de9e32d33717a4c5b3b12ce2cd63d77b5f2624&scene=21#wechat_redirect)
+
+- [打字过程录制-rety](https://rety.verou.me/)
+
+- [指纹库-fingerprint](https://github.com/fingerprintjs/fingerprintjs)
+
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
