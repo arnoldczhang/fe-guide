@@ -1041,6 +1041,23 @@ input[type=checkbox] {
 }
 ```
 
+
+
+容器位置
+
+```css
+.mask {
+  -webkit-mask: radial-gradient(closest-side circle,#000 99%,#0000 100%) left/40px 40px no-repeat
+}
+```
+
+- closest-side：渐变中心距离容器**最近的边**作为终止位置
+- closest-corner：渐变中心距离容器**最近的角**作为终止位置
+- farthest-side：渐变中心距离容器**最远的边**作为终止位置
+- farthest-corner（默认值）：渐变中心距离容器**最远的角**作为终止位置
+
+
+
 ### initial-letter
 
 https://developer.chrome.com/blog/control-your-drop-caps-with-css-initial-letter/
