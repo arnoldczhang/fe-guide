@@ -1662,7 +1662,7 @@ div {
 
 ### xxx:has(selector)
 
-> 匹配父、兄、子元素，css在chrome105开始生效，querySelector早就生效了。
+> 反选父元素，匹配父、兄、子元素，css在chrome105开始生效，querySelector早就生效了。
 >
 > 因为DOM 的渲染是从上往下，从内往外的，所以这个规则落地前要解决css回溯问题。
 >
