@@ -55,6 +55,7 @@
 
 1. ckeditor： https://ckeditor.com/blog/best-wysiwyg-editor-for-angular-react/
 2. react 可视化库：https://mp.weixin.qq.com/s/NgaQ4sGI4RDXb23ua2Spbw
+2. [基于rsc的框架-waku](https://github.com/dai-shi/waku)
 
 ---
 
