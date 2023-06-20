@@ -24,3 +24,9 @@
 
 ## 库
 - [webassembly的npm](https://wapm.io/)
+
+
+
+## 模块化
+
+[webassembly模块化](https://mp.weixin.qq.com/s?__biz=Mzg2ODQ1OTExOA==&mid=2247503481&idx=1&sn=9bad90611cc2ba3e906608f96a6d6709&scene=21#wechat_redirect)
