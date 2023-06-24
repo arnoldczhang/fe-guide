@@ -25,6 +25,7 @@
 - [2022css发展](https://mp.weixin.qq.com/s/jh9dVWGzFTp9a1tNgFZ2yw)
 - [headless-ui](https://headlessui.com/vue/tabs)
 - [在线设计-canva](https://www.canva.cn/)
+- [stdf-svelte+tailwind组件库](https://github.com/dufu1991/stdf)
 
 ### 各种案例
 - [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
@@ -41,6 +42,7 @@
 - [纯css轮播图](https://mp.weixin.qq.com/s/84eYQjIWk8W0hEgQ8daeSg)
 - [自适应文本头像](https://segmentfault.com/a/1190000042675552)
 - [chrome官方css教程](https://web.dev/learn/css/lists/)
+- [各种边框动画](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247495778&idx=1&sn=e96c01b620815fa4e5c168d24598362e&scene=21#wechat_redirect)
 
 ### 各种属性
 - [现代css性能优化](http://verymuch.site/2018/07/22/CSS%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%848%E4%B8%AA%E6%8A%80%E5%B7%A7/?nsukey=3eczM2FJ0JQ8aS2hEDt1CnIzmS32kXvEkjuE7I0lrEF7M8jW7k7PPZtuVxX%2BT%2FsRQqGQ7YhSV%2FicPVi%2FrRG%2BhGGQQn6y7EuHKuERI93Idzq2ziur8T8dZL3qgDT%2Bw5au3cocxOGnSC7pBI7bve9tigiinrZL8Xaac042IW%2FR%2FxqJp8Fk21Nm7YbVUczUdhD%2F)
@@ -1041,6 +1043,23 @@ input[type=checkbox] {
 }
 ```
 
+
+
+容器位置
+
+```css
+.mask {
+  -webkit-mask: radial-gradient(closest-side circle,#000 99%,#0000 100%) left/40px 40px no-repeat
+}
+```
+
+- closest-side：渐变中心距离容器**最近的边**作为终止位置
+- closest-corner：渐变中心距离容器**最近的角**作为终止位置
+- farthest-side：渐变中心距离容器**最远的边**作为终止位置
+- farthest-corner（默认值）：渐变中心距离容器**最远的角**作为终止位置
+
+
+
 ### initial-letter
 
 https://developer.chrome.com/blog/control-your-drop-caps-with-css-initial-letter/
@@ -1229,6 +1248,41 @@ background-clip: text;
 ### calc
 
 [现代 CSS 解决方案：CSS 数学函数之 calc](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247491089&idx=1&sn=84aecbf783859c930bf57660b46d06ef&chksm=ce257de7f952f4f17b49c890910d995362a1a7247fdf20bd427d868a15cef08e1c3d9e68eba1&token=363949812&lang=zh_CN#rd)
+
+
+
+### conic-gradient
+
+
+
+**示例**
+
+旋转边框高亮
+
+```less
+
+.conic {
+ position: relative;
+ 
+ &::before {
+  content: '';
+  position: absolute;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(transparent, rgba(168, 239, 255, 1), transparent 30%);
+  animation: rotate 4s linear infinite;
+ }
+}
+@keyframes rotate {
+ 100% {
+  transform: rotate(1turn);
+ }
+}
+```
+
+
 
 ---
 
@@ -1645,7 +1699,7 @@ div {
 
 ### xxx:has(selector)
 
-> 匹配父、兄、子元素，css在chrome105开始生效，querySelector早就生效了。
+> 反选父元素，匹配父、兄、子元素，css在chrome105开始生效，querySelector早就生效了。
 >
 > 因为DOM 的渲染是从上往下，从内往外的，所以这个规则落地前要解决css回溯问题。
 >

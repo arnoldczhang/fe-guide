@@ -1,20 +1,11 @@
 # img
 
+[TOC]
+
 ## 参考
 - [图片优化](https://mp.weixin.qq.com/s/euvdMHkYUXHmgkV9D334NQ)
 - [canvas做图片压缩](https://segmentfault.com/a/1190000023486410)
 - [gif压缩](https://github.com/imagemin/imagemin-gifsicle)
-
-## 目录
-<details>
-<summary>展开更多</summary>
-
-* [`png`](#png)
-* [`webp`](#webp)
-* [`选型`](#选型)
-* [`视频`](#视频)
-
-</details>
 
 ---
 
@@ -65,3 +56,10 @@ html的`<video>`仅支持webm和MP4，区别在于：
 webm - 支持透明
 mp4 - 没有透明通道
 
+---
+
+### PAG
+
+> 相比于`lottie`，体积更小，解析时间更短，是个二进制文件。
+>
+> 腾讯已有[开源产品](https://github.com/tencent/libpag)

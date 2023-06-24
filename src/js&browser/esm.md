@@ -73,6 +73,24 @@ export default function() {
 </script>
 ```
 
+### import.meta
+
+> 返回当前模块的一些信息（比如url等）
+
+```html
+<html>
+<script type="module">
+import './index.mjs?someURLInfo=5';
+</script>
+</html>
+```
+
+那么在index.mjs里
+
+```js
+console.log(import.meta.url); // file:///home/user/my-module.mjs?someURLInfo=5
+```
+
 
 
 
