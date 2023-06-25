@@ -10,6 +10,7 @@
 - [javascript-questions](https://github.com/lydiahallie/javascript-questions/blob/master/zh-CN/README-zh_CN.md)
 - [我在近期求职中遇到的前端面试问题及其解法](https://mp.weixin.qq.com/s/vFTAoSDKcjrgf34vRARyKw)
 - [钉钉前端题](https://juejin.cn/post/6987549240436195364)
+- [java面试参考](https://javaguide.cn/)
 
 ## 目录
 
