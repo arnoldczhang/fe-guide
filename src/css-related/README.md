@@ -1703,10 +1703,8 @@ div {
 >
 > 因为DOM 的渲染是从上往下，从内往外的，所以这个规则落地前要解决css回溯问题。
 >
-> 
->
 > - [css invalidation in blink](https://chromium.googlesource.com/chromium/src/+/refs/tags/90.0.4430.54/third_party/blink/renderer/core/css/style-invalidation.md)
-> - [:has在表单的运用](https://webkit.org/blog/13096/css-has-pseudo-class/#styling-form-states-without-js)
+>- [:has在表单的运用](https://webkit.org/blog/13096/css-has-pseudo-class/#styling-form-states-without-js)
 
 介绍：[张鑫旭-css:has](https://www.zhangxinxu.com/wordpress/2022/08/css-has-pseudo-class/)
 
