@@ -85,6 +85,7 @@
 * [`图片复制到剪贴板`](#图片复制到剪贴板)
 * [`拖拽`](#拖拽)
 * [`Promise.allSettled`](#Promise.allSettled)
+* [`abort`](#abort)
 
 **进阶 js**
 
@@ -3860,3 +3861,34 @@ width = 内容width、padding-left/right、border-left/right的宽度总和
 width = 内容width + padding-left/right + border-left/right + margin-left/right
 
 总元素的高度 = height + padding-top/bottom + border-top/bottom + margin-top/bottom
+
+---
+
+### abort
+> 解决竞态问题
+
+```js
+useEffect(() => {
+  // 创建 controller
+  const controller = new AbortController();
+  // 将 controller 作为signal传递给 fetch
+  fetch(url, { signal: controller.signal })
+  .then((r) => r.json())
+  .then((r) => {
+    // do sth
+  })
+  // 由于 AbortController 导致的错误
+  .catch((error) => {
+    if (error.name === 'AbortError') {
+      // ...
+    } else {
+      // ...
+    }
+  });
+
+  return () => {
+    // 中止请求
+    controller.abort();
+  };
+}, [url]);
+```
