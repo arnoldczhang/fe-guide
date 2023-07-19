@@ -72,6 +72,20 @@ git branch -r --contains commitID
 
 https://www.runoob.com/git/git-mv.html
 
+
+
+### git-rebase
+
+> git rebase -i start end
+
+[Git 合并多个 commit](https://cloud.tencent.com/developer/article/1690638)
+
+
+
+注：cherry-pick实测更好用
+
+
+
 ---
 
 ## github
