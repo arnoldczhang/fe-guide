@@ -21,6 +21,7 @@
 - [在线调试css特效](https://animista.net/)
 - [react-旅游风格组件库](https://orbit.kiwi/components/button/)
 - [daisyUI（基于tailwind）](https://daisyui.com/components/avatar)
+- [sailboatUI（基于tailwind）](https://sailboatui.com/docs/components/button/)
 - [无类化css-simple.css](https://github.com/kevquirk/simple.css)
 - [2022css发展](https://mp.weixin.qq.com/s/jh9dVWGzFTp9a1tNgFZ2yw)
 - [headless-ui](https://headlessui.com/vue/tabs)
