@@ -5,6 +5,7 @@
 - [docker运行vue项目](https://juejin.im/post/5db9474bf265da4d1206777e?utm_source=gold_browser_extension)
 - [docker指南](https://www.robertcooper.me/docker-guide)
 - [docker中文字符集配置](https://cloud.tencent.com/developer/article/1507591)
+- [docker-安装nginx](https://mp.weixin.qq.com/s?__biz=Mzg3OTYzMDkzMg==&mid=2247496729&idx=1&sn=42c89edd613f51b262b09c6821c84c49)
 
 ---
 
