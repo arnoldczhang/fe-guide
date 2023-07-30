@@ -9,6 +9,7 @@
 - [根据代码生成代码文档，集成CICD](https://github.com/context-labs/autodoc)
 - [gpt生成图表](https://github.com/ObservedObserver/viz-gpt)
 - [AI合集](https://ai.nancheng.fun/)
+- [现有的一些AIGC](https://mp.weixin.qq.com/s?__biz=MzkxNDIzNTg4MA==&mid=2247488559&idx=1&sn=294b604f54aac0e8f925cee2a638bdec&scene=21#wechat_redirect)
 
 
 
