@@ -33,6 +33,7 @@
 - [bind](./src/bind.js)
 - [双指针-字符串全匹配](./src/字符串全匹配.js)
 - [zookeeper增删改查](./src/zookeeper.js)
+- [微信红包算法](../algorithm/leetcode/微信红包算法.js)
 
 ## 3. 打包工具
 
