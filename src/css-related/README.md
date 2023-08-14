@@ -361,6 +361,14 @@ document.link.disabled = false;
 - will-change 中指定了任意 CSS 属性，即便你没有直接指定这些属性的值
 - -webkit-overflow-scrolling 属性被设置 touch的元素
 
+**层叠效果**
+
+- 减少渲染阻塞（浏览器提前分配资源）
+- 减少重绘重排（独立图层）
+- 硬件加速
+
+
+
 #### 层叠等级
 同一个层叠，上下文中元素，在z轴上的显示顺序
 
