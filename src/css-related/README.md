@@ -1293,6 +1293,18 @@ background-clip: text;
 
 
 
+### -moz-element
+
+> css生成页面截图
+
+```css
+mini-map .screen-image .canvas {
+  background: white -moz-element(#main) no-repeat scroll center center / contain;
+}
+```
+
+
+
 ---
 
 ## 布局
