@@ -524,6 +524,110 @@ outline不占用盒模型空间
 filter:blur（数值）
 对比则使用filter:contrast（数值）
 
+### 翻书效果
+
+```html
+<span class="jaffee" style="--bg: url('path/to/image.png');">
+  <span class="a"></span>
+  <span class="bc">
+    <span class="b"></span>
+    <span class="c"></span>
+  </span>
+  <img src="path/to/image.png">
+</span>
+<style type="css">
+.jaffee {
+  position: relative;
+  display: inline-flex;
+  transform: rotateX(10deg); 
+  transform-style: preserve-3d;
+  cursor: grab;
+}
+
+.jaffee img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 56vh;
+  opacity: 0;
+}
+
+.jaffee .a,
+.jaffee .b,
+.jaffee .c {
+  top: 0;
+  display: inline-block;
+  height: 100%;
+  background-image: var(--bg);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.jaffee .a {
+  position: absolute;
+  left: 0;
+  width: 50%;
+  background-position: 0 0;
+}
+
+.jaffee .bc {
+  position: absolute;
+  display: inline-flex;
+  width: 50%;
+  height: 100%;
+  left: 50%;
+  transform-origin: left;
+  transition: transform 3s;
+  transform-style: preserve-3d;
+}
+
+.jaffee .b,
+.jaffee .c {
+  position: relative;
+  width: 50%;
+  backface-visibility: hidden;
+}
+
+.jaffee .b {
+  background-position: 66.666667% 0;
+  transform-style: preserve-3d;
+}
+
+.jaffee .b:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  transform: rotateY(180deg) translateZ(1px);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.jaffee .c {
+  background-position: 100% 0;
+  transform-origin: left;
+  transition: transform 2s;
+}
+
+.jaffee:hover .bc,
+.jaffee:active .bc {
+  transform: rotateY(-180deg) translateZ(-1px);
+  transition: transform 2s;
+}
+
+.jaffee:hover .c,
+.jaffee:active .c {
+  transform: rotateY(180deg) translateZ(2px);
+  transition: transform 3s;
+}
+</style>
+```
+
+
+
 ### 1px
 
 **border-image**
