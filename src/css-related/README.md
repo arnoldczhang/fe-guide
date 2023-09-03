@@ -27,6 +27,7 @@
 - [headless-ui](https://headlessui.com/vue/tabs)
 - [在线设计-canva](https://www.canva.cn/)
 - [stdf-svelte+tailwind组件库](https://github.com/dufu1991/stdf)
+- [免费icon库-iconbuddy](https://iconbuddy.app/ant-design)
 
 ### 各种案例
 - [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
