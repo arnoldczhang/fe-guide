@@ -10,6 +10,7 @@
 - [gpt生成图表](https://github.com/ObservedObserver/viz-gpt)
 - [AI合集](https://ai.nancheng.fun/)
 - [现有的一些AIGC](https://mp.weixin.qq.com/s?__biz=MzkxNDIzNTg4MA==&mid=2247488559&idx=1&sn=294b604f54aac0e8f925cee2a638bdec&scene=21#wechat_redirect)
+- [字节跳动-豆包](https://www.doubao.com/chat)
 
 
 
@@ -68,3 +69,15 @@ yyy: ...
 ### question
 
 到这里才开始你真正的提问-_-
+
+
+
+## 境界
+
+>程序 = 算法 + 结构
+>
+>软件 = 程序 + 软件工程
+>
+>软件企业= 软件 + 商业模式
+
+chatgpt在第一层大力提效，人类应该在二、三层发力。

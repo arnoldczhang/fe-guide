@@ -27,6 +27,7 @@
 - [headless-ui](https://headlessui.com/vue/tabs)
 - [在线设计-canva](https://www.canva.cn/)
 - [stdf-svelte+tailwind组件库](https://github.com/dufu1991/stdf)
+- [免费icon库-iconbuddy](https://iconbuddy.app/ant-design)
 
 ### 各种案例
 - [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
@@ -361,6 +362,14 @@ document.link.disabled = false;
 - will-change 中指定了任意 CSS 属性，即便你没有直接指定这些属性的值
 - -webkit-overflow-scrolling 属性被设置 touch的元素
 
+**层叠效果**
+
+- 减少渲染阻塞（浏览器提前分配资源）
+- 减少重绘重排（独立图层）
+- 硬件加速
+
+
+
 #### 层叠等级
 同一个层叠，上下文中元素，在z轴上的显示顺序
 
@@ -515,6 +524,110 @@ outline不占用盒模型空间
 ### 两个球相交的粘粘效果
 filter:blur（数值）
 对比则使用filter:contrast（数值）
+
+### 翻书效果
+
+```html
+<span class="jaffee" style="--bg: url('path/to/image.png');">
+  <span class="a"></span>
+  <span class="bc">
+    <span class="b"></span>
+    <span class="c"></span>
+  </span>
+  <img src="path/to/image.png">
+</span>
+<style type="css">
+.jaffee {
+  position: relative;
+  display: inline-flex;
+  transform: rotateX(10deg); 
+  transform-style: preserve-3d;
+  cursor: grab;
+}
+
+.jaffee img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 56vh;
+  opacity: 0;
+}
+
+.jaffee .a,
+.jaffee .b,
+.jaffee .c {
+  top: 0;
+  display: inline-block;
+  height: 100%;
+  background-image: var(--bg);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.jaffee .a {
+  position: absolute;
+  left: 0;
+  width: 50%;
+  background-position: 0 0;
+}
+
+.jaffee .bc {
+  position: absolute;
+  display: inline-flex;
+  width: 50%;
+  height: 100%;
+  left: 50%;
+  transform-origin: left;
+  transition: transform 3s;
+  transform-style: preserve-3d;
+}
+
+.jaffee .b,
+.jaffee .c {
+  position: relative;
+  width: 50%;
+  backface-visibility: hidden;
+}
+
+.jaffee .b {
+  background-position: 66.666667% 0;
+  transform-style: preserve-3d;
+}
+
+.jaffee .b:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  transform: rotateY(180deg) translateZ(1px);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.jaffee .c {
+  background-position: 100% 0;
+  transform-origin: left;
+  transition: transform 2s;
+}
+
+.jaffee:hover .bc,
+.jaffee:active .bc {
+  transform: rotateY(-180deg) translateZ(-1px);
+  transition: transform 2s;
+}
+
+.jaffee:hover .c,
+.jaffee:active .c {
+  transform: rotateY(180deg) translateZ(2px);
+  transition: transform 3s;
+}
+</style>
+```
+
+
 
 ### 1px
 
@@ -1280,6 +1393,18 @@ background-clip: text;
  100% {
   transform: rotate(1turn);
  }
+}
+```
+
+
+
+### -moz-element
+
+> css生成页面截图
+
+```css
+mini-map .screen-image .canvas {
+  background: white -moz-element(#main) no-repeat scroll center center / contain;
 }
 ```
 

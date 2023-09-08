@@ -211,6 +211,10 @@ node --inspect-brk dist/app.js
 
 - [删除未使用的css-purgecss](https://mp.weixin.qq.com/s?__biz=MzU2MTIyNDUwMA==&mid=2247515344&idx=2&sn=9d27a6cbfea7cbc07fcd8d7cdc1135c1&chksm=fc7ef28bcb097b9d03a80c66e219b2c3b175c51ea517dc6e7f9869af4d2d3b1a00f4dea26f5d)
 
+- [检查npm包是否符合ESM-arethetypeswrong](https://arethetypeswrong.github.io/)
+
+- [去除图片背景-background-removal-js](https://github.com/imgly/background-removal-js)
+
 ### eggjs
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
