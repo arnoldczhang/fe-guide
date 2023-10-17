@@ -1,6 +1,7 @@
 # sql
 
 ## 目录
+
 <details>
 <summary>展开更多</summary>
 
@@ -14,6 +15,7 @@
 * [`语法`](#语法)
 * [`灾备`](#灾备)
 * [`字符集`](#字符集)
+* [`spl`](#spl)
 
 </details>
 
@@ -21,8 +23,6 @@
 
 - [postgres-ORM](https://github.com/porsager/postgres)
 - [数据库可视化生成工具](https://dber.tech/)
-
-
 
 ## 概念
 
@@ -52,8 +52,6 @@ where s.Age > 12 && s.Age < 20
 select s;
 ```
 
-
-
 ### 日期类型
 
 - **datetime**：无时区时间
@@ -68,21 +66,25 @@ select s;
 - 数据控制语言 DCL
 
 #### DDL
+
 > 创建表、视图、索引、同义词、聚簇等如：
->
+> 
 > CREATE TABLE/VIEW/INDEX/SYN/CLUSTER
 
 #### DML
+
 - insert
 - update
 - delete
 
 #### DQL
+
 - SELECT <字段名表>
 - FROM <表或视图名>
 - WHERE <查询条件>
 
 #### DCL
+
 - GRANT
 - ROLLBACK
 
@@ -98,15 +100,11 @@ FROM INFORMATION_SCHEMA.PARTITIONS
 WHERE TABLE_NAME = 'task';
 ```
 
-
-
 ### 分区
 
 ```sql
 alter table t add partition(partition p2 values less than 100);
 ```
-
-
 
 ### 碎片整理
 
@@ -122,13 +120,9 @@ alter table TABLE_NAME engine=innodb;
 
 [B+tree](https://blog.csdn.net/yin767833376/article/details/81511377)
 
-
-
 ### 二级索引&分区
 
 ![索引示意](./索引示意图.jpeg)
-
-
 
 ### 最左匹配原则
 
@@ -137,19 +131,17 @@ alter table TABLE_NAME engine=innodb;
 
 **举例：现有组合索引(a,b,c,d)**
 
-| 场景                                | 使用                                                |
-| ----------------------------------- | --------------------------------------------------- |
-| a=xxx                               | √                                                   |
-| a=xxx and b=xxx                     | √                                                   |
-| a=xxx and b=xxx and c=xxx           | √                                                   |
-| a=xxx and b=xxx and c=xxx and d=xxx | √                                                   |
-| a=xxx and b=xxx and c>xxx and d=xxx | √（部分使用：a、b，没用上：c、d）                   |
-| b=xxx and c>xxx and d=xxx           | ×                                                   |
-| c=xxx and d=xxx                     | ×                                                   |
-| d=xxx                               | ×                                                   |
+| 场景                                  | 使用                            |
+| ----------------------------------- | ----------------------------- |
+| a=xxx                               | √                             |
+| a=xxx and b=xxx                     | √                             |
+| a=xxx and b=xxx and c=xxx           | √                             |
+| a=xxx and b=xxx and c=xxx and d=xxx | √                             |
+| a=xxx and b=xxx and c>xxx and d=xxx | √（部分使用：a、b，没用上：c、d）           |
+| b=xxx and c>xxx and d=xxx           | ×                             |
+| c=xxx and d=xxx                     | ×                             |
+| d=xxx                               | ×                             |
 | b=xxx and a=xxx and c>xxx and d=xxx | √（部分使用：a、b，没用上：c、d，ab顺序不影响使用） |
-
-
 
 ### 适用场景&关键点
 
@@ -160,8 +152,6 @@ alter table TABLE_NAME engine=innodb;
 - = 和 in 可以乱序，mysql会自动优化
 - 尽量扩展索引，替代新增
 
-
-
 ### 不适用场景
 
 > 极大数据量（上亿）
@@ -170,8 +160,6 @@ alter table TABLE_NAME engine=innodb;
 - 列存储，按列单独存储在一个文件，查询按需读取，耗时低，适合**大批量**操作
 
 ![列存储](./列存储.jpeg)
-
-
 
 ### 快照索引
 
@@ -182,8 +170,6 @@ alter table TABLE_NAME engine=innodb;
 ### 列存储索引
 
 [参考](./列存储#列压缩)
-
-
 
 ### 语法参考
 
@@ -202,6 +188,7 @@ show keys from xxx.表名;
 ## 拓展
 
 ### 最简单的数据库
+
 ```sh
 #!/bin/bash
 db_set () {
@@ -229,8 +216,6 @@ in (0, 1, 2)
 **为什么？**
 
 **in**语法效率低，而且还要考虑表字段为**null**的情况。
-
-
 
 #### join
 
@@ -265,16 +250,12 @@ in (0, 1, 2)
 - 大表拆解为多个实体表
 - 查询时，需要根据定义好的规则，查对应的表名
 
-
-
 ---
 
 ## 分区
 
 - 将大表分割为多个数据段，仍是一张实体表
 - 查询时，仍使用大表名，由db自动去组织分区数据
-
-
 
 ---
 
@@ -316,4 +297,11 @@ ALTER DATABASE `库名` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
 
 alter table 表名 convert to character set utf8mb4 COLLATE utf8mb4_bin;
 ```
+
+---
+
+### spl
+
+> sql擅长查询，spl擅长计算，参考：[esProc](https://github.com/SPLware/esProc)，
+
 
