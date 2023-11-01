@@ -63,6 +63,7 @@
 - [领导力](../career/领导力.md)
 
 ## 8. 算法
+
 - [双指针-各种数组](../algorithm/leetcode/双指针-数组.js)
 - [双指针-各种滑动窗口](../algorithm/leetcode/双指针-滑动窗口.js)
 - [回溯-各种排列组合](../algorithm/leetcode/回溯-排列组合all.js)
@@ -81,4 +82,3 @@
 - [微前端](../microservice/微前端.md)
 - [监控平台](../career/前端埋点和监控方案.md)
 - [前端自动化测试](../career/前端自动化测试.md)
-

@@ -86,6 +86,7 @@
 * [`选择器`](#选择器)
 * [`伪元素`](伪元素)
 * [`常识`](常识)
+* [`原子css`](原子css)
 
 </details>
 
@@ -2112,3 +2113,5 @@ render(
 ## 原子css库
 
 - [unocss](https://github.com/unocss/unocss)
+
+- [tailwind使用方式优化](https://evilmartians.com/chronicles/5-best-practices-for-preventing-chaos-in-tailwind-css)
