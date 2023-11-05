@@ -3,8 +3,7 @@
 ## 参考
 
 - [react16、vue2、vue3 diff算法对比](https://juejin.cn/post/7116141318853623839)
-
-
+- [vue3-管理端开箱即用1](https://github.com/fantastic-admin/basic)
 
 ## 目录
 
@@ -19,12 +18,10 @@
 - 全局错误处理
 - ts支持
 
-
-
 ### treeshake
 
 > rollup 默认会基于 esm 做树摇，但是对于函数调用，由于不确定是否有副作用（比如改全局变量），不会自动treeshake，
->
+> 
 > 可以通过 **__PURE__**关键词标记不含副作用，可以正常 treeshake。
 
 ```js
@@ -42,13 +39,13 @@ export const isHtml = /*#__PURE__*/ isHtmlFn();
 
 ```vue
 <template>
-	<!-- 承接原组件$attrs，并适配当前组件 -->
+    <!-- 承接原组件$attrs，并适配当前组件 -->
   <el-table v-bind="attrs">
     <!-- 承接原组件$slots（动态插槽） -->
     <template #[slotName]="slotProps" v-for="(slot, slotName) in $slots">
       <!-- 插槽携带数据一并承接 -->
       <slot :name="slotName" v-bind="slotProps"></slot>
-  	</template>
+      </template>
   </el-table>
 </template>
 <script setup lang="ts">
@@ -87,7 +84,6 @@ onUnmounted(() => {
   // 卸载
 });
 </script>
-
 ```
 
 ---
@@ -120,8 +116,6 @@ watch(obj, (newObj, oldObj) => {
 });
 ```
 
-
-
 **onInvalidate**
 
 > 在当前副作用函数过期时执行，避免重复触发
@@ -132,18 +126,18 @@ const obj = ref(/**/);
 let finalData;
 
 watch(obj, async (newObj, oldObj, onInvalidate) => {
-	let expired = false;
+    let expired = false;
   onInvalidate(() => {
     expired = true;
   });
-  
+
   const res = await fetch('/path/to/request');
 
   // 回调过期时，跳过
   if (expired) {
     return;
   }
-  
+
   // 否则，正常赋值
   finalData = res;
 });
@@ -165,8 +159,6 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 
 > 非普通对象
 
-
-
 ### 数组
 
 **读取**
@@ -177,8 +169,6 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 - for...in
 - for...of
 
-
-
 **写入**
 
 - arr[100] = 1
@@ -186,13 +176,9 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 - 栈方法：push、pop
 - 修改原数组方法：splice、sort
 
-
-
 ### Set和Map
 
 - map.set响应式数据会污染原数据
-
-
 
 ---
 
@@ -206,7 +192,7 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 
 ### unplugin-vue-define-options
 
->新增`defineOptions`，可在setup里定义组件基本信息（不用单独搞个<script>定义组件name了）
+> 新增`defineOptions`，可在setup里定义组件基本信息（不用单独搞个<script>定义组件name了）
 
 [参考](https://www.npmjs.com/package/unplugin-vue-define-options)
 
@@ -217,7 +203,7 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 ### PropType
 
 > 用于在用运行时 props 声明时给一个 prop 标注更精确的类型定义
->
+> 
 > 参考[vue3-PropType](https://cn.vuejs.org/api/utility-types.html#proptype-t)
 
 ```tsx
@@ -239,5 +225,5 @@ defineComponent({
 ### inject/provide
 
 ```tsx
-```
 
+```
