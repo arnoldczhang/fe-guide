@@ -38,7 +38,12 @@ cd /usr/local/mysql/support-files
 mysql -u root -p
 
 # 建库
+
+## utf8
 CREATE DATABASE IF NOT EXISTS aaaa DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+
+## utf8mb4
+CREATE DATABASE IF NOT EXISTS aaaa DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 # 删库
 drop database <数据库名>;
