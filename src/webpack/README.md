@@ -3,6 +3,7 @@
 [TOC]
 
 ## 参考
+
 - [tapable插件机制解析](https://segmentfault.com/a/1190000017420937)
 - [webpack4js拆包](https://mp.weixin.qq.com/s/a946nG0oNYnDBMMwgtDBpA)
 - [webpack4配置指南](https://mp.weixin.qq.com/s/cX7yuneDxDk8_NnMy3Bc8Q)
@@ -15,6 +16,7 @@
 - [前端构建秘籍](https://juejin.im/post/5c9075305188252d5c743520)
 
 ## 目录
+
 <details>
 <summary>展开更多</summary>
 
@@ -67,7 +69,6 @@
 
 基础库、插件，集成打包
 
-
 **parcel**
 
 简单项目，生态较差
@@ -77,6 +78,7 @@
 ## 配置
 
 ### output
+
 ```js
 {
   output:{
@@ -93,7 +95,9 @@
 ```
 
 ### module
+
 配置rules
+
 ```js
 module: {
   // 这些库都是不依赖其它库的库 不需要解析他们可以加快编译速度
@@ -199,6 +203,7 @@ module.exports = {
 > 使用scope hoisting模式，合并函数作用域，减少闭包，[参考](https://mp.weixin.qq.com/s?__biz=Mzg3OTYzMDkzMg==&mid=2247495335&idx=1&sn=182401dcc0651fdca415c3a0a2d8f586&scene=21#wechat_redirect)
 
 ### resolve
+
 ```js
 {
   // ...
@@ -226,6 +231,7 @@ module.exports = {
 > hash形式共分为三种
 
 #### 普通hash
+
 - 跟整个项目的构建相关，构建生成的文件hash值都是一样的
 - 只要项目里有文件更改，整个项目构建的hash值都会更改
 
@@ -245,6 +251,7 @@ module.exports = {
 ```
 
 输出
+
 ```text
 => bundle.main.abc.js
 => bundle.vender.abc.js
@@ -273,6 +280,7 @@ module.exports = {
 ```
 
 输出
+
 ```text
 => bundle.main.aaaaaaaaa.js
 => bundle.vender.bbbbbbbbbb.js
@@ -289,7 +297,7 @@ module.exports = {
 ```js
 const extractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
-  
+
 module.exports = {
   // entry同上
   // ...
@@ -307,6 +315,7 @@ module.exports = {
 > hash 生成规则分为两种
 
 #### debug
+
 ```js
 // 字母、数字转16进制
 const hashid = this.input.replace(/[^a-z0-9]+/gi, m =>
@@ -315,6 +324,7 @@ const hashid = this.input.replace(/[^a-z0-9]+/gi, m =>
 ```
 
 #### crypto
+
 ```js
 // algorithm分'sha256','sha512'
 const hashid = require("crypto").createHash(algorithm);
@@ -324,7 +334,6 @@ return hashid.digest('hex');
 ```
 
 字符编码可[参考](../node/README.md#字符编码encoding)
-
 
 ### mpa配置
 
@@ -396,6 +405,7 @@ return hashid.digest('hex');
 ---
 
 ## Compilation
+
 > 调用编译对象`Compiler`，执行编译工作
 
 **Compiler**
@@ -474,10 +484,12 @@ class Compilation {
 > 内部包含hooks、和template处理
 
 ### 常用plugins
+
 - [检测循环引用](https://www.npmjs.com/package/circular-dependency-plugin)
 - [检测重复包-inspectpack](https://github.com/FormidableLabs/inspectpack/#plugin)
 
 ### 调试
+
 ```js
 // webpack.config.js放根目录，或者--config=指定路径
 ndb ./node_modules/webpack/bin/webpack.js --inline --progress
@@ -486,6 +498,7 @@ ndb ./node_modules/webpack/bin/webpack.js --inline --progress
 ### plugin开发
 
 #### hook注入
+
 ```js
 class CopyrightWebpackPlugin {
   // 调用plugin时，默认先执行apply
@@ -508,13 +521,14 @@ class CopyrightWebpackPlugin {
   handleInit() {
     // ...
   },
-  
+
 }
 
 module.exports = CopyrightWebpackPlugin;
 ```
 
 ### template
+
 > 四种template
 > 每个template处理都包含hooks和render处理
 
@@ -528,11 +542,13 @@ module.exports = CopyrightWebpackPlugin;
   * 热更新模块的处理
 
 ### tapable
+
 不同种类的hook
 
 ### plugin学习
 
 #### compression-webpack-plugin
+
 > webpack打包完之后，直接生成 gzip 压缩文件
 
 gz文件，可以通过新增 nginx 配置直接访问，空间换时间
@@ -570,6 +586,7 @@ compiler.hooks.thisCompilation -> tap('WarnNoModeSetPlugin', () => {
 ```
 
 #### SetVarMainTemplatePlugin
+
 **作用**
 
 **调用位置**
@@ -601,14 +618,12 @@ mainTemplate.hooks.hash -> tap("SetVarMainTemplatePlugin", hash => {
 ```js
 {
   plugins: [
-	  new webpack.optimize.LimitChunkCountPlugin({
+      new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 1,
     }),
-	],
+    ],
 }
 ```
-
-
 
 #### xxx
 
@@ -617,15 +632,21 @@ mainTemplate.hooks.hash -> tap("SetVarMainTemplatePlugin", hash => {
 **hook**
 
 ### loader开发
+
 // TODO
 
 ### 热更新操作
 
 #### 组件、css
+
 - webpack.HotModuleReplacementPlugin
+
 - entry插入**require.resolve('../utils/webpackHotDevClient')**
+
 - webpack-dev-server启动参数加上**hot: true**
+
 - 热更新的js加上
+  
   ```js
   if (process.env.NODE_ENV === 'development' && module.hot) {
     module.hot.accept();
@@ -633,9 +654,11 @@ mainTemplate.hooks.hash -> tap("SetVarMainTemplatePlugin", hash => {
   ```
 
 #### ssr
+
 webpack.watch + nodemon
 
 #### style
+
 `sourceMap: true`: 将sourcemap内联到style中，方便快速调试，但是会导致页面闪烁（FOUC）
 `singleton: true`: 复用同一个插入的style标签，能解决FOUC，但sourceMap就失效了（找不到源文件路径，而是合并后的路径）
 
@@ -644,27 +667,34 @@ webpack.watch + nodemon
 ## sourcemap
 
 ### source-map
+
 > vue-cli的生产环境使用的就是这个值
 
 在外部生成一个文件，在控制台会显示 错误代码准确信息 和 源代码的错误位置
 
 ### inline-source-map
+
 内嵌到bundle.js中只生成一个source-map，在控制台会显示 错误代码准确信息 和 源代码的错误位置
 
 ### hidden-source-map
+
 > 生产环境一般推荐这个
-外部错误代码错误原因，源代码的错误位置不能追踪源代码错误，只能提示到构建后代码的错误位置
+> 外部错误代码错误原因，源代码的错误位置不能追踪源代码错误，只能提示到构建后代码的错误位置
 
 ### eval-source-map
+
 内嵌每一个文件都生成对应的source-map错误代码准确信息，源代码的错误位置
 
 ### nosources-source-map
+
 外部错误代码准确信息，没有任何源代码信息
 
 ### cheap-source-map
+
 外部错误代码准确信息，源代码的错误位置只能精准到行
 
 ### cheap-module-eval-source-map
+
 > vue-cli开发环境和一般开发环境，都使用这个
 
 外部错误代码准确信息，源代码的错误位置module会将loader的source-map加入
@@ -674,6 +704,7 @@ webpack.watch + nodemon
 ## 中间缓存
 
 ### babel-loader
+
 ```js
 test: /\.jsx?$/,
 use: [
@@ -690,6 +721,7 @@ use: [
 ```
 
 ### eslint-loader
+
 ```js
 test: /\.(js|mjs|jsx)$/,
 enforce: 'pre',
@@ -705,7 +737,9 @@ use: [
 ```
 
 ### css/scss
+
 cache-loader也可用于其他缓存
+
 ```js
 {
   loader: resolve('cache-loader'),
@@ -721,6 +755,7 @@ cache-loader也可用于其他缓存
 ```
 
 ### js
+
 ```js
 {
     // 设置缓存目录
@@ -737,6 +772,7 @@ cache-loader也可用于其他缓存
 ```
 
 ### 过滤不需要做任何处理的库
+
 ```js
 module: {
   // 这些库都是不依赖其它库的库 不需要解析他们可以加快编译速度
@@ -785,6 +821,7 @@ module: {
 ---
 
 ## webpack4
+
 - [参考](https://juejin.im/entry/5b63eb8bf265da0f98317441)
 - [webpack4的24个实例](https://juejin.im/post/5cae0f616fb9a068a93f0613?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-1)
 
@@ -795,12 +832,14 @@ module: {
 ![流程分解](./webpack流程.jpg)
 
 ### 相比webpack3
+
 * 4多了mode字段，用于切换开发/生成环境
 * 4支持了读取npm依赖的module字段，es6module
 * 2、3的摇树会判断，如果方法有入参，或操纵了window，则不会摇掉，因为这些函数有副作用
   4的摇树默认会摇掉，如果sideEffect置为false，则不摇
 
 ### 流程简述
+
 - 初始化参数
 - 开始编译
   * 根据初始化参数，加载所需插件
@@ -817,39 +856,45 @@ module: {
   * fs.writeFile
 
 ### sideEffects
+
 import {a} from xx -> import {a} from xx/a
 
 ### treeShaking
+
  [参考](https://zhuanlan.zhihu.com/p/32831172)
 
 上面提到的由于副作用，所以不会摇掉的，可以参考下面例子，
 V6Engine方法没有用到，但是修改了V8Engine的原型，如果摇掉会有问题
 
- ```js
- var V8Engine = (function () {
-  function V8Engine () {}
-  V8Engine.prototype.toString = function () { return 'V8' }
-  return V8Engine
+```js
+var V8Engine = (function () {
+ function V8Engine () {}
+ V8Engine.prototype.toString = function () { return 'V8' }
+ return V8Engine
 }())
 var V6Engine = (function () {
-  function V6Engine () {}
-  V6Engine.prototype = V8Engine.prototype // <---- side effect
-  V6Engine.prototype.toString = function () { return 'V6' }
-  return V6Engine
+ function V6Engine () {}
+ V6Engine.prototype = V8Engine.prototype // <---- side effect
+ V6Engine.prototype.toString = function () { return 'V6' }
+ return V6Engine
 }())
 console.log(new V8Engine().toString())
- ```
+```
 
 ### babel7
+
 [参考](../babel/README.md)
 
 ### browserslist
+
 [browserslist](https://github.com/browserslist/browserslist)
 
 **用于在不同前端工具之间共享目标浏览器和 Node.js 版本的配置**
 
 #### 使用方法
+
 - 添加到 package.json
+  
   ```json
   {
     "dependencies": {
@@ -862,7 +907,9 @@ console.log(new V8Engine().toString())
     ]
   }
   ```
-- 创建 .browserslist
+
+- 创建 .browserslistrc
+  
   ```text
   # 所支持的浏览器版本
   > 1% # 全球使用情况统计选择的浏览器版本
@@ -889,6 +936,7 @@ module.exports = {
 ---
 
 ## treeshaking
+
 - [基本原理](https://juejin.im/post/5a4dc842518825698e7279a9)
 - [拓展](https://diverse.space/2018/05/better-tree-shaking-with-scope-analysis)
 - [escope](https://github.com/estools/escope)
@@ -909,14 +957,19 @@ module.exports = {
 ### rollup、webpack、google Closure对比
 
 **rollup**
+
 - unused函数能消除，未触达的代码没消除
 - 配合uglifyjs能消除未触达的代码
 - 只处理函数和顶层的import/export变量，不能把没用到的类的方法消除掉
 
 **webpack**
+
 - unused函数未消除，未触达的代码没消除
+
 - 配合uglifyjs能消除未触达的代码
+
 - 只处理函数和顶层的import/export变量，不能把没用到的类的方法消除掉
+  
   ```js
   function Menu() {
   }
@@ -940,6 +993,7 @@ module.exports = {
   ```
 
 **google Closure**
+
 - unused函数、未触达的代码都能消除
 - 对业务代码有侵入性，比如需要加特定的标注
 
@@ -949,11 +1003,13 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 ---
 
 ## scopeHoisting
+
 [作用域提升](https://webpack.js.org/plugins/module-concatenation-plugin/#root)
 
 ### 示例
 
 原打包输出内容
+
 ```js
 // bundle.js
 // 最前面的一段代码实现了模块的加载、执行和缓存的逻辑，这里直接略过
@@ -971,6 +1027,7 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 ```
 
 作用域提升后
+
 ```js
 // bundle.js
 [
@@ -985,17 +1042,24 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 ```
 
 ### 特点
+
 - 声明的函数减少，作用域减少
 - 文件体积减少
 
 ### 原理
+
 将所有模块代码，以一定顺序声明在一个作用域里（会做变量名去重）
 
 ### 要求
+
 - 必须以es2015模块语法方式
+
 - 暂不支持commonjs【require可以动态加载，无法预测模块间依赖关系】
+
 - webpack4的production模式会默认使用scope hoisting
+
 - 查看使用无效的原因
+  
   ```js
   module.exports = {
     //...
@@ -1014,19 +1078,23 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 ---
 
 ## codesplit
+
 // TODO
 
 ---
 
 ## bundle
+
 [参考](https://zhuanlan.zhihu.com/p/25954788)
 
 ### 结论
+
 - bundle时，会检查模块是否会被installed
 - 如果installed，就直接export使用
 - 否则会执行import（一次），缓存到installedModules，再export
 
 ### webpack打包做些什么
+
 - 每个文件视为独立模块
 - 分析模块间依赖关系，做一次性替换
 - 给每个模块外层加一层包装函数，作为**模块初始化函数**
@@ -1074,20 +1142,25 @@ google Closure Compiler效果最好，不过使用复杂，迁移成本太高
 ### module和__webpack_exports__
 
 #### module
+
 - 元信息
 - 模块内容、**模块id**等信息
 
 #### __webpack_exports__
+
 - require时读取的是这个对象
 
 #### 关系
+
 module.exports === __webpack_exports__
 
 ### 模块id
+
 webpack4 - 4位随机字母【0-9、a-zA-Z、+-】
 webpack2 - 数字（0开始）
 
 ### __webpack_require__
+
 ```js
 function __webpack_require__(moduleId) {
 
@@ -1130,9 +1203,11 @@ function __webpack_require__(moduleId) {
 ---
 
 ## tapable
+
 [参考](https://juejin.im/post/5cb43b3e5188251b2b20b7ed?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com#heading-18)
 
 ### SyncHook
+
 - 比较像订阅发布，同步
 - 注册事件是tap
 - 事件执行是call
@@ -1142,6 +1217,7 @@ function __webpack_require__(moduleId) {
   ```
 
 ### SyncBailHook
+
 - 主要解决的问题是条件阻塞
 - 有熔断机制，前一个监听返回值非undefined，则停止
 - ```js
@@ -1149,6 +1225,7 @@ function __webpack_require__(moduleId) {
   ```
 
 ### SyncWaterfallHook
+
 - 前一个任务的执行结果，传递给后一个
 - 类似redux中的compose
 - ```js
@@ -1156,6 +1233,7 @@ function __webpack_require__(moduleId) {
   ```
 
 ### SyncLoopHook
+
 - 能够执行多次
 - 返回undefined则停止执行，返回非undefined则继续执行当前任务
 - ```js
@@ -1168,6 +1246,7 @@ function __webpack_require__(moduleId) {
   ```
 
 ### AsyncParralleHook
+
 - 异步并行
 - 注册事件是tapAsync
 - 事件执行是callAsync
@@ -1178,6 +1257,7 @@ function __webpack_require__(moduleId) {
   ```
 
 ### AsyncParallelBailHook
+
 - 只要返回真，都会进catch
 - 无论结果，所有监听都会执行
 - 绑定方式
@@ -1197,6 +1277,7 @@ function __webpack_require__(moduleId) {
   ```
 
 ### AsyncSeriesHook
+
 - 异步任务，串行处理
 - ```js
   const [first, ...others] = tasks;
@@ -1206,9 +1287,11 @@ function __webpack_require__(moduleId) {
   ```
 
 ### AsyncSeriesBailHook
+
 - 返回值不是undefined，阻塞之后的监听
 
 ### AsyncSeriesWaterfallHook
+
 - 用法和SyncWaterFallHook的用法一致
 
 ---
@@ -1221,17 +1304,13 @@ function __webpack_require__(moduleId) {
 - this.async(): 生成callback函数，callback输出转译的内容
 - this.cacheable(): 直接透传缓存文件
 
-
-
 ### 执行顺序
 
 > **Pitching Loader** 的执行顺序是 **从左到右**
->
+> 
 >  **Normal Loader** 的执行顺序是 **从右到左**
 
 ![pitch&normal-loader](./pitch&normal-loader.jpeg)
-
-
 
 ### 实现原理
 
@@ -1286,7 +1365,9 @@ async loaderParse(entryPath) {
 - 解释：支持解析.vue文件中`<script lang="ts">`的内容（相当于把这不发内容提出来作为.ts）
 
 ### less-loader
+
 > 使用@functions做px<->rem转换
+
 ```js
 // webpack.config.js
 // 设置javascriptEnabled
@@ -1328,9 +1409,10 @@ async loaderParse(entryPath) {
 ```
 
 ### happypack
+
 > 由于 JavaScript 是单线程模型，要想发挥多核 CPU 的能力，只能通过多进程去实现，就需要happypack
 > 提示：由于HappyPack 对file-loader、url-loader 支持的不友好，所以不建议对该loader使用
->
+> 
 > 注：happypack作者已不再维护，建议使用官方的thread-loader
 
 #### 多进程构建
@@ -1372,6 +1454,7 @@ plugins: [
 ```
 
 #### 参数
+
 id: String 用唯一的标识符 id 来代表当前的 HappyPack 是用来处理一类特定的文件
 loaders: Array 用法和 webpack Loader 配置中一样
 threads: Number 代表开启几个子进程去处理这一类型的文件，默认是3个，类型必须是整数
@@ -1383,6 +1466,7 @@ debug: Boolean 启用debug 用于故障排查。默认 false
 ---
 
 ## 其他
+
 - a chunk is a group of modules within the webpack process, a bundle is an emitted chunk or set of chunks.
 - 使用 import()，需要dynamic-import插件 (https://babeljs.io/docs/en/babel-plugin-syntax-dynamic-import/)
 - ![import](import-polyfill.png)
@@ -1390,6 +1474,7 @@ debug: Boolean 启用debug 用于故障排查。默认 false
 - [prepack-顾名思义代码预编译](https://prepack.io/)
 
 ### node-sass
+
 > 安装node-sass遇到各种编译错误，推荐配置如下：
 
 ```js
@@ -1412,6 +1497,7 @@ debug: Boolean 启用debug 用于故障排查。默认 false
 ---
 
 ## 热更新
+
 1. 利用 webpack-dev-server（express），建立 HMR server
 2. 页面 dev-server/client 和 HMR server 建立 websocket 通信
 3. webpack 会以当前修改文件为入口，重新编译所有涉及到的依赖，生成的新代码，通过 HMR server 发送给页面
@@ -1421,9 +1507,11 @@ debug: Boolean 启用debug 用于故障排查。默认 false
 ---
 
 ## webpack-watch
+
 > 冷启动耗时较大，后续构建速度大幅提升
 
 ### webpack构建关键点
+
 - webpack构建流程，默认启动`compiler.run`
 - 构建 -> 监听文件变动 -> 触发重新构建 -> 构建
 - `--watch`相当于`webpack-dev-middleware`调用了`compiler.watch`
@@ -1438,17 +1526,21 @@ debug: Boolean 启用debug 用于故障排查。默认 false
 - [webpack5优化策略](https://mp.weixin.qq.com/s/pwynolH0pTtT38f-xBUsXw)
 
 ### module federation
+
 > 使 JavaScript 应用得以在客户端或服务器上动态运行另一个 bundle 的代码。
 
 #### 参考
+
 - [module federation](http://www.alloyteam.com/2020/04/14338/)
 - [module federation应用](https://mp.weixin.qq.com/s/zhkgudIjeuKWi536U5pJhw)
 
 #### 概念
+
 Remote，被 Host 消费的 Webpack 构建；
 Host，消费其他 Remote 的 Webpack 构建；
 
 #### 配置方法
+
 ```js
 {
   plugins: [
@@ -1477,6 +1569,7 @@ Host，消费其他 Remote 的 Webpack 构建；
 ```
 
 #### 原理
+
 主要变动为原本的`webpack_require__.e`，由加载一个 script，到调用`webpack_require.f`上面的函数
 
 通过前置加载依赖的方式，解决了依赖问题
@@ -1490,7 +1583,6 @@ __webpack_require__.e = (chunkId) => {
 };
 ```
 
-
 `webpack_require.f`主要包含三个函数
 
 - `overridables` 可覆盖的，看代码你应该已经知道和 shared 配置有关
@@ -1502,6 +1594,7 @@ __webpack_require__.e = (chunkId) => {
 ---
 
 ## require.context
+
 > 当所有模块开发完成之后，我们需要将各模块导出，这里用到了require.context遍历文件夹中的指定文件,然后自动导入,而不用每个模块单独去导入
 
 ```js
@@ -1531,8 +1624,9 @@ module.exports = utils;
 ---
 
 ## manifest.json
+
 > webpack编译完成会生成这个文件，用于记录源文件和打包文件之间映射关系
->
+> 
 > 在优化打包速度时（比如根据`Md5Hash`判断是否使用缓存文件），会用到这个配置
 
 ---
@@ -1540,9 +1634,11 @@ module.exports = utils;
 ## webpack-dev-server
 
 ### 入参
+
 node_modules/webpack-dev-server/lib/options.json
 
 #### writeToDisk
+
 默认启动 dev-server，文件放在内存中，需要加这个参数落到硬盘上
 
 ---
@@ -1554,6 +1650,7 @@ node_modules/webpack-dev-server/lib/options.json
 - 多路打包
 
 ### 1.合理使用loader
+
 > 用`include`或`exclude`来帮我们避免不必要的转译，优化loader的管辖范围，比如 webpack 官方在介绍 babel-loader 时给出的示例：
 
 ```JS
@@ -1574,12 +1671,13 @@ module: {
 ```
 
 ### 2.cache-loader
+
 > 在一些性能开销较大的 loader 之前添加 cache-loader，将结果缓存中磁盘中。默认保存在 node_modueles/.cache/cache-loader 目录下。
 
 ```js
 module.exports = {
     //...
-    
+
     module: {
         //我的项目中,babel-loader耗时比较长，所以我给它配置了`cache-loader`
         rules: [
@@ -1593,6 +1691,7 @@ module.exports = {
 ```
 
 ### 3.happypack
+
 > 多进程构建
 
 由于有大量文件需要解析和处理，构建是文件读写和计算密集型的操作，特别是当文件数量变多后，Webpack 构建慢的问题会显得严重。文件读写和计算操作是无法避免的，那能不能让 Webpack 同一时刻处理多个任务，发挥多核 CPU 电脑的威力，以提升构建速度呢？
@@ -1623,6 +1722,5 @@ DllPlugin 是基于 Windows 动态链接库（dll）的思想被创作出来的�
 ### 6.tree Shaking 删除冗余代码
 
 ### 7.按需加载
-
 
 ---
