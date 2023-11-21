@@ -221,6 +221,8 @@ node --inspect-brk dist/app.js
 
 - [去除图片背景-background-removal-js](https://github.com/imgly/background-removal-js)
 
+- [GitHub - chaitin/SafeLine: 一款足够简单、足够好用、足够强的免费 WAF。基于业界领先的语义引擎检测技术，作为反向代理接入，保护你的网站不受黑客攻击。](https://github.com/chaitin/SafeLine)
+
 ### eggjs
 
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
@@ -463,45 +465,51 @@ node --inspect-brk dist/app.js
           module._compile(internalModule.stripBOM(content), filename);
         };
        ```
-
+       
         // Native extension for .json
         Module._extensions['.json'] = function(module, filename) {
           var content = fs.readFileSync(filename, 'utf8');
           try {
+       
             module.exports = JSON.parse(internalModule.stripBOM(content));
+       
           } catch (err) {
+       
             err.message = filename + ': ' + err.message;
             throw err;
+       
           }
         };
-    
-    
+       
         //Native extension for .node
         Module._extensions['.node'] = function(module, filename) {
           return process.dlopen(module, path._makeLong(filename));
         };
-    
+       
         // ...
         Module.wrap = NativeModule.wrap;
         // ...
         Module.prototype._compile = function(content, filename) {
         // ...
-    
+       
         // create wrapper function
         var wrapper = Module.wrap(content);
-    
+       
         var compiledWrapper = vm.runInThisContext(wrapper, {
           filename: filename,
           lineOffset: 0,
           displayErrors: true
         });
-    
+       
         // ...
         var result = compiledWrapper.apply(this.exports, args);
         if (depth === 0) stat.cache = null;
         return result;
-      };
-        ```
+       };
+       
+       ```
+       
+       ```
 
 ### eventLoop
 
@@ -709,6 +717,7 @@ function promiseRejectHandler(type, promise, reason) {
 ### 错误处理
 
 * 使用await、promise
+
 * 抽象通用错误类
   
   ```js
