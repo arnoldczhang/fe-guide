@@ -3,6 +3,7 @@
 ## 参考
 
 ### 资源
+
 - [图片库](https://remixicon.com/)
 - [icon库](https://mp.weixin.qq.com/s/vBzp8zMZ9he-3JsuAEpoxQ)
 - [免费icon库-lineicons](https://lineicons.com/)
@@ -21,12 +22,16 @@
 - [在线调试css特效](https://animista.net/)
 - [react-旅游风格组件库](https://orbit.kiwi/components/button/)
 - [daisyUI（基于tailwind）](https://daisyui.com/components/avatar)
+- [sailboatUI（基于tailwind）](https://sailboatui.com/docs/components/button/)
 - [无类化css-simple.css](https://github.com/kevquirk/simple.css)
 - [2022css发展](https://mp.weixin.qq.com/s/jh9dVWGzFTp9a1tNgFZ2yw)
 - [headless-ui](https://headlessui.com/vue/tabs)
 - [在线设计-canva](https://www.canva.cn/)
+- [stdf-svelte+tailwind组件库](https://github.com/dufu1991/stdf)
+- [免费icon库-iconbuddy](https://iconbuddy.app/ant-design)
 
 ### 各种案例
+
 - [纯css-swiper](https://mp.weixin.qq.com/s/9eLw-EUE-3kbsMvvdifHOg)
 - [前端换肤参考](https://blog.souche.com/untitled-17/)
 - [前端换肤-css变量方法](https://www.cnblogs.com/leiting/p/11203383.html)
@@ -41,8 +46,10 @@
 - [纯css轮播图](https://mp.weixin.qq.com/s/84eYQjIWk8W0hEgQ8daeSg)
 - [自适应文本头像](https://segmentfault.com/a/1190000042675552)
 - [chrome官方css教程](https://web.dev/learn/css/lists/)
+- [各种边框动画](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247495778&idx=1&sn=e96c01b620815fa4e5c168d24598362e&scene=21#wechat_redirect)
 
 ### 各种属性
+
 - [现代css性能优化](http://verymuch.site/2018/07/22/CSS%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%848%E4%B8%AA%E6%8A%80%E5%B7%A7/?nsukey=3eczM2FJ0JQ8aS2hEDt1CnIzmS32kXvEkjuE7I0lrEF7M8jW7k7PPZtuVxX%2BT%2FsRQqGQ7YhSV%2FicPVi%2FrRG%2BhGGQQn6y7EuHKuERI93Idzq2ziur8T8dZL3qgDT%2Bw5au3cocxOGnSC7pBI7bve9tigiinrZL8Xaac042IW%2FR%2FxqJp8Fk21Nm7YbVUczUdhD%2F)
 - [5个新css属性](https://zhuanlan.zhihu.com/p/40736286)
 - [flex](https://mp.weixin.qq.com/s/WtGzVMzh1RupixD_4474mg)
@@ -57,6 +64,7 @@
 - [现代各种at-rule](https://mp.weixin.qq.com/s/LkM_Y-9OfgXatocVsM6m6g)
 
 ### 其他
+
 - [2020-css使用情况](https://2020.stateofcss.com/zh-Hans/technologies/pre-post-processors/)
 - [防御性css](https://ishadeed.com/article/defensive-css/)
 - [防御性css2](https://defensivecss.dev/tips)
@@ -64,6 +72,7 @@
 - [2022-css现状](https://mp.weixin.qq.com/s/N33CBhVRwETgbtr3oSW-TA)
 
 ## 目录
+
 <details>
 <summary>展开更多</summary>
 
@@ -77,6 +86,7 @@
 * [`选择器`](#选择器)
 * [`伪元素`](伪元素)
 * [`常识`](常识)
+* [`原子css`](原子css)
 
 </details>
 
@@ -107,7 +117,7 @@
 
 ```css
 [class="val" i] {
-  
+
 }
 ```
 
@@ -139,13 +149,12 @@
 }
 ```
 
-
-
 ### border玩法
 
 [border](https://www.w3cplus.com/css/css-tips-0904-1.html)
 
 ### 伪元素/伪类
+
 - https://segmentfault.com/a/1190000000484493
 
 **伪类**
@@ -174,12 +183,16 @@
 - ::first-line
 
 ### img裁剪
+
 object-fit
+
 - cover
 - contain
 
 ### 平滑滚动
+
 [滚动](https://xiaotianxia.github.io/blog/vuepress/js/scroll_behaviors.html)
+
 ```css
 html {
   scroll-behavior: smooth;
@@ -187,6 +200,7 @@ html {
 ```
 
 #### 如果用requestAnimation来做
+
 ```js
 const scrollToTop = () => {
   const c = document.documentElement.scrollTop || document.body.scrollTop;
@@ -201,6 +215,7 @@ scrollToTop()
 ```
 
 ### box-sizing
+
 ```css
 html {
   box-sizing: border-box;
@@ -211,24 +226,29 @@ html {
 ```
 
 ### 滚动不传播父元素
+
 overscroll-behavior: contain;
 
 ### width: auto
+
 width: max-content/min-content
 
 ### display:none和visibility:hidden
+
 区别：
+
 1. 空间占据 ：
-  - display: none-在网页中不占任何的位置，接近移除
-  - visibility:hidden-仅仅将元素隐藏，但是在网页中还占着位置
+   - display: none-在网页中不占任何的位置，接近移除
+   - visibility:hidden-仅仅将元素隐藏，但是在网页中还占着位置
 2. 回流与渲染：
-  - display: none-同时触发repaint和reflow
-  - visibility:hidden-仅触发一次repaint
+   - display: none-同时触发repaint和reflow
+   - visibility:hidden-仅触发一次repaint
 3. 株连性：
-  - display: none-子孙元素无法重现
-  - visibility:hidden-子孙元素可用visibility:visible重新显示
+   - display: none-子孙元素无法重现
+   - visibility:hidden-子孙元素可用visibility:visible重新显示
 
 ### 波浪线
+
 ```css
 .circle1 {
     position: absolute;
@@ -247,11 +267,36 @@ width: max-content/min-content
 }
 ```
 
+### 花式文字显示效果
+
+[参考](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247495645&idx=1&sn=6a4fecbe4638636274512804938ee13b&scene=21#wechat_redirect)
+
+- 通过 `background-size` 与 `background-position` 实现酷炫的文字下划线效果
+- 通过 `background-size` 与 `background-position` 以及 `background-clip` 实现文字逐个渐现的效果
+
+```css
+a {    
+    background: linear-gradient(90deg, #fc0, #fc0);
+    background-size: 0 100px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    color: transparent;
+    background-clip: text;
+}
+.button:hover ~ p a {
+    transition: .8s all linear;
+    background-size: 0 100px, 100% 100%;
+}
+```
+
 ### 虚拟滚动
+
 https://fusion.design/component/virtual-list?themeid=1
 
 ### 换肤
+
 [rel=>alternate](https://www.zhangxinxu.com/wordpress/2019/02/link-rel-alternate-website-skin/comment-page-1/#comment-391940)
+
 ```js
 document.link.disabled = true;
 document.link.disabled = false;
@@ -275,6 +320,7 @@ document.link.disabled = false;
 ```
 
 ### 普通元素代替submit按钮（还有outline）
+
 ```css
 [type="submit"] {
     position: absolute;
@@ -301,10 +347,10 @@ document.link.disabled = false;
 </div>
 ```
 
-
 ---
 
 ### z-index
+
 [参考](https://juejin.im/post/5ba4efe36fb9a05cf52ac192?utm_source=gold_browser_extension)
 [参考2](https://juejin.im/post/5b876f86518825431079ddd6)
 [移动端性能优化-层级](https://fed.taobao.org/blog/2016/04/26/performance-composite/)
@@ -313,6 +359,7 @@ document.link.disabled = false;
 - 层叠等级
 
 #### 层叠上下文
+
 根层叠上下文 - <html></html>
 
 - 元素产生层叠上下文后，各元素内子元素的层叠关系由父元素决定，
@@ -335,7 +382,14 @@ document.link.disabled = false;
 - will-change 中指定了任意 CSS 属性，即便你没有直接指定这些属性的值
 - -webkit-overflow-scrolling 属性被设置 touch的元素
 
+**层叠效果**
+
+- 减少渲染阻塞（浏览器提前分配资源）
+- 减少重绘重排（独立图层）
+- 硬件加速
+
 #### 层叠等级
+
 同一个层叠，上下文中元素，在z轴上的显示顺序
 
 **如何决定层叠等级**
@@ -377,12 +431,12 @@ document.link.disabled = false;
       }
     </style>
     </head>
-    
+
     <body>
       <div class="box1">
         <div class="child1">child1</div>
       </div>
-    
+
       <div class="box2">
         <div class="child2">child2</div>
       </div>
@@ -391,9 +445,11 @@ document.link.disabled = false;
 ```
 
 #### z-index
+
 正整数、负整数、0、auto，默认auto
 
 #### 层叠顺序
+
 ![层叠顺序](./层叠顺序.png)
 
 **注：inline/inline-block的等级高于block，是因为网页设计之初就是希望文字能不被覆盖**
@@ -401,12 +457,14 @@ document.link.disabled = false;
 ---
 
 ### :focus-visible
+
 键盘访问（比如按tab）时，元素边缘会出现选中的蓝框
 Chrome浏览器67+支持
 
 [参考](https://www.zhangxinxu.com/wordpress/2019/03/css-focus-visible/)
 
 可以通过设置属性去除
+
 ```css
 :focus:not(:focus-visible) {
     outline: 0;
@@ -414,6 +472,7 @@ Chrome浏览器67+支持
 ```
 
 ### flex左右布局
+
 ```css
 <ul class="demo2">
   <li>首页</li>
@@ -421,7 +480,7 @@ Chrome浏览器67+支持
   <li>话题</li>
   <li>活动</li>
   <!-- 登录注册文案贴右边 -->
-  <li>登录 &nbsp; 注册</li>
+  <li>登录   注册</li>
 </ul>
 <style>
 .demo2 {
@@ -434,6 +493,7 @@ Chrome浏览器67+支持
 ```
 
 ### 蒙层高亮
+
 ```css
 /*解法一：outline*/
 .clip-shape {
@@ -464,9 +524,11 @@ Chrome浏览器67+支持
 ```
 
 ### 加载中省略号
+
 ```html
 <div>加载中<span class="more"></span></div>
 ```
+
 ```css
 .more::before {
   content: '...';
@@ -484,11 +546,115 @@ Chrome浏览器67+支持
 ```
 
 ### outlineVSborder
+
 outline不占用盒模型空间
 
 ### 两个球相交的粘粘效果
+
 filter:blur（数值）
 对比则使用filter:contrast（数值）
+
+### 翻书效果
+
+```html
+<span class="jaffee" style="--bg: url('path/to/image.png');">
+  <span class="a"></span>
+  <span class="bc">
+    <span class="b"></span>
+    <span class="c"></span>
+  </span>
+  <img src="path/to/image.png">
+</span>
+<style type="css">
+.jaffee {
+  position: relative;
+  display: inline-flex;
+  transform: rotateX(10deg); 
+  transform-style: preserve-3d;
+  cursor: grab;
+}
+
+.jaffee img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 56vh;
+  opacity: 0;
+}
+
+.jaffee .a,
+.jaffee .b,
+.jaffee .c {
+  top: 0;
+  display: inline-block;
+  height: 100%;
+  background-image: var(--bg);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.jaffee .a {
+  position: absolute;
+  left: 0;
+  width: 50%;
+  background-position: 0 0;
+}
+
+.jaffee .bc {
+  position: absolute;
+  display: inline-flex;
+  width: 50%;
+  height: 100%;
+  left: 50%;
+  transform-origin: left;
+  transition: transform 3s;
+  transform-style: preserve-3d;
+}
+
+.jaffee .b,
+.jaffee .c {
+  position: relative;
+  width: 50%;
+  backface-visibility: hidden;
+}
+
+.jaffee .b {
+  background-position: 66.666667% 0;
+  transform-style: preserve-3d;
+}
+
+.jaffee .b:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  transform: rotateY(180deg) translateZ(1px);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.jaffee .c {
+  background-position: 100% 0;
+  transform-origin: left;
+  transition: transform 2s;
+}
+
+.jaffee:hover .bc,
+.jaffee:active .bc {
+  transform: rotateY(-180deg) translateZ(-1px);
+  transition: transform 2s;
+}
+
+.jaffee:hover .c,
+.jaffee:active .c {
+  transform: rotateY(180deg) translateZ(2px);
+  transition: transform 3s;
+}
+</style>
+```
 
 ### 1px
 
@@ -536,14 +702,18 @@ filter:blur（数值）
 ```
 
 - svg
+  
   * 借助PostCSS的postcss-write-svg
   * ```css
     .example {
       border: 1px solid transparent;
       border-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' height='2px'%3E%3Crect fill='%2300b1ff' width='100%25' height='50%25'/%3E%3C/svg%3E") 2 2 stretch; }
     ```
+
 - 设置viewport
+
 - ::after + scale
+  
   ```css
   .scale-1px{
     position: relative;
@@ -566,13 +736,19 @@ filter:blur（数值）
     transform-origin: left top;
   }
   ```
+
 - viewport + rem 实现
+
 - box-shadow
+
 - background-image
+
 - 0.5px
+
 - transformY:scale(.5)
 
 ### 模拟长按
+
 ```html
 <button id="btn-1">click</button>
 ```
@@ -591,6 +767,7 @@ document.getElementById('btn-1').addEventListener('transitionend', () => {
 ```
 
 ### 单个元素resize
+
 ```css
 div#box{
   overflow: hidden;/**需要配合overflow才能生效**/
@@ -599,6 +776,7 @@ div#box{
 ```
 
 ### 单个元素resize + 监听宽高
+
 ```css
 div#box{
   height: 300px;
@@ -627,9 +805,11 @@ document.getElementById('box').addEventListener('animationiteration', function()
 ```
 
 ### 镜面反射
+
 -webkit-box-reflect
 
 ### flex不压缩空间
+
 flex-shrink: 0
 
 ### 垂直居中
@@ -646,6 +826,7 @@ flex-shrink: 0
 ```
 
 - absolute + transform
+  
   ```css
   .center{
       position: absolute;
@@ -654,7 +835,9 @@ flex-shrink: 0
       transform: translate(-50%, -50%);
     }
   ```
+
 - grid
+  
   ```css
   .margin {
       display: grid;
@@ -664,7 +847,9 @@ flex-shrink: 0
       justify-self: center;
   }
   ```
+
 - flex
+  
   ```css
   .margin {
       display: flex;
@@ -672,15 +857,19 @@ flex-shrink: 0
       align-items: center;
   }
   ```
+
 - flex + margin
-```css
-.margin{
+  
+  ```css
+  .margin{
   display: flex;
-}
+  }
+  ```
 
 .center{
   margin: auto;
 }
+
 ```
 - absolute + margin auto
  ```css
@@ -694,8 +883,10 @@ flex-shrink: 0
     position: absolute;
     top: 0; left: 0; bottom: 0; right: 0;
   }
- ```
+```
+
 - absolute + calc
+  
   ```css
   .margin {
       position: relative;
@@ -706,14 +897,19 @@ flex-shrink: 0
       left: calc(50% - 50px);
   }
   ```
+
 - writing-mode
+  
   * 文字显示方向
-  ```css
-  .margin {
+    
+    ```css
+    .margin {
     writing-mode: vertical-lr;
-  }
-  ```
+    }
+    ```
+
 - table
+  
   ```css
   .margin {
     display: table-cell;
@@ -724,7 +920,9 @@ flex-shrink: 0
     display: inline-block;
   }
   ```
+
 - vertical-align + font-size 0
+  
   ```css
   #parent{
     height: 150px;
@@ -739,15 +937,17 @@ flex-shrink: 0
 ---
 
 ## BEM
+
 > 基于 **块（block）、元素（element）、修饰符（modifier）**的命名规范，即：
 > 
 > .块__元素--修饰符{}
->
 
 ### 注意点
+
 - BEM不考虑结构，即多层嵌套时，**block**取得是最外层的父class，**element**也只是加上当前元素的class
 
 ### 举例
+
 ```css
 .person{} /*人*/
 .person__hand{} /*人的手*/
@@ -823,53 +1023,67 @@ flex-shrink: 0
 ## 须知
 
 ### 选择器
-  - 保持简单，不要使用嵌套过多过于复杂的选择器
-  - 通配符和属性选择器效率最低，需要匹配的元素最多，尽量避免使用
-  - 不要使用类选择器和ID选择器修饰元素标签，如h3#markdown-content，这样多此一举，还会降低效率
-  - 不要为了追求速度而放弃可读性与可维护性
+
+- 保持简单，不要使用嵌套过多过于复杂的选择器
+- 通配符和属性选择器效率最低，需要匹配的元素最多，尽量避免使用
+- 不要使用类选择器和ID选择器修饰元素标签，如h3#markdown-content，这样多此一举，还会降低效率
+- 不要为了追求速度而放弃可读性与可维护性
 
 ### 优化建议
+
 - 如果 JS 文件没有依赖 CSS，你应该将 JS 代码放在样式表之前
 
 ### CSSOM
-  - js运算安全操作css属性
-  - chrome66，chromium70+支持
+
+- js运算安全操作css属性
+- chrome66，chromium70+支持
 
 ### css动画要点
+
 [FLIP技术](https://www.w3cplus.com/javascript/animating-layouts-with-the-flip-technique.html)
+
 - F：First，指的是在任何事情发生之前（过渡之前），记录当前元素的位置和尺寸。
-```js
-el.getBoundingClientRect();
-```
+  
+  ```js
+  el.getBoundingClientRect();
+  ```
+
 - L：Last，执行一段代码，让元素发生相应的变化，并记录元素在最后状态的位置和尺寸。
-```js
-el.classList.add('totes-at-the-end');
-// 记录元素最后状态的位置和尺寸大小
-const last = el.getBoundingClientRect();
-```
+  
+  ```js
+  el.classList.add('totes-at-the-end');
+  // 记录元素最后状态的位置和尺寸大小
+  const last = el.getBoundingClientRect();
+  ```
+
 - I：Invert，计算元素第一个位置（first）和最后一个位置（last）之间的（位置、尺寸）变化
-```js
-const deltaX = first.left - last.left;
-const deltaY = first.top - last.top;
-const deltaW = first.width / last.width;
-const deltaH = first.height / last.height;
-```
+  
+  ```js
+  const deltaX = first.left - last.left;
+  const deltaY = first.top - last.top;
+  const deltaW = first.width / last.width;
+  const deltaH = first.height / last.height;
+  ```
+
 - P：Play，让元素有动画效果
-```js
-// Web Animations API
-elm.animate([
+  
+  ```js
+  // Web Animations API
+  elm.animate([
   { transformOrigin: 'top left', transform: ` translate(${deltaX}px, ${deltaY}px) scale(${deltaW}, ${deltaH}) ` },
   { transformOrigin: 'top left', transform: 'none' }],
   { duration: 300, easing: 'ease-in-out', fill: 'both' },
-]);
-```
+  ]);
+  ```
 
 ### 换肤
 
 **ElementUI**
+
 - 对制定的style标签里的样式做正则匹配&替换
 
 **antd**
+
 - 在html插入<link rel="stylesheet/less" type="text/css" href="styles.less" />
 - 加载less.js(https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js)
 - 解析less
@@ -878,7 +1092,12 @@ elm.animate([
 
 ## 属性
 
+### color
+
+[所有color介绍](https://www.joshwcomeau.com/css/color-formats/)
+
 ### font-size
+
 - px
 - rem
   * [参考](../fe-interview/src/common.md#响应式方案)
@@ -890,10 +1109,12 @@ elm.animate([
   * 子元素设置1.2em/1.6em之类的
 
 ### border
+
 border: none - 边框不会渲染，不占内存
 border: 0 - 边框宽度为0，会渲染，占内存
 
 ### position
+
 - absolute
   * 绝对定位，相对于第一个position不为static的父元素
 - fixed
@@ -905,21 +1126,20 @@ border: 0 - 边框宽度为0，会渲染，占内存
 - static
   * 默认，没有定位，元素处于正常流中，类似`left:20px`无效
 
-
-
 #### sticky
 
 > 会创建一个层叠上下文，并“固定”在离他最近的具有“滚动机制”的父元素上。
->
+> 
 > Q：何为【具有“滚动机制”】？
->
+> 
 > A：该元素的overflow值是**hidden、scroll、auto或overlay**
 
 ### cross-fade
+
 [参考](https://www.zhangxinxu.com/wordpress/2020/07/css-cross-fade-background-image-opacity/)
 
 > 多个图像半透明叠加
->
+> 
 > 移动端兼容性非常好（记得加前缀），pc端除ie
 
 ```css
@@ -937,6 +1157,7 @@ border: 0 - 边框宽度为0，会渲染，占内存
 ```
 
 ### background-blend-mode
+
 [参考](https://www.zhangxinxu.com/wordpress/2020/07/css-background-blend-mode/)
 
 ### display
@@ -944,6 +1165,7 @@ border: 0 - 边框宽度为0，会渲染，占内存
 **inline-table**: 在`form-item`中，即使元素间没有 margin，但默认还是有一定不可控的间距，其实本质是个换行符，用 inline-table 可以去除掉。
 
 ### font-smoothing
+
 ```css
 -webkit-font-smoothing: none; # 无抗锯齿
 
@@ -981,8 +1203,6 @@ font-variant-east-asian: traditional;
 }
 ```
 
-
-
 ### accent-color
 
 > 设置 checkbox 或 radio 被选中时的颜色
@@ -1014,6 +1234,23 @@ input[type=checkbox] {
 }
 ```
 
+容器位置
+
+```css
+.mask {
+  -webkit-mask: radial-gradient(closest-side circle,#000 99%,#0000 100%) left/40px 40px no-repeat
+}
+```
+
+- closest-side：渐变中心距离容器**最近的边**作为终止位置
+- closest-corner：渐变中心距离容器**最近的角**作为终止位置
+- farthest-side：渐变中心距离容器**最远的边**作为终止位置
+- farthest-corner（默认值）：渐变中心距离容器**最远的角**作为终止位置
+
+### initial-letter
+
+https://developer.chrome.com/blog/control-your-drop-caps-with-css-initial-letter/
+
 ### content-visibility
 
 [参考](https://mp.weixin.qq.com/s/o9lpl7CTwcbjM0q3QMRLTg)
@@ -1021,8 +1258,6 @@ input[type=checkbox] {
 - visible - 默认值，无效果
 - hidden - 类似`display:none`，但是保留渲染状态，子元素都会被隐藏
 - auto - 如果该元素不在页面内or与用户行为无关，则等同于hidden，否则正常渲染
-
-
 
 #### 用途
 
@@ -1038,18 +1273,38 @@ input[type=checkbox] {
 ```css
 scroll-snap-type: x/y
 scroll-snap-align: start/end/center
-
 ```
 
+**举例**
 
+```html
+<div class="scroll-x">
+    <img src="./mm.jpg">
+    <img src="./mm2.jpg">
+    <img src="./mm3.jpg">
+    <img src="./mm4.jpg">
+    <img src="./mm5.jpg">
+</div>
+<style>
+ .scroll-x {
+    width: 300px;
+       /**/
+    scroll-snap-type: x mandatory;
+    white-space: nowrap;
+    overflow: auto;
+}
+.scroll-x img { 
+      /* 滚动结束，停留在img标签开始的位置 */
+    scroll-snap-align: start;
+}
+</style>
+```
 
 ### css houdini
 
 [CSS Houdini：用浏览器引擎实现高级CSS效果](https://mp.weixin.qq.com/s/4owfsfX6bMzvgwvVxaCmzQ)
 
 > 一系列与CSS引擎相关的浏览器API的总称
-
-
 
 ### 毛玻璃 backdrop-filter
 
@@ -1058,8 +1313,6 @@ background-image: radial-gradient(transparent 1px,#fff 1px);
 background-size: 4px 4px;
 backdrop-filter: saturate(50%) blur(4px);
 ```
-
-
 
 ### 悼念灰色模式
 
@@ -1081,8 +1334,6 @@ html::before {
 }
 ```
 
-
-
 ### @scope
 
 > 微前端样式冲突，终极解决方案
@@ -1096,14 +1347,12 @@ html::before {
 }
 ```
 
-
-
 ### pointer-events
 
 > none：阻止元素成为鼠标事件目标（子元素可以单独加pointer-events: all或其他，来破除这个限制）
->
+> 
 > auto：初始值
->
+> 
 > **注：很巧妙，能从css层面实现[节流](https://mp.weixin.qq.com/s/9_53TqxExIfvsxSFfOnEsA)**
 
 ```css
@@ -1134,8 +1383,6 @@ html::before {
 - 兼容多操作系统
 - 以字体族系列 serif（**衬线字体**） 和 sans-serif（**非衬线字体**） 结尾，确保字体风格统一
 
-
-
 **什么时候需要引号？**
 
 > 当字体名字中间有空格、中文名字体及 Unicode 字符编码表示的中文字体时，需要。
@@ -1148,7 +1395,17 @@ font-family: 'Microsoft Yahei';
 
 [这里用到了@property](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247494281&idx=1&sn=2a3e8083a0ada47f926d511b0163bf3c&chksm=ce26897ff951006910a52ae34695d3383e4ab90ab644ed97915e1d8a2067d87490a33e9cc550&token=805012839&lang=zh_CN&scene=21#wechat_redirect)
 
+### text-fill-color
 
+> 可用于设置段落文字渐变色
+
+```css
+background: -webkit-linear-gradient(-70deg, #8250df 0%, #d42a32 100%);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: rgba(0,0,0,0);
+-webkit-box-decoration-break: clone;
+```
 
 ---
 
@@ -1156,11 +1413,58 @@ font-family: 'Microsoft Yahei';
 
 [现代 CSS 解决方案：CSS 数学函数之 calc](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247491089&idx=1&sn=84aecbf783859c930bf57660b46d06ef&chksm=ce257de7f952f4f17b49c890910d995362a1a7247fdf20bd427d868a15cef08e1c3d9e68eba1&token=363949812&lang=zh_CN#rd)
 
+### conic-gradient
+
+**示例**
+
+旋转边框高亮
+
+```less
+.conic {
+ position: relative;
+
+ &::before {
+  content: '';
+  position: absolute;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(transparent, rgba(168, 239, 255, 1), transparent 30%);
+  animation: rotate 4s linear infinite;
+ }
+}
+@keyframes rotate {
+ 100% {
+  transform: rotate(1turn);
+ }
+}
+```
+
+### -moz-element
+
+> css生成页面截图
+
+```css
+mini-map .screen-image .canvas {
+  background: white -moz-element(#main) no-repeat scroll center center / contain;
+}
+```
+
+### animation-timeline
+
+[参考](https://mp.weixin.qq.com/s/8zTZcX7XgnshPcXLvRYkZg)
+
+> ## 滚动驱动动画，常见的比如随滚动更新顶部进度
+
+![png](https://mmbiz.qpic.cn/sz_mmbiz_png/SMw0rcHsoNLrSKsG4QuV5QetqCOqsh0qmFBqYUj2b5iaAYopz0CHzt9KKyHoIB6fyNCPuvvQHExYuEzZkScUI2Q/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
+
 ---
 
 ## 布局
 
 ### 垂直居中
+
 [参考](./README.md#垂直居中)
 
 - 优先line-height
@@ -1169,24 +1473,32 @@ font-family: 'Microsoft Yahei';
 - flex
 
 ### 水平居中
+
 [各种布局](https://juejin.im/post/5aa252ac518825558001d5de#heading-8)
+
 - 纯文本
+  
   ```css
   .center {
     text-align: center;
     display: inline; // 或inline-block
   }
   ```
+
 - 非移动端
+  
   ```css
   .center {
     margin: 0 auto;
   }
   ```
+
 - 移动端-flex
 
 ### 水平垂直居中
+
 - button做父元素（IE下，点击会有外边框）
+  
   ```css
   button#parent{  /*改掉button默认样式就好了,不需要居中处理*/
     height: 150px;
@@ -1195,7 +1507,9 @@ font-family: 'Microsoft Yahei';
     border: none;
   }
   ```
+
 - table-cell
+  
   ```css
   #parent{
     height: 150px;
@@ -1210,10 +1524,13 @@ font-family: 'Microsoft Yahei';
       height: 50px;
   }
   ```
+
 - absolute + top/bottom/left/right:0 + margin: auto
+
 - flex
 
 ### 两列布局
+
 - float:left + margin-left
 - float:left + overflow:hidden
 - table(margin失效)
@@ -1221,11 +1538,13 @@ font-family: 'Microsoft Yahei';
 - grid
 
 ### 三列布局
+
 - 中间flex: 1 + 左右定宽
 - 双飞翼
 - 圣杯
 
 #### 双飞翼
+
 左列和右列宽度恒定，中间列的宽度根据浏览器窗口的大小自适应
 
 **中间内容放最前面**
@@ -1296,6 +1615,7 @@ font-family: 'Microsoft Yahei';
 ```
 
 #### 圣杯
+
 和双飞翼类似
 
 **文档结构不变**
@@ -1341,29 +1661,33 @@ font-family: 'Microsoft Yahei';
 ```
 
 ### 多列等宽
+
 - flex
-```css
-#parent {
+  
+  ```css
+  #parent {
   margin-left: -15px;  /*使内容看起来居中*/
   height: 500px;
   display: flex;
-}
-.column{
+  }
+  .column{
   flex: 1; /*一起平分#parent*/
   margin-left: 15px; /*设置间距*/
-}
-.column:nth-child(odd){
+  }
+  .column:nth-child(odd){
   background-color: #f00;
-}
-.column:nth-child(even){
+  }
+  .column:nth-child(even){
   background-color: #0f0;
-}
-```
+  }
+  ```
 
 ### 九宫格
+
 - grid
-```html
-<body>
+  
+  ```html
+  <body>
   <div id="parent">
       <div class="item">1</div>
       <div class="item">2</div>
@@ -1375,8 +1699,8 @@ font-family: 'Microsoft Yahei';
       <div class="item">8</div>
       <div class="item">9</div>
   </div>
-</body>
-```
+  </body>
+  ```
 
 ```css
 #parent {
@@ -1397,17 +1721,21 @@ font-family: 'Microsoft Yahei';
 ## 答疑
 
 ### 为什么CSS选择器是从右向左匹配
+
 - 从右向左能减少浪费在失败查找上的时间
 - CSS中更多的选择器是不会匹配的，所以在考虑性能问题时，需要考虑的是如何在选择器不匹配时提升效率。
 
 ### css为什么不要用@import
+
 - 阻塞浏览器的并行下载，强行变成串行
 - 先于除了@charset的其他任何CSS规则，多个@import导致下载顺序紊乱
 
 ### 屏幕完整截图
+
 - chrome，command + shift + p
 
 ### IE6下的双边距bug
+
 **原因**
 
 - 块元素
@@ -1421,6 +1749,7 @@ font-family: 'Microsoft Yahei';
 - 用padding-left代替margin-left
 
 ### 图片加载失败
+
 > 通过css美化加载失败后的图片占位区块
 
 [参考](https://bitsofco.de/styling-broken-images)
@@ -1437,7 +1766,7 @@ img {
   font-weight: 300;
   line-height: 2;  
   text-align: center;
-  
+
   width: 100%;
   height: auto;
   display: block;
@@ -1464,11 +1793,11 @@ img { /* Same as first example */ }
 
 img:after { 
   content: "\f1c5" " " attr(alt);
-  
+
   font-size: 16px;
   font-family: FontAwesome;
   color: rgb(100, 100, 100);
-  
+
   display: block;
   position: absolute;
   z-index: 2;
@@ -1509,7 +1838,7 @@ img:after {
   font-style: normal;
   font-family: FontAwesome;
   color: rgb(100, 100, 100);
-  
+
   position: absolute;
   top: 5px;
   left: 0;
@@ -1521,15 +1850,38 @@ img:after {
 ---
 
 ## 草案
+
 - [折叠屏api](https://github.com/w3c/csswg-drafts/issues/4736)
-
-
 
 ### @layer
 
-> 管理样式优先级
+> 手动管理各样式域优先级，避免样式到处散落，只能用 **!important** 相互覆盖的情况。
 
-[CSS5 @layer](https://mp.weixin.qq.com/s/ah4SSomENbFvLasH-WuP5A)
+参考[CSS5 @layer](https://mp.weixin.qq.com/s/ah4SSomENbFvLasH-WuP5A)
+
+```css
+/* 各层样式域的优先级固定为 A > C > B */
+@layer B, C, A;
+div {
+    width: 200px;
+    height: 200px;
+}
+@layer A {
+    div {
+        background: blue;
+    }
+}
+@layer B {
+    div {
+        background: green;
+    }
+}
+@layer C {
+    div {
+        background: orange;
+    }
+}
+```
 
 ---
 
@@ -1545,12 +1897,10 @@ img:after {
 
 ### xxx:has(selector)
 
-> 匹配父、兄、子元素，css在chrome105开始生效，querySelector早就生效了。
->
-> 因为DOM 的渲染是从上往下，从内往外的，所以这个规则落地前要解决css回溯问题。
->
+> 反选父元素，匹配父、兄、子元素，css在chrome105开始生效，querySelector早就生效了。
 > 
->
+> 因为DOM 的渲染是从上往下，从内往外的，所以这个规则落地前要解决css回溯问题。
+> 
 > - [css invalidation in blink](https://chromium.googlesource.com/chromium/src/+/refs/tags/90.0.4430.54/third_party/blink/renderer/core/css/style-invalidation.md)
 > - [:has在表单的运用](https://webkit.org/blog/13096/css-has-pseudo-class/#styling-form-states-without-js)
 
@@ -1560,13 +1910,92 @@ img:after {
 
 官方解释：[github](https://github.com/Igalia/explainers/tree/main/css/has#design)
 
+### :picture-in-picture
 
+> 画中画
+
+```css
+#video-container:has(video:picture-in-picture)::before {
+  bottom: 36px;
+  color: #ddd;
+  content: 'Video is now playing in a Picture-in-Picture window';
+  position: absolute;
+  right: 36px;
+}
+```
+
+### :where
+
+> 会选择所有能被该选择器列表中任何一条规则选中的元素
+> 
+> - 选择器优先级：0
+> - 安全性：无敌，会自动忽略规则集中无效的选择器
+
+**原代码**
+
+```css
+/* first list */
+header a:hover,
+main a:hover,
+footer a:hover {
+  color: green;
+  text-decoration: underline;
+}
+
+/* second list */
+article header > p,
+article footer > p{
+ color: gray;
+}
+
+/* third list */
+.dark-theme button,
+.dark-theme a,
+.dim-theme button,
+.dim-theme a{
+ color: purple;
+}
+```
+
+**通过:where简化**
+
+```css
+:where(header, main, footer) a:hover {
+  color: green;
+  text-decoration: underline;
+}
+
+/* 任意位置 */
+article :where(header, footere) > p {
+  color: gray;
+}
+
+/* 支持叉乘 */
+:where(.dark-theme, .dim-theme) :where(button, a) {
+  color: purple;
+}
+```
+
+### :is
+
+> 几乎和**:where**一致，但是选择器优先级不锁定为0了，完全按照规则集来
+
+```css
+header p {
+  color: blue;
+}
+
+/* color还是green，因为这句在后面，有效的 */
+:is(header, section) p {
+  color: green;
+}
+```
 
 ---
 
 ## 伪元素
 
-### input-placeholder
+### ::input-placeholder
 
 ```css
 input::placeholder {
@@ -1577,7 +2006,45 @@ input::placeholder {
 }
 ```
 
+### ::highlight
 
+> 可以在不改变 `dom` 结构的情况下自定义任意文本的样式
+
+**支持的样式**
+
+- 文本颜色 `color`
+- 背景颜色 `background-color`
+- 文本修饰 `text-decoration`
+- 文本阴影 `text-shadow`
+- 文本描边 `-webkit-text-stroke`
+- 文本填充 `-webkit-text-fill-color`
+
+**示例1：高亮首字母**
+
+```html
+<html>
+  <head></head>
+  <body>
+    <p id="foo">
+      <span>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span>
+    </p>
+    <script>
+      // 选节点的文本子节点
+      const parentNode = document.getElementById("foo").childNodes[1].firstChild;
+      const range1 = new Range();
+      range1.setStart(parentNode, 0);
+      range1.setEnd(parentNode, 1);
+      const highlight1 = new Highlight(range1);
+      CSS.highlights.set("highlight1", highlight1);
+    </script>
+    <style>
+      ::highlight(highlight1) {
+        color: blue;
+      }
+    </style>
+  </body>
+</html>
+```
 
 ---
 
@@ -1586,25 +2053,65 @@ input::placeholder {
 ### 块级元素
 
 > **负责结构**
->
+> 
 > 一个水平流上只能单独显示一个元素
->
+> 
 > 比如：div、p、h1~6等
 
 ### 内联元素
 
 > **负责内容**
->
+> 
 > 和文字在一行显示
->
+> 
 > 比如：span、label、a
 
 ### 元素溢出
 
 > 元素宽度 = 内容宽度 + padding + margin
->
+> 
 > 平时设置的width，作用在内容宽度上
 
 ### 浏览器渲染顺序
 
 > 先父元素，后子元素
+
+---
+
+## CSS in JS
+
+- [@emotion/react](https://www.npmjs.com/package/@emotion/react)
+
+- [@emotion](https://github.com/emotion-js/emotion)
+
+**将 className 转为 css-hash化 的随机类名**
+
+```jsx
+import { css } from '@emotion/css';
+
+const color = 'white';
+
+render(
+  <div
+    className={css`
+      padding: 32px;
+      background-color: hotpink;
+      font-size: 24px;
+      border-radius: 4px;
+      &:hover {
+        color: ${color};
+      }
+    `}
+  >
+    Hover to change color.
+  </div>
+)
+```
+
+---
+
+## 原子css库
+
+- [unocss](https://github.com/unocss/unocss)
+
+- [tailwind使用方式优化](https://evilmartians.com/chronicles/5-best-practices-for-preventing-chaos-in-tailwind-css)

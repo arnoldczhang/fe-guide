@@ -442,7 +442,11 @@ Last-Modified: Wed, 27 Mar 2019 12:00:00 GMT
 
 ### 带宽优化
 
-range，请求资源一部分（206），支持断点续传
+range，请求资源一部分（206），支持[断点续传](https://mp.weixin.qq.com/s?__biz=Mzg3OTYzMDkzMg==&mid=2247495472&idx=1&sn=bc73cba1c6a4075dddddc88fe270772b&scene=21#wechat_redirect)
+
+sourceBuffer：拼接视频资源片段（参考[B站视频range](https://mp.weixin.qq.com/s?__biz=Mzg3OTYzMDkzMg==&mid=2247497087&idx=1&sn=0d7daa4c11be8f8535a623e388b59dde&scene=21#wechat_redirect)）
+
+
 
 #### 断点续传
 

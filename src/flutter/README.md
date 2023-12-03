@@ -4,6 +4,7 @@
   - flutter入门：https://flutterchina.club/setup-windows/
   - https://mp.weixin.qq.com/s/yPvaB7sLuJoGfsjj7x7wcg
   - https://github.com/Nealyang/PersonalBlog/issues/11
+  - [各大厂跨端技术](https://zhuanlan.zhihu.com/p/609480548)
 
 ## Flutter VS ReactNative
  - 都实现了移动开发跨平台

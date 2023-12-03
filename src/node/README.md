@@ -1,8 +1,9 @@
 # node
 
-[git](https://github.com/nodejs/node.git)
+[TOC]
 
 ## 参考
+
 - [源码分析](http://efe.baidu.com/blog/nodejs-module-analyze/)
 - [node问题排查](https://zhuanlan.zhihu.com/p/41178823)
 - [node性能提升！！](https://zhuanlan.zhihu.com/p/50055740)
@@ -13,8 +14,10 @@
 - [crone表达式-在线调试](https://crontab.guru/#)
 - [cron表达式-含义解释](https://tool.lu/crontab/)
 - [嵌入设备的微型node](https://github.com/yodaos-project/ShadowNode)
+- [nodejs运行过程](https://mp.weixin.qq.com/s/_1YdX2wavRJhy2aOCsHP4w)
 
 ## 目录
+
 * [`调试参数`](#调试参数)
 * [`好用的库`](#好用的库)
 * [`require原理`](#require原理)
@@ -58,11 +61,10 @@ node --inspect test.js
 node --inspect-brk dist/app.js
 ```
 
-
-
 ---
 
 ## 好用的库
+
 - [监听文件夹变化](https://github.com/dt-fe/weekly/blob/master/59.%E7%B2%BE%E8%AF%BB%E3%80%8A%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%20Nodejs%20%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E3%80%8B.md)
 
 - [调试工具-ndb](https://zhuanlan.zhihu.com/p/45851471)
@@ -70,11 +72,12 @@ node --inspect-brk dist/app.js
 - [JSON.stringify工具-fast-json-stringify](https://github.com/fastify/fast-json-stringify)
   
   - 预设字段类型，加速stringify
-  
+
 - [promise工具-bluebird](https://github.com/petkaantonov/bluebird)
+  
   - V8 原生实现的 Promise 比 bluebird 这样第三方实现的 Promise 库要慢很多
   - 可以在代码中把全局的 Promise 换为 bluebird 的实现，比如
-  
+
 - [打包工具-ncc](https://zeit.co/blog/ncc)
 
 - [图片压缩工具-sharp](https://github.com/lovell/sharp?utm_source=75weekly&utm_medium=75weekly)
@@ -102,26 +105,28 @@ node --inspect-brk dist/app.js
 - [终端滚动菜单-console-menu](https://www.npmjs.com/package/console-menu)
 
 - [自动生成依赖结构-dependency-cruiser](https://github.com/sverweij/dependency-cruiser)
+  
   * ```
     npm install -g verdaccio
-
+    
     verdaccio
     // warn --- http address - http://localhost:4873/ - verdaccio/3.0.0
-
+    
     nrm add verdaccio http://localhost:4873
-
+    
     nrm use verdaccio
-
+    
     npm adduser
-
+    
     npm publish
     ```
-  
+
 - [DOM转canvas工具-html2canvas、dom-to-image](https://segmentfault.com/a/1190000019035021?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
+  
   ```js
   global.Promise = require('bluebird');
   ```
-  
+
 - [pipeline-stream](https://nodejs.org/dist/latest-v10.x/docs/api/stream.html#stream_stream_pipeline_streams_callback)
 
 - [性能诊断node-clinic](https://github.com/nearform/node-clinic)
@@ -143,11 +148,11 @@ node --inspect-brk dist/app.js
 - [逻辑编排node-red](https://github.com/node-red/node-red)
 
 - [计划任务node-schedule](https://www.npmjs.com/package/node-schedule)
-
+  
   - [cron表达式示例](https://segmentfault.com/a/1190000021574315)
   - [cron表达式示例2](https://www.cnblogs.com/linjiqin/p/3178452.html)
   - [Date对象方法](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date)
-  
+
 - [轻量级提示框popular-message](https://github.com/nihaojob/popular-message)
 
 - [富文本编辑器slate](https://github.com/ianstormtaylor/slate)
@@ -157,6 +162,8 @@ node --inspect-brk dist/app.js
 - [前端数据压缩-**fflate**](https://www.npmjs.com/package/fflate)
 
 - [数据库orm-sequelize](https://www.bookstack.cn/read/sequelize-5.x-zh/spilt.7.transactions.md)
+
+- [数据库orm-sutando](https://sutando.org/)
 
 - [前端操作cookie-js-cookie](https://github.com/js-cookie/js-cookie)
 
@@ -200,7 +207,24 @@ node --inspect-brk dist/app.js
 
 - [有限状态机-xstate](https://xstate.js.org/docs/packages/xstate-vue/#quick-start)
 
+- [获取文件夹大小-go-get-fold-size](https://github.com/markthree/go-get-folder-size)
+
+- [甘特图-gantt](https://mp.weixin.qq.com/s?__biz=MzU2MTIyNDUwMA==&mid=2247513760&idx=1&sn=b52bae81336d31dd633adeec8a24c810&chksm=fc7ef8fbcb0971ed30d2abccee9ca9e3419927de9e32d33717a4c5b3b12ce2cd63d77b5f2624&scene=21#wechat_redirect)
+
+- [打字过程录制-rety](https://rety.verou.me/)
+
+- [指纹库-fingerprint](https://github.com/fingerprintjs/fingerprintjs)
+
+- [删除未使用的css-purgecss](https://mp.weixin.qq.com/s?__biz=MzU2MTIyNDUwMA==&mid=2247515344&idx=2&sn=9d27a6cbfea7cbc07fcd8d7cdc1135c1&chksm=fc7ef28bcb097b9d03a80c66e219b2c3b175c51ea517dc6e7f9869af4d2d3b1a00f4dea26f5d)
+
+- [检查npm包是否符合ESM-arethetypeswrong](https://arethetypeswrong.github.io/)
+
+- [去除图片背景-background-removal-js](https://github.com/imgly/background-removal-js)
+
+- [GitHub - chaitin/SafeLine: 一款足够简单、足够好用、足够强的免费 WAF。基于业界领先的语义引擎检测技术，作为反向代理接入，保护你的网站不受黑客攻击。](https://github.com/chaitin/SafeLine)
+
 ### eggjs
+
 [参考](https://segmentfault.com/a/1190000018894188?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com&share_user=1030000000178452)
 
 **进程管理**
@@ -276,6 +300,7 @@ node --inspect-brk dist/app.js
 ### require原理
 
 #### 简易步骤
+
 - 路径分析
 - 文件定位
 - 编译执行
@@ -285,75 +310,85 @@ node --inspect-brk dist/app.js
 ![require加载机制](./require加载机制.png)
 
 1. 系统缓存
-  - 模块被执行之后会会进行缓存
+   - 模块被执行之后会会进行缓存
 2. 系统模块
-  - 原生模块，省略了路径分析、文件定位
+   - 原生模块，省略了路径分析、文件定位
 3. 文件模块
-  - 路径优先级：. -> .. -> /
-  - 文件类型优先级：.js -> .json -> .node
+   - 路径优先级：. -> .. -> /
+   - 文件类型优先级：.js -> .json -> .node
 4. 目录做为模块
-  - main，不存在报错：Error: Cannot find module 
+   - main，不存在报错：Error: Cannot find module 
 5. node_modules目录加载
-  - 从当前目录开始找，直到系统根目录
+   - 从当前目录开始找，直到系统根目录
 
 #### 核心解释
+
 - [How`require()`ActuallyWorks](http://fredkschott.com/post/2014/06/require-and-the-module-system/)
+
 - 关键
+  
   - 核心 JavaScript 模块源代码是通过 process.binding('natives') 从内存中获取
   - 第三方 JavaScript 模块源代码是通过 fs.readFileSync 方法从文件中读取，根据不同扩展名，做不同读取校验
+
 - 源代码
+  
   1. 引用
-    - ```js
-      const http = require('http');
-      ```
+     
+     - ```js
+       const http = require('http');
+       ```
+  
   2. 原型
-    - ```js
-      Module.prototype.require = function(path) {
+     
+     - ```js
+       Module.prototype.require = function(path) {
         assert(path, 'missing path');
         assert(typeof path === 'string', 'path must be a string');
         return Module._load(path, this, /* isMain */ false);
-      };
-      ```
+       };
+       ```
+  
   3. Module._load
-    - ```js
-      Module._load = function(request, parent, isMain) {
+     
+     - ```js
+       Module._load = function(request, parent, isMain) {
         if (parent) {
           debug('Module._load REQUEST %s parent: %s', request, parent.id);
         }
-
+       
         var filename = Module._resolveFilename(request, parent, isMain);
-
+       
         var cachedModule = Module._cache[filename];
         // 有缓存则直接返回
         if (cachedModule) {
           return cachedModule.exports;
         }
-
+       
         // 判断该模块是否为核心模块，如果则调用核心模块的加载方法NativeModule.require
         if (NativeModule.nonInternalExists(filename)) {
           debug('load native module %s', request);
           return NativeModule.require(filename);
         }
-
+       
         // 如果不是核心模块，新创建一个 Module 对象
         var module = new Module(filename, parent);
-
+       
         if (isMain) {
           process.mainModule = module;
           module.id = '.';
         }
-
+       
         Module._cache[filename] = module;
-
+       
         tryModuleLoad(module, filename);
-
+       
         return module.exports;
-      };
-      ```
-    4. Module._resolveFilename
-  
-      - ```js
-        Module._resolveFilename = function(request, parent, isMain) {
+       };
+       ```
+     4. Module._resolveFilename
+        
+        - ```js
+          Module._resolveFilename = function(request, parent, isMain) {
           // ...
           var filename = Module._findPath(request, paths, isMain);
           if (!filename) {
@@ -362,35 +397,38 @@ node --inspect-brk dist/app.js
             throw err;
           }
           return filename;
-        };
-        ```
-    5. [Module._findPath](https://github.com/nodejs/node/blob/v6.x/lib/module.js#L158)
-    6. NativeModule.require
-  
-      - 如果是 built-in 模块 -> process.binding('模块名')
-      - 判断 cache 中是否已经加载过，如果有，直接返回 exports
-      - 新建 nativeModule 对象，然后缓存，并加载编译
-    7. require用户自定义模块
-  
-      - tryModuleLoad
-    8. Module.prototype.load
-  
-    - ```js
+          };
+          ```
+     
+     5. [Module._findPath](https://github.com/nodejs/node/blob/v6.x/lib/module.js#L158)
+     
+     6. NativeModule.require
+        
+        - 如果是 built-in 模块 -> process.binding('模块名')
+        - 判断 cache 中是否已经加载过，如果有，直接返回 exports
+        - 新建 nativeModule 对象，然后缓存，并加载编译
+     
+     7. require用户自定义模块
+        
+        - tryModuleLoad
+     
+     8. Module.prototype.load
+     - ```js
         NativeModule.wrap = function(script) {
           return NativeModule.wrapper[0] + script + NativeModule.wrapper[1];
         };
-          
-      NativeModule.wrapper = [
+       
+       NativeModule.wrapper = [
           '(function (exports, require, module, __filename, __dirname) { ',
           '\n});'
         ];
-      
+       
         NativeModule.prototype.compile = function() {
         var source = NativeModule.getSource(this.id);
           source = NativeModule.wrap(source);
-      
+       
           this.loading = true;
-      
+       
           try {
             const fn = runInThisContext(source, {
               filename: this.filename,
@@ -398,82 +436,89 @@ node --inspect-brk dist/app.js
               displayErrors: true
             });
             fn(this.exports, NativeModule.require, this, this.filename);
-      
+       
             this.loaded = true;
         } finally {
             this.loading = false;
           }
-      };
-      
+       };
+       
         Module.prototype.load = function(filename) {
           debug('load %j for module %j', filename, this.id);
-      
+       
           assert(!this.loaded);
         this.filename = filename;
           this.paths = Module._nodeModulePaths(path.dirname(filename));
-      
+       
           var extension = path.extname(filename) || '.js';
-      
+       
           // 通过不同扩展名，选择不同的处理
         if (!Module._extensions[extension]) extension = '.js';
           Module._extensions[extension](this, filename);
           this.loaded = true;
         };
-      
+       
         // Native extension for .js
         Module._extensions['.js'] = function(module, filename) {
           var content = fs.readFileSync(filename, 'utf8');
           // _compile
           module._compile(internalModule.stripBOM(content), filename);
         };
-      ```
-
-
+       ```
+       
         // Native extension for .json
         Module._extensions['.json'] = function(module, filename) {
           var content = fs.readFileSync(filename, 'utf8');
           try {
+       
             module.exports = JSON.parse(internalModule.stripBOM(content));
+       
           } catch (err) {
+       
             err.message = filename + ': ' + err.message;
             throw err;
+       
           }
         };
-
-
+       
         //Native extension for .node
         Module._extensions['.node'] = function(module, filename) {
           return process.dlopen(module, path._makeLong(filename));
         };
-    
+       
         // ...
         Module.wrap = NativeModule.wrap;
         // ...
         Module.prototype._compile = function(content, filename) {
         // ...
-    
+       
         // create wrapper function
         var wrapper = Module.wrap(content);
-    
+       
         var compiledWrapper = vm.runInThisContext(wrapper, {
           filename: filename,
           lineOffset: 0,
           displayErrors: true
         });
-    
+       
         // ...
         var result = compiledWrapper.apply(this.exports, args);
         if (depth === 0) stat.cache = null;
         return result;
-      };
-        ```
+       };
+       
+       ```
+       
+       ```
 
 ### eventLoop
-  - ![event_loop](node-event-loop.jpg)
+
+- ![event_loop](node-event-loop.jpg)
 
 ### GC
 
 #### 新生代、老生代
+
 - 老生代
   - 使用大对象作为缓存，多次查询后进入老生代，使用三色标记 + DFS 的方式进行 GC，慢
 - 新生代
@@ -484,6 +529,7 @@ node --inspect-brk dist/app.js
 ### 循环引用
 
 关键词
+
 - Module._cache
 - 没有循环引用
 
@@ -499,6 +545,7 @@ node --inspect-brk dist/app.js
 6. return module.exports
 
 #### 例
+
 ```js
 // a.js
 var b = require('../test/b');
@@ -512,12 +559,14 @@ module.exports.b = 2;
 ```
 
 运行 node a.js
+
 ```js
 b.js get a:undefined
 a.js get b:2
 ```
 
 #### 真实运行顺序
+
 ```js
 // 由于不存在b实例，所以创建一个{}
 var b = require('../test/b');
@@ -534,14 +583,15 @@ module.exports.a = 1;
 ```
 
 ### exports和module.exports
-[参考](../js&browser/基本常识.md#amd/CommonJS)
 
+[参考](../js&browser/基本常识.md#amd/CommonJS)
 
 ### 异步错误
 
 unhandledRejection
 
 #### 处理
+
 ```js
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at:', p, 'reason:', reason);
@@ -606,6 +656,7 @@ function promiseRejectHandler(type, promise, reason) {
 ```
 
 #### 须知
+
 - 每次 Tick 完成后，会执行并清空 Tock 队列
 - 之后才会触发unhandledRejection回调
 
@@ -641,10 +692,6 @@ function promiseRejectHandler(type, promise, reason) {
 #!/usr/bin/env ts-node
 ```
 
-
-
-
-
 ---
 
 ## 最佳实践
@@ -652,6 +699,7 @@ function promiseRejectHandler(type, promise, reason) {
 [最佳实践](./最佳实践.md)
 
 ### 服务器瓶颈
+
 * CPU
 * 内存
 * 磁盘
@@ -659,6 +707,7 @@ function promiseRejectHandler(type, promise, reason) {
 * 网络
 
 ### 项目结构
+
 * 组件化
 * 组件内部分层
 * 公共方法抽离成npm
@@ -666,19 +715,22 @@ function promiseRejectHandler(type, promise, reason) {
 * 配置文件分级
 
 ### 错误处理
+
 * 使用await、promise
+
 * 抽象通用错误类
-```js
-function CommonError(name, httpCode, description, isOperational) {
+  
+  ```js
+  function CommonError(name, httpCode, description, isOperational) {
   Error.call(this);
   Error.captureStackTrace(this);
   this.name = name;
   //...在这赋值其它属性
-};
-CommonError.prototype.__proto__ = Error.prototype;
-// 使用
-throw new CommonError('abc');
-```
+  };
+  CommonError.prototype.__proto__ = Error.prototype;
+  // 使用
+  throw new CommonError('abc');
+  ```
 
 ---
 
@@ -688,18 +740,19 @@ throw new CommonError('abc');
 - [node多进程守护](https://zhuanlan.zhihu.com/p/100550801)
 
 ### 概念
+
 > 进程：CPU 资源分配最小单位（资源分配和独立运行的最小单位）
->
+> 
 > 线程：CPU 调度最小单位（在进程基础上的一次程序运行单位）
 
 - 多进程的形式，同时执行多个任务
 - 多线程的形式，将单个任务拆分成多个部分执行
 - 进程、线程间可以共享资源
 
-
 ### 原生服务器示例
 
 #### 设置进程信息
+
 ```js
 const http = require('http');
 
@@ -710,6 +763,7 @@ http.createServer().listen(3000, () => {
 ```
 
 #### 创建父子进程间通信
+
 [进程通信](https://juejin.im/post/5d06d6ddf265da1b9570562a?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 
 **1. exec **
@@ -778,6 +832,7 @@ console.log(process.pid, ls.pid);
 ```
 
 ### express示例
+
 ```js
 const cluster = require('cluster');
 const express = require('express');
@@ -804,6 +859,7 @@ if (cluster.isMaster) {
 ```
 
 ### pm2示例
+
 ```cmd
 # 启动两个实例，如果给0，表示根据cpu数量自动生成对应负载均衡服务器
 pm2 start test.js -i 2
@@ -812,6 +868,7 @@ pm2 start test.js -i 2
 ---
 
 ## 打印日志
+
 - [node如何打印日志](https://juejin.im/post/5f0e5701f265da230e6b68c8?utm_source=gold_browser_extension)
 
 - [winston](https://www.npmjs.com/package/winston)
@@ -856,7 +913,9 @@ const accessLogger = createLogger('access');
 ```
 
 ---
+
 ## 手动打包指南
+
 **css/less**
 
 [css](../postcss/postcss.js)
@@ -874,6 +933,7 @@ uglify-js
 ## 库源码解析
 
 ### carlo
+
 > node内置浏览器
 
 比较坑，每次都会自动下载 chrome，浪费时间，推荐保存下载结果，后面再手动把 chrome 拷进去。
@@ -889,6 +949,7 @@ uglify-js
 因为 Node.js 基于事件循环的异步非阻塞 I/O 模型，发起一次异步调用，回调在之后的循环中才被调用，此时已经无法追踪到是谁发起了这个异步调用。
 
 ### ws
+
 [ws](https://github.com/websockets/ws)
 [WebSocket协议以及ws源码分析](https://juejin.im/post/5ce8976151882533441ecc20?utm_medium=hao.caibaojian.com&utm_source=hao.caibaojian.com)
 
@@ -960,11 +1021,11 @@ emitter.emit('error');
 ### purify-css
 
 > [官网git](https://github.com/purifycss/purifycss)
->
+> 
 > 根据指定模板（字符串），提取其中用到的css样式
->
 
 #### 用法
+
 ```js
 var content = '<button class="button-active"> Login </button>';
 var css = '.button-active { color: green; }   .unused-class { display: block; }';
@@ -973,10 +1034,12 @@ console.log(purify(content, css));
 ```
 
 #### 用到的核心库
+
 - uglify-js（模板是js的话，会用这个处理）
 - [rework](https://github.com/reworkcss)（css解析库，包括reworkcss等，都是其分支）
 
 #### 原理
+
 1. 模板用非小写英文分割（/[^a-z]/g）
 2. map记录分割结果（之后会用于样式匹配）
 3. 样式用`rework`解析成 stylesheet-tree 对象
@@ -985,6 +1048,7 @@ console.log(purify(content, css));
 6. tree 做 toString，输出结果
 
 #### 注意
+
 - 样式名大部分相同时，比如 .button1、.button2、.button3，假如`.button`在模板中被用到，则以上三者都会保留
 - 官方示例有误导性，让使用者（包括鄙人）误以为其支持jquery、react等各类框架，其实不然，核心只是模板分割-匹配
 - 再次证明`rework`还是很屌的
@@ -993,8 +1057,8 @@ console.log(purify(content, css));
 
 ![查看cpu](查看cpu.png)
 
-
 封装
+
 ```js
 const os = require('os');
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -1056,16 +1120,20 @@ class OSUtils {
   }
 }
 ```
+
 使用
+
 ```js
 const cpuUsage = await osUtils.getCPUUsage({ percentage: true });
 console.log('CPU 利用率：', cpuUsage) // CPU 利用率：13.72%
 ```
 
 ### util.promisify
+
 > 将callback形式转为promise形式
 
 示例
+
 ```js
 const { promisify } = require('util');
 const readFilePromisify = util.promisify(fs.readFile); // 转化为 promise
@@ -1076,6 +1144,7 @@ readFilePromisify('text.txt', 'utf8')
 ```
 
 源码解释
+
 ```js
 // https://github.com/nodejs/node/blob/v12.x/lib/internal/util.js#L277
 const kCustomPromisifyArgsSymbol = Symbol('customPromisifyArgs'); // {1}
@@ -1147,15 +1216,14 @@ function promisify(original) {
 }
 ```
 
-
-
 ### TDD
+
 > Test-driven development 即测试驱动的开发模式
->
+> 
 > 创造一个新语法，可以先在测试用例先写上这个语法，通过执行测试命令
->
+> 
 > 通过报错堆栈一步步解决问题。
->
+> 
 > 这种方式开发可以让测试覆盖率更高，目的更专注，更容易保障代码质量。
 
 ---
@@ -1163,6 +1231,7 @@ function promisify(original) {
 ## 其他
 
 ### 字符编码encoding
+
 - ascii: 仅适用于 7 位 ASCII 数据。此编码速度很快，如果设置则会剥离高位。
 - utf8: 多字节编码的 Unicode 字符。许多网页和其他文档格式都使用 UTF-8。
 - utf16le: 2 或 4 个字节，小端序编码的 Unicode 字符。支持代理对（U+10000 至 U+10FFFF）。
@@ -1173,11 +1242,17 @@ function promisify(original) {
 - hex: 将每个字节编码成两个十六进制的字符。
 
 ### node实现websocket
+
 [参考](https://mp.weixin.qq.com/s/jrXsXch-wnlTcS2JEKe32Q)
+
+### nodemon
+
+竞品：[turbowatch]((https://github.com/gajus/turbowatch/))
 
 ---
 
 ## 内存泄漏
+
 [参考](../js&browser/内存管理.md#node内存泄漏)
 
 ### 进程内存监控
@@ -1222,6 +1297,7 @@ VSZ(virtual size): 虚拟内存占用
 RSS(Resident Set Size): 常驻内存占用
 
 #### mac
+
 ```sh
 # htop
 htop -p 进程的pid
@@ -1230,10 +1306,10 @@ htop -p 进程的pid
 top -pid 69608
 ```
 
-
 ---
 
 ## 一些尝试
+
 - [发邮件](./mailer/README.md)
 - [lighthouse-runner](./lighthouse/README.md)
 - [图像识别](../lighthouse/图像识别.js)
@@ -1242,11 +1318,12 @@ top -pid 69608
 ---
 
 ## 公司架构
+
 ![滴滴nodeX生态](滴滴nodeX生态.png)
 
 ---
 
-### 版本日志
+## 版本日志
 
 #### 13.2.0
 

@@ -1,5 +1,7 @@
 # vue
 
+[TOC]
+
 ## 参考
 
 - [vue3代码流程](https://mp.weixin.qq.com/s/hYYNbMUkheHVgzi26rnWPQ)
@@ -14,8 +16,6 @@
 - [vue全资源搜索](https://bestofvue.com/)
 - [vue3-后台管理系统示例1](http://admin.spicyboy.cn/#/login)
 - [vue中的设计模式](https://mp.weixin.qq.com/s?__biz=Mzg3ODAyNDI0OQ==&mid=2247490496&idx=1&sn=23503fdf27e5254daab8c157e7246752&scene=21#wechat_redirect)
-
-
 
 ## 目录
 
@@ -74,6 +74,7 @@ vue ui
 - [vue性能优化](https://mp.weixin.qq.com/s/iQwTr5T95wPflJMT87ZObg)
 
 ### 1. slot
+
 > vue.runtime搜索`renderSlot`
 
 ```vue
@@ -109,6 +110,7 @@ vue ui
 ```
 
 ### 2. 子组件嵌套slot
+
 ```vue
 <template>
   <smart-table
@@ -130,7 +132,8 @@ vue ui
 ```
 
 ### 3. slot-scope
-``` vue
+
+```vue
 <!-- 组件 -->
 <template>
   <!-- 新建了一个slot，叫header -->
@@ -165,9 +168,9 @@ vue ui
 ### 4. keep-alive
 
 > 1. vue 内置抽象组件（父子关系会跳过该组件）
->2. 根据LRU策略缓存第一个子组件实例，下次render时，根据组件 id 从缓存中拿实例（如果存在的话）
+> 2. 根据LRU策略缓存第一个子组件实例，下次render时，根据组件 id 从缓存中拿实例（如果存在的话）
 > 
->注：如果没处理好，比如之前的组件实例没销毁，将会是内存泄漏的源头
+> 注：如果没处理好，比如之前的组件实例没销毁，将会是内存泄漏的源头
 
 ```html
 <keep-alive>
@@ -211,7 +214,7 @@ vue ui
 
 ```vue
 <template>
-	<v-chart
+    <v-chart
       @hook:mounted="handleChartMounted"
       @hook:beforeUpdated="loading = true"
       @hook:updated="loading = false"
@@ -236,14 +239,14 @@ export default {
 
 ```vue
 <template>
-	<!-- 传递父组件所有动态属性给子组件 -->
+    <!-- 传递父组件所有动态属性给子组件 -->
   <input v-bind="$props" />
 
   <!-- 传递父组件所有静态属性给子组件 -->
   <input v-bind="$attrs" />
 
-	<!-- 将父组件 (不含 .native修饰器)的 v-on 事件监听器给子组件 -->
-	<childComponent v-on="$listeners" />
+    <!-- 将父组件 (不含 .native修饰器)的 v-on 事件监听器给子组件 -->
+    <childComponent v-on="$listeners" />
 </template>
 ```
 
@@ -251,8 +254,8 @@ export default {
 
 ```vue
 <template>
-	<!-- 利用内置component组件，记得绑定 is 属性 -->
-	<component v-for="(item,index) in componentList" :key="index" :is="item"></component>
+    <!-- 利用内置component组件，记得绑定 is 属性 -->
+    <component v-for="(item,index) in componentList" :key="index" :is="item"></component>
 </template>
 <script>
 import ColorIn from '@/components/Magic/ColorIn.vue'
@@ -296,7 +299,7 @@ Object.keys(custom).forEach(key => Vue.filter(key, custom[key]));
 
 // 方式三：局部注册
 export default {
- 	filters: {
+     filters: {
     stampToYYMMDD: (value)=> {
       // 处理逻辑
     }
@@ -308,10 +311,10 @@ export default {
 
 ```vue
 <template>
-	<!-- 在双花括号中 -->
-	{{ message | stampToYYMMDD }}
+    <!-- 在双花括号中 -->
+    {{ message | stampToYYMMDD }}
 
-	<!-- 在 `v-bind` 中 -->
+    <!-- 在 `v-bind` 中 -->
   <div v-bind:id="rawId | dateServer"></div>
 </template>
 ```
@@ -322,8 +325,8 @@ export default {
 
 ```vue
 <template>
-	<!-- 用sync定义属性 -->
-	<child :foo.sync="foo" />
+    <!-- 用sync定义属性 -->
+    <child :foo.sync="foo" />
 </template>
 <script>
 export default {
@@ -364,6 +367,7 @@ export default {
 ```
 
 ### 12. functional
+
 ```vue
 <template functional>
   <div class="cell">
@@ -379,7 +383,7 @@ export default {
 
 ```vue
 <template>
-	<!-- 监听键盘的【下】键 -->
+    <!-- 监听键盘的【下】键 -->
   <el-input
     @keyup.down.native="handlePressDown"
   ></el-input>
@@ -389,6 +393,7 @@ export default {
 ### 14. 模拟v-model
 
 **子组件**
+
 ```vue
 <template>
   <el-select v-model="model"></el-select>
@@ -447,9 +452,8 @@ export default class Demo extends Vue {
 #### 1. 提取动态 vnode
 
 > vue3 有 `Block Tree` 和 `PatchFlag` 的概念
->
+> 
 > `Block`相比普通VNode，多了`dynamicChildren`
->
 
 ```js
 // Block仅包含最近子代的vnode
@@ -485,7 +489,7 @@ const block = {
 #### 2. 静态提升
 
 > 包含 vnode 提升和 props 提升
->
+> 
 > 好处是可以避免多次 diff，重复创建静态 vnode（props）
 
 ```js
@@ -516,12 +520,13 @@ render(ctx) {
 - 动态属性，且非常量（也就是说仅包含常量的动态属性也会被静态提升）
 
 #### 3. 预字符串化
+
 > 大量连续的类似的vnode，与其做静态提升，不如预字符串化。
->
+> 
 > 相对于静态提升：
+> 
 > 1. 节省内存
 > 2. 减少代码
->
 
 **示例**
 
@@ -535,13 +540,16 @@ render(ctx) {
 ```
 
 如果用静态提升
+
 ```js
 const hoist1 = createVNode('p', null, 'text')
 const hoist2 = createVNode('p', null, 'text')
 // ...
 const hoist20 = createVNode('p', null, 'text')
 ```
+
 如果用预字符串化
+
 ```js
 const hoistStatic = createStaticVNode('<p></p>...20个');
 ```
@@ -554,6 +562,7 @@ const hoistStatic = createStaticVNode('<p></p>...20个');
 - 连续含属性的静态节点（含子节点）少于5个
 
 #### 4. Cache Event handler
+
 > 绑定的事件做缓存处理
 
 **示例**
@@ -561,7 +570,9 @@ const hoistStatic = createStaticVNode('<p></p>...20个');
 ```html
 <Comp @change="a + b" />
 ```
+
 默认编译为
+
 ```js
 render(ctx) {
     return h(Comp, {
@@ -569,7 +580,9 @@ render(ctx) {
     })
 }
 ```
+
 开启`prefixIdentifiers`和`cacheHandlers`后
+
 ```js
 render(ctx, cache) {
     return h(Comp, {
@@ -600,12 +613,37 @@ const _modelValue = useVModel(props, 'modelValue', emit);
 // 入参情况
 import { MaybeRef } from '@vueuse/core';
 const fn = (list: MaybeRef<Record<string, any>[]>) => {};
-
-
 ```
 
+### directive
 
-
+```ts
+// 自动激活
+export default {
+  updated(el: any, binding: any) {
+    const { oldValue, value } = binding;
+    const input =
+      el?.querySelector('input,textarea,*[contenteditable="true"]') || el;
+    if (!input) return;
+    const { length } = input.value || input.textContent;
+    if (!oldValue && (value || typeof value === 'undefined')) {
+      nextTick(() => {
+        input.focus();
+        // contentEditable单独处理
+        if (input.contentEditable === 'true') {
+          const range = document.createRange();
+          range.selectNodeContents(input);
+          window.getSelection()?.removeAllRanges();
+          window.getSelection()?.addRange(range);
+        // 处理input和textarea
+        } else if (length) {
+          input.setSelectionRange(0, length);
+        }
+      });
+    }
+  },
+};
+```
 
 ---
 
@@ -622,12 +660,12 @@ const fn = (list: MaybeRef<Record<string, any>[]>) => {};
 
 > 基于smooth-dnd的vue3拖拽库
 
-
-
 ### vue-code-diff
+
 > 类git风格代码对比，[参考](https://www.npmjs.com/package/vue-code-diff)
 
 #### 使用到的库
+
 ```js
 <div v-html="html" v-highlight></div>
 
@@ -669,6 +707,7 @@ import 'diff2html/dist/diff2html.css';
 ```
 
 ### tiptap
+
 > 轻量级页面编辑器
 
 ```vue
@@ -729,11 +768,9 @@ export default {
 
 ```json
 {
-	"sass-loader": "^10",
+    "sass-loader": "^10",
 }
 ```
-
-
 
 ### Error: PostCSS received undefined instead of CSS string
 
@@ -760,7 +797,6 @@ data() {
             value: '222'
         }
     }
-
 ```
 
 ### trim
@@ -817,37 +853,37 @@ export default class Child extends Vue {
 </script>
 ```
 
-
-
 ---
-
-
 
 ## vite
 
 - [webpack-to-vite](https://github.com/originjs/webpack-to-vite)
 - [vite实践](https://mp.weixin.qq.com/s/pUzUr1lTfX3wkzJL_Xv1oQ)
 - [webpack和vite在开发阶段的区别](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247492637&idx=1&sn=3b2403d0c66f1e5cdd5226fb5f06afd3&scene=21#wechat_redirect)
+- [state of vite 2023](https://docs.google.com/presentation/d/1oZnjsPBnb3OB2HxU88vYkZLa54GV-xNKrF8XkOIqLAU/edit#slide=id.g286269c24aa_0_120)
 
 ### 优势
+
 > 冷启动快，热更新快
 
 ### 冷启动快的原因
+
 - 依赖`esbuild`做预构建：`esbuild`使用GO语言写的，比js编写的打包器快10-100倍
 - 按需编译返回：基于浏览器原生esm的依赖关系，将文件打包成多个单独模块；当浏览器请求到某个模块（即原生import）某个模块时，才会按需返回源码
 
 ### 热更新快的原因
+
 - 通过`chokidar`监听文件变化，单独编译发生变更的模块&返回
 - 而webpack会以当前修改文件为入口，重新编译所有涉及到的依赖
 
 ### vite3对首次全量加载的优化
+
 参考这次[pr](https://github.com/vitejs/vite/pull/8869)
 
 vite3.0之前：是全量爬取需要优化的文件给浏览器，然后依次加载
 vite3.0之后：优先爬取静态import（这个3.0能获取）给浏览器，后面再加载动态引用的资源
 
 差异：10秒~
-
 
 ---
 

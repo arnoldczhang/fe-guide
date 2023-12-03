@@ -10,6 +10,7 @@
 - [javascript-questions](https://github.com/lydiahallie/javascript-questions/blob/master/zh-CN/README-zh_CN.md)
 - [我在近期求职中遇到的前端面试问题及其解法](https://mp.weixin.qq.com/s/vFTAoSDKcjrgf34vRARyKw)
 - [钉钉前端题](https://juejin.cn/post/6987549240436195364)
+- [java面试参考](https://javaguide.cn/)
 
 ## 目录
 
@@ -83,6 +84,8 @@
 * [`canvas计算宽度`](#canvas计算宽度)
 * [`图片复制到剪贴板`](#图片复制到剪贴板)
 * [`拖拽`](#拖拽)
+* [`Promise.allSettled`](#Promise.allSettled)
+* [`abort`](#abort)
 
 **进阶 js**
 
@@ -277,7 +280,7 @@ Number([]) === 0
   * ```js
     typeof x; // ReferenceError(暂时性死区，抛错)
     let x;
-
+    
     typeof y; // 值是 undefined, 不会报错
     ```
 
@@ -357,7 +360,7 @@ var obj = {
             var num = this.number;
             this.number *= 2; // window.number = 20
             console.log(num);
-            number *= 3;
+            number *= 3; // 对应 (function() {})作用域的number
             console.log(number);
         }
     })(),
@@ -585,6 +588,36 @@ const 当前元素最终宽度 = 当前元素 flex-basis - (超出宽度 * 当�
 @media screen and (max-width: 320px){
 }
 ```
+
+#### 容器查询
+
+> chrome105+支持
+
+```html
+<div class="post">
+  <div class="card">
+    <h2>Card title</h2>
+    <p>Card content</p>
+  </div>
+</div>
+<style>
+/* A container context based on inline size */
+.post {
+  container-type: inline-size; /* 必须 */
+}
+
+/* Apply styles if the container is narrower than 650px */
+@container (width < 650px) {
+  .card {
+    width: 50%;
+    background-color: gray;
+    font-size: 1em;
+  }
+}
+</style>
+```
+
+
 
 #### 百分比
 
@@ -924,7 +957,8 @@ n 秒内高频触发，只会执行一次
 
 ---
 
-### Promise.all 实现
+### Promise.all实现
+> 全部resolve才返回promise数组，但凡有reject，直接返回reject
 
 ```js
 Promise.all = function all(arr = {}) {
@@ -973,6 +1007,24 @@ Promise.all2 = function(promises) {
     }
   });
 };
+```
+
+---
+
+### Promise.allSettled
+> 返回promise数组，不判断是否reject
+
+```js
+const promise1 = Promise.resolve(3);
+const promise2 = new Promise((resolve, reject) => setTimeout(reject, 100, 'foo'));
+const promises = [promise1, promise2];
+
+Promise.allSettled(promises).
+  then((results) => results.forEach((result) => console.log(result.status)));
+
+// Expected output:
+// "fulfilled"
+// "rejected"
 ```
 
 ---
@@ -1689,6 +1741,16 @@ define(function(require, exports, module) {
 
 兼容 AMD，CommonJS 模块化语法
 
+```js
+(function(global, factory) {
+  factory(global.xx, global.xx);
+}(window, function(a, b) {
+  // ...
+}))
+```
+
+
+
 ---
 
 ### cookie和token都存放在header中，为什么不会劫持token
@@ -2150,7 +2212,7 @@ https://jsperf.com
       // ...
     ])
   }
-
+  
   // ==> vnode
   {
     tagName,
@@ -2330,12 +2392,12 @@ function fun(num){
 - ```js
   const domain = require('domain');
   const d = domain.create();
-
+  
   d.on('error', (err) => {
     console.log('err', err.message);
     console.log(needSend.message);
   });
-
+  
   const needSend = { message: '需要传递给错误处理的一些信息' };
   d.add(needSend);
   d.run(() => {
@@ -2574,6 +2636,50 @@ function handle(req, res) {
 intersectionObserver
 
 - 目标元素和视口有一个交叉区，可以判断是否可见
+
+
+
+#### 图片加载优化
+
+参考[现代图片性能优化](https://mp.weixin.qq.com/s/_tctOen1NM9f_mHQFClBsA)
+
+- 懒加载：loading=lazy
+- 异步解码：decoding=async
+
+```html
+<html>
+  <head>
+  </head>
+  <body>
+    <style>
+      .article {
+        height: 100vh;
+        overflow-y: auto;
+      }
+      .box {
+        content-visibility: auto;
+      }
+      .img {
+        display: block;
+        height: 200px;
+        width: 200px;
+      }
+    </style>
+    <article class="article">
+      <section class="box">
+        <img class="img" src="xx.jpg" loading="lazy" decoding="async"/>
+      </section>
+      <section class="box">
+        <img class="img" src="xx.jpg" loading="lazy" decoding="async"  />
+      </section>
+      <!-- n多图片 -->
+    </article>
+  </body>
+</html>
+
+```
+
+
 
 ---
 
@@ -3080,6 +3186,20 @@ String('1234567890').replace(/(\d)(?=(\d{3})+\b)/g, '$1,');
 // 同上
 String('1234567890').replace(/(\d{1,3})(?=(\d{3})+$)/g, '$1,');
 ```
+
+**?=和?:的区别？**
+
+> **(?=exp)**：也叫零宽度正预测先行断言，它断言自身出现的位置的后面能匹配表达式exp
+> **(?:exp)**：表示非捕获性分组，它不会存在匹配成功后的分组里
+
+选自网上回复：
+> 先说结论，区别在于 ?= 是正向肯定 断言，进行的匹配是不占查询长度的；而 ?: 是非获取 匹配，进行的匹配是占据查询长度的。
+>
+> 题述的正则查询每一个非单词边界，然后对后面的一个或多个连续三组数字+一组非数字进行匹配。对于 1234567 而言，就会匹配到 1 和 2 中间的这个非单词边界，因为后面的 234567$ 满足正向肯定预查的 (\d{3})+(?!\d) 形式；之后会匹配到 4 和 5 中间的非单词边界，因为后面的 567$ 也满足上一形式。所以是正确的。
+>
+> 而你尝试将 + 去掉，使得断言只能匹配到 567$ 这样的形式——注意到你强调了 g 全局查询参数，但是我们要注意到 (?!\d) 的存在，这是一个正向否定断言，表示连续三个数字之后不能存在数字，所以 234 显然是不满足的，因为其后的 5 正是一个数字。假使你去掉了这个否定断言，那这个正则也不能工作——因为断言是 零宽 的，是不占据匹配长度的，查完 1 之后 234 满足，还会继续查 2，2 之后 345 也是满足的。因此结果就会变成 "1,2,3,4,567"。
+>
+> 最后你尝试使用了 ?: 这个非获取匹配实际上是占据匹配长度的，当执行了第一次匹配时，实际上就匹配到了行尾，直接将 234567 全替换成了 ,，然后完成了匹配。所以就出现了上面的结果。
 
 ---
 
@@ -3599,6 +3719,19 @@ foo`try catch ${foo.name}.`;
 
 
 
+### Intl-文本分割
+
+> 按词的类型（名、动、介等），分割成不同词组，这是split做不到的，不过目前版本（chrome112）试下来，识别还是有问题。
+
+```js
+var str = 'Intl.Segmenter 是浏览器内置的 API，支持各种语言的分词（包括中文），本文介绍它的简单用法。';
+var segmenterCn = new Intl.Segmenter('zh-Hans-CN', { granularity: 'word' });
+var segments = segmenterCn.segment(str);
+console.log(Array.from(segments));
+```
+
+
+
 ---
 
 ### webpack将import处理成了什么
@@ -3728,3 +3861,34 @@ width = 内容width、padding-left/right、border-left/right的宽度总和
 width = 内容width + padding-left/right + border-left/right + margin-left/right
 
 总元素的高度 = height + padding-top/bottom + border-top/bottom + margin-top/bottom
+
+---
+
+### abort
+> 解决竞态问题
+
+```js
+useEffect(() => {
+  // 创建 controller
+  const controller = new AbortController();
+  // 将 controller 作为signal传递给 fetch
+  fetch(url, { signal: controller.signal })
+  .then((r) => r.json())
+  .then((r) => {
+    // do sth
+  })
+  // 由于 AbortController 导致的错误
+  .catch((error) => {
+    if (error.name === 'AbortError') {
+      // ...
+    } else {
+      // ...
+    }
+  });
+
+  return () => {
+    // 中止请求
+    controller.abort();
+  };
+}, [url]);
+```

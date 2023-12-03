@@ -32,6 +32,10 @@
 - [v8学习](./src/v8/README.md)
 - [npm相关](./src/npm&yarn/README.md)
 - [小程序相关](./src/miniprogram/README.md)
+- [微前端相关](./src/microservice/微前端.md)
+- [前端监控相关](./src/career/前端埋点和监控方案.md)
+- [前端自动化测试](./src/career/前端自动化测试.md)
+- [前端工程体系](./src/career/前端架构.md)
 
 ## 一些尝试
 - [promise原生实现](./src/prototype/promise.js)

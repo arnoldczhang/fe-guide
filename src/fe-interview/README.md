@@ -25,11 +25,15 @@
 - [模拟请求池](./src/模拟节流请求.js)
 - [深拷贝](./src/深拷贝.md)
 - [数据结构扁平化](./src/扁平数据转树状结构.js)
+- [数据结构扁平化2](./src/扁平数据转树状结构2.js)
 - 正则解析url
 - [防抖](./src/debounce.js)
 - [节流](./src/throttle.js)
 - [promise](./src/promise.js)
 - [bind](./src/bind.js)
+- [双指针-字符串全匹配](./src/字符串全匹配.js)
+- [zookeeper增删改查](./src/zookeeper.js)
+- [微信红包算法](../algorithm/leetcode/微信红包算法.js)
 
 ## 3. 打包工具
 
@@ -60,7 +64,13 @@
 
 ## 8. 算法
 
-
+- [双指针-各种数组](../algorithm/leetcode/双指针-数组.js)
+- [双指针-各种滑动窗口](../algorithm/leetcode/双指针-滑动窗口.js)
+- [回溯-各种排列组合](../algorithm/leetcode/回溯-排列组合all.js)
+- [动态规划](../algorithm/leetcode/dp-通解.js)
+- 深度遍历
+- [并查集](../algorithm/leetcode/并查集.js)
+- 双指针-链表
 
 ## 9. 技术方案
 
@@ -72,4 +82,3 @@
 - [微前端](../microservice/微前端.md)
 - [监控平台](../career/前端埋点和监控方案.md)
 - [前端自动化测试](../career/前端自动化测试.md)
-

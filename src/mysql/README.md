@@ -1,11 +1,11 @@
 # mysql
 
 ## 参考
+
 - [mac安装mysql.tgz](https://www.cnblogs.com/yjmyzz/p/how-to-install-mysql8-on-mac-using-tar-gz.html)
 
-
-
 ## 安装（mysql8）
+
 ```sh
 # 解压下载的 tgz，得到文件夹 mysql-8.0.22-macos10.15-x86_64（假如这个名字）
 
@@ -38,11 +38,15 @@ cd /usr/local/mysql/support-files
 mysql -u root -p
 
 # 建库
+
+## utf8
 CREATE DATABASE IF NOT EXISTS aaaa DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+
+## utf8mb4
+CREATE DATABASE IF NOT EXISTS aaaa DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 # 删库
 drop database <数据库名>;
-
 ```
 
 更多指令参考[mysql指南](https://www.runoob.com/mysql/mysql-tutorial.html)

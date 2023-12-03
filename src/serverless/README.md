@@ -4,6 +4,7 @@
 - [solid](https://learnsolid.cn/)
 - [rax-serveless实践](https://mp.weixin.qq.com/s/Hj1Py3_CNedxq0ZAy51Qqw)
 - [Node.js Serverless助力双11](https://mp.weixin.qq.com/s/l38ZhVP1RboOEsJI1lUHJQ)
+- [云函数平台-val town](https://www.val.town/)
 
 ## 名词解释
 

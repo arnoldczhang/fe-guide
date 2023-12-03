@@ -66,6 +66,26 @@ git branch -r --contains commitID
 ### git-reset
 [reset还是revert](https://zhuanlan.zhihu.com/p/137856034)
 
+### git-mv
+
+> 暂存区改文件名（mac不识别文件名大小写，可以试这个方法）
+
+https://www.runoob.com/git/git-mv.html
+
+
+
+### git-rebase
+
+> git rebase -i start end
+
+[Git 合并多个 commit](https://cloud.tencent.com/developer/article/1690638)
+
+
+
+注：cherry-pick实测更好用
+
+
+
 ---
 
 ## github
@@ -73,4 +93,5 @@ git branch -r --contains commitID
 - [github-action](http://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html)
 - [从原项目合分支到fork项目](https://segmentfault.com/q/1010000004228020)
 - [facebook版本管理工具](https://sapling-scm.com/docs/introduction/getting-started/)
+- [集成chatgpt到git action](https://github.com/umijs/umi/pull/10779/files)
 
