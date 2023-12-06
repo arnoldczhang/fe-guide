@@ -29,6 +29,7 @@
 - [在线设计-canva](https://www.canva.cn/)
 - [stdf-svelte+tailwind组件库](https://github.com/dufu1991/stdf)
 - [免费icon库-iconbuddy](https://iconbuddy.app/ant-design)
+- [金蝶-设计规范](https://kingdee.design/)
 
 ### 各种案例
 
@@ -1406,6 +1407,20 @@ background-clip: text;
 -webkit-text-fill-color: rgba(0,0,0,0);
 -webkit-box-decoration-break: clone;
 ```
+
+### form-sizing
+
+> 自适应文本框
+
+```css
+textarea {
+    form-sizing: normal;
+}
+```
+
+
+
+
 
 ---
 
