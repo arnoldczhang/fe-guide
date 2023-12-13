@@ -303,5 +303,3 @@ alter table 表名 convert to character set utf8mb4 COLLATE utf8mb4_bin;
 ### spl
 
 > sql擅长查询，spl擅长计算，参考：[esProc](https://github.com/SPLware/esProc)，
-
-
