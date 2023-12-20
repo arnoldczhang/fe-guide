@@ -1129,11 +1129,12 @@ border: 0 - 边框宽度为0，会渲染，占内存
 
 #### sticky
 
-> 会创建一个层叠上下文，并“固定”在离他最近的具有“滚动机制”的父元素上。
+> 1. 会创建一个层叠上下文，并“固定”在离他最近的具有“滚动机制”的父元素上（中间不能有任何层级是 overflow: auto 的）
+> 2. 父元素需要有滚动空间（高度要大于 sticky 的元素）
 > 
 > Q：何为【具有“滚动机制”】？
 > 
-> A：该元素的overflow值是**hidden、scroll、auto或overlay**
+> A：该元素的 overflow 值是**hidden、scroll、auto或overlay**
 
 ### cross-fade
 
