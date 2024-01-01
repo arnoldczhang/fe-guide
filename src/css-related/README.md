@@ -29,6 +29,7 @@
 - [在线设计-canva](https://www.canva.cn/)
 - [stdf-svelte+tailwind组件库](https://github.com/dufu1991/stdf)
 - [免费icon库-iconbuddy](https://iconbuddy.app/ant-design)
+- [金蝶-设计规范](https://kingdee.design/)
 
 ### 各种案例
 
@@ -1128,11 +1129,12 @@ border: 0 - 边框宽度为0，会渲染，占内存
 
 #### sticky
 
-> 会创建一个层叠上下文，并“固定”在离他最近的具有“滚动机制”的父元素上。
+> 1. 会创建一个层叠上下文，并“固定”在离他最近的具有“滚动机制”的父元素上（中间不能有任何层级是 overflow: auto 的）
+> 2. 父元素需要有滚动空间（高度要大于 sticky 的元素）
 > 
 > Q：何为【具有“滚动机制”】？
 > 
-> A：该元素的overflow值是**hidden、scroll、auto或overlay**
+> A：该元素的 overflow 值是**hidden、scroll、auto或overlay**
 
 ### cross-fade
 
@@ -1406,6 +1408,20 @@ background-clip: text;
 -webkit-text-fill-color: rgba(0,0,0,0);
 -webkit-box-decoration-break: clone;
 ```
+
+### form-sizing
+
+> 自适应文本框
+
+```css
+textarea {
+    form-sizing: normal;
+}
+```
+
+
+
+
 
 ---
 

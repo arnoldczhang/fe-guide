@@ -23,23 +23,21 @@
  * }]
  * 
  */
-function fn(arr, order = ['province', 'city',' county']) {
+function transfer(arr = [], orderList = ['province', 'city', 'county']) {
   return arr.reduce((res, pre) => {
-    let tmp = res;
-    order.forEach((o) => {
-      const key = pre[o];
-      const child = tmp.find((el) => el.name === key);
-      if (child) {
-        tmp = child.children;
-      } else {
-        const newChild = {
-          key: o,
-          name: pre[o],
+    let tempRes = res;
+    orderList.forEach((order) => {
+      let temp = pre[order];
+      let item = tempRes.find(({ name }) => name === temp);
+      if (!item) {
+        item = {
+          key: order,
+          name: temp,
           children: [],
         };
-        tmp.push(newChild);
-        tmp = newChild.children;
+        tempRes.push(item);
       }
+      tempRes = item.children;
     });
     return res;
   }, []);

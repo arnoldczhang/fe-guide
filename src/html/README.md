@@ -3,11 +3,13 @@
 [TOC]
 
 ## 参考
+
 1. [html所有语义标签](https://blog.csdn.net/microcosmv/article/details/51644998)
 2. [html原生属性/元素](https://markodenic.com/html-tips/)
 3. [html前身-sgml](https://www.techtarget.com/whatis/definition/SGML-Standard-Generalized-Markup-Language#:~:text=SGML%20(Standard%20Generalized%20Markup%20Language "SGML")%20is%20a%20standard%20for%20how,It%20is%20metadata.)
 
 ## 目录
+
 <details>
 <summary>展开更多</summary>
 
@@ -24,9 +26,11 @@
 ## 答疑
 
 ### doctype
+
 告知浏览器的解析器用什么文档标准解析这个文档
 
 #### 分类
+
 BackCompat：怪异模式，浏览器使用自己的怪异模式解析渲染页面，默认值
 CSS1Compat：标准模式，浏览器使用W3C的标准解析渲染页面
 IE8Compat：近乎标准模式
@@ -96,18 +100,19 @@ IE8Compat：近乎标准模式
 ---
 
 ### rel
+
 > 大部分关于`rel`的介绍很久没更新
->
+> 
 > 权威文档建议直接看[MDN](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Link_types)
->
+> 
 > 也有关于[这方面](https://www.zhangxinxu.com/wordpress/2019/06/html-a-link-rel/)的整理
->
 
 #### alternate
+
 > 1. 下载优先级变为lowest
->
+> 
 > 2. 资源仅下载，不做渲染
->
+> 
 > 3. 如果含`title`属性且有值，则可以控制其渲染or不渲染
 
 **网站换肤**
@@ -136,36 +141,35 @@ document.querySelectorAll('link[title]').forEach((link) => {
 ```
 
 #### canonical
->
+
 > 指定某网站为规范网址，一般用来设置pc端
->
+> 
 > 移动端直接用alternate设置
->
 
 ```html
 <link rel="canonical" href="www.xx.com" />
 ```
 
 #### dns-prefetch
->
+
 > 1. 在用户点击链接之前，就进行dns查找
->
+> 
 > 2. 目前尚为实验属性
->
 
 ```html
 <link rel="dns-prefetch" href="www.xx.com" />
 ```
 
 #### import
+
 用于[web-component](https://developer.mozilla.org/en-US/docs/Web/Web_Components/HTML_Imports)
 
 #### noopener
->
+
 > 1. 通过`target="_blank"`打开的子页，可以操作主页的`window.opener.location`
->
+> 
 > 2. 任意修改location会导致主页跳转到不可控页面
->
+> 
 > 3. `rel="noopener"`，可以将子页的`window.opener`置 null
 
 **钓鱼攻击**
@@ -200,13 +204,12 @@ document.querySelectorAll('link[title]').forEach((link) => {
     <SCRIPT>window.opener.location.href ="http://google.com"</SCRIPT>
 </body>
 </html>
-
 ```
 
 #### norefferrer
->
+
 > 1. `rel=noopener`支持 chrome49 和 opera36，不支持火狐
->
+> 
 > 2. `norefferrer`可以兼容
 
 ```html
@@ -216,6 +219,7 @@ document.querySelectorAll('link[title]').forEach((link) => {
 ---
 
 ## 移动端开发经验
+
 [参考](./移动端开发经验.md)
 
 ---
@@ -250,8 +254,6 @@ const container = document.querySelector('#app');
 container.append(content);
 </script>
 ```
-
-
 
 ### picture
 
@@ -300,8 +302,6 @@ container.append(content);
 </picture>
 ```
 
-
-
 ### 原生popover
 
 > chrome114及以上
@@ -313,10 +313,6 @@ container.append(content);
       <p>I am a popover with more information.<p>
     </div>
 ```
-
-
-
-
 
 ---
 
@@ -342,11 +338,11 @@ container.append(content);
   <!-- 文档内容 -->
   <article>
     <!-- 文档头部区域 -->
-  	<header></header>
+      <header></header>
     <!-- 文档区域 -->
     <section>
       <!-- 段落 -->
-		  <p>
+          <p>
         <!-- 为表单元素定义标注 -->
         <label></label>
         <input />
@@ -374,13 +370,8 @@ container.append(content);
 </main>
 ```
 
-
-
 ---
-
-
 
 ## htmx
 
 [强化版html](https://htmx.org/reference/)
-

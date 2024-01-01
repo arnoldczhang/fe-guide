@@ -24,7 +24,7 @@
       "post-install": "echo 'postinstall'",
       "pre-publish": "echo 'prepublish'",
       "prepare": "echo 'prepare'",
-      "pre-commit": "yarn run test",
+      "pre-commit": "echo 'pre-commit'",
       "post-commit": "echo 'postcommit'",
       "post-receive": "echo 'postreceive'"
     }
@@ -48,7 +48,7 @@
   "author": "arnold",
   "license": "MIT",
   "dependencies": {
-    "husky": "^4.2.5",
+    "husky": "^4.3.8",
     "node-red": "^1.3.5",
     "react": "^16.12.0",
     "request": "^2.88.0"

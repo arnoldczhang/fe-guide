@@ -885,6 +885,47 @@ vite3.0之后：优先爬取静态import（这个3.0能获取）给浏览器，�
 
 差异：10秒~
 
+
+
+### 配置
+
+### 本地调试
+
+> 类似npm link，这个做法是直接本地内联指定文件夹
+
+```js
+import { defineConfig } from 'vite'
+import path from 'path'
+
+const alias = {
+  '~': path.join(__dirname, 'src'),
+  '@': path.resolve(__dirname, './src'),
+}
+
+if (process.env.XXX_ENV === 'local') {
+  alias['npm包名'] = path.join('你的本地文件夹路径', './src')
+}
+
+export default defineConfig({
+  // ...省略很多配置
+  resolve: { alias },
+})
+
+```
+
+#### vue多版本问题
+
+> 本地调试且用到 provider/inject 时会出现类似问题（因为注入会依赖 currentVnodeInstance）
+
+```js
+export default defineConfig({
+  // ...省略很多配置
+  resolve: {
+    dedupe: ['vue']
+  },
+})
+```
+
 ---
 
 ## 好用的npm

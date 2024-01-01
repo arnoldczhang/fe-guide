@@ -8,7 +8,7 @@
 <summary>展开更多</summary>
 
 * [`基本操作&相关常识`](#基本操作&相关常识)
-* [`package.json属性`](#package.json属性)
+* [`package.json属性`](#package.json 属性)
 * [`package-lock`](#package-lock.json)
 * [`npm&yarn`](#两者差异)
 * [`npm安装原理`](#npm安装原理)
@@ -105,34 +105,41 @@
 ### 命令
 
 #### 初始化
+
 - npm init
 - yarn init
 
 #### 一键安装
+
 - npm i
 - npm install
 - yarn
 
 #### 指定安装
+
 - npm i xx -save/-save-dev
 - npm install xx -save/-save-dev
 - yarn add xx 空/-dev/-optional/-peer
 
 #### 卸载
+
 - npm uninstalll xx[@version]
 - yarn remove xx[@version]
 
 #### 更新
+
 - npm update xx[@version]
   + `npm升级会根据package的符号配置，不会直接更新到最新版`
 - yarn upgrade xx[@version]
   + `yarn直接升到最新版`
 
 #### 锁版本文件
+
 - yarn.lock
 - package-lock.json
 
 #### 本地调试
+
 - npm link
 
 #### 普通发布
@@ -166,17 +173,13 @@ npm publish --tag beta
 
 - npm owner rm 用户名 项目名
 
-
-
 ### 安全性
 
 **[socket-npm](https://socket.dev/blog/introducing-safe-npm)**
 
 > 保护开发人员在使用 npm install 时免受恶意软件、拼写错误、安装脚本、抗议软件和遥测等方面的影响。
->
+> 
 > 暂不支持yarn和pnpm
-
-
 
 ---
 
@@ -186,6 +189,8 @@ npm publish --tag beta
   - webpack 或 rollup 打包时会优先引入 module 对应的文件
   - 主要用于做依赖分析，或 npm 包的复用
   - module 属性是非标准属性，可参考 [pr](https://github.com/browserify/resolve/pull/187)
+* resolutions
+  * 锁定指定依赖的版本
 
 ---
 
@@ -232,14 +237,17 @@ yarn：直接输出安装结果，报错日志清晰
 #### 1.preinstall
 
 - 执行 npm install 命令前，npm 会自动执行 npm preinstall 钩子，可以做些什么
+
 - ```json
-	"scripts": {
-	    "preinstall": "node ./bin/preinstall.js"
-	}
+    "scripts": {
+        "preinstall": "node ./bin/preinstall.js"
+    }
   ```
-#### 2.确定首层依赖模块
+  
+  #### 2.确定首层依赖模块
 
 - `dependencies`
+
 - `devDependencies`
 
 #### 3.获取模块
@@ -265,7 +273,6 @@ yarn：直接输出安装结果，报错日志清晰
 ### npm 模块安装机制
 
 1. 查询 node_modules 是否已存在
-
 - 存在，不重新安装
 - 不存在
   + npm 向 registery 查询模块压缩包网址
@@ -344,7 +351,7 @@ npm run serve -- params  // 将params参数添加到process.env.argv数组中
 ## npm-link
 
 > 假设存在 npm 包 A 开发目录，项目 B，项目 B 引用 npm 包 A，
->
+> 
 > 1. cd 到 npm 包 A 的目录，`npm link`，这样全局的 npm 包 A 就引用当前开发目录
 > 2. cd 到项目 B，`npm link npm包A`
 
@@ -379,7 +386,7 @@ npm view xxx versions
 ### pnpm --filter
 
 > 简版monorepo，参考[基于 pnpm + changesets 的 monorepo 最佳实践](https://juejin.cn/post/7181409989670961207#heading-5)
->
+> 
 > Git: [monorepo-example](https://github.com/luhc228/pnpm-changsets-monorepo-example)
 
 #### 目录结构
@@ -455,8 +462,6 @@ packages:
 }
 ```
 
-
-
 ### 使用changeset管理版本&发布
 
 ```json
@@ -474,8 +479,6 @@ packages:
 }
 ```
 
-
-
 #### 发beta版
 
 ```sh
@@ -490,15 +493,9 @@ pnpm changeset version
 pnpm changeset publish
 ```
 
-
-
-
-
 ### pnpm publish
 
 [自动更新版本号](https://github.com/umijs/umi/pull/10719/files#diff-32824c984905bb02bc7ffcef96a77addd1f1602cff71a11fbbfdd7f53ee026bb)
-
-
 
 ### pnpm link
 
@@ -528,12 +525,10 @@ npm ci 和 npm i 的区别如下：
 - 如果 node_modules 文件夹已存在，ci 在开始安装前会删掉该文件夹
 - ci 安装过程，不涉及 package-lock.json 和 package.json 的改动
 
-
-
 ### npm-shrinkwrap.json
 
 > npm5 版本之前对 package-lock.json 的兼容，
->
+> 
 > 主要用于做精确的版本控制（依赖包、依赖包的依赖包），避免多人协作出现不同依赖包版本冲突问题
 
 ---
@@ -541,9 +536,11 @@ npm ci 和 npm i 的区别如下：
 ## yarn&pnpm
 
 ### npm3+和yarn
+
 - 依赖半扁平（同一个包不同版本，包的安装位置不确定，依据package.json的顺序）
 
 ### pnpm
+
 - 依赖完全扁平（包以软链形式链接到.pnpm包下扁平的各版本包）
 - 扁平化算法简单很多，节省时间
 - 当依赖了同一个包的不同版本时，只对变更的文件进行更新，不需要重复下载没有变更的部分

@@ -30,16 +30,16 @@
  *    'e.g.h: aaa',
  * ]
  */
-const transform = (obj, cach = [], prefix = '') => {
+function transfer(obj = {}, cach = {}, cachKey = []) {
   Object.entries(obj).forEach(([key, value]) => {
-    if (Array.isArray(value) || (typeof value === 'object' && value)) {
-      transform(value, cach, `${prefix ? `${prefix}.${key}` : key}`);
-    } else {
-      cach.push(`${prefix ? `${prefix}.${key}` : key}: ${value}`)
+    const current = cachKey.concat(key);
+    if (value && typeof value === 'object') {
+      return transfer(value, cach, current);
     }
+    cach[current.join('.')] = value;
   });
   return cach;
-};
+}
 
 console.log(transform(
   {
