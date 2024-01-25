@@ -4,7 +4,7 @@
   - https://www.zhihu.com/question/41922432
 
 ## 原理
-  - ast搜索
+  - [ast搜索](https://sorrycc.com/code-extraction/)
   - tree shake（DCE）：找到需要的代码，灌入最终的结果 - 消灭不可能执行的代码
   - 传统DCE：找到执行不到的代码，从 AST 里清除 - 消灭没有用到的代码
 
