@@ -226,6 +226,7 @@ node --inspect-brk dist/app.js
 - [拖拽库-vue-draggable-plus](https://alfred-skyblue.github.io/vue-draggable-plus/)
 
 - [语言检测-tinyld](https://github.com/komodojp/tinyld)
+- [fxs-文件系统api](https://github.com/humanwhocodes/fsx)
 
 ### eggjs
 
