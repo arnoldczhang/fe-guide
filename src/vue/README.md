@@ -914,7 +914,7 @@ export default defineConfig({
 ```
 
 #### vue多版本问题
-
+vue指定版本
 > 本地调试且用到 provider/inject 时会出现类似问题（因为注入会依赖 currentVnodeInstance）
 
 ```js
