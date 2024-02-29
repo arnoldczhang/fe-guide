@@ -926,6 +926,19 @@ export default defineConfig({
 })
 ```
 
+#### 非本机访问
+```js
+export default defineConfig({
+  // ...省略很多配置
+  server: {
+    host: '0.0.0.0',
+  },
+})
+```
+
+如果有登录问题，本地记得配host
+> sudo vi /etc/hosts
+
 ---
 
 ## 好用的npm
