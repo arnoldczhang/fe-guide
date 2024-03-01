@@ -914,7 +914,7 @@ export default defineConfig({
 ```
 
 #### vue多版本问题
-
+vue指定版本
 > 本地调试且用到 provider/inject 时会出现类似问题（因为注入会依赖 currentVnodeInstance）
 
 ```js
@@ -925,6 +925,19 @@ export default defineConfig({
   },
 })
 ```
+
+#### 非本机访问
+```js
+export default defineConfig({
+  // ...省略很多配置
+  server: {
+    host: '0.0.0.0',
+  },
+})
+```
+
+如果有登录问题，本地记得配host
+> sudo vi /etc/hosts
 
 ---
 

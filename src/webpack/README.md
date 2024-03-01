@@ -1498,11 +1498,30 @@ debug: Boolean 启用debug 用于故障排查。默认 false
 
 ## 热更新
 
+- [hmr规范](https://github.com/FredKSchott/esm-hmr)
+- [原理-译文](https://sorrycc.com/hot-module-replacement-is-easy/)
+- [原理-原文](https://bjornlu.com/blog/hot-module-replacement-is-easy)
+
 1. 利用 webpack-dev-server（express），建立 HMR server
 2. 页面 dev-server/client 和 HMR server 建立 websocket 通信
 3. webpack 会以当前修改文件为入口，重新编译所有涉及到的依赖，生成的新代码，通过 HMR server 发送给页面
 4. 页面根据 socket 获取的 chunk 头进行比较，获知需要更新的模块
 5. 模块根据 module.hot.accpet，判断能否更新，若无法更新，强刷页面
+
+`import.meta.hot`
+
+```js
+import { add } from './utils.js'
+import { value } from './stuff.js'
+if (import.meta.hot) {
+  // 自接受模块更新
+  import.meta.hot.accept(...)
+
+  // 依赖的子模块更新&回调
+  import.meta.hot.accept('./utils.js', ...)
+  import.meta.hot.accept(['./stuff.js'], ...)
+}
+```
 
 ---
 
