@@ -357,6 +357,13 @@ npm run serve -- params  // 将params参数添加到process.env.argv数组中
 
 ---
 
+## npm-list
+
+**查看包的父依赖、上层依赖**
+npm list 包名 --depth=1000
+
+---
+
 ## npm-view
 
 **查看包所有版本**
