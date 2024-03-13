@@ -1700,6 +1700,17 @@ mini-map .screen-image .canvas {
   }
   ```
 
+- grid
+
+```css
+/* 父模块固定宽度，用在子模块间距16px，进行完美4等分 */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(10px, 1fr));
+  gap: 16px;
+}
+```
+
 ### 九宫格
 
 - grid
