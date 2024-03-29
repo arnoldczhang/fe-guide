@@ -3,6 +3,7 @@
 [TOC]
 
 ## 参考
+
 - [lighthouse指南](https://juejin.im/post/5dca05f45188250c643b7d76#heading-23)
 - [lighthouse-with-puppeteer](https://medium.com/@jovd/lighthouse-with-puppeteer-5dc4e3245eed)
 - [tesseract.js训练模型](https://github.com/naptha/tessdata)
@@ -116,8 +117,6 @@ export = MyAudit;
 - 最佳实践
 - 无障碍
 
-
-
 ---
 
 ## lighthouse封装
@@ -130,6 +129,7 @@ export = MyAudit;
 **throttlingMethod**
 
 [参考](https://stackoverflow.com/questions/49899765/how-to-disable-throttling-in-lighthouse-programmaticaly/55850374#55850374)
+
 > 节流方式，有 provided、devtools、simulate，provided表示不节流
 
 ```js
@@ -146,6 +146,7 @@ export = MyAudit;
 ```
 
 含义看代码
+
 ```js
 // node_modules/lighthouse/lighthouse-core/computed/load-simulator.js
 
@@ -184,6 +185,7 @@ switch (throttlingMethod) {
 ---
 
 ## puppeteer
+
 [踩坑指南](https://juejin.im/post/5b99c9ece51d450e51625630)
 
 不装chromium指令
@@ -197,6 +199,7 @@ npm install puppeteer --ignore-scripts
 ```
 
 ### 检查代码覆盖率
+
 ```js
 const puppeteer = require('puppeteer');
 
@@ -230,10 +233,11 @@ async function checkCoverage(url) {
 ```
 
 ### 基于puppeteer的自动化测试
+
 [参考](../node/puppeteer/test-case/README.md)
 
-
 ## lighthouse-plugin
+
 [chrome协议总览](https://vanilla.aslushnikov.com/)
 [自定义gatherer-参考](https://www.aymen-loukil.com/en/blog-en/google-lighthouse-custom-audits/)
 [自定义gatherer-代码](https://github.com/AymenLoukil/Google-lighthouse-custom-audit)
@@ -293,8 +297,6 @@ initLighthouseConfig: (config: ICO) => ({
 }),
 ```
 
-
-
 ---
 
 ## rrweb
@@ -302,9 +304,9 @@ initLighthouseConfig: (config: ICO) => ({
 [屏幕录制rrweb](https://mp.weixin.qq.com/s/5RUjvKOBjqX5Btrse-C3Jg)
 
 > 监听dom变更，模拟屏幕录制。
->
+> 
 > 核心包：
->
+> 
 > - rrweb
 > - rrweb-snapshot
 > - rrweb-player
@@ -334,3 +336,18 @@ replayer.play(); // 播放
 
 [LCP、FID等指标对应的优化手段](https://mp.weixin.qq.com/s?__biz=Mzk0MDMwMzQyOA==&mid=2247497549&idx=1&sn=61d32d8d207806a5889eb60ceb1b4a99&scene=21#wechat_redirect)
 
+---
+
+## 指标
+
+### INP
+
+> 交互到下一次绘制（Interaction to Next Paint）
+
+[what-is-inp](https://blog.sentry.io/what-is-inp/)
+
+
+
+**navigator.scheduling.isInputPending**
+
+> 仅chromium浏览器支持，检测当前用户是否正尝试和页面交互
