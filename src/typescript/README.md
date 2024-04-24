@@ -3,13 +3,14 @@
 [TOC]
 
 ## 参考
+
 - [d.ts文件](https://mp.weixin.qq.com/s/xWcmE7F_4WKBs2FQlDP6jg)
 - [vue+ts实践](https://zhuanlan.zhihu.com/p/40322215)
 - [TypeScript 2.8下的终极React组件模式](https://juejin.im/post/5b07caf16fb9a07aa83f2977)
 - [巧用ts](https://zhuanlan.zhihu.com/p/39620591)
 
-
 ## 目录
+
 <details>
 <summary>展开更多</summary>
 
@@ -42,6 +43,7 @@
 ---
 
 ## 基础类型
+
 - Number
 - String
 - 元组
@@ -54,6 +56,7 @@
 - never（其他类型的子集，表示从不会出现的值）
 
 ### 元组
+
 ```ts
 // 1. 数组可以定义各元素不同类型
 // 2. 初始顺序必须和定义类型一致
@@ -62,6 +65,7 @@ let arr: [string, number] = ['a', 123];
 ```
 
 ### never
+
 > 当一个函数一定不会执行`return`，即中途会抛错时，用never，否则别用
 
 ```ts
@@ -76,8 +80,9 @@ b = a; // 这样不行
 ```
 
 ### enum
+
 > enum 枚举名称{ key1=value1, key2=value2 }
->
+> 
 > 1. key不能是数字
 
 ```ts
@@ -105,11 +110,13 @@ HttpCode[200]
 ```
 
 ### any
+
 > 1. 可以赋值给任意类型
 > 2. 可用unknown替代
 > 3. 这是最后选择
 
 ### unknown
+
 > 1. 更安全的any
 > 2. 仅能赋值给unknown、any
 > 3. 没有任何属性、方法
@@ -135,13 +142,32 @@ function format2(value: unknown) {
 }
 ```
 
-
-
 ---
 
 ## 常用语法
 
+### omit
+
+```ts
+interface Props {
+  a: string;
+  b: string;
+  c: string;
+}
+
+interface Props1 extends Omit<Props, 'c'> {
+  e: string;
+}
+```
+
+### pick
+
+```ts
+
+```
+
 ### in
+
 > 1. 遍历对象key
 > 2. 后面的值必须是string、number、symbol
 
@@ -157,6 +183,7 @@ type newP = {
 ```
 
 ### 让某个接口中的所有属性变为可选
+
 ```ts
 interface Person {
   name: string;
@@ -170,6 +197,7 @@ type PartialPerson = Partial<Person>
 ```
 
 ### 让某一种接口的子类型都可以为 null
+
 ```ts
 type Nullable<T> = {
   [P in keyof T]: T[P] | null;
@@ -177,6 +205,7 @@ type Nullable<T> = {
 ```
 
 ### 给TS类型做标记（提示副标题展示）
+
 ```ts
 /** A cool guy. */
 interface Person {
@@ -186,6 +215,7 @@ interface Person {
 ```
 
 ### typeof
+
 ```ts
 const defaultOption = {
   timeout: 500
@@ -217,6 +247,7 @@ type Dinner3 = {
 ```
 
 ### 类型断言
+
 > 提供一个更加精确的类型范围
 
 **方式一**
@@ -236,6 +267,7 @@ img.src
 ```
 
 ### 查找类型
+
 ```ts
 interface Person {
   addr: {
@@ -247,6 +279,7 @@ interface Person {
 ```
 
 ### keyOf
+
 > 1. 获取类型所有属性名，构成联合类型
 > 2. 无法直接对值做操作，或者套一层typeof
 
@@ -298,6 +331,7 @@ type key = keyof typeof obj; // 'name' | 'age' | 'gender'
 ```
 
 ### 查找类型+keyOf
+
 ```ts
 interface API {
   '/user': { name: string },
@@ -309,6 +343,7 @@ const get = <URL extends keyof API>(url: URL): Promise<API[URL]> => {
 ```
 
 ### deepReadOnly+keyOf
+
 ```ts
 type DeepReadonly<T> = {
   readonly [P in keyof T]: DeepReadonly<T[P]>;
@@ -321,6 +356,7 @@ b.foo = 'xxxxxx'; // wrong
 ```
 
 ### namespace
+
 ```ts
 function test () {}
 
@@ -332,6 +368,7 @@ namespace test {
 ### 高级类型
 
 > 条件类型
+
 ```ts
 // T extends U ? X : Y -> 如果 T 包含 U 的所有属性，则返回 X，否则返回 Y
 function process<T extends string | null>(
@@ -346,6 +383,7 @@ process().toUpperCase() // error
 ```
 
 ### Record
+
 > 类似enum
 
 ```ts
@@ -359,6 +397,7 @@ const AnimalMap: Record<AnimalType, AnimalDescription> = {
 ```
 
 ### 标准注释
+
 ```ts
 /**
  * 一个方法：生成错误提示信息
@@ -381,6 +420,7 @@ export function genErrMsg (message: string, code: number | string, type?: ('demo
 ```
 
 ### 其他骚操作
+
 ```ts
 type StringOrNumber = string | number;  
 type Text = string | { text: string };  
@@ -392,6 +432,7 @@ type Tree<T> = T | { left: Tree<T>, right: Tree<T> };
 ```
 
 ### is推断
+
 ```ts
 function isAdmin(user: Person): user is Admin {
   return user.hasOwnProperty('role')
@@ -404,6 +445,7 @@ if (isAdmin(user)) {
 ```
 
 ### 函数重载
+
 ```ts
 // 根据第二个入参，决定返回值的类型
 function filterPersons(
@@ -447,6 +489,7 @@ swap<string,number>('a', 1);
 ```
 
 ### 类型保护
+
 > 几个关键词可以做类型保护：typeof、instanceof、自定义
 
 ```ts
@@ -568,6 +611,7 @@ class CreateUserController extends BaseController {
 ### I: Interface Segregation Principle
 
 依赖倒置原则告诉我们要面向接口编程
+
 ```js
 interface IMailService {
   // refering to concrete "PrettyEmail" and "ShortEmailTransmissionResult" from an abstraction
@@ -589,7 +633,7 @@ class CreateUserController extends BaseController {
 
   protected executeImpl (): void {
     // handle request
-    
+
     // send mail
     const mail = new Mail(...)
     this.emailService.sendMail(mail);
@@ -598,8 +642,6 @@ class CreateUserController extends BaseController {
 ```
 
 ### D: Dependency Inversion Principle
-
-
 
 ---
 
@@ -613,14 +655,10 @@ import * as ts from "TypeScript";
 const program = ts.createProgram(fileNames, options); // 创建一个 program 应用
 
 const { emitSkipped, diagnostics } = program.emit();
-
 ```
-
-
 
 ### 增量编译
 
 incremental
 
 [ts3.4-增量编译](https://mp.weixin.qq.com/s/830njEJhNGSSvYO7zHXg8A)
-
