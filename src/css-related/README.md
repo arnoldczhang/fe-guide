@@ -30,6 +30,7 @@
 - [stdf-svelte+tailwind组件库](https://github.com/dufu1991/stdf)
 - [免费icon库-iconbuddy](https://iconbuddy.app/ant-design)
 - [金蝶-设计规范](https://kingdee.design/)
+- [svg转css](https://www.zhangxinxu.com/sp/svgo/)
 
 ### 各种案例
 
@@ -1205,6 +1206,15 @@ font-variant-east-asian: traditional;
 }
 ```
 
+**弧度阴影**
+[参考](./两栏布局-阴影.html)
+
+```css
+.drop {
+  filter: drop-shadow(0 0 3px #999);
+}
+```
+
 ### accent-color
 
 > 设置 checkbox 或 radio 被选中时的颜色
@@ -1481,8 +1491,6 @@ mini-map .screen-image .canvas {
 
 > 悬挂标点是否换行
 
-
-
 ### 单位
 
 [看图说话，新 CSS 单位 “svh” “dvh” 原来如此 - 掘金](https://juejin.cn/post/7172332295058751496)
@@ -1492,8 +1500,6 @@ mini-map .screen-image .canvas {
 - svh
 
 - lvh
-
-
 
 ---
 
