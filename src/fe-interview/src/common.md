@@ -1592,7 +1592,7 @@ arr instanceof Array; // false
   + offsetTop、offsetLeft、offsetWidth、offsetHeight
   + scrollTop、scrollLeft、scrollWidth、scrollHeight
   + clientTop、clientLeft、clientWidth、clientHeight
-  + width、height
+  + width、height（大部分情况等同offsetWidth、offsetHeight，除非元素旋转了）
   + getComputedStyle()
   + getBoundingClientRect()
   + window.scrollX、window.scrollY
