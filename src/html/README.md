@@ -338,7 +338,7 @@ container.append(content);
   <!-- 文档内容 -->
   <article>
     <!-- 文档头部区域 -->
-      <header></header>
+    <header></header>
     <!-- 文档区域 -->
     <section>
       <!-- 段落 -->
