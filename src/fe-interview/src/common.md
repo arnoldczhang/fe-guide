@@ -86,6 +86,7 @@
 * [`拖拽`](#拖拽)
 * [`Promise.allSettled`](#Promise.allSettled)
 * [`abort`](#abort)
+* [`特性与属性`](#特性与属性)
 
 **进阶 js**
 
@@ -2375,6 +2376,8 @@ function fun(num){
 
 [参考](https://blog.csdn.net/sinat_34719507/article/details/54430555)
 
+#### 匹配emoji
+/\p{Extended_Pictographic}/gu
 
 
 ---
@@ -3917,3 +3920,9 @@ button.addEventListener("click", async () => {
   });
 });
 ```
+
+---
+
+### 特性与属性
+区别：值类型、大小写、反射（getter/setter）、保留词、值校验
+[参考](https://mp.weixin.qq.com/s/Wfm34UmEh_6sd-YoSx1bPw)
