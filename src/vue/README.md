@@ -16,6 +16,7 @@
 - [vue全资源搜索](https://bestofvue.com/)
 - [vue3-后台管理系统示例1](http://admin.spicyboy.cn/#/login)
 - [vue中的设计模式](https://mp.weixin.qq.com/s?__biz=Mzg3ODAyNDI0OQ==&mid=2247490496&idx=1&sn=23503fdf27e5254daab8c157e7246752&scene=21#wechat_redirect)
+- [vue编译成js的过程](https://mp.weixin.qq.com/s/0Sd3SPgd4IknA1Y8HyfdXw)
 
 ## 目录
 

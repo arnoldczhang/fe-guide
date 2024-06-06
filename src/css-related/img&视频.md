@@ -56,6 +56,12 @@ html的`<video>`仅支持webm和MP4，区别在于：
 webm - 支持透明
 mp4 - 没有透明通道
 
+### WebCodecs
+> chrome 94+
+>
+> 利用浏览器自带的 FFmpeg，效率高于 webassembly
+
+
 ---
 
 ### PAG

@@ -28,3 +28,5 @@
 - 表象浅拷贝，实则选择性的深拷贝
 
 
+## 竞品
+[mutative](https://github.com/unadlib/mutative)
