@@ -49,6 +49,7 @@
 - [自适应文本头像](https://segmentfault.com/a/1190000042675552)
 - [chrome官方css教程](https://web.dev/learn/css/lists/)
 - [各种边框动画](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247495778&idx=1&sn=e96c01b620815fa4e5c168d24598362e&scene=21#wechat_redirect)
+- [在线生成loading](https://www.loadership.com/)
 
 ### 各种属性
 
