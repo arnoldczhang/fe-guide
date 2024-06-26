@@ -4,6 +4,7 @@
 
 - [react16、vue2、vue3 diff算法对比](https://juejin.cn/post/7116141318853623839)
 - [vue3-管理端开箱即用1](https://github.com/fantastic-admin/basic)
+- [200行实现diff](https://lazamar.github.io/virtual-dom/)
 
 ## 目录
 
