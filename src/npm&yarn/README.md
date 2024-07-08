@@ -518,6 +518,9 @@ pnpm link --global
 pnpm link --global <包名>
 ```
 
+### pnpm + nx + bundle-status
+[腾讯文档-多仓库构建](https://mp.weixin.qq.com/s/JutlJ2k4XFM2r1MgeMcDgQ)
+
 ---
 
 ## npm-ci
