@@ -1389,6 +1389,22 @@ html::before {
 
 [css字体](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247494195&idx=1&sn=96e613dbd336f603b4fa217751684b8b&chksm=ce2689c5f95100d33d283599b841f8850e8dcd7c2015742e721dc37efbfccbbad8cd5a53ab23&token=805012839&lang=zh_CN&scene=21#wechat_redirect)
 
+**加载规则**
+
+分3个阶段：
+- 阻塞期：下载字体，用到该字体的地方展示空白，直到加载完
+- 交换期：先用后备字体展示（而不是展示空白），加载完后替换
+- 失败期：字体加载失败，展示后备字体
+
+通过以下手段规避阻塞期：
+
+```css
+@font-face {
+  font-display: swap;
+}
+```
+
+
 **使用建议**
 
 - 尽量使用系统自带字体（加载性能考虑）
