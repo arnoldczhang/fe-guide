@@ -225,6 +225,7 @@
 
 * [`utm字段`](#utm字段)
 * [`鸿蒙系统`](#鸿蒙系统)
+* [`检查是否开启大小写`](#检查是否开启大小写)
 
 </details>
 
@@ -3926,3 +3927,17 @@ button.addEventListener("click", async () => {
 ### 特性与属性
 区别：值类型、大小写、反射（getter/setter）、保留词、值校验
 [参考](https://mp.weixin.qq.com/s/Wfm34UmEh_6sd-YoSx1bPw)
+
+---
+
+### 检查是否开启大小写
+
+```js
+document.querySelector('input[type=password]').addEventListener('keyup', function (keyboardEvent) {
+    const capsLockOn = keyboardEvent.getModifierState('CapsLock');
+    if (capsLockOn) {
+        // Warn the user that their caps lock is on?
+    }
+});
+```
+
