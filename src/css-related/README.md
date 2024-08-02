@@ -322,6 +322,38 @@ document.link.disabled = false;
 }
 ```
 
+### 多元素超出省略
+
+```html
+<section class="container">
+  <span class="prefix">aaa</span>
+  <span class="content">bbb</span>
+  <span class="suffix">ccc</span>
+</section>
+
+<style>
+.container {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100px; /* 必须 */
+  .content {
+    flex-shrink: 0;
+  }
+  .prefix {
+    flex-shrink: 0;
+  }
+  .suffix {
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+</style>
+```
+
 ### 普通元素代替submit按钮（还有outline）
 
 ```css
