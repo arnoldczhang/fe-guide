@@ -105,6 +105,11 @@ node --inspect-brk dist/app.js
 - [终端滚动菜单-console-menu](https://www.npmjs.com/package/console-menu)
 
 - [自动生成依赖结构-dependency-cruiser](https://github.com/sverweij/dependency-cruiser)
+
+- [现代版lodash-es-toolkit](https://github.com/toss/es-toolkit)
+
+- [文字转语音-vits-web](https://github.com/diffusion-studio/vits-web)
+- [抛洒纸屑效果-canvas-confetti](https://www.kirilv.com/canvas-confetti/)
   
   * ```
     npm install -g verdaccio

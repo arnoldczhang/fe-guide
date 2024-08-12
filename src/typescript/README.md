@@ -8,6 +8,7 @@
 - [vue+ts实践](https://zhuanlan.zhihu.com/p/40322215)
 - [TypeScript 2.8下的终极React组件模式](https://juejin.im/post/5b07caf16fb9a07aa83f2977)
 - [巧用ts](https://zhuanlan.zhihu.com/p/39620591)
+- [ts类型系统](https://mp.weixin.qq.com/s/UwFjEonXUxx6oSKm3jiRag)
 
 ## 目录
 

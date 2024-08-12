@@ -322,6 +322,38 @@ document.link.disabled = false;
 }
 ```
 
+### 多元素超出省略
+
+```html
+<section class="container">
+  <span class="prefix">aaa</span>
+  <span class="content">bbb</span>
+  <span class="suffix">ccc</span>
+</section>
+
+<style>
+.container {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100px; /* 必须 */
+  .content {
+    flex-shrink: 0;
+  }
+  .prefix {
+    flex-shrink: 0;
+  }
+  .suffix {
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+</style>
+```
+
 ### 普通元素代替submit按钮（还有outline）
 
 ```css
@@ -1388,6 +1420,22 @@ html::before {
 ### font-family
 
 [css字体](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247494195&idx=1&sn=96e613dbd336f603b4fa217751684b8b&chksm=ce2689c5f95100d33d283599b841f8850e8dcd7c2015742e721dc37efbfccbbad8cd5a53ab23&token=805012839&lang=zh_CN&scene=21#wechat_redirect)
+
+**加载规则**
+
+分3个阶段：
+- 阻塞期：下载字体，用到该字体的地方展示空白，直到加载完
+- 交换期：先用后备字体展示（而不是展示空白），加载完后替换
+- 失败期：字体加载失败，展示后备字体
+
+通过以下手段规避阻塞期：
+
+```css
+@font-face {
+  font-display: swap;
+}
+```
+
 
 **使用建议**
 
