@@ -110,6 +110,7 @@ node --inspect-brk dist/app.js
 
 - [文字转语音-vits-web](https://github.com/diffusion-studio/vits-web)
 - [抛洒纸屑效果-canvas-confetti](https://www.kirilv.com/canvas-confetti/)
+- [模糊搜索库（支持中文）-text-search-engine](https://github.com/cjinhuo/text-search-engine)
   
   * ```
     npm install -g verdaccio
