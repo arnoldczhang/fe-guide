@@ -234,6 +234,7 @@ node --inspect-brk dist/app.js
 - [语言检测-tinyld](https://github.com/komodojp/tinyld)
 
 - [fxs-文件系统api](https://github.com/humanwhocodes/fsx)
+- [pdf转md](https://github.com/getomni-ai/zerox)
 
 ### eggjs
 
