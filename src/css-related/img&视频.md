@@ -6,6 +6,7 @@
 - [图片优化](https://mp.weixin.qq.com/s/euvdMHkYUXHmgkV9D334NQ)
 - [canvas做图片压缩](https://segmentfault.com/a/1190000023486410)
 - [gif压缩](https://github.com/imagemin/imagemin-gifsicle)
+- [图片压缩（基于squoosh算法）](https://compressjpg.io/)
 
 ---
 
