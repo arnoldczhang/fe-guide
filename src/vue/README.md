@@ -36,6 +36,33 @@
 
 </details>
 
+## 规范
+
+### 命名
+- 尽量采用`kebab-case`格式（compiler-core、search-button.vue）
+- 高优单词开头
+```
+components/
+|- search-button.vue
+|- search-button-clear.vue
+|- search-input.vue
+|- search-input-query.vue
+|- settings-checkbox.vue
+|- settings-checkbox-terms.vue
+```
+- emit规范
+```
+状态变更：noun-verb
+生命周期：before/after等-verb
+动作：verb-noun
+```
+- function规范
+```
+交互事件：on + verb + noun
+逻辑处理：handle + noun + verb
+业务：符合场景就好
+```
+
 ## 极简安装&启动
 
 ### 安装 vue-cli
