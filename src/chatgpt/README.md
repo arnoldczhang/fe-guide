@@ -12,6 +12,7 @@
 - [字节跳动-豆包](https://www.doubao.com/chat)
 - [prompt指南](https://mp.weixin.qq.com/s/jOU2qT5o88tuZC1p6vLkJw)
 - [前端训练gpt](https://mp.weixin.qq.com/s/0lSPqDmECyKcemXkWrgUuA)
+- [聊天生成网页](https://bolt.new/)
 
 ## Prompt
 
