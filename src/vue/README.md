@@ -972,3 +972,6 @@ export default defineConfig({
 ## 好用的npm
 
 点击外部：v-click-outside
+[解析html node-html-parser](https://mp.weixin.qq.com/s/3PyLAoluIz3rjf30flrRDA)
+
+类似webpack-analysis：[rollup-plugin-visualizer](https://stackoverflow.com/questions/75746767/is-there-any-bundle-analyzer-for-vite)

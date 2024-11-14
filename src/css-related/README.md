@@ -31,6 +31,7 @@
 - [免费icon库-iconbuddy](https://iconbuddy.app/ant-design)
 - [金蝶-设计规范](https://kingdee.design/)
 - [svg转css](https://www.zhangxinxu.com/sp/svgo/)
+- [生成网格背景](https://spacexcode.com/blog/pure-css-grid-line)
 
 ### 各种案例
 
@@ -1424,6 +1425,7 @@ html::before {
 **加载规则**
 
 分3个阶段：
+
 - 阻塞期：下载字体，用到该字体的地方展示空白，直到加载完
 - 交换期：先用后备字体展示（而不是展示空白），加载完后替换
 - 失败期：字体加载失败，展示后备字体
@@ -1435,7 +1437,6 @@ html::before {
   font-display: swap;
 }
 ```
-
 
 **使用建议**
 
