@@ -227,6 +227,7 @@
 * [`utm字段`](#utm字段)
 * [`鸿蒙系统`](#鸿蒙系统)
 * [`检查是否开启大小写`](#检查是否开启大小写)
+* [`开放图谱协议og`](#开放图谱协议og)
 
 </details>
 
@@ -3942,3 +3943,11 @@ document.querySelector('input[type=password]').addEventListener('keyup', functio
 });
 ```
 
+---
+
+### 开放图谱协议og
+> https://segmentfault.com/a/1190000040863000
+>
+> 飞书等应用中，展示缩略图等信息
+
+比如：[财新网](https://www.caixin.com/)，做的很到位
