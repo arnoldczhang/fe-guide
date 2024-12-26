@@ -2,6 +2,7 @@
 
 ## 参考
 
+- [面试的底层逻辑](https://mp.weixin.qq.com/s/Wt2oMl-PYH1V6XFZhCPb-g)
 - [基础 20 题](https://mp.weixin.qq.com/s/ViucwxvZg-g_YsHxN1PiAA)
 - [前端 100 问](https://juejin.im/post/5d23e750f265da1b855c7bbe?utm_source=gold_browser_extension#heading-2)
 - [前端必学](https://juejin.im/post/5d387f696fb9a07eeb13ea60?utm_source=gold_browser_extension)
@@ -226,6 +227,7 @@
 * [`utm字段`](#utm字段)
 * [`鸿蒙系统`](#鸿蒙系统)
 * [`检查是否开启大小写`](#检查是否开启大小写)
+* [`开放图谱协议og`](#开放图谱协议og)
 
 </details>
 
@@ -3941,3 +3943,11 @@ document.querySelector('input[type=password]').addEventListener('keyup', functio
 });
 ```
 
+---
+
+### 开放图谱协议og
+> https://segmentfault.com/a/1190000040863000
+>
+> 飞书等应用中，展示缩略图等信息
+
+比如：[财新网](https://www.caixin.com/)，做的很到位

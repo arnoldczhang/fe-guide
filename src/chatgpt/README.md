@@ -13,6 +13,7 @@
 - [prompt指南](https://mp.weixin.qq.com/s/jOU2qT5o88tuZC1p6vLkJw)
 - [前端训练gpt](https://mp.weixin.qq.com/s/0lSPqDmECyKcemXkWrgUuA)
 - [聊天生成网页](https://bolt.new/)
+- [本地自建ai知识库](https://mp.weixin.qq.com/s/KlEocqoukwNU4DZYEzph8Q)
 
 ## Prompt
 
@@ -71,3 +72,23 @@ yyy: ...
 > 软件企业= 软件 + 商业模式
 
 chatgpt在第一层大力提效，人类应该在二、三层发力。
+
+## 传输
+
+```js
+var result;
+fetch(`/receive?channel=${channel}`, {
+  method: 'POST',
+  headers: {
+    'content-type': 'application/json',
+    accept: 'text/event-stream',
+  },
+}).then(async res => {
+  const reader = res.body?.pipeThrough(new TextDecoderStream())?.getReader();
+  while (reader && true) {
+    const { done, value } = await reader.read();
+    if (done) return;
+    result = value;
+  }
+});
+```
