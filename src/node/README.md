@@ -240,6 +240,7 @@ node --inspect-brk dist/app.js
 - [pdf转md](https://github.com/getomni-ai/zerox)
 
 - [生成随机脸-face.js](https://github.com/zengm-games/facesjs)
+- [万物转markdown-markitdown](https://github.com/microsoft/markitdown)
 
 ### eggjs
 
