@@ -3447,6 +3447,7 @@ process.on('SIGTERM', handleExit);
 ---
 
 ### 暗黑模式
+[给博客添加dark mode](https://taxodium.ink/setup-blog-color-scheme.html)
 
 **方式一：直接改色值**
 
