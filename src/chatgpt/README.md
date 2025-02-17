@@ -18,6 +18,7 @@
 - [DeepSeek-国产最屌开源大模型](https://github.com/deepseek-ai/DeepSeek-V3?tab=readme-ov-file)
 - [通过Rag实现与大模型对话检索](https://mp.weixin.qq.com/s/6yhYLKfNrumSMs7ELvktjg)
 - [ai声音克隆](https://anyvoice.net/zh/ai-voice-cloning)
+- [2025deepseek提示词](https://www.cnblogs.com/vipstone/p/18710104)
 
 ## Prompt
 
