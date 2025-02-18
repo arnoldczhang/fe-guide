@@ -19,6 +19,7 @@
 - [通过Rag实现与大模型对话检索](https://mp.weixin.qq.com/s/6yhYLKfNrumSMs7ELvktjg)
 - [ai声音克隆](https://anyvoice.net/zh/ai-voice-cloning)
 - [2025deepseek提示词](https://www.cnblogs.com/vipstone/p/18710104)
+- [deepseek本地部署指南](https://mp.weixin.qq.com/s/SPEvYTmTBxhoEkJqm1yPmw)
 
 ## Prompt
 
