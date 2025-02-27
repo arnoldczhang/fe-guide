@@ -2180,6 +2180,10 @@ input::placeholder {
 
 > 先父元素，后子元素
 
+### oklch和hsl
+
+oklch支持广域色，Chrome 111+、Safari 15.4+、Firefox 113+等支持
+
 ---
 
 ## CSS in JS
