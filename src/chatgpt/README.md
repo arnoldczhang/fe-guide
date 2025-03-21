@@ -20,6 +20,7 @@
 - [ai声音克隆](https://anyvoice.net/zh/ai-voice-cloning)
 - [2025deepseek提示词](https://www.cnblogs.com/vipstone/p/18710104)
 - [deepseek本地部署指南](https://mp.weixin.qq.com/s/SPEvYTmTBxhoEkJqm1yPmw)
+- [提示词优化器](https://github.com/linshenkx/prompt-optimizer)
 
 ## Prompt
 
