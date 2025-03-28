@@ -967,6 +967,12 @@ export default defineConfig({
 如果有登录问题，本地记得配host
 > sudo vi /etc/hosts
 
+### 打包分析analysis
+
+```js
+npx vite-bundle-visualizer
+```
+
 ---
 
 ## 好用的npm
@@ -975,3 +981,4 @@ export default defineConfig({
 [解析html node-html-parser](https://mp.weixin.qq.com/s/3PyLAoluIz3rjf30flrRDA)
 
 类似webpack-analysis：[rollup-plugin-visualizer](https://stackoverflow.com/questions/75746767/is-there-any-bundle-analyzer-for-vite)
+
