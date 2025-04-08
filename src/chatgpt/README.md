@@ -148,3 +148,11 @@ fetch(`/receive?channel=${channel}`, {
 ## 文档聊天机器人
 [langchain-doc chatbot](https://js.langchain.com/docs/tutorials/rag/)
 
+
+## MCP
+[mcp - 进阶版function call](https://mp.weixin.qq.com/s/jV46NMDfcJRiklUG_RLsmQ)
+
+### MCP市场
+- https://github.com/modelcontextprotocol/servers
+- https://mcpmarket.cn/
+- https://mcp.so/
