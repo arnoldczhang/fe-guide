@@ -194,13 +194,17 @@ class CarRepositoryImplement implements CarRepository {
 
 **实体(Entity)**
 
-> 具有唯一标识的基本元素（class）
+> 具有唯一标识的基本元素（class），只要id不变，实体上的值随便变
 >
 > 是业务对象的抽象，属于解决方案
+>
+> 类似关联关系o2m、m2o这种
 
 **值对象(Value Object)**
 
-> 没有唯一标识的`实体`（class.getInstance()）
+> 没有唯一标识的`实体`（class.getInstance()），这就是和**实体**的区别
+>
+> 值变了就不是之前那个值对象了
 
 **服务(Service)**
 
@@ -217,7 +221,7 @@ class CarRepositoryImplement implements CarRepository {
 
 **聚合(Aggregates)**
 
-> 由一或多个`实体`组成，是解决方案
+> 由一或多个`实体`或`值对象`组成，是解决方案
 >
 > 是一个典型的命令模型，关联领域事件、和命令
 >
