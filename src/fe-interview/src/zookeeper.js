@@ -17,90 +17,73 @@
  */
 class Zookeeper {
   constructor() {
+    this.init();
+  }
+
+  init() {
     this.root = {
-      path: '/',
-      children: [],
+      name: '/',
       value: null,
+      children: [],
     };
   }
 
-  getRoot() {
-    return this.root;
+  getPath(path = '') {
+    return path.split('/');
   }
 
-  getChildPath(path) {
-    return path.split(/\//).filter(Boolean);
-  }
-
-  getPathList(path) {
-    return Array.isArray(path) ? path : this.getChildPath(path);
-  }
-
-  create(path, node = this.root) {
-    const pathList = this.getPathList(path);
-    while (pathList.length) {
-      const tempPath = pathList.shift();
-      let matched = node.children.find(({ path }) => path === tempPath);
-      if (matched) {
-        node = matched;
-        continue;
-      }
-
-      matched = {
-        path: tempPath,
-        parent: node,
-        children: [],
+  create(path = '') {
+    return this.getPath(path).reduce((res, path, index, array) => {
+      if (path === '') return res.children;
+      const matched = res.find(({ name }) => name === path);
+      if (matched) return matched.children;
+      const children = [];
+      const pathStruct = {
+        name: path,
         value: null,
+        children,
       };
-
-      if (pathList.length) {
-        this.create(pathList, matched);
-      }
-      node.children.push(matched);
-      break;
-    }
+      res.push(pathStruct);
+      if (index === array.length - 1) return pathStruct;
+      return children;
+    }, this.root);
   }
 
-  delete(path, node = this.root) {
-    const pathList = this.getPathList(path);
-    let index = -1;
-    while (pathList.length) {
-      const tempPath = pathList.shift();
-      let matched = node.children.find(({ path }) => path === tempPath);
-      if (matched) {
-        index = node.children.findIndex(value => value === matched);
-        node = matched;
-        continue;
+  delete(path = '') {
+    return this.getPath(path).reduce((res, path, index, array) => {
+      if (path === '') {
+        if (array.length === 1) {
+          return this.init();
+        }
+        return res.children;
       }
-
-      throw new Error(`${path} 不存在`);
-    }
-    node.parent.children.splice(index, 1);
-    return node;
+      const matched = res.find(({ name }) => name === path);
+      if (!matched) throw new Error(`目录：${path}不存在，无法删除`);
+      if (index === array.length - 1) {
+        const matchedIndex = res.findIndex(({ name }) => name === path);
+        res.splice(matchedIndex, 1);
+        return res;
+      }
+      return matched.children;
+    }, this.root);
   }
 
-  get(path, node = this.root) {
-    const pathList = this.getPathList(path);
-    while (pathList.length) {
-      const tempPath = pathList.shift();
-      let matched = node.children.find(({ path }) => path === tempPath);
-      if (matched) {
-        node = matched;
-        continue;
-      }
-
-      throw new Error(`${path} 不存在`);
-    }
-    return node;
+  get(path = '') {
+    return this.getPath(path).reduce((res, path, index, array) => {
+      if (path === '') return res.children;
+      const matched = res.find(({ name }) => name === path);
+      if (!matched) throw new Error(`目录：${path}不存在，无法获取值`);
+      if (index === array.length - 1) return matched;
+      return matched.children;
+    }, this.root);
   }
 
-  getValue(path) {
+  getValue(path = '') {
     return this.get(path).value;
   }
 
-  setValue(path, value) {
-    const node = this.get(path);
-    node.value = value;
+  setValue(path = '', value) {
+    return this.get(path).value = value;
   }
 }
 
