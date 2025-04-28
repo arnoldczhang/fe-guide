@@ -76,3 +76,72 @@ const roll = new Rolling(queue, max, async (res) => {
   return res;
 });
 roll.start()
+
+
+// 2025.4.28
+class Rolling2 {
+  constructor(queue, maxConcurrency = 5, maxRetry = 5) {
+    this.queue = [...queue];
+    this.maxConcurrency = maxConcurrency;
+    this.concurrency = new Set();
+    this.maxRetry = maxRetry;
+    this.retryMap = new Map();
+    this.runnable = true;
+  }
+
+  roll() {
+    if (!this.runnable) return;
+    if (!this.queue.length) return;
+    if (this.concurrency.size >= this.maxConcurrency) return;
+    const req = this.queue.shift()
+    const promise = new Promise(async (resolve, reject) => {
+      await this.callback(req, resolve, reject);
+    });
+    this.concurrency.add(promise);
+    promise.catch((req) => {
+      if (this.retryMap.has(req)) {
+        const retry = this.retryMap.get(req);
+        if (retry >= this.maxRetry) {
+          console.log(`${req} 超出最大重试次数`);
+          return;
+        }
+        this.retryMap.set(req, retry + 1);
+      } else {
+        this.retryMap.set(req, 1);
+      }
+      this.queue.unshift(req);
+    }).finally(() => {
+      this.concurrency.delete(promise);
+      this.roll();
+    });
+  }
+
+  start(callback) {
+    this.callback = callback;
+    while (this.concurrency.size < this.maxConcurrency) {
+      this.roll();
+    }
+  }
+
+  stop() {
+    this.runnable = false;
+  }
+
+  restart() {
+    this.runnable = true;
+    this.roll();
+  }
+}
+// test
+// const queue = Array.from({ length: 100 }).map((_, idx) => `content_${idx}`);
+// const roll = new Rolling2(queue, 5);
+// roll.start((input, resolve, reject) => {
+//   console.log(input);
+//   setTimeout(() => {
+//     if (/5$/.test(input)) {
+//       reject(input);
+//     } else {
+//       resolve(input);
+//     }
+//   }, 1000);
+// });
