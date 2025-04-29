@@ -13,33 +13,26 @@
  * [1,2,3]的子集和，即为[1,2]的子集和，每个+3，以此类推
  * 
  */
+var subsets = function(nums) {
+  const len = nums.length;
+  const result = [];
 
- // 数学归纳法
-function subsets(nums) {
-  if (!nums.length) return [[]];
-  const last = nums.pop();
-  const res = subsets(nums);
-  const { length } = res;
-  for (let i = 0; i < length; i += 1) {
-    res.push(res[i].concat(last));
-  }
-  return res;
-}
-
-// 回溯
-function subsets(nums) {
-  const { length } = nums;
-  const res = [];
-  const backtrack = (start, track = []) => {
-    res.push(track);
-    for (let i = start; i < length; i += 1) {
-      track.push(nums[i]);
-      backtrack(i + 1, track.slice());
-      track.pop();
+  const backtrack = (n = 0, arr = [], visited = {}) => {
+    if (n > len) return;
+    result.push([...arr]);
+    for (let i = n; i < len; i += 1) {
+      const item = nums[i];
+      if (visited[item]) continue;
+      arr.push(item);
+      visited[item] = true;
+      backtrack(i + 1, arr, visited);
+      arr.pop();
+      visited[item] = false;
     }
   };
-  backtrack(0);
-  return res;
-}
+
+  backtrack();
+  return result;
+};
 
 console.log(subsets([1,2,3]));

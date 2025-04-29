@@ -14,6 +14,8 @@
  * 输入：digits = "2"
  * 输出：["a","b","c"]
  * 
+ * O(3^n)
+ * 
  * @param {*} digits 
  * @returns 
  */

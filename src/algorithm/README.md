@@ -1,20 +1,22 @@
 # js常用算法与数据结构
 
 ## 参考
-  - [算法教程](https://github.com/trekhleb/javascript-algorithms/blob/master/README.zh-CN.md)
-  - [数据结构Array、HashMap 与 List](https://mp.weixin.qq.com/s/zY78mB6eMQBtzMqSSaldlQ)
-  - [数据结构Array、HashMap 与 List(原文)](https://www.zcfy.cc/article/data-structures-for-beginners-arrays-hashmaps-and-lists)
-  - [logN的由来](n.bing.com/?toHttps=1&redig=54178BEC83A640CE878C8B4736F9C008)
-  - [各种算法结构演示](https://visualgo.net/zh)
-  - [前端算法-git](https://juejin.im/post/5d5b307b5188253da24d3cd1?utm_source=gold_browser_extension)
-  - [前端算法-docs](http://www.conardli.top/docs/dataStructure/%E4%BA%8C%E5%8F%89%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C.html#%E6%A0%91%E6%9F%A5%E6%89%BE)
-  - [小浩算法](https://geekxh.com)
-  - [leetcode原题详解-历史目录](https://mp.weixin.qq.com/s/JUBHDr5T7-UPTSDaJGGfaA)
-  - [各种常见限流算法](https://www.wdbyte.com/java/rate-limiter.html#%E5%89%8D%E8%A8%80)
-  - [labuladong算法站](https://labuladong.github.io/algo/)
-  - [hello 算法](https://www.hello-algo.com/)
+
+- [算法教程](https://github.com/trekhleb/javascript-algorithms/blob/master/README.zh-CN.md)
+- [数据结构Array、HashMap 与 List](https://mp.weixin.qq.com/s/zY78mB6eMQBtzMqSSaldlQ)
+- [数据结构Array、HashMap 与 List(原文)](https://www.zcfy.cc/article/data-structures-for-beginners-arrays-hashmaps-and-lists)
+- [logN的由来](n.bing.com/?toHttps=1&redig=54178BEC83A640CE878C8B4736F9C008)
+- [各种算法结构演示](https://visualgo.net/zh)
+- [前端算法-git](https://juejin.im/post/5d5b307b5188253da24d3cd1?utm_source=gold_browser_extension)
+- [前端算法-docs](http://www.conardli.top/docs/dataStructure/%E4%BA%8C%E5%8F%89%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C.html#%E6%A0%91%E6%9F%A5%E6%89%BE)
+- [小浩算法](https://geekxh.com)
+- [leetcode原题详解-历史目录](https://mp.weixin.qq.com/s/JUBHDr5T7-UPTSDaJGGfaA)
+- [各种常见限流算法](https://www.wdbyte.com/java/rate-limiter.html#%E5%89%8D%E8%A8%80)
+- [labuladong算法站](https://labuladong.github.io/algo/)
+- [hello 算法](https://www.hello-algo.com/)
 
 ## 目录
+
 <details>
 <summary>展开更多</summary>
 
@@ -23,7 +25,7 @@
 * [`树`](#树)
 * [`链表`](#链表)
 * [`dp`](#dp)
-* [`dfs`](#回溯)
+* [`回溯-dfs`](#回溯)
 * [`bfs`](#BFS)
 * [`滑动窗口`](#滑动窗口)
 * [`二分查找`](#二分查找)
@@ -36,10 +38,11 @@
 ## 总纲
 
 ### 基础数据结构
+
 > 只有两种：**数组**（顺序存储）和**链表**（链式存储）
->
+> 
 > 队列、栈、哈希表扩展自数组
->
+> 
 > 树、堆、图扩展自链表
 
 ### 线性非线性
@@ -71,14 +74,15 @@
 
 - 二叉搜索
 
-
 ### 复杂度计算 - 推导大O阶
+
 - 子问题个数乘以解决一个子问题需要的时间
 - 用常数1来取代运行时间中所有加法常数。
 - 修改后的运行次数函数中，只保留最高阶项
 - 如果最高阶项存在且不是1，则去除与这个项相乘的常数。
 
 ### 复杂度对比
+
 ```
 O(1) < O(logn) < O(n) < O(nlogn) < O(n²) < O(n³) < O(2ⁿ) < O(n!)
 ```
@@ -86,15 +90,18 @@ O(1) < O(logn) < O(n) < O(nlogn) < O(n²) < O(n³) < O(2ⁿ) < O(n!)
 ---
 
 ## 树
+
 详见[二叉树](./二叉树.js)
 
 ### 概念
+
 1. 每个节点最多有两个子树
 2. 第n层最多有2^n个节点
 3. n层最多有2^0 + 2^1 + ... + 2^n = 2^n+1 - 1个节点
 4. n叉树即为`ast`
 
 ### 结构
+
 ```js
 class Node {
   constructor(data, left, right) {}
@@ -138,7 +145,7 @@ function getNode(data, node) {
 };
 ```
 
-#### 二分查找
+#### 二分
 
 ```js
 function binarySearch(target, list, start = 0, end = list.length) {
@@ -172,6 +179,7 @@ function binarySearch(target, list, start = 0, end = list.length) {
 后序：7 8 6 4 2 5 3 1
 
 #### 先序遍历
+
 > 考察到一个节点后，即刻输出该节点的值，并继续遍历其左右子树。(根左右)
 
 ![先序遍历](./先序遍历.png)
@@ -179,11 +187,13 @@ function binarySearch(target, list, start = 0, end = list.length) {
 [参考](#先序遍历实现)
 
 #### 中序遍历
+
 > 考察到一个节点后，将其暂存，遍历完左子树后，再输出该节点的值，然后遍历右子树。(左根右)
 
 [参考](#中序遍历实现)
 
 #### 后序遍历
+
 > 考察到一个节点后，将其暂存，遍历完左右子树后，再输出该节点的值。(左右根)
 
 [参考](#后序遍历实现)
@@ -197,23 +207,28 @@ function binarySearch(target, list, start = 0, end = list.length) {
 ## 链表
 
 ### 概念
+
 - 用一组任意存储的单元来存储线性表的数据元素
 - 一个对象存储着本身的值和下一个元素的地址
 
 ### 结构
+
 [参考](./structure/链表.js)
 
 ---
 
 ## dp
+
 - [子序列问题模板](https://www.cnblogs.com/labuladong/p/12320381.html)
 
 ### 三大要素
+
 - 重叠子问题
 - 最优子结构
 - 状态转移方程
 
 ### 破解步骤
+
 1. 明确 base case，即满足题设条件的值
 2. 明确「状态」，即原/子问题中会变化的变量，一般是总量
 3. 明确「选择」，即引起状态发生变化的变量
@@ -264,6 +279,7 @@ for 状态1 in 状态1的所有取值：
 ## 遍历方式
 
 ### 先序遍历实现
+
 ```js
 var preorderTraversal = function (root) {
   const result = [];
@@ -283,6 +299,7 @@ var preorderTraversal = function (root) {
 ```
 
 ### 中序遍历实现
+
 ```js
 var inorderTraversal = function (root) {
   const result = [];
@@ -304,6 +321,7 @@ var inorderTraversal = function (root) {
 ```
 
 ### 后序遍历实现
+
 ```js
 var postorderTraversal = function (root) {
   const result = [];
@@ -332,75 +350,88 @@ var postorderTraversal = function (root) {
 ---
 
 ## 回溯
-> 即dfs
 
-```python
-result = []
-def backtrack(路径, 选择列表):
-  if 满足结束条件:
-    result.add(路径)
-    return
-  for 选择 in 选择列表:
-    track.push(选择) // 做选择
-    backtrack(路径, 选择列表)
-    track.pop() // 撤销选择
+> 即dfs
+> 
+> **目标**：在**决策树**中穷举所有可能性
+> 
+> **路径选择**：
+> 
+> - 选择：每步一个选择
+> 
+> - 递归：当前选择进入下个回溯
+> 
+> - 撤销：回退上个状态，尝试其他可能性
+> 
+> **终止条件**：当前路径满足条件，保存结果，返回
+> 
+> **剪枝**：预排除不满足条件的分支
+
+### 模板
+
+```javascript
+function backtrack(路径, 选择列表) {
+    if (满足终止条件) {
+        保存结果;
+        return;
+    }
+
+    for (const 选择 of 选择列表) {
+        if (当前选择不合法) continue; // 剪枝
+
+        做选择;      // 将选择加入路径
+        backtrack(路径, 新选择列表); // 递归
+        撤销选择;    // 从路径中移除选择（回溯）
+    }
+}
 ```
+
+### 习题
+
+- [回溯-拨电话](./leetcode/回溯-拨电话.js)
+- [回溯-全排列](./leetcode/回溯-全排列.js)
+- [回溯-子集](./leetcode/回溯-子集.js)
+- [回溯-组合总和](./leetcode/回溯-组合总和.js)
+- [回溯-括号生成](./leetcode/回溯-括号生成.js)
+- [回溯-单词搜索](./leetcode/回溯-单词搜索.js)
 
 ---
 
 ## BFS
 
-```c++
-// 计算从起点 start 到终点 target 的最近距离
-int BFS(Node start, Node target) {
-  Queue<Node> q; // 核心数据结构
-  Set<Node> visited; // 避免走回头路
-
-  q.push(start); // 将起点加入队列
-  visited.add(start);
-  int step = 0; // 记录扩散的步数
-
-  while (q not empty) {
-      int sz = q.size();
-      /* 将当前队列中的所有节点向四周扩散 */
-      for (int i = 0; i < sz; i++) {
-          Node cur = q.shift();
-          /* 划重点：这里判断是否到达终点 */
-          if (cur is target)
-              return step;
-          /* 将 cur 的相邻节点加入队列 */
-          for (Node x : cur.adj())
-              if (x not in visited) {
-                  q.push(x);
-                  visited.add(x);
-              }
-      }
-      /* 划重点：更新步数在这里 */
-      step++;
-  }
-}
-```
-
 ---
 
 ## 二分查找
-```c++
-int binarySearch(int[] nums, int target) {
-    int left = 0, right = ...;
 
-    while(...) {
-        int mid = left + (right - left) >> 1;
-        if (nums[mid] == target) {
-            ...
-        } else if (nums[mid] < target) {
-            left = ...
-        } else if (nums[mid] > target) {
-            right = ...
-        }
-    }
-    return ...;
-}
-```
+> **前提条件**：数组必须有序
+> 
+> **确定边界**：初始化左右指针，left=0，right=数组length - 1
+> 
+> **循环缩小范围**：
+> 
+> - 中间元素：mid = left + (right - left ) >> 1
+> 
+> - 匹配到目标值：返回index
+> 
+> - 目标值小于中间元素：left = mid + 1
+> 
+> - 目标值大于中间元素：right = mid - 1
+> 
+> **终止条件**：left > right
+
+### 习题
+
+- [二分-搜索插入位置](./leetcode/二分-搜索插入位置.js)
+
+- [二分-搜索二维矩阵](./leetcode/二分-搜索二维矩阵.js)
+
+- [二分-在排序数组中查找元素的第一个和最后一个位置](./leetcode/二分-在排序数组中查找元素的第一个和最后一个位置.js)
+
+- [二分-搜索旋转排序数组](./leetcode/二分-搜索旋转排序数组.js)
+
+- [二分-寻找旋转排序数组中的最小值](./leetcode/二分-寻找旋转排序数组中的最小值.js)
+
+- [二分-寻找两个正序数组的中位数](./leetcode/二分-寻找两个正序数组的中位数.js)
 
 ---
 
@@ -441,4 +472,5 @@ void slidingWindow(string s, string t) {
 ---
 
 ## 习题
+
 [目录](./leetcode/README.md)

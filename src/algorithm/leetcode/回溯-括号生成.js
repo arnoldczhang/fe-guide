@@ -18,27 +18,28 @@
  * - 反正很屌，不明觉厉
  * 
  */
-function generateParenthesis(n) {
+var generateParenthesis = function(n) {
+  const len = n * 2;
   const result = [];
-  const backtrack = (left, right, track = []) => {
-    if (right < left || left < 0 || right < 0) {
-      return;
+
+  const backtrack = (i = 0, arr = [], open = 0) => {
+    if (i === len) return result.push(arr.join(''));
+    // 左括号数不到n，可继续添加
+    if (open < n) {
+      arr.push('(');
+      backtrack(i + 1, arr, open + 1);
+      arr.pop();
     }
-
-    if (!left && !right) {
-      return result.push(track.join(''));
+    // 右括号数不到n，可继续添加
+    if (i - open < open) {
+      arr.push(')');
+      backtrack(i + 1, arr, open);
+      arr.pop();
     }
+  }
 
-    track.push('(');
-    backtrack(left - 1, right, track.slice());
-    track.pop();
-
-    track.push(')');
-    backtrack(left, right - 1, track.slice());
-    track.pop();
-  };
-  backtrack(n, n);
+  backtrack();
   return result;
-}
+};
 
 console.log(generateParenthesis(3));

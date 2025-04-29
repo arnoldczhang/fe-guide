@@ -21,42 +21,31 @@
  * 题解：
  * 
  */
-
- // 数学归纳
-function permute(nums) {
-  const res = [];
-  const { length } = nums;
-  if (length <= 1) return [nums];
-  for (let i = 0; i < length; i += 1) {
-    const el = nums[i];
-    const rest = nums.slice(0, i).concat(nums.slice(i + 1));
-    const restMute = permute(rest);
-    for (let j = 0; j < restMute.length; j += 1) {
-      res.push([el].concat(restMute[j]));
+/**
+ * @param {number[]} nums
+ * @return {number[][]}
+ */
+var permute = function(nums) {
+  const len = nums.length;
+  const result = [];
+  const backtrack = (n = 0, path = [], used = {}) => {
+    if (n === len) {
+      result.push([...path]);
+      return;
     }
-  }
-  return res;
-};
-
-// 回溯
-function permute(nums) {
-  const res = [];
-  const { length } = nums;
-  const backtrack = (track = []) => {
-    if (track.length === length) {
-      return res.push(track);
-    }
-
-    for (let i = 0; i < length; i += 1) {
-      if (track.includes(nums[i])) {
-        continue;
-      }
-      track.push(nums[i]);
-      backtrack(track.slice());
-      track.pop();
+    for (var i = 0; i < len; i += 1) {
+      const item = nums[i];
+      if (used[item]) continue;
+      path.push(item);
+      used[item] = true;
+      backtrack(n + 1, path, used);
+      path.pop();
+      used[item] = false;
     }
   };
   backtrack();
-  return res;
-}
+  return result;
+};
+
+// test
 console.log(permute([1,2,3]));
