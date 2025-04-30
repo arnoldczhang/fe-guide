@@ -1,4 +1,4 @@
-# js常用算法与数据结构
+# 常用算法与数据结构
 
 ## 参考
 
@@ -25,6 +25,7 @@
 * [`树`](#树)
 * [`链表`](#链表)
 * [`dp`](#dp)
+* [`栈`](#栈)
 * [`回溯-dfs`](#回溯)
 * [`bfs`](#BFS)
 * [`滑动窗口`](#滑动窗口)
@@ -349,6 +350,21 @@ var postorderTraversal = function (root) {
 
 ---
 
+## 栈
+
+> **特性**：只能在栈顶push和pop，遵循**后进先出**
+> 
+> **时间复杂度**：O(1)
+> 
+> **边界条件**：空栈、栈溢出（无限递归）
+
+### 习题
+
+- [栈-有效的括号](./leetcode/栈-有效的括号.js)
+- [栈-最小栈](./leetcode/栈-最小栈.js)
+
+---
+
 ## 回溯
 
 > 即dfs
@@ -362,6 +378,12 @@ var postorderTraversal = function (root) {
 > - 递归：当前选择进入下个回溯
 > 
 > - 撤销：回退上个状态，尝试其他可能性
+> 
+> **循环条件**：
+> 
+> - 起始点统一，循环体在回溯函数内
+> 
+> - 起始点不统一，循环体包在回溯函数外
 > 
 > **终止条件**：当前路径满足条件，保存结果，返回
 > 
@@ -394,6 +416,7 @@ function backtrack(路径, 选择列表) {
 - [回溯-组合总和](./leetcode/回溯-组合总和.js)
 - [回溯-括号生成](./leetcode/回溯-括号生成.js)
 - [回溯-单词搜索](./leetcode/回溯-单词搜索.js)
+- [回溯-分割回文串](./leetcode/回溯-分割回文串.js)
 
 ---
 
@@ -417,6 +440,12 @@ function backtrack(路径, 选择列表) {
 > 
 > - 目标值大于中间元素：right = mid - 1
 > 
+> **循环条件**：
+> 
+> - left和right同时+1-1移动时：left <= right
+> 
+> - left和right某个+1-1移动时：left < right
+> 
 > **终止条件**：left > right
 
 ### 习题
@@ -436,38 +465,6 @@ function backtrack(路径, 选择列表) {
 ---
 
 ## 滑动窗口
-
-```c++
-void slidingWindow(string s, string t) {
-    unordered_map<char, int> need = {}, window = {};
-    for (char c : t) need[c]++;
-
-    int left = 0, right = 0;
-    int valid = 0; 
-    while (right < s.size()) {
-        // c 是将移入窗口的字符
-        char c = s[right];
-        // 右移窗口
-        right++;
-        // 进行窗口内数据的一系列更新
-        ...
-
-        /*** debug 输出的位置 ***/
-        printf("window: [%d, %d)\n", left, right);
-        /********************/
-
-        // 判断左侧窗口是否要收缩
-        while (window needs shrink) {
-            // d 是将移出窗口的字符
-            char d = s[left];
-            // 左移窗口
-            left++;
-            // 进行窗口内数据的一系列更新
-            ...
-        }
-    }
-}
-```
 
 ---
 
