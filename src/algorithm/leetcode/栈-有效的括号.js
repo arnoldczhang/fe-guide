@@ -26,7 +26,13 @@
  * 
  * @param {string} s
  * @return {boolean}
- */
+*/
+
+// test
+console.log(isValid("()")); // true
+console.log(isValid("()[]{}")); // true
+console.log(isValid("(]")); // false
+
 var isValid = function(s) {
   const len = s.length;
   // 奇数
@@ -50,8 +56,3 @@ var isValid = function(s) {
   }
   return !result.length;
 };
-
-// test
-console.log(isValid("()")); // true
-console.log(isValid("()[]{}")); // true
-console.log(isValid("(]")); // false

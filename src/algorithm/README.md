@@ -362,6 +362,8 @@ var postorderTraversal = function (root) {
 
 - [栈-有效的括号](./leetcode/栈-有效的括号.js)
 - [栈-最小栈](./leetcode/栈-最小栈.js)
+- [栈-字符串解码](./leetcode/栈-字符串解码.js)
+- [栈-每日温度](./leetcode/栈-每日温度.js)
 
 ---
 

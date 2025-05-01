@@ -18,6 +18,10 @@
  * - 反正很屌，不明觉厉
  * 
  */
+
+// test
+console.log(generateParenthesis(3));
+
 var generateParenthesis = function(n) {
   const len = n * 2;
   const result = [];
@@ -41,5 +45,3 @@ var generateParenthesis = function(n) {
   backtrack();
   return result;
 };
-
-console.log(generateParenthesis(3));
