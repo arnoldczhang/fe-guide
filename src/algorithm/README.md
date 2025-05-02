@@ -23,9 +23,9 @@
 * [`总纲`](#总纲)
 * [`时间复杂度`](#时间复杂度)
 * [`1. 普通数组`](#普通数组)
+* [`2. 链表`](#链表)
 * [`3. 哈希`](#哈希)
 * [`树`](#树)
-* [`链表`](#链表)
 * [`dp`](#dp)
 * [`栈`](#栈)
 * [`回溯-dfs`](#回溯)
@@ -93,8 +93,8 @@ O(1) < O(logn) < O(n) < O(nlogn) < O(n²) < O(n³) < O(2ⁿ) < O(n!)
 ---
 
 ## 普通数组
-> 
 
+> 
 
 ### 习题
 
@@ -222,14 +222,50 @@ function binarySearch(target, list, start = 0, end = list.length) {
 
 ## 链表
 
-### 概念
+> **节点结构**：
+> 
+> - 数据：value
+> 
+> - 指针：pre、next
+> 
+> - 头尾指针：head、tail
+> 
+> **适用场景**：
+> 
+> - 高频插入删除：操作栈、队列
+> 
+> - 动态数据：内存、文件系统
+> 
+> - 算法问题：LRU、大数相加
 
-- 用一组任意存储的单元来存储线性表的数据元素
-- 一个对象存储着本身的值和下一个元素的地址
+### 模板
 
-### 结构
+```js
+class Node {
+    constructor() {
+        this.value = null;
+        this.pre = null;
+        this.next = null;
+    }
+}
 
-[参考](./structure/链表.js)
+
+class LinkedList {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
+}
+```
+
+### 习题
+
+- [链表-相交链表](./leetcode/链表-相交链表.js)
+- [链表-反转链表](./leetcode/链表-反转链表.js)
+- [链表-回文链表](./leetcode/链表-回文链表.js)
+- [链表-环形链表](./leetcode/链表-环形链表.js)
+- [链表-环形链表2](./leetcode/链表-环形链表2.js)
 
 ---
 
@@ -368,7 +404,9 @@ var postorderTraversal = function (root) {
 ## 哈希
 
 > **特性**：键值存储，常用于两数之和、统计次数、memorize
-> 
+>
+> **数据类型**：Map、Set 
+>
 > **时间复杂度**：O(1)
 
 ### 习题
