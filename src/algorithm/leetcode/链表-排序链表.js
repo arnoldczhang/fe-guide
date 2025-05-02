@@ -27,7 +27,8 @@
  * @return {ListNode}
  * 
  * 提示：
- * 1. 归并排序 + 合并两个有序链表
+ * 1. 巨他妈难
+ * 2. 归并排序 + 合并两个有序链表
  * 
  */
 var sortList = function(head) {
