@@ -266,6 +266,13 @@ class LinkedList {
 - [链表-回文链表](./leetcode/链表-回文链表.js)
 - [链表-环形链表](./leetcode/链表-环形链表.js)
 - [链表-环形链表2](./leetcode/链表-环形链表2.js)
+- [链表-合并两个有序链表](./leetcode/链表-合并两个有序链表.js)
+- [链表-两数相加](./leetcode/链表-两数相加.js)
+- [链表-删除链表的倒数第N个结点](./leetcode/链表-删除链表的倒数第N个结点.js)
+- [链表-两两交换链表中的节点](./leetcode/链表-两两交换链表中的节点.js)
+- [链表-随机链表的复制](./leetcode/链表-随机链表的复制.js)
+- [链表-排序链表](./leetcode/链表-排序链表.js)
+- [链表-LRU缓存](./leetcode/链表-LRU缓存.js)
 
 ---
 
@@ -404,9 +411,9 @@ var postorderTraversal = function (root) {
 ## 哈希
 
 > **特性**：键值存储，常用于两数之和、统计次数、memorize
->
+> 
 > **数据类型**：Map、Set 
->
+> 
 > **时间复杂度**：O(1)
 
 ### 习题
