@@ -14,7 +14,15 @@
  * - 两个相同字符间隔最远的距离，即为最长子串
  * - 简单计数器
  * 
+ * 
  */
+
+// test
+console.log(lengthOfLongestSubstring('abcabcbb'));
+console.log(lengthOfLongestSubstring('bbbbb'));
+console.log(lengthOfLongestSubstring('pwwkew'));
+
+
  function lengthOfLongestSubstring(s) {
   const { length } = s;
   let left = 0;
@@ -36,6 +44,19 @@
   return max;
  }
 
- console.log(lengthOfLongestSubstring('abcabcbb'));
- console.log(lengthOfLongestSubstring('bbbbb'));
- console.log(lengthOfLongestSubstring('pwwkew'));
+const lengthOfLongestSubstring2 = (s) => {
+  const cach = new Map();
+  let result = 0;
+  let left = 0;
+  let right = 0;
+  while (right < s.length) {
+    const key = s[right];
+    if (cach.has(key) && cach.get(key) >= left) {
+      left = cach.get(key) + 1;
+    }
+    cach.set(key, right);
+    result = Math.max(result, right - left + 1);
+    right += 1;
+  }
+  return result;
+}
