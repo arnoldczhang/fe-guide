@@ -257,6 +257,8 @@ class LinkedList {
 - [dp-零钱兑换](./leetcode/dp-零钱兑换.js)
 - [dp-单词拆分](./leetcode/dp-单词拆分.js)
 - [dp-最长递增子序列长度](./leetcode/dp-最长递增子序列长度.js)
+- [dp-乘积最大子数组](./leetcode/dp-乘积最大子数组.js)
+- [dp-最长回文子串](./leetcode/dp-最长回文子串.js)
 
 ---
 
