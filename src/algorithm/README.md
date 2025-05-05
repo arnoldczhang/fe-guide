@@ -33,6 +33,8 @@
 * [`9. 滑动窗口`](#滑动窗口)
 * [`10. 贪心算法`](#贪心算法)
 * [`11. 动态规划`](#dp)
+* [`12. 图论`](#图论)
+* [`13. 技巧`](#技巧)
 * [`bfs`](#BFS)
 * [`习题`](#习题)
 
@@ -259,6 +261,81 @@ class LinkedList {
 - [dp-最长递增子序列长度](./leetcode/dp-最长递增子序列长度.js)
 - [dp-乘积最大子数组](./leetcode/dp-乘积最大子数组.js)
 - [dp-最长回文子串](./leetcode/dp-最长回文子串.js)
+
+---
+
+## 图论
+
+> **概念**
+> 
+> - 顶点 + 边
+> 
+> **存储方式**：
+> 
+> - 朴素存储：一维数组、哈希
+> 
+> - 邻接表：适合稀疏图，哈希（key是顶点，value是边的集合）
+> 
+> - 邻接矩阵：适合稠密图，二维数组
+
+
+
+### 模板
+
+**广度搜索**
+
+> 适合最短路径、层级遍历、连通检测
+
+```js
+function bfs (graph, start) {
+    const queue = [start];
+    const visited = new Set();
+    visited.add(start);
+    while (queue.length) {
+      const vertex = queue.shift();
+      for (const neighbor of graph.vertices.get(vertex)) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          queue.push(neighbor);
+        }
+      }
+    }
+}
+```
+
+**深度搜索**
+
+> 检测环、路径存在、拓扑排序
+
+```js
+function dfs (graph, start) {
+    const queue = [start];
+    const visited = new Set();
+    visited.add(start);
+    while (queue.length) {
+      const vertex = queue.pop();
+      for (const neighbor of graph.vertices.get(vertex)) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          queue.push(neighbor);
+        }
+      }
+    }
+}
+```
+
+### 习题
+
+- [dp-爬楼梯](./leetcode/dp-爬楼梯.js)
+
+---
+
+## 技巧
+
+### 习题
+
+- [技巧-只出现一次的数字](./leetcode/技巧-只出现一次的数字.js)
+- [技巧-多数元素](./leetcode/技巧-多数元素.js)
 
 ---
 
