@@ -1557,7 +1557,7 @@ arr instanceof Array; // false
 
 **重绘**
 
-> 更新了元素绘制属性
+> 更新了元素**绘制属性**
 
 - 相比回流，**省去了布局和分层阶段**，可以参考[关键渲染路径](../../js&browser/页面过程与浏览器缓存.md#17.关键渲染路径)
 
@@ -1565,7 +1565,7 @@ arr instanceof Array; // false
 
 **回流**
 
-> 更新了元素的几何属性
+> 更新了元素的**几何属性**
 
 - [触发回流一览表](https://gist.github.com/paulirish/5d52fb081b3570c81e3a)
 
@@ -1614,6 +1614,8 @@ arr instanceof Array; // false
 - 避免多次样式嵌套
 
 - 动画效果尽量加载 `absolute` 或 `fixed` 元素上
+
+- 修改class替代直接改style（合并触发）
 
 - 使用 GPU 加速
 

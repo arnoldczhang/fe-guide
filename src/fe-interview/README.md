@@ -6,6 +6,13 @@
 
 ## 1. 前端基础
 
+### 基础
+
+- https://juejin.cn/column/6964717704712290317
+
+### 深入&总结
+
+- [promise细节](./src/promise.md)
 - [暂时性死区](./src/common.md#let、const以及var的区别)
 - [事件循环](../js&browser/并发模型-event_loop.md#宏任务和微任务)
 - [线程&进程](../js&browser/现代浏览器.md#进程)
@@ -17,7 +24,7 @@
 - [mjs和cjs](../js&browser/esm.md)
 - [跨域](../http/跨域.md)
 - [性能优化](../js&browser/性能优化2020.md)
-- [题](./src/common.md)
+- [2020年的题](./src/common.md)
 
 ## 2. 手写源码
 
