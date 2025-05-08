@@ -21,26 +21,22 @@
  *     this.val = (val===undefined ? 0 : val)
  *     this.next = (next===undefined ? null : next)
  * }
- */
-/**
+ * 
  * @param {ListNode} head
  * @return {ListNode}
  */
 var swapPairs = function(head) {
   if (!head) return null;
-  let startNode = new ListNode(-1, head);
-  let temp = startNode;
-  let slow = temp.next
+  const result = new ListNode(-1, head);
+  let temp = result;
+  let slow = result.next;
   let fast = slow.next;
   while (fast) {
     temp.next = fast;
-    slow.next = fast.next;
-    fast.next = slow;
-
-    temp = slow;
+    [fast.next, slow.next] = [slow, fast.next];
+    temp = temp.next.next;
     slow = slow.next;
-    if (!slow) break;
-    fast = slow.next;
+    fast = slow ? slow.next : null;
   }
-  return startNode.next;
+  return result.next;
 };

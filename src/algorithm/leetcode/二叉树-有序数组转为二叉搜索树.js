@@ -1,5 +1,5 @@
 /**
- * 将有序数组转换为二叉搜索树
+ * 108. 将有序数组转换为二叉搜索树
  * 
  * 给你一个整数数组 nums ，其中元素已经按 升序 排列，请你将其转换为一棵 平衡 二叉搜索树。
  * 
@@ -29,12 +29,13 @@
  * @return {TreeNode}
  */
 var sortedArrayToBST = function(nums) {
-  if (!nums.length) return null;
-  const index = nums.length / 2 >> 0;
+  const len = nums.length;
+  if (!len) return null;
+  const mid = len / 2 >> 0;
   const node = new TreeNode(
-    nums[index],
-    sortedArrayToBST(nums.slice(0, index)),
-    sortedArrayToBST(nums.slice(index + 1)),
-  )
+    nums[mid],
+    sortedArrayToBST(nums.slice(0, mid)),
+    sortedArrayToBST(nums.slice(mid + 1)),
+  );
   return node;
 };

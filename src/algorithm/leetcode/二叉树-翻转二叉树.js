@@ -1,5 +1,5 @@
 /**
- * 翻转二叉树
+ * 226. 翻转二叉树
  * 
  * 给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。
  * 
@@ -28,8 +28,7 @@
  */
 var invertTree = function(root) {
   if (!root) return root;
-  [root.left, root.right] = [root.right, root.left];
-  invertTree(root.left);
-  invertTree(root.right);
+  const { left, right } = root;
+  [root.left, root.right] = [invertTree(right), invertTree(left)];
   return root;
 };

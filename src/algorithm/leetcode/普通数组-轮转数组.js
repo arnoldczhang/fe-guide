@@ -1,5 +1,5 @@
 /**
- * 轮转数组
+ * 189. 轮转数组
  * 
  * 给定一个整数数组 nums，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。
  * 
@@ -23,7 +23,8 @@
  * @return {void} Do not return anything, modify nums in-place instead.
  * 
  * 提示：
- * 1. 原数组上改，ok？
+ * 1. 原数组上改
+ * 2. %
  */
 
 // test

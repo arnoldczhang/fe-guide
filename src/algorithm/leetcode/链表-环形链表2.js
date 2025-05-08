@@ -31,16 +31,14 @@
  * @return {ListNode}
  * 
  * 提示：
- * 1. 试试快慢指针
- * 2. 快指针走过距离是慢指针2倍
- * 3. 假设慢指针跑a到环入口，跑x和快指针相遇，则环长度是a + x，
+ * 1. 2倍速快慢指针
+ * 2. 假设慢指针跑a到环入口，跑x和快指针相遇，则环长度是a + x，
  * 所以再从头开跑一个新指针，跑到a距离就是答案
  */
 var detectCycle = function(head) {
-  let result = null;
   let slow = head;
   let fast = head;
-  if (!head) return result;
+  if (!head) return null;
   while (fast && fast.next) {
     slow = slow.next;
     fast = fast.next.next;
@@ -53,5 +51,5 @@ var detectCycle = function(head) {
       return pre;
     }
   }
-  return result;
+  return null;
 };

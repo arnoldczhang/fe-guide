@@ -1,5 +1,5 @@
 /**
- * 二叉搜索树中第 K 小的元素
+ * 230. 二叉搜索树中第 K 小的元素
  * 给定一个二叉搜索树的根节点 root ，和一个整数 k ，请你设计一个算法查找其中第 k 小的元素（从 1 开始计数）。
  * 
  * 
@@ -24,14 +24,15 @@
  * @return {number}
  * 
  * 提示：
- * 1. 中序遍历，可以不借助额外数组
+ * 1. 中序深度遍历
+ * 2. 方法二：有点难，排序后，k递减，可以不借助额外数组获得答案
  */
 var kthSmallest = function(root, k) {
   if (!root) return null;
   let ans = -1;
   const dfs = (node = root) => {
-    if (!node) return -1;
-    if (ans !== -1) return ans;
+    if (!node) return;
+    if (ans !== -1) return;
     const { left, right } = node;
     dfs(left);
     // 倒数开始，每次走到这里，表示经过一个节点

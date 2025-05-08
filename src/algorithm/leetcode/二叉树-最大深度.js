@@ -19,10 +19,13 @@
  *     this.left = (left===undefined ? null : left)
  *     this.right = (right===undefined ? null : right)
  * }
- */
-/**
+ * 
  * @param {TreeNode} root
  * @return {number}
+ * 
+ * 提示：
+ * 1. 试试不额外加函数入参
+ * 
  */
 var maxDepth = function(root) {
   if (!root) return 0;

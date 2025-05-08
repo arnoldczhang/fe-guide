@@ -29,6 +29,9 @@
  * 
  * @param {ListNode} head
  * @return {boolean}
+ * 
+ * 提示：
+ * 1. 快慢指针
  */
 var hasCycle = function(head) {
   if (!head) return false;

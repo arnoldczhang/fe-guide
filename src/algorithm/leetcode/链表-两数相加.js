@@ -24,11 +24,13 @@
  *     this.val = (val===undefined ? 0 : val)
  *     this.next = (next===undefined ? null : next)
  * }
- */
-/**
+ * 
  * @param {ListNode} l1
  * @param {ListNode} l2
  * @return {ListNode}
+ * 
+ * 提示：
+ * 1. 考虑进位
  */
 var addTwoNumbers = function(l1, l2) {
   if (!l1 && !l2) return null;

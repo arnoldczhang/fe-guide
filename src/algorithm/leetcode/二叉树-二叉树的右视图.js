@@ -1,5 +1,5 @@
 /**
- * 二叉树的右视图
+ * 199. 二叉树的右视图
  * 
  * 示例 1：
  * 输入：root = [1,2,3,null,5,null,4]
@@ -27,9 +27,25 @@
  * @return {number[]}
  * 
  * 提示：
- * 1. 广度优先
+ * 1. 方式一：队列遍历
+ * 2. 方式二：变异的先序深度遍历（根节点 → 右子树 → 左子树）
  */
 var rightSideView = function(root) {
+  const result = [];
+  if (!root) return result;
+  const dfs = (node = root, level = 0) => {
+    if (!node) return null;
+    if (result.length === level) {
+      result.push(node.val);
+    }
+    dfs(node.right, level + 1);
+    dfs(node.left, level + 1);
+  };
+  dfs();
+  return result;
+};
+
+var rightSideView2 = function(root) {
   const result = [];
   if (!root) return result;
   const queue = [root];
