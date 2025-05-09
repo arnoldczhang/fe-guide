@@ -57,7 +57,7 @@ var searchMatrix2 = function(matrix, target) {
   let end = list.length - 1;
   let mid;
   while (start <= end) {
-    mid = start + ((end - start) / 2 >> 0);
+    mid = start + ((end - start) >> 1);
     const num = list[mid];
     if (num === target) return true;
     if (num > target) {

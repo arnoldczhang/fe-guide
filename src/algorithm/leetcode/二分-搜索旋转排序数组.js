@@ -67,7 +67,7 @@ var search2 = function(nums, target) {
   let mid;
   const last = nums[nums.length - 1];
   while (start <= end) {
-    mid = start + ((end - start) / 2 >> 0);
+    mid = start + ((end - start) >> 1);
     if (target === nums[mid]) return mid;
     if (nums[mid] < last) {
       if (target <= last) {

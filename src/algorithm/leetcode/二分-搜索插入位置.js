@@ -35,7 +35,7 @@ var searchInsert = function(nums, target) {
   let end = result - 1;
   let mid;
   while (start <= end) {
-    mid = start + ((end - start) / 2 >> 0);
+    mid = start + ((end - start) >> 1);
     if (nums[mid] >= target) {
       result = mid;
       end = mid - 1;
