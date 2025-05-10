@@ -29,6 +29,12 @@
  * 2. 分段匹配，即当前段是否匹配，还取决于上一段是否匹配
  * 
  */
+
+// test
+console.log(wordBreak("leetcode", ["leet", "code"])); // true
+console.log(wordBreak("applepenapple", ["apple", "pen"])); // true
+console.log(wordBreak("catsandog", ["cats", "dog", "sand", "and", "cat"])); // false
+
 var wordBreak = function(s, wordDict) {
   const dp = Array(s.length + 1).fill(false);
   // 空字符串，默认是能匹配的

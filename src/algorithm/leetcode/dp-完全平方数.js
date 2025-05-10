@@ -22,7 +22,25 @@
  * 1. 背包问题的变体
  * 2. 可以跳过完全平方数 > n的场景
  */
+
+// test
+console.log(numSquares(12)); // 3
+console.log(numSquares(13)); // 2
+
 var numSquares = function(n) {
+  const dp = Array(n + 1).fill(Infinity);
+  dp[0] = 0;
+  dp[1] = 1;
+  // 不断计算i的情况下最小的组合
+  for (let i = 1; i <= n; i += 1) {
+    for (let j = 1; j * j <= i; j += 1) {
+      dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
+    }
+  }
+  return dp[n];
+};
+
+var numSquares2 = function(n) {
   const dp = [0];
   // 遍历完全平方数
   for (let i = 1; i * i <= n; i += 1) {

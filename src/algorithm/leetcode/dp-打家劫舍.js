@@ -21,7 +21,8 @@
  * @return {number}
  * 
  * 提示：
- * 1. 不一定只隔一家偷
+ * 1. 记录偷或不偷
+ * 2. 不一定只隔一家偷
  */
 
 // test
@@ -47,7 +48,7 @@ var rob = function(nums) {
 var rob2 = function(nums) {
   let f0 = 0, f1 = 0;
   for (const x of nums) {
-      [f0, f1] = [f1, Math.max(f1, f0 + x)]
+    [f0, f1] = [f1, Math.max(f1, f0 + x)]
   }
   return f1;
 };

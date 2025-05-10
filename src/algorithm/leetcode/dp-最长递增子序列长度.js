@@ -16,7 +16,15 @@
  * 示例 3：
  * 输入：nums = [7,7,7,7,7,7,7]
  * 输出：1
+ * 
+ * 提示：
+ * 1. 按需累加
  */
+
+// test
+console.log(lengthOfLIS([1,2,4,3,5,4,7,2]));
+console.log(lengthOfLIS([2,2,2,2,2]));
+
 var lengthOfLIS = function(nums) {
   const dp = Array(nums.length + 1).fill(1);
   for (let i = 0; i < nums.length; i += 1) {
@@ -49,5 +57,4 @@ function findLIS2(nums) {
   });
   return stack.length;
 }
-console.log(findLIS([1,2,4,3,5,4,7,2]));
-console.log(findLIS([2,2,2,2,2]));
+

@@ -17,7 +17,16 @@
  * 
  * @param {number[]} nums
  * @return {number}
+ * 
+ * 提示：
+ * 1. 同时记最大最小
+ * 2. 可以硬n^2，但是超时
  */
+
+// test
+console.log(maxProduct([2,3,-2,4])); // 6
+console.log(maxProduct([-2,0,-1])); // 0
+
 var maxProduct = function(nums) {
   const len = nums.length;
   const max = Array(len);

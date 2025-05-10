@@ -274,6 +274,8 @@ class LinkedList {
 > - **初始化状态**：dp[0] = 0、dp[1] = 1等
 > 
 > - **遍历顺序**：Math.max(...dp[n])
+>
+> - **遍历方式**：如果是一维数组，可选项在外层，总量在内层；如果是二维数组，则两者可交换
 > 
 > - **打印结果**：dp[i]
 
@@ -281,13 +283,14 @@ class LinkedList {
 
 - [dp-爬楼梯](./leetcode/dp-爬楼梯.js)
 - [dp-杨辉三角](./leetcode/dp-杨辉三角.js)
-- [dp-打家劫舍](./leetcode/dp-打家劫舍.js)
-- [dp-完全平方数](./leetcode/dp-完全平方数.js)
+- [TODO dp-打家劫舍](./leetcode/dp-打家劫舍.js)
+- [TODO dp-完全平方数](./leetcode/dp-完全平方数.js)
 - [dp-零钱兑换](./leetcode/dp-零钱兑换.js)
-- [dp-单词拆分](./leetcode/dp-单词拆分.js)
-- [dp-最长递增子序列长度](./leetcode/dp-最长递增子序列长度.js)
-- [dp-乘积最大子数组](./leetcode/dp-乘积最大子数组.js)
+- [TODO dp-单词拆分](./leetcode/dp-单词拆分.js)
+- [TODO dp-最长递增子序列长度](./leetcode/dp-最长递增子序列长度.js)
+- [TODO dp-乘积最大子数组](./leetcode/dp-乘积最大子数组.js)
 - [dp-最长回文子串](./leetcode/dp-最长回文子串.js)
+- [dp-分割等和子集](./leetcode/dp-分割等和子集.js)
 
 ---
 

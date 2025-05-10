@@ -28,6 +28,12 @@
  * 1. 一维数组可解
  * 2. 求最小，那么默认Infinity
  */
+
+// test
+console.log(coinChange([1, 2, 5], 11)); // 3
+console.log(coinChange([2], 3)); // -1
+console.log(coinChange([1], 0)); // 0
+
 var coinChange = function(coins, amount) {
   const dp = Array(amount + 1).fill(Infinity);
   dp[0] = 0;
