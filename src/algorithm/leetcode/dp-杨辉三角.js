@@ -1,5 +1,5 @@
 /**
- * 杨辉三角
+ * 118. 杨辉三角
  * 
  * 给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
  * 在「杨辉三角」中，每个数是它左上方和右上方的数的和。
@@ -20,6 +20,11 @@
  * 1. 第n行的数组有n个元素，首尾是1
  * 2. 第3行开始要计算上面行的和了
  */
+
+// test
+console.log(generate(5));
+console.log(generate(1));
+
 var generate = function(numRows) {
   const dp = [];
   for (let i = 0; i < numRows; i += 1) {

@@ -1,5 +1,5 @@
 /**
- * 跳跃游戏 II
+ * 45. 跳跃游戏 II
  * 
  * 给定一个长度为 n 的 0 索引整数数组 nums。初始位置为 nums[0]。
  * 每个元素 nums[i] 表示从索引 i 向后跳转的最大长度。换句话说，如果你在 nums[i] 处，你可以跳转到任意 nums[i + j] 处:
@@ -26,6 +26,11 @@
  * 2. 记录一定区间内，能往下个位置跳远的最大距离，作为下个起跳点，周而复始
  * 
  */
+
+// test
+console.log(jump([2,3,1,1,4])); // 2
+console.log(jump([2,3,0,1,4])); // 2
+
 var jump = function(nums) {
   const len = nums.length;
   if (!len) return 0;

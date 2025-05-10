@@ -1,5 +1,5 @@
 /**
- * 爬楼梯
+ * 70. 爬楼梯
  * 
  * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
  * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
@@ -28,6 +28,11 @@
  * 2. 因为两种情况互斥，所以是两者爬法的相加
  * 
  */
+
+// test
+console.log(climbStairs(2)); // 2
+console.log(climbStairs(3)); // 3
+
 var climbStairs = function(n) {
   const dp = [];
   dp[1] = 1;
