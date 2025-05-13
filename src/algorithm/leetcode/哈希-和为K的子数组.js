@@ -26,9 +26,9 @@ var subarraySum = function(nums, k) {
   const cnt = new Map();
   cnt.set(0, 1); // s[0]=0 单独统计
   for (const x of nums) {
-      s += x;
-      ans += cnt.get(s - k) ?? 0;
-      cnt.set(s, (cnt.get(s) ?? 0) + 1);
+    s += x;
+    ans += cnt.get(s - k) ?? 0;
+    cnt.set(s, (cnt.get(s) ?? 0) + 1);
   }
   return ans;
 };

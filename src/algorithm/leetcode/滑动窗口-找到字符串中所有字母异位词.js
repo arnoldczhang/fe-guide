@@ -31,13 +31,48 @@ const getCode = (s) => s.charCodeAt(0) - 'a'.charCodeAt(0);
 /**
  * 不定长窗口做法
  * 
- * - 相当于每个窗口只有一个字母
+ * - 直觉做法
  * 
  * @param {*} s 
  * @param {*} p 
  * @returns 
  */
 var findAnagrams = function(s, p) {
+  const dp = Array(26).fill(0);
+  for (const letter of p) {
+    dp[getCode(letter)] += 1;
+  }
+  const result = [];
+  let start = 0;
+  for (let i = 0; i < s.length; i += 1) {
+    const code = getCode(s[i]);
+    dp[code] -= 1;
+    // 匹配到了
+    if (!dp[code] && i - start + 1 === p.length) {
+      result.push(start);
+      // 开始指针动一步即可，保证能继续前进
+      dp[getCode(s[start++])] += 1;
+      continue;
+    }
+
+    // 多的字母，退掉
+    while (dp[code] < 0) {
+      dp[getCode(s[start++])] += 1;
+    }
+  }
+  return result;
+};
+
+/**
+ * 不定长窗口做法
+ * 
+ * - 相当于每个窗口只有一个字母
+ * 
+ * @param {*} s 
+ * @param {*} p 
+ * @returns 
+ */
+var findAnagrams2 = function(s, p) {
   const result = [];
   if (p.length > s.length) return result;
   const targetArr = Array.from({ length: 26 }).fill(0);
@@ -71,7 +106,7 @@ var findAnagrams = function(s, p) {
  * @param {*} p 
  * @returns 
  */
-var findAnagrams2 = function(s, p) {
+var findAnagrams3 = function(s, p) {
   const result = [];
   if (p.length > s.length) return result;
   const targetArr = Array.from({ length: 26 }).fill(0);

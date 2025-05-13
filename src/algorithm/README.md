@@ -99,18 +99,18 @@ O(1) < O(logn) < O(n) < O(nlogn) < O(n²) < O(n³) < O(2ⁿ) < O(n!)
 ## 普通数组
 
 > **常用技巧**
->
+> 
 > 1. 前缀和
->   + s[0]=0
->   + s[i+1] = nums[0] + nums[1] + ⋯ + nums[i]
->   + s[i] - s[j]: 序号i到j之间的总和
+>    + s[0]=0
+>    + s[i+1] = nums[0] + nums[1] + ⋯ + nums[i]
+>    + s[i] - s[j]: 序号i到j之间的总和
 
 ### 习题
 
-- [普通数组-最大子数组和](./leetcode/普通数组-最大子数组和.js)
+- [TODO 普通数组-最大子数组和](./leetcode/普通数组-最大子数组和.js)
 - [普通数组-合并区间](./leetcode/普通数组-合并区间.js)
 - [普通数组-轮转数组](./leetcode/普通数组-轮转数组.js)
-- [普通数组-除自身以外数组的乘积](./leetcode/普通数组-除自身以外数组的乘积.js)
+- [TODO 普通数组-除自身以外数组的乘积](./leetcode/普通数组-除自身以外数组的乘积.js)
 
 ---
 
@@ -279,7 +279,7 @@ class LinkedList {
 > - **初始化状态**：dp[0] = 0、dp[1] = 1等
 > 
 > - **遍历顺序**：Math.max(...dp[n])
->
+> 
 > - **遍历方式**：如果是一维数组，可选项在外层，总量在内层；如果是二维数组，则两者可交换
 > 
 > - **打印结果**：dp[i]
@@ -457,7 +457,7 @@ var postorderTraversal = function (root) {
 
 - [哈希-两数之和](./leetcode/哈希-两数之和.js)
 - [哈希-字母异位词分组](./leetcode/哈希-字母异位词分组.js)
-- [哈希-最长连续序列](./leetcode/哈希-最长连续序列.js)
+- [TODO 哈希-最长连续序列](./leetcode/哈希-最长连续序列.js)
 - [哈希-和为K的子数组](./leetcode/哈希-和为K的子数组.js)
 
 ---
@@ -507,18 +507,18 @@ var postorderTraversal = function (root) {
 
 ```javascript
 function backtrack(路径, 选择列表) {
-    if (满足终止条件) {
-        保存结果;
-        return;
-    }
+  if (满足终止条件) {
+    保存结果;
+    return;
+  }
 
-    for (const 选择 of 选择列表) {
-        if (当前选择不合法) continue; // 剪枝
+  for (const 选择 of 选择列表) {
+    if (当前选择不合法) continue; // 剪枝
 
-        做选择;      // 将选择加入路径
-        backtrack(路径, 新选择列表); // 递归
-        撤销选择;    // 从路径中移除选择（回溯）
-    }
+    做选择;      // 将选择加入路径
+    backtrack(路径, 新选择列表); // 递归
+    撤销选择;    // 从路径中移除选择（回溯）
+  }
 }
 ```
 
@@ -529,7 +529,7 @@ function backtrack(路径, 选择列表) {
 - [回溯-子集](./leetcode/回溯-子集.js)
 - [回溯-组合总和](./leetcode/回溯-组合总和.js)
 - [回溯-括号生成](./leetcode/回溯-括号生成.js)
-- [回溯-单词搜索](./leetcode/回溯-单词搜索.js)
+- [TODO 回溯-单词搜索](./leetcode/回溯-单词搜索.js)
 - [回溯-分割回文串](./leetcode/回溯-分割回文串.js)
 
 ---

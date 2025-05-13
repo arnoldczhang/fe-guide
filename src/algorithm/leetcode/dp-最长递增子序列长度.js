@@ -27,8 +27,9 @@ console.log(lengthOfLIS([0,1,0,3,2,3])); // 4
 console.log(lengthOfLIS([2,2,2,2,2])); // 1
 
 var lengthOfLIS = function(nums) {
-  const dp = Array(nums.length + 1).fill(1);
-  for (let i = 0; i < nums.length; i += 1) {
+  const len = nums.length;
+  const dp = Array(len).fill(1);
+  for (let i = 0; i < len; i += 1) {
     for (let j = 0; j < i; j += 1) {
       if (nums[j] < nums[i]) dp[i] = Math.max(dp[i], dp[j] + 1);
     }

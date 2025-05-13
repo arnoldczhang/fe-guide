@@ -17,6 +17,9 @@
  * @param {*} matrix 
  * @param {*} target 
  * @returns 
+ * 
+ * 提示：
+ * 1. 铺开搜
  */
 
 // test

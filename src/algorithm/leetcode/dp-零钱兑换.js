@@ -25,7 +25,7 @@
  * @return {number}
  * 
  * 提示：
- * 1. 一维数组可解
+ * 1. dp[i]表示金额为i时需要的硬币数
  * 2. 求最小，那么默认Infinity
  */
 
@@ -45,3 +45,16 @@ var coinChange = function(coins, amount) {
   }
   return dp[amount] === Infinity ? -1 : dp[amount];
 };
+
+var coinChange2 = function(coins, amount) {
+  const dp = Array(amount + 1).fill(Infinity);
+  dp[0] = 0;
+  for (let i = 1; i <= amount; i += 1) {
+    for (let j = 0; j < coins.length; j += 1) {
+      const coin = coins[j];
+      if (i < coin) continue;
+      dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+    }
+  }
+  return dp[dp.length - 1] === Infinity ? - 1 : dp[dp.length - 1];
+}

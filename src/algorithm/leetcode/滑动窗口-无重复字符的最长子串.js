@@ -19,16 +19,33 @@
  * 请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
  * 
  * 提示：
- * 1. 缓存index
+ * 1. O(N)
+ * 2. 缓存index
  */
 
 // test
-console.log(lengthOfLongestSubstring('abcabcbb'));
-console.log(lengthOfLongestSubstring('bbbbb'));
-console.log(lengthOfLongestSubstring('pwwkew'));
+console.log(lengthOfLongestSubstring('abcabcbb')); // 3
+console.log(lengthOfLongestSubstring('bbbbb')); // 1
+console.log(lengthOfLongestSubstring('pwwkew')); // 3
+console.log(lengthOfLongestSubstring(' ')); // 1
+console.log(lengthOfLongestSubstring("abba")); // 2
 
+function lengthOfLongestSubstring(s) {
+  const cach = new Map();
+  let max = 0;
+  let start = 0;
+  for (let i = 0; i < s.length; i += 1) {
+    const letter = s[i];
+    while (cach.has(letter)) {
+      cach.delete(s[start++]);
+    }
+    cach.set(letter, i);
+    max = Math.max(max, i - start + 1);
+  }
+  return max;
+}
 
- function lengthOfLongestSubstring(s) {
+function lengthOfLongestSubstring2(s) {
   const { length } = s;
   let left = 0;
   let right = 0;
@@ -47,9 +64,9 @@ console.log(lengthOfLongestSubstring('pwwkew'));
     max = Math.max(max, right - left);
   }
   return max;
- }
+}
 
-const lengthOfLongestSubstring2 = (s) => {
+const lengthOfLongestSubstring3 = (s) => {
   const cach = new Map();
   let result = 0;
   let left = 0;
