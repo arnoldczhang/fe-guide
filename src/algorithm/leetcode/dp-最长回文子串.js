@@ -13,12 +13,32 @@
  * @param {string} s
  * @return {string}
  */
+
+// test
+console.log(longestPalindrome('babad'));
+console.log(longestPalindrome('aaa'));
+
 var isPalindrome = (s, left, right) => {
   while (left < right) {
     if (s[left++] !== s[right--]) return false;
   }
   return true;
 }
+
+var longestPalindrome = function(s) {
+  const len = s.length;
+  const dp = Array(len);
+  for (let i = 0; i < len; i += 1) {
+    dp[i] = i ? dp[i - 1] : [0, 1];
+    for (let j = 0; j <= i; j += 1) {
+      if (isPalindrome(s, j, i)) {
+        if (i - j + 1 > dp[i][1] - dp[i][0]) dp[i] = [j, i + 1];
+        break;
+      }
+    }
+  }
+  return s.slice(dp[len - 1][0], dp[len - 1][1]);
+};
 
 var longestPalindrome2 = function(s) {
   const len = s.length;
@@ -34,5 +54,3 @@ var longestPalindrome2 = function(s) {
   }
   return s.slice(dp[len - 1][0], dp[len - 1][1]);
 };
-console.log(longestPalindrome('babad'));
-console.log(longestPalindrome('aaa'));

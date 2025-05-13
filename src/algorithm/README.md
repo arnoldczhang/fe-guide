@@ -98,7 +98,12 @@ O(1) < O(logn) < O(n) < O(nlogn) < O(n²) < O(n³) < O(2ⁿ) < O(n!)
 
 ## 普通数组
 
-> 
+> **常用技巧**
+>
+> 1. 前缀和
+>   + s[0]=0
+>   + s[i+1] = nums[0] + nums[1] + ⋯ + nums[i]
+>   + s[i] - s[j]: 序号i到j之间的总和
 
 ### 习题
 
@@ -290,7 +295,7 @@ class LinkedList {
 - [TODO dp-最长递增子序列长度](./leetcode/dp-最长递增子序列长度.js)
 - [TODO dp-乘积最大子数组](./leetcode/dp-乘积最大子数组.js)
 - [dp-最长回文子串](./leetcode/dp-最长回文子串.js)
-- [dp-分割等和子集](./leetcode/dp-分割等和子集.js)
+- [TODO dp-分割等和子集](./leetcode/dp-分割等和子集.js)
 
 ---
 
@@ -453,6 +458,7 @@ var postorderTraversal = function (root) {
 - [哈希-两数之和](./leetcode/哈希-两数之和.js)
 - [哈希-字母异位词分组](./leetcode/哈希-字母异位词分组.js)
 - [哈希-最长连续序列](./leetcode/哈希-最长连续序列.js)
+- [哈希-和为K的子数组](./leetcode/哈希-和为K的子数组.js)
 
 ---
 

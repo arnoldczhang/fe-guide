@@ -21,14 +21,13 @@
  * @return {number}
  * 
  * 提示：
- * 1. 记录偷或不偷
- * 2. 不一定只隔一家偷
+ * 1. dp[i]表示当前房屋偷或不偷的情况
  */
 
 // test
-console.log(rob([1,2,3,1]));
-console.log(rob([2,1,1,2]));
-console.log(rob([2,7,9,3,1]));
+console.log(rob([1,2,3,1])); // 4
+console.log(rob([2,1,1,2])); // 4
+console.log(rob([2,7,9,3,1])); // 12
 
 var rob = function(nums) {
   const len = nums.length;

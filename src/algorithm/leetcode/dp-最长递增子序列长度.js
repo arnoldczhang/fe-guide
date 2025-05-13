@@ -18,12 +18,13 @@
  * 输出：1
  * 
  * 提示：
- * 1. 按需累加
+ * 1. dp[i]表示当前位置的最长递增
  */
 
 // test
-console.log(lengthOfLIS([1,2,4,3,5,4,7,2]));
-console.log(lengthOfLIS([2,2,2,2,2]));
+console.log(lengthOfLIS([10,9,2,5,3,7,101,18])); // 4
+console.log(lengthOfLIS([0,1,0,3,2,3])); // 4
+console.log(lengthOfLIS([2,2,2,2,2])); // 1
 
 var lengthOfLIS = function(nums) {
   const dp = Array(nums.length + 1).fill(1);
