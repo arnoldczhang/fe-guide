@@ -61,6 +61,7 @@
 ## 5. 前端框架
 
 - [vue3的treeshake](../vue/vue3.md#treeshake)
+- [vue-router](../vue/vue3.md#router)
 
 ## 6. 前端工程化
 
