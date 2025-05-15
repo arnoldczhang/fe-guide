@@ -1,44 +1,46 @@
 /**
- * 题目：
- * 回溯-括号生成
+ * 22. 括号生成
  * 
  * 数字 n 代表生成括号的对数，请你设计一个函数，
  * 用于能够生成所有可能的并且 有效的 括号组合
  * 
+ * 示例 1：
  * 输入：n = 3
- * 输出：[
- *  "((()))",
- *  "(()())",
- *  "(())()",
- *  "()(())",
- *  "()()()"
- * ]
+ * 输出：["((()))","(()())","(())()","()(())","()()()"]
+ * 
+ * 示例 2：
+ * 输入：n = 1
+ * 输出：["()"]
  * 
  * 题解：
  * - 反正很屌，不明觉厉
  * 
  */
-function generateParenthesis(n) {
+
+// test
+console.log(generateParenthesis(3)); // ["((()))","(()())","(())()","()(())","()()()"]
+console.log(generateParenthesis(1)); // ["()"]
+
+var generateParenthesis = function(n) {
+  const len = n * 2;
   const result = [];
-  const backtrack = (left, right, track = []) => {
-    if (right < left || left < 0 || right < 0) {
-      return;
+
+  const backtrack = (i = 0, arr = [], open = 0) => {
+    if (i === len) return result.push(arr.join(''));
+    // 左括号数不到n，可继续添加
+    if (open < n) {
+      arr.push('(');
+      backtrack(i + 1, arr, open + 1);
+      arr.pop();
     }
-
-    if (!left && !right) {
-      return result.push(track.join(''));
+    // 当前索引不超过2倍括号数，右括号可继续添加
+    if (i < 2 * open) {
+      arr.push(')');
+      backtrack(i + 1, arr, open);
+      arr.pop();
     }
+  }
 
-    track.push('(');
-    backtrack(left - 1, right, track.slice());
-    track.pop();
-
-    track.push(')');
-    backtrack(left, right - 1, track.slice());
-    track.pop();
-  };
-  backtrack(n, n);
+  backtrack();
   return result;
-}
-
-console.log(generateParenthesis(3));
+};

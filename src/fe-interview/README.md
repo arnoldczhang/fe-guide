@@ -6,6 +6,13 @@
 
 ## 1. 前端基础
 
+### 基础
+
+- https://juejin.cn/column/6964717704712290317
+
+### 深入&总结
+
+- [promise细节](./src/promise.md)
 - [暂时性死区](./src/common.md#let、const以及var的区别)
 - [事件循环](../js&browser/并发模型-event_loop.md#宏任务和微任务)
 - [线程&进程](../js&browser/现代浏览器.md#进程)
@@ -17,7 +24,7 @@
 - [mjs和cjs](../js&browser/esm.md)
 - [跨域](../http/跨域.md)
 - [性能优化](../js&browser/性能优化2020.md)
-- [题](./src/common.md)
+- [2020年的题](./src/common.md)
 
 ## 2. 手写源码
 
@@ -35,6 +42,7 @@
 - [双指针-字符串全匹配](./src/字符串全匹配.js)
 - [zookeeper增删改查](./src/zookeeper.js)
 - [微信红包算法](../algorithm/leetcode/微信红包算法.js)
+- [indexedDB读写](./src/indexedDB读写.js)
 
 ## 3. 打包工具
 
@@ -48,11 +56,13 @@
 
 - [网页请求展示全过程](../js&browser/页面过程与浏览器缓存.md#过程简述)
 - [get和post](../js&browser/页面过程与浏览器缓存.md#GETvsPOST)
-- [http](../http/README.md)
+- [http](../http/README.md#总览)
 
 ## 5. 前端框架
 
 - [vue3的treeshake](../vue/vue3.md#treeshake)
+- [vue-router](../vue/vue3.md#router)
+- [computed和watch](../vue/vue3.md#computed和watch)
 
 ## 6. 前端工程化
 
@@ -60,18 +70,12 @@
 
 ## 7. 团队管理
 
-- [前端架构](../career/前端架构.md)
+- [前端架构](../career/前端基础架构.md)
 - [领导力](../career/领导力.md)
 
 ## 8. 算法
 
-- [双指针-各种数组](../algorithm/leetcode/双指针-数组.js)
-- [双指针-各种滑动窗口](../algorithm/leetcode/双指针-滑动窗口.js)
-- [回溯-各种排列组合](../algorithm/leetcode/回溯-排列组合all.js)
-- [动态规划](../algorithm/leetcode/dp-通解.js)
-- 深度遍历
-- [并查集](../algorithm/leetcode/并查集.js)
-- 双指针-链表
+- [算法精要](../algorithm/README.md)
 
 ## 9. 技术方案
 
@@ -83,3 +87,4 @@
 - [微前端](../microservice/微前端.md)
 - [监控平台](../career/前端埋点和监控方案.md)
 - [前端自动化测试](../career/前端自动化测试.md)
+- [低代码平台](../career/低代码平台.md)

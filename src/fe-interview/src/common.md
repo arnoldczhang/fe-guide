@@ -198,6 +198,7 @@
 * [`抗锯齿`](#抗锯齿)
 * [`css-in-js`](#css-in-js)
 * [`盒模型`](#盒模型)
+* [`margin塌陷`](#margin塌陷)
 
 **html**
 
@@ -1410,12 +1411,14 @@ Array.from(new Set(arr.toString().split(","))).sort((a,b)=>{ return a-b});
 [网络编程基础](https://crystalwindz.com/unp_note_1/#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E6%9C%AC%E4%B9%A6%E7%AE%80%E4%BB%8B)
 
 #### 三次握手
+> 两方分别确认是否都具有发送和接收能力
 
 - 客户端请求服务端【服务端确认客户端有发送能力】
 - 服务端请求客户端【客户端确认服务端有发送能力】
 - 客户端正式请求
 
 #### 四次挥手
+> 两方先确认不再发送数据，再确认关闭连接
 
 - 客户端发送要求断开的请求
 - 服务端返回正在断开的请求【服务端可能并不会立即关闭 SOCKET，所以先返回 ACK】
@@ -1557,7 +1560,7 @@ arr instanceof Array; // false
 
 **重绘**
 
-> 更新了元素绘制属性
+> 更新了元素**绘制属性**
 
 - 相比回流，**省去了布局和分层阶段**，可以参考[关键渲染路径](../../js&browser/页面过程与浏览器缓存.md#17.关键渲染路径)
 
@@ -1565,7 +1568,7 @@ arr instanceof Array; // false
 
 **回流**
 
-> 更新了元素的几何属性
+> 更新了元素的**几何属性**
 
 - [触发回流一览表](https://gist.github.com/paulirish/5d52fb081b3570c81e3a)
 
@@ -1614,6 +1617,8 @@ arr instanceof Array; // false
 - 避免多次样式嵌套
 
 - 动画效果尽量加载 `absolute` 或 `fixed` 元素上
+
+- 修改class替代直接改style（合并触发）
 
 - 使用 GPU 加速
 
@@ -3952,3 +3957,18 @@ document.querySelector('input[type=password]').addEventListener('keyup', functio
 > 飞书等应用中，展示缩略图等信息
 
 比如：[财新网](https://www.caixin.com/)，做的很到位
+
+---
+
+### margin塌陷
+问题描述：垂直方向，margin取了最大者
+
+解决：
+1. 如果是兄弟元素
+- 底层元素display: inline-block;
+
+2. 如果是父子元素
+- 父元素overflow: hidden;
+- 子元素dipsplay: inline-block;
+
+据记载，底层元素或子元素加float或者position: absolute/fixed也能解决，但是不太好吧？

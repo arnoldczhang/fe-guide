@@ -1,21 +1,51 @@
 /**
- * 题目：
- * 滑动窗口-无重复字符的最长子串
- * 
+ * 3. 无重复字符的最长子串
  * 给定一个字符串，请你找出其中不含有重复字符的最长子串的长度。
  * 
- * 输入: "abcabcbb"
+ * 示例 1:
+ * 输入: s = "abcabcbb"
  * 输出: 3 
+ * 解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
  * 
- * 输入: "bbbbb"
+ * 示例 2:
+ * 输入: s = "bbbbb"
  * 输出: 1
+ * 解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
  * 
- * 题解：
- * - 两个相同字符间隔最远的距离，即为最长子串
- * - 简单计数器
+ * 示例 3:
+ * 输入: s = "pwwkew"
+ * 输出: 3
+ * 解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+ * 请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
  * 
+ * 提示：
+ * 1. O(N)
+ * 2. 缓存index
  */
- function lengthOfLongestSubstring(s) {
+
+// test
+console.log(lengthOfLongestSubstring('abcabcbb')); // 3
+console.log(lengthOfLongestSubstring('bbbbb')); // 1
+console.log(lengthOfLongestSubstring('pwwkew')); // 3
+console.log(lengthOfLongestSubstring(' ')); // 1
+console.log(lengthOfLongestSubstring("abba")); // 2
+
+function lengthOfLongestSubstring(s) {
+  const cach = new Map();
+  let max = 0;
+  let start = 0;
+  for (let i = 0; i < s.length; i += 1) {
+    const letter = s[i];
+    while (cach.has(letter)) {
+      cach.delete(s[start++]);
+    }
+    cach.set(letter, i);
+    max = Math.max(max, i - start + 1);
+  }
+  return max;
+}
+
+function lengthOfLongestSubstring2(s) {
   const { length } = s;
   let left = 0;
   let right = 0;
@@ -34,8 +64,21 @@
     max = Math.max(max, right - left);
   }
   return max;
- }
+}
 
- console.log(lengthOfLongestSubstring('abcabcbb'));
- console.log(lengthOfLongestSubstring('bbbbb'));
- console.log(lengthOfLongestSubstring('pwwkew'));
+const lengthOfLongestSubstring3 = (s) => {
+  const cach = new Map();
+  let result = 0;
+  let left = 0;
+  let right = 0;
+  while (right < s.length) {
+    const key = s[right];
+    if (cach.has(key) && cach.get(key) >= left) {
+      left = cach.get(key) + 1;
+    }
+    cach.set(key, right);
+    result = Math.max(result, right - left + 1);
+    right += 1;
+  }
+  return result;
+}

@@ -42,3 +42,25 @@ function transfer(arr = [], orderList = ['province', 'city', 'county']) {
     return res;
   }, []);
 }
+
+const transfer2 = (input = [], keys = ['province', 'city', 'county']) => {
+  const result = [];
+  input.forEach((item) => {
+    keys.reduce((res, key, index) => {
+      const matched = res.find((child) => child.name === item[key]);
+      if (matched) return matched.children;
+      if (index === keys.length - 1) {
+        res.push({ key, name: item[key] });
+        return res;
+      }
+      const children = [];
+      res.push({
+        key,
+        name: item[key],
+        children,
+      });
+      return children;
+    }, result);
+  })
+  return result;
+}

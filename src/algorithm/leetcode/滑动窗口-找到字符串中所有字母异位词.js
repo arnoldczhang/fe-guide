@@ -1,64 +1,136 @@
 /**
- * 题目：
+ * 438. 找到字符串中所有字母异位词
+ * 给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+ *  
  * 
- * 滑动窗口-找到字符串中所有字母异位词
+ * 示例 1:
+ * 输入: s = "cbaebabacd", p = "abc"
+ * 输出: [0,6]
+ * 解释:
+ * 起始索引等于 0 的子串是 "cba", 它是 "abc" 的异位词。
+ * 起始索引等于 6 的子串是 "bac", 它是 "abc" 的异位词。
  * 
- * 给定一个字符串 s 和一个非空字符串 p，找到 s 中所有是 p 的字母异位词的子串，返回这些子串的起始索引。
- * 字符串只包含小写英文字母，并且字符串 s 和 p 的长度都不超过 20100。
- * 说明：
+  * 示例 2:
+ * 输入: s = "abab", p = "ab"
+ * 输出: [0,1,2]
+ * 解释:
+ * 起始索引等于 0 的子串是 "ab", 它是 "ab" 的异位词。
+ * 起始索引等于 1 的子串是 "ba", 它是 "ab" 的异位词。
+ * 起始索引等于 2 的子串是 "ab", 它是 "ab" 的异位词。
  * 
- * 字母异位词指字母相同，但排列不同的字符串。
- * 不考虑答案输出的顺序。
- * 
- * 输入: s: "abab" p: "ab"
- * 输出: [0, 1, 2]
- * 
- * 题解：
- * - 同字符串排列
- * 
- * 
+ * 提示：
+ * 1. 计数
  */
-function findAnagrams(s, p) {
-  const result = [];
-  const { length } = s;
-  const windowed = {};
-  const need = [...p].reduce((res, pre) => {
-    res[pre] = res[pre] || 0;
-    res[pre] += 1;
-    windowed[pre] = 0;
-    return res;
-  }, {});
-  let left = 0;
-  let right = 0;
-  let valid = 0;
-  while (right < length) {
-    const rv = s[right];
-    right += 1;
 
-    if (rv in need) {
-      windowed[rv] += 1;
-      if (windowed[rv] === need[rv]) {
-        valid += 1;
-      }
+// test
+console.log(findAnagrams('abab', 'ab')); // [0, 1, 2]
+console.log(findAnagrams('cbaebabacd', 'abc')); // [0, 6]
+
+const getCode = (s) => s.charCodeAt(0) - 'a'.charCodeAt(0);
+
+/**
+ * 不定长窗口做法
+ * 
+ * - 直觉做法
+ * 
+ * @param {*} s 
+ * @param {*} p 
+ * @returns 
+ */
+var findAnagrams = function(s, p) {
+  const dp = Array(26).fill(0);
+  for (const letter of p) {
+    dp[getCode(letter)] += 1;
+  }
+  const result = [];
+  let start = 0;
+  for (let i = 0; i < s.length; i += 1) {
+    const code = getCode(s[i]);
+    dp[code] -= 1;
+    // 匹配到了
+    if (!dp[code] && i - start + 1 === p.length) {
+      result.push(start);
+      // 开始指针动一步即可，保证能继续前进
+      dp[getCode(s[start++])] += 1;
+      continue;
     }
 
-    while (right - left >= p.length) {
-      if (valid === Object.keys(need).length) {
-        result.push(left);
-      }
-      const lv = s[left];
-      left += 1;
-
-      if (lv in need) {
-        if (windowed[lv] === need[lv]) {
-          valid -= 1;
-        }
-        windowed[lv] -= 1;
-      }
+    // 多的字母，退掉
+    while (dp[code] < 0) {
+      dp[getCode(s[start++])] += 1;
     }
   }
   return result;
-}
+};
 
-console.log(findAnagrams('abab', 'ab'));
-console.log(findAnagrams('cbaebabacd', 'abc'));
+/**
+ * 不定长窗口做法
+ * 
+ * - 相当于每个窗口只有一个字母
+ * 
+ * @param {*} s 
+ * @param {*} p 
+ * @returns 
+ */
+var findAnagrams2 = function(s, p) {
+  const result = [];
+  if (p.length > s.length) return result;
+  const targetArr = Array.from({ length: 26 }).fill(0);
+  for (const item of p) {
+    targetArr[getCode(item)] += 1;
+  }
+
+  let left = 0;
+  let right = 0;
+  while (right < s.length) {
+    // right进入窗口后，减一
+    targetArr[getCode(s[right])] -= 1;
+
+    // 多了
+    while (targetArr[getCode(s[right])] < 0) {
+      targetArr[getCode(s[left])] += 1;
+      left += 1;
+    }
+
+    if (right - left + 1 === p.length) {
+      result.push(left);
+    }
+    right += 1;
+  }
+  return result;
+};
+
+/**
+ * 定长窗口
+ * @param {*} s 
+ * @param {*} p 
+ * @returns 
+ */
+var findAnagrams3 = function(s, p) {
+  const result = [];
+  if (p.length > s.length) return result;
+  const targetArr = Array.from({ length: 26 }).fill(0);
+  const currentArr = Array.from({ length: 26 }).fill(0);
+  let left = 0;
+  let right = p.length - 1;
+
+  const getCode = (s) => s.charCodeAt(0) - 'a'.charCodeAt(0);
+
+  p.split('').forEach((item) => {
+    targetArr[getCode(item)] += 1;
+  });
+  for (let i = left; i <= right; i += 1) {
+    const item = s[i];
+    currentArr[getCode(item)] += 1;
+  }
+
+  while (right < s.length) {
+    if (currentArr.join() === targetArr.join()) {
+      result.push(left);
+    }
+    if (right === s.length - 1) break;
+    currentArr[getCode(s[left++])] -= 1;
+    currentArr[getCode(s[++right])] += 1;
+  }
+  return result;
+};

@@ -1,79 +1,56 @@
 /**
- * 判断回文
- */
-const palindrome = (str = '') => {
-  const { length } = str;
-  if (!length) return false;
-  let start = 0;
-  let end = length - 1;
-
-  while (start < end) {
-    if (str[start] !== str[end]) {
-      return false;
-    }
-    start += 1;
-    end -= 1;
-  }
-  return true;
-};
-
-/**
- * 题目：
- * 双指针-最长回文子串
+ * 5. 最长回文子串
  * 
- * 题解：
- * - 从中心点向外扩展，left-- + right++
- * - 考虑奇偶两种情况
+ * 示例 1：
+ * 输入：s = "babad"
+ * 输出："bab"
+ * 解释："aba" 同样是符合题意的答案。
  * 
+ * 示例 2：
+ * 输入：s = "cbbd"
+ * 输出："bb"
+ * 
+ * @param {string} s
+ * @return {string}
  */
 
-// 双指针解
-function longestPalindrome(s) {
-  let result = s[0] || '';
-  const { length } = s;
-  for (let i = 0; i < length; i += 1) {
-    for (let j = 1; j <= 2; j += 1) {
-      let left = i;
-      let right = i + j;
-      while (left >= 0 && right < length && s[left] === s[right]) {
-        left -= 1;
-        right += 1;
-      }
-
-      const len = (right - 1 ) - (left + 1) + 1;
-      if (len > result.length) {
-        result = s.substr(left + 1, len);
-      }
-    }
-  }
-  return result;
-}
-
-/**
- * dp-table解
- * 
- * 状态
- * dp[i, j]: 表示s.substring(i, j)是否是回文
- * 
- * 选择
- * s[i] === s[j]: 表示是否可以继续扩张
- * dp[i + 1][j - 1]: 两边扩张后，是否还是回文
- * j - i < 2: 子串长度0或1的回文
- */
-function longestPalindrome(s) {
-  let res = '';
-  const { length } = s;
-  const dp = Array.from(new Array(length), () => new Array(length).fill(false));
-  for (let i = length - 1; i >= 0; i -= 1) {
-    for (let j = i; j < length; j += 1) {
-      dp[i][j] = s[i] === s[j] && (j - i < 2 || dp[i + 1][j - 1]);
-      if (dp[i][j] && j - i + 1 > res.length) {
-        res = s.substring(i, j + 1);
-      }
-    }
-  }
-  return res;
-}
-
+// test
 console.log(longestPalindrome('babad'));
 console.log(longestPalindrome('aaa'));
+
+var isPalindrome = (s, left, right) => {
+  while (left < right) {
+    if (s[left++] !== s[right--]) return false;
+  }
+  return true;
+}
+
+var longestPalindrome = function(s) {
+  const len = s.length;
+  const dp = Array(len);
+  for (let i = 0; i < len; i += 1) {
+    dp[i] = i ? dp[i - 1] : [0, 1];
+    for (let j = 0; j <= i; j += 1) {
+      if (isPalindrome(s, j, i)) {
+        if (i - j + 1 > dp[i][1] - dp[i][0]) dp[i] = [j, i + 1];
+        break;
+      }
+    }
+  }
+  return s.slice(dp[len - 1][0], dp[len - 1][1]);
+};
+
+var longestPalindrome2 = function(s) {
+  const len = s.length;
+  const dp = Array(len);
+  for (let i = 0; i < len; i += 1) {
+    dp[i] = i ? dp[i - 1] : [0, 1];
+    for (let j = 0; j <= i; j += 1) {
+      if (isPalindrome(s, j, i)) {
+        if (i - j + 1 > dp[i][1] - dp[i][0]) dp[i] = [j, i + 1];
+        break;
+      }
+    }
+  }
+  return s.slice(dp[len - 1][0], dp[len - 1][1]);
+};

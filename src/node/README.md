@@ -232,6 +232,7 @@ node --inspect-brk dist/app.js
 - [GitHub - chaitin/SafeLine: 一款足够简单、足够好用、足够强的免费 WAF。基于业界领先的语义引擎检测技术，作为反向代理接入，保护你的网站不受黑客攻击。](https://github.com/chaitin/SafeLine)
 
 - [拖拽库-vue-draggable-plus](https://alfred-skyblue.github.io/vue-draggable-plus/)
+- [拖拽库2-@atlaskit/pragmatic-drag-and-drop](https://github.com/atlassian/pragmatic-drag-and-drop)
 
 - [语言检测-tinyld](https://github.com/komodojp/tinyld)
 
@@ -241,6 +242,7 @@ node --inspect-brk dist/app.js
 
 - [生成随机脸-face.js](https://github.com/zengm-games/facesjs)
 - [万物转markdown-markitdown](https://github.com/microsoft/markitdown)
+- [流程图-FlowGram](https://mp.weixin.qq.com/s/UBBGDYWtLGwpNGab_gPPcQ)
 
 ### eggjs
 
