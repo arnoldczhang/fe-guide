@@ -198,6 +198,7 @@
 * [`抗锯齿`](#抗锯齿)
 * [`css-in-js`](#css-in-js)
 * [`盒模型`](#盒模型)
+* [`margin塌陷`](#margin塌陷)
 
 **html**
 
@@ -3956,3 +3957,18 @@ document.querySelector('input[type=password]').addEventListener('keyup', functio
 > 飞书等应用中，展示缩略图等信息
 
 比如：[财新网](https://www.caixin.com/)，做的很到位
+
+---
+
+### margin塌陷
+问题描述：垂直方向，margin取了最大者
+
+解决：
+1. 如果是兄弟元素
+- 底层元素display: inline-block;
+
+2. 如果是父子元素
+- 父元素overflow: hidden;
+- 子元素dipsplay: inline-block;
+
+据记载，底层元素或子元素加float或者position: absolute/fixed也能解决，但是不太好吧？

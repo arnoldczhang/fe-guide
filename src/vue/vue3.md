@@ -232,3 +232,61 @@ defineComponent({
 ---
 
 ## router
+
+### hash和history
+
+|       | hash       | history            |
+| ----- | ---------- | ------------------ |
+| 事件监听  | hashchange | pushstate、popstate |
+| 区别    | #xxx       | /path/a/b          |
+| 服务端配置 | 无需支持       | nginx要配置try_files  |
+
+## computed和watch
+
+### 区别
+
+|      | computed    | watch                  |
+| ---- | ----------- | ---------------------- |
+| 异步   | 不支持         | 支持                     |
+| 缓存机制 | 依赖未变化，不重复计算 | 每次变化都计算，需自行优化（deep、节流） |
+| 返回值  | 计算后的响应值     | 无                      |
+| 数据关系 | 生成新值        | 监听变化                   |
+|      |             |                        |
+
+### computed原理
+
+- 底层是一个class，设置了针对value属性的getter/setter
+
+- 有一个变更标记，当依赖变化时需要重新计算值，否则用缓存值
+
+- 有一个依赖收集函数，收集computed里用到的依赖，变化时，更新变更标记
+
+```js
+function computed(getter, setter) {
+  const ref = new ComputedImpl(getter, setter);
+  return ref;
+}
+
+class ComputedImpl {
+  constructor(getter, setter) {
+    this.getter = getter;
+    this.setter = setter;
+    this._dirty = true;
+    this.trigger = ReactiveEffect(getter, () => {
+      this._dirty = true;
+    })
+  }
+
+  get value () {
+    if (this._dirty) {
+      this._value = this.getter();
+      this._dirty = false;
+    }
+    return this._value;
+  }
+
+  set value(newValue) {
+    return this.setter(newValue);
+  }
+}
+```
