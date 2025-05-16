@@ -28,9 +28,9 @@ var partition = function(s) {
   const len = s.length;
   const isPalindrome = (s, left, right) => {
     while (left < right) {
-        if (s.charAt(left++) !== s.charAt(right--)) {
-            return false;
-        }
+      if (s.charAt(left++) !== s.charAt(right--)) {
+        return false;
+      }
     }
     return true;
   };

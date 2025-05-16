@@ -33,17 +33,17 @@ console.log(exist([["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], "ABCB
 var exist = function(board, word) {
   const al = board.length;
   const sl = board[0].length;
-  // 优化一：片段的某个字母的出现次数超出board中这个字母的次数，直接false
   const boardCountMap = new Map();
   const wordCountMap = new Map();
   for (let i = 0; i < al; i++) {
-      for (let j = 0; j < sl; j++) {
-          let count = boardCountMap.get(board[i][j]) || 0;
-          boardCountMap.set(board[i][j], count + 1);
-      }
+    for (let j = 0; j < sl; j++) {
+      let count = boardCountMap.get(board[i][j]) || 0;
+      boardCountMap.set(board[i][j], count + 1);
+    }
   }
   for (let i = 0; i < word.length; i++) {
-      let count = wordCountMap.get(word[i]) || 0;
+    let count = wordCountMap.get(word[i]) || 0;
+      // 优化一：片段的某个字母的出现次数超出board中这个字母的次数，直接false
       if (count + 1 > (boardCountMap.get(word[i]) || 0)) return false;
       wordCountMap.set(word[i], count + 1);
   }

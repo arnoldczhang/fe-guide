@@ -21,6 +21,11 @@
  * 1. 前缀和s[i]
  * 2. s[i] - s[j] = k，序号i和序号j之间的差值是k
  */
+
+// test
+console.log(subarraySum([1,1,1], 2)); // 2
+console.log(subarraySum([1,2,3, -1, 1, 1, 2], 3)); // 2
+
 var subarraySum = function(nums, k) {
   let ans = 0, s = 0;
   const cnt = new Map();
