@@ -114,7 +114,7 @@
 - [TODO 最长递增子序列长度](./leetcode/dp-最长递增子序列长度.js)
 - [TODO 乘积最大子数组](./leetcode/dp-乘积最大子数组.js)
 - [最长回文子串](./leetcode/dp-最长回文子串.js)
-- [TODO 分割等和子集](./leetcode/dp-分割等和子集.js)
+- [分割等和子集](./leetcode/dp-分割等和子集.js)
 
 ### 基础数据结构
 
