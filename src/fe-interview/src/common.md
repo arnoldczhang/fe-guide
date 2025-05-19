@@ -92,6 +92,7 @@
 **进阶 js**
 
 * [`如何实现一个new`](#如何实现一个new)
+* [`如何禁止别人调试网页代码`](#如何禁止别人调试网页代码)
 * [`Promise.all实现`](#Promise.all实现)
 * [`jsbridge`](#jsbridge)
 * [`前端监控&异常捕获`](#前端监控&异常捕获)
@@ -3972,3 +3973,22 @@ document.querySelector('input[type=password]').addEventListener('keyup', functio
 - 子元素dipsplay: inline-block;
 
 据记载，底层元素或子元素加float或者position: absolute/fixed也能解决，但是不太好吧？
+
+---
+
+### 如何禁止别人调试网页代码
+```js
+(() => {
+  function block() {
+    if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
+      document.body.innerHTML = '非法调试';
+    }
+    setInterval(() => {
+      (function() { return false}['constructor']('debugger').call())
+    }, 50);
+  }
+  try {
+    block();
+  } catch() {}
+})()
+```
