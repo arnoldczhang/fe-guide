@@ -513,7 +513,7 @@ function f() {
 
 - requestAnimationFrame（每一帧的**渲染前**触发，一般刷新率在60hz到120hz，所以每次渲染间隔在**8.3~16.7ms**）
 - Major GC（垃圾回收）
-- requestIdleCallback（每一帧空闲时间触发，优先级较低，可能长时间不被调用，需要设**超时时间**）
+- requestIdleCallback（每一帧**空闲时间**触发，优先级较低，可能长时间不被调用，需要设**超时时间**）
 - setTimeout（最小间隔4ms，且4ms以下随机触发）
 - postMessage（可模拟实现setTimeout(0)的效果）
 - MessageChannel
@@ -590,3 +590,32 @@ scheduler.postTask(() => console.log('Hello, postTask'), {
  };
 ```
 
+### BroadcastChannel
+> 实现同源网站在多个tab之间发送消息
+
+```js
+const channel = new BroadcastChannel("my-channel-name");
+
+channel.postMessage('xxx');
+
+channel.addEventListener('message', (event) => {
+  if (event.data === 'xxx') {
+    // ...
+  }
+});
+```
+
+### SharedWorker
+> 不同网站共享状态和数据
+
+```js
+var worker = new SharedWorker('worker.js');
+
+worker.port.start();
+
+worker.port.postMessage({ command: 'xxx', data: {} });
+
+worker.port.onmessage = function(event) {
+  event.data;
+}
+```
