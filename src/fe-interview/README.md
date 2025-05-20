@@ -12,6 +12,7 @@
 
 ### 深入&总结
 
+- [闭包](./src/common.md#闭包)
 - [promise细节](./src/promise.md)
 - [暂时性死区](./src/common.md#let、const以及var的区别)
 - [事件循环](../js&browser/并发模型-event_loop.md#宏任务和微任务)
@@ -57,6 +58,7 @@
 - [网页请求展示全过程](../js&browser/页面过程与浏览器缓存.md#过程简述)
 - [get和post](../js&browser/页面过程与浏览器缓存.md#GETvsPOST)
 - [http](../http/README.md#总览)
+- [下载](../fe-interview/src/文件下载.md)
 
 ## 5. 前端框架
 

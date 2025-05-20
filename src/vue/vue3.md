@@ -257,7 +257,7 @@ defineComponent({
 
 - 底层是一个class，设置了针对value属性的getter/setter
 
-- 有一个变更标记，当依赖变化时需要重新计算值，否则用缓存值
+- 有一个变更标记（使用了vue3reactive包里的ReactiveEffect），当依赖变化时需要重新计算值，否则用缓存值
 
 - 有一个依赖收集函数，收集computed里用到的依赖，变化时，更新变更标记
 
@@ -290,3 +290,30 @@ class ComputedImpl {
   }
 }
 ```
+
+### watch原理
+> 底层同样使用了reactive包里的reactiveEffect，getter是第一个处理过的入参，schedule属性会在effect变化后触发。
+
+```js
+function watch(source, callback, options) {
+  let getter;
+  
+  switch (true) {
+    case typeof source === 'function':
+      getter = source;
+      break;
+    case source instanceOf Ref:
+      getter = () => source.value;
+      break;
+    // 其他各种判断
+  }
+
+  const effect = new ReactiveEffect(getter);
+  effect.schedule = callback;
+}
+```
+
+### vue2和vue3的区别
+- vue2是申明式写法
+- vue2的watch仅支持监听单个
+- vue2的对象属性的删除和新增（比如push、pop等），无法watch到
