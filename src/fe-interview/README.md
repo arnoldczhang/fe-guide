@@ -58,7 +58,7 @@
 - [网页请求展示全过程](../js&browser/页面过程与浏览器缓存.md#过程简述)
 - [get和post](../js&browser/页面过程与浏览器缓存.md#GETvsPOST)
 - [http](../http/README.md#总览)
-- [下载](../fe-interview/src/文件下载.md)
+- [文件下载](../fe-interview/src/文件下载.md#总结)
 
 ## 5. 前端框架
 
