@@ -58,7 +58,6 @@
 - [网页请求展示全过程](../js&browser/页面过程与浏览器缓存.md#过程简述)
 - [get和post](../js&browser/页面过程与浏览器缓存.md#GETvsPOST)
 - [http](../http/README.md#总览)
-- [文件下载](../fe-interview/src/文件下载.md#总结)
 
 ## 5. 前端框架
 
@@ -83,6 +82,9 @@
 ## 9. 技术方案
 
 - [离线包更新方案](./src/common.md#移动端离线包)
+- [文件下载方案](../fe-interview/src/文件下载.md#总结)
+- [版本发布后页面刷新方案](../fe-interview/src/版本发布后页面刷新方案.md)
+
 
 ## 10. 业务
 
