@@ -64,6 +64,7 @@
 - [vue3的treeshake](../vue/vue3.md#treeshake)
 - [vue-router](../vue/vue3.md#router)
 - [computed和watch](../vue/vue3.md#computed和watch)
+- [vue3状态管理](../vue/状态管理.md)
 
 ## 6. 前端工程化
 
