@@ -37,6 +37,7 @@
 console.log(threeSum([-1,0,1,2,-1,-4])); // [[-1,-1,2],[-1,0,1]]
 console.log(threeSum([0,1,1])); // []
 console.log(threeSum([0,0,0])); // [[0,0,0]]
+console.log(threeSum([1,1,-2])); // [[1,1,-2]]
 
 var threeSum = function(nums) {
   nums.sort((pre, next) => pre - next);
@@ -72,3 +73,38 @@ var threeSum = function(nums) {
   }
   return result;
 };
+
+/**
+ * 直觉写法
+ * @param {*} nums 
+ * @returns 
+ */
+var threeSum2 = function(nums) {
+  nums.sort((pre, next) => pre - next);
+  const result = [];
+  const len = nums.length;
+  if (!len || len < 3) return result;
+  if (nums[0] > 0 || nums[len - 1] < 0) return result;
+  for (let i = 0; i < len - 2; i += 1) {
+    const num = nums[i];
+    if (i && num === nums[i - 1]) continue;
+    let start = i + 1;
+    let end = len - 1;
+    while (start < end) {
+      let startN = nums[start];
+      let endN = nums[end];
+      if (num + startN > 0) break;
+      const sum = num + startN + endN;
+      if (sum === 0) {
+        result.push([num, startN, endN]);
+        while (startN === nums[++start]) ;
+        while (endN === nums[--end]) ;
+      } else if (sum < 0) {
+        start += 1;
+      } else {
+        end -= 1;
+      }
+    }
+  }
+  return result;
+}
