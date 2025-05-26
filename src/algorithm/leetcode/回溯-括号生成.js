@@ -44,3 +44,26 @@ var generateParenthesis = function(n) {
   backtrack();
   return result;
 };
+
+var generateParenthesis2 = function(n) {
+  const backtrack = (i = 0, cach = [], result = []) => {
+    if (cach.length === n * 2) {
+      result.push(cach.join(''));
+      return result;
+    }
+    if (i < n) {
+      cach.push('(');
+      backtrack(i + 1, cach, result);
+      cach.pop();
+    }
+
+    if (cach.length < i * 2) {
+      cach.push(')');
+      backtrack(i, cach, result);
+      cach.pop();
+    }
+
+    return result;
+  };
+  return backtrack();
+};

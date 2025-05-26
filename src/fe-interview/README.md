@@ -36,8 +36,8 @@
 - [数据结构扁平化](./src/扁平数据转树状结构.js)
 - [数据结构扁平化2](./src/扁平数据转树状结构2.js)
 - 正则解析url
-- [防抖](./src/debounce.js)
-- [节流](./src/throttle.js)
+- [防抖 - clearTimeout](./src/debounce.js)
+- [节流 - 固定频率](./src/throttle.js)
 - [promise](./src/promise.js)
 - [bind](./src/bind.js)
 - [双指针-字符串全匹配](./src/字符串全匹配.js)
@@ -85,6 +85,7 @@
 - [离线包更新方案](./src/common.md#移动端离线包)
 - [文件下载方案](../fe-interview/src/文件下载.md#总结)
 - [版本发布后页面刷新方案](../fe-interview/src/版本发布后页面刷新方案.md)
+- [最快下载100万条数据](../fe-interview/src/最快下载100万条数据.md)
 
 
 ## 10. 业务

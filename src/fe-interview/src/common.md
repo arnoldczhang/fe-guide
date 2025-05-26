@@ -2775,7 +2775,8 @@ intersectionObserver
 - 类似私有的全局作用域
 
 #### 举例
-Function.prototype.bind
+- Function.prototype.bind
+- 函数柯里化
 
 
 #### 示例:执行上下文

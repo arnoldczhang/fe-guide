@@ -39,7 +39,7 @@ var partition = function(s) {
 
     for (let i = n; i < len; i += 1) {
       if(!isPalindrome(s, n, i)) continue;
-      const item = s.substring(n, i + 1);
+      const item = s.slice(n, i + 1);
       arr.push(item);
       backtrack(i + 1, arr);
       arr.pop();

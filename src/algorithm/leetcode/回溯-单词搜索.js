@@ -43,9 +43,9 @@ var exist = function(board, word) {
   }
   for (let i = 0; i < word.length; i++) {
     let count = wordCountMap.get(word[i]) || 0;
-      // 优化一：片段的某个字母的出现次数超出board中这个字母的次数，直接false
-      if (count + 1 > (boardCountMap.get(word[i]) || 0)) return false;
-      wordCountMap.set(word[i], count + 1);
+    // 优化一：片段的某个字母的出现次数超出board中这个字母的次数，直接false
+    if (count + 1 > (boardCountMap.get(word[i]) || 0)) return false;
+    wordCountMap.set(word[i], count + 1);
   }
   // 优化二：如果片段的末尾的字母，出现次数很少，可以尝试倒过来匹配
   if (boardCountMap.get(word[0]) > boardCountMap.get(word[word.length - 1])) {
