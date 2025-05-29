@@ -86,6 +86,9 @@
 - [文件下载方案](../fe-interview/src/文件下载.md#总结)
 - [版本发布后页面刷新方案](../fe-interview/src/版本发布后页面刷新方案.md)
 - [最快下载100万条数据](../fe-interview/src/最快下载100万条数据.md)
+- [灰度方案](../fe-interview/src/灰度方案.md)
+- [前后端统一监控方案](../fe-interview/src/前后端统一监控方案.md)
+- [白屏检测方案](../js&browser/性能优化2019.md#白屏检测方案)
 
 
 ## 10. 业务
