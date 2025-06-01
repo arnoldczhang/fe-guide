@@ -40,3 +40,18 @@ var productExceptSelf = function(nums) {
   }
   return result;
 };
+
+var productExceptSelf2 = function(nums) {
+  const len = nums.length;
+  if (!len) return [];
+  const result = Array(len).fill(1);
+  for (let i = 1; i < len; i += 1) {
+    result[i] = result[i - 1] * nums[i - 1];
+  }
+  let temp = 1;
+  for (let i = len - 1; i >= 0; i -= 1) {
+    result[i] *= temp;
+    temp *= nums[i];
+  }
+  return result;
+}
