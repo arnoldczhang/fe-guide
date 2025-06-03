@@ -30,7 +30,30 @@ console.log(lengthOfLongestSubstring('pwwkew')); // 3
 console.log(lengthOfLongestSubstring(' ')); // 1
 console.log(lengthOfLongestSubstring("abba")); // 2
 
+/**
+ * 缓存Set
+ * @param {*} s 
+ * @returns 
+ */
 function lengthOfLongestSubstring(s) {
+  let result = 0;
+  const cach = new Set();
+  for (let left = 0, right = 0; right < s.length; right += 1) {
+    while (cach.has(s[right])) {
+      cach.delete(s[left++]);
+    }
+    cach.add(s[right]);
+    result = Math.max(right - left + 1, result);
+  }
+  return result;
+}
+
+/**
+ * 缓存Map
+ * @param {*} s 
+ * @returns 
+ */
+function lengthOfLongestSubstring1(s) {
   const cach = new Map();
   let max = 0;
   let start = 0;
@@ -45,6 +68,11 @@ function lengthOfLongestSubstring(s) {
   return max;
 }
 
+/**
+ * 缓存Object
+ * @param {*} s 
+ * @returns 
+ */
 function lengthOfLongestSubstring2(s) {
   const { length } = s;
   let left = 0;

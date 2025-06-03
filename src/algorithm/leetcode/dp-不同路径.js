@@ -34,6 +34,11 @@
  * 提示：
  * 1. 斐波那契
  */
+
+// test
+console.log(uniquePaths(7, 3));
+console.log(uniquePaths(3, 3));
+
 var uniquePaths = function(m, n) {
   const dp = Array(m).fill(0).map((_, index) => {
     if (!index) return Array(n).fill(1);

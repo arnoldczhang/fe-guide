@@ -18,9 +18,9 @@
  */
 
 // test
-console.log(longestPalindrome('babad'));
-console.log(longestPalindrome('cbbd'));
-console.log(longestPalindrome('aaa'));
+console.log(longestPalindrome('babad')); // bab
+console.log(longestPalindrome('cbbd')); // bb
+console.log(longestPalindrome('aaa')); // aaa
 
 var isPalindrome = (s, left, right) => {
   while (left < right) {
