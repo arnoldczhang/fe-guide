@@ -44,6 +44,7 @@
 - [zookeeper增删改查](./src/zookeeper.js)
 - [微信红包算法](../algorithm/leetcode/微信红包算法.js)
 - [indexedDB读写](./src/indexedDB读写.js)
+- [proxy响应式](./src/proxy响应式.js)
 
 ## 3. 打包工具
 
@@ -64,6 +65,7 @@
 - [vue3的treeshake](../vue/vue3.md#treeshake)
 - [vue-router](../vue/vue3.md#router)
 - [computed和watch](../vue/vue3.md#computed和watch)
+- [prop和data](../vue/vue3.md#prop和data)
 - [vue3状态管理](../vue/状态管理.md)
 
 ## 6. 前端工程化

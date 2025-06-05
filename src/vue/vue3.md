@@ -317,3 +317,47 @@ function watch(source, callback, options) {
 - vue2是申明式写法
 - vue2的watch仅支持监听单个
 - vue2的对象属性的删除和新增（比如push、pop等），无法watch到
+
+## prop和data
+prop对于子组件是只读的，完全无法修改
+
+```js
+class BaseReactiveHandler {
+  get(obj, key) {
+    return Reflect.get(obj, key);
+  }
+}
+
+class ReadonlyReactiveHandler extends BaseReactiveHandler {
+  constructor() {
+    super();
+  }
+  set(obj, key) {
+    console.warn(`${key} is read only`, obj);
+    return true;
+  }
+}
+
+class MutationReactiveHandler extends BaseReactiveHandler {
+  constructor() {
+    super();
+  }
+  set(obj, key, value, receiver) {
+    const result = Reflect.set(obj, key, value, receiver);
+    return result;
+  }
+}
+
+const propHandler = new ReadonlyReactiveHandler();
+const dataHandler = new MutationReactiveHandler();
+
+const prop = new Proxy({}, propHandler);
+
+const data = new Proxy({}, dataHandler);
+
+data.a = 1;
+console.log(data.a);
+
+prop.a = 1;
+console.log(prop.a);
+```
