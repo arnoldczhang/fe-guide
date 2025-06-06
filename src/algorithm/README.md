@@ -65,6 +65,8 @@
 - [两数之和](./leetcode/哈希-两数之和.js)
 - [字母异位词分组](./leetcode/哈希-字母异位词分组.js)
 - [最长连续序列](./leetcode/哈希-最长连续序列.js)
+- [数组的度](./leetcode/哈希-数组的度.js)
+- [推文计数](./leetcode/哈希-推文计数.js)
 - [DELETE 和为K的子数组](./leetcode/哈希-和为K的子数组.js)
 - [有效的括号](./leetcode/栈-有效的括号.js)
 - [最小栈](./leetcode/栈-最小栈.js)
