@@ -50,3 +50,31 @@ var searchRange = function(nums, target) {
   }
   return result;
 };
+
+/**
+ * 加了点边界条件判断
+ * @param {*} nums 
+ * @param {*} target 
+ * @returns 
+ */
+var searchRange2 = function(nums, target) {
+  let result = [-1, -1];
+  let start = 0;
+  let end = nums.length - 1;
+  while (start <= end) {
+    let mid = start + ((end - start) >> 1);
+    if (nums[mid] === target) {
+      start = mid;
+      end = mid;
+      while (start - 1 >= 0 && nums[start - 1] === target) start -= 1;
+      while (end + 1 < nums.length && nums[end + 1] === target) end += 1;
+      result = [start, end];
+      return result;
+    } else if (nums[mid] < target) {
+      start = mid + 1;
+    } else {
+      end = mid - 1;
+    }
+  }
+  return result;
+};
