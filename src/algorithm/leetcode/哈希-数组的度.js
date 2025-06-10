@@ -31,31 +31,25 @@ console.log(findShortestSubArray([1,2,2,3,1,4,2])); // 6
 
 var findShortestSubArray = function(nums) {
   const cach = new Map();
-  let max = 0;
-  let maxN;
+  let maxDegree = 0;
+  let minLen = Infinity;
   for (let i = 0; i < nums.length; i += 1) {
     const num = nums[i];
-    if (cach.has(num)) {
-      const targetArr = cach.get(num);
-      targetArr.push(i);
-      if (targetArr.length > max) {
-        max = targetArr.length;
-        maxN = num;
-      } else if (targetArr.length === max) {
-        const currentArr = cach.get(maxN);
-        if (targetArr[targetArr.length - 1] - targetArr[0] < currentArr[currentArr.length - 1] - currentArr[0]) {
-          max = targetArr.length;
-          maxN = num;
-        }
-      }
-    } else {
+    let numArr = [];
+    if (!cach.has(num)) {
       cach.set(num, [i]);
-      if (!max) {
-        max = 1;
-        maxN = num;
-      }
+    } else {
+      numArr = cach.get(num);
+      numArr.push(i);
+      cach.set(num,  numArr);
+    }
+
+    numArr = cach.get(num);
+    const len = numArr[numArr.length - 1] - numArr[0] + 1;
+    if (numArr.length > maxDegree || (numArr.length === maxDegree && len < minLen)) {
+      maxDegree = numArr.length;
+      minLen = len;
     }
   }
-  const result = cach.get(maxN);
-  return result[result.length - 1] - result[0] + 1;
+  return minLen;
 };
