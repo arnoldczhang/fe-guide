@@ -46,13 +46,10 @@
 
 ### 题集
 
-#### 数组
-- [TODO 最大子数组和](./leetcode/普通数组-最大子数组和.js)
+- [最大子数组和](./leetcode/普通数组-最大子数组和.js)
 - [合并区间](./leetcode/普通数组-合并区间.js)
 - [轮转数组](./leetcode/普通数组-轮转数组.js)
-- [TODO 除自身以外数组的乘积](./leetcode/普通数组-除自身以外数组的乘积.js)
-
-#### 链表
+- [除自身以外数组的乘积](./leetcode/普通数组-除自身以外数组的乘积.js)
 - [相交链表](./leetcode/链表-相交链表.js)
 - [反转链表](./leetcode/链表-反转链表.js)
 - [回文链表](./leetcode/链表-回文链表.js)
@@ -65,20 +62,16 @@
 - [随机链表的复制](./leetcode/链表-随机链表的复制.js)
 - [排序链表](./leetcode/链表-排序链表.js)
 - [LRU缓存](./leetcode/链表-LRU缓存.js)
-
-#### 哈希
 - [两数之和](./leetcode/哈希-两数之和.js)
 - [字母异位词分组](./leetcode/哈希-字母异位词分组.js)
-- [TODO 最长连续序列](./leetcode/哈希-最长连续序列.js)
-- [和为K的子数组](./leetcode/哈希-和为K的子数组.js)
-
-#### 栈
+- [最长连续序列](./leetcode/哈希-最长连续序列.js)
+- [数组的度](./leetcode/哈希-数组的度.js)
+- [推文计数](./leetcode/哈希-推文计数.js)
+- [DELETE 和为K的子数组](./leetcode/哈希-和为K的子数组.js)
 - [有效的括号](./leetcode/栈-有效的括号.js)
 - [最小栈](./leetcode/栈-最小栈.js)
 - [字符串解码](./leetcode/栈-字符串解码.js)
 - [每日温度](./leetcode/栈-每日温度.js)
-
-#### 二叉树
 - [中序遍历](./leetcode/二叉树-中序遍历.js)
 - [最大深度](./leetcode/二叉树-最大深度.js)
 - [翻转二叉树](./leetcode/二叉树-翻转二叉树.js)
@@ -93,49 +86,40 @@
 - [从前序和中序遍历构造二叉树](./leetcode/二叉树-从前序和中序遍历构造二叉树.js)
 - [路径总和三](./leetcode/二叉树-路径总和三.js)
 - [最近公共祖先](./leetcode/二叉树-最近公共祖先.js)
-
-#### 回溯
 - [电话号码的字母组合](./leetcode/回溯-拨电话.js)
 - [全排列](./leetcode/回溯-全排列.js)
 - [子集](./leetcode/回溯-子集.js)
 - [组合总和](./leetcode/回溯-组合总和.js)
 - [括号生成](./leetcode/回溯-括号生成.js)
-- [TODO 单词搜索](./leetcode/回溯-单词搜索.js)
+- [单词搜索](./leetcode/回溯-单词搜索.js)
 - [分割回文串](./leetcode/回溯-分割回文串.js)
-
-#### 二分查找
-- [搜索插入位置](./leetcode/二分-搜索插入位置.js)
+- [TODO 搜索插入位置](./leetcode/二分-搜索插入位置.js)
 - [搜索二维矩阵](./leetcode/二分-搜索二维矩阵.js)
 - [在排序数组中查找元素的第一个和最后一个位置](./leetcode/二分-在排序数组中查找元素的第一个和最后一个位置.js)
-- [TODO 搜索旋转排序数组](./leetcode/二分-搜索旋转排序数组.js)
+- [搜索旋转排序数组](./leetcode/二分-搜索旋转排序数组.js)
 - [寻找旋转排序数组中的最小值](./leetcode/二分-寻找旋转排序数组中的最小值.js)
-- [寻找两个正序数组的中位数](./leetcode/二分-寻找两个正序数组的中位数.js)
-
-#### 双指针
-- [移动零](./leetcode/双指针-移动零.js)
+- [FUCK 寻找两个正序数组的中位数](./leetcode/二分-寻找两个正序数组的中位数.js)
+- [TODO 移动零](./leetcode/双指针-移动零.js)
 - [盛最多水的容器](./leetcode/双指针-盛最多水的容器.js)
-- [TODO 三数之和](./leetcode/双指针-三数之和.js)
-
-#### 滑动窗口
+- [三数之和](./leetcode/双指针-三数之和.js)
 - [无重复字符的最长子串](./leetcode/滑动窗口-无重复字符的最长子串.js)
 - [TODO 找到字符串中所有字母异位词](./leetcode/滑动窗口-找到字符串中所有字母异位词.js)
-
-#### 贪心算法
 - [买卖股票最佳时机](./leetcode/贪心算法-买卖股票最佳时机.js)
-- [TODO 跳跃游戏](./leetcode/贪心算法-跳跃游戏.js)
-- [TODO 跳跃游戏2](./leetcode/贪心算法-跳跃游戏2.js)
-
-#### 动态规划
+- [跳跃游戏](./leetcode/贪心算法-跳跃游戏.js)
+- [跳跃游戏2](./leetcode/贪心算法-跳跃游戏2.js)
 - [爬楼梯](./leetcode/dp-爬楼梯.js)
 - [杨辉三角](./leetcode/dp-杨辉三角.js)
-- [TODO 打家劫舍](./leetcode/dp-打家劫舍.js)
-- [TODO 完全平方数](./leetcode/dp-完全平方数.js)
+- [打家劫舍](./leetcode/dp-打家劫舍.js)
+- [完全平方数](./leetcode/dp-完全平方数.js)
 - [零钱兑换](./leetcode/dp-零钱兑换.js)
-- [TODO 单词拆分](./leetcode/dp-单词拆分.js)
-- [TODO 最长递增子序列长度](./leetcode/dp-最长递增子序列长度.js)
-- [TODO 乘积最大子数组](./leetcode/dp-乘积最大子数组.js)
+- [单词拆分](./leetcode/dp-单词拆分.js)
+- [最长递增子序列长度](./leetcode/dp-最长递增子序列长度.js)
+- [乘积最大子数组](./leetcode/dp-乘积最大子数组.js)
 - [最长回文子串](./leetcode/dp-最长回文子串.js)
-- [TODO 分割等和子集](./leetcode/dp-分割等和子集.js)
+- [分割等和子集](./leetcode/dp-分割等和子集.js)
+- [不同路径](./leetcode/dp-不同路径.js)
+- [最小路径和](./leetcode/dp-最小路径和.js)
+- [最长公共子序列](./leetcode/dp-最长公共子序列.js)
 
 ### 基础数据结构
 

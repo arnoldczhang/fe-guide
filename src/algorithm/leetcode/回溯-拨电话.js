@@ -60,9 +60,41 @@ var letterCombinations = function(digits) {
   return result;
 };
 
+/**
+ * 状态好时的直觉写法
+ * @param {*} digits 
+ * @returns 
+ */
+var letterCombinations2 = function(digits) {
+  const numberMap = {
+    2: ['a', 'b', 'c'],
+    3: ['d', 'e', 'f'],
+    4: ['g', 'h', 'i'],
+    5: ['j', 'k', 'l'],
+    6: ['m', 'n', 'o'],
+    7: ['p', 'q', 'r', 's'],
+    8: ['t', 'u', 'v'],
+    9: ['w', 'x', 'y', 'z'],
+  };
+  if (!digits.length) return [];
+  const result = [];
+  const backtrack = (n = 0, cach = []) => {
+    if (cach.length === digits.length) return result.push(cach.join(''));
+
+    const letters = numberMap[digits[n]];
+    for (let i = 0; i < letters.length; i += 1) {
+      cach.push(letters[i]);
+      backtrack(n + 1, cach);
+      cach.pop();
+    }
+  };
+
+  backtrack();
+  return result;
+}
 const MAPPING = ["", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"];
 // 深度遍历
-var letterCombinations2 = function(digits) {
+var letterCombinations3 = function(digits) {
     const n = digits.length;
     if (n === 0) {
         return [];

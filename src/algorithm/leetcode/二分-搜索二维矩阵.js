@@ -28,6 +28,12 @@ console.log(searchMatrix([[1,3,5,7],[10,11,16,20],[23,30,34,60]], 13)); // false
 console.log(searchMatrix([[1],[3]], 2)); // false
 console.log(searchMatrix([[1]], 1)); // true
 
+/**
+ * 不铺开，硬搜
+ * @param {*} matrix 
+ * @param {*} target 
+ * @returns 
+ */
 var searchMatrix = function(matrix, target) {
   let result = false;
   let left = 0;
@@ -50,6 +56,12 @@ var searchMatrix = function(matrix, target) {
   return result;
 };
 
+/**
+ * 铺开搜
+ * @param {*} matrix 
+ * @param {*} target 
+ * @returns 
+ */
 var searchMatrix2 = function(matrix, target) {
   const m = matrix.length;
   const list = [];

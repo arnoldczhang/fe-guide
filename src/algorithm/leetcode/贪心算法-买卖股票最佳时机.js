@@ -41,3 +41,20 @@ var maxProfit = function(prices) {
   }
   return max;
 };
+
+/**
+ * dp解
+ * @param {*} prices 
+ * @returns 
+ */
+var maxProfit2 = function(prices) {
+  const len = prices.length;
+  if (!len) return 0;
+  const max = Array(len).fill(0);
+  let minPrice = prices[0];
+  for (let i = 1; i < len; i += 1) {
+    max[i] = Math.max(prices[i] - minPrice, max[i]);
+    minPrice = Math.min(minPrice, prices[i]);
+  }
+  return Math.max(...max);
+}

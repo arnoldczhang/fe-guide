@@ -12,6 +12,7 @@
 
 ### 深入&总结
 
+- [闭包](./src/common.md#闭包)
 - [promise细节](./src/promise.md)
 - [暂时性死区](./src/common.md#let、const以及var的区别)
 - [事件循环](../js&browser/并发模型-event_loop.md#宏任务和微任务)
@@ -35,14 +36,15 @@
 - [数据结构扁平化](./src/扁平数据转树状结构.js)
 - [数据结构扁平化2](./src/扁平数据转树状结构2.js)
 - 正则解析url
-- [防抖](./src/debounce.js)
-- [节流](./src/throttle.js)
+- [防抖 - clearTimeout](./src/debounce.js)
+- [节流 - 固定频率](./src/throttle.js)
 - [promise](./src/promise.js)
 - [bind](./src/bind.js)
 - [双指针-字符串全匹配](./src/字符串全匹配.js)
 - [zookeeper增删改查](./src/zookeeper.js)
 - [微信红包算法](../algorithm/leetcode/微信红包算法.js)
 - [indexedDB读写](./src/indexedDB读写.js)
+- [proxy响应式](./src/proxy响应式.js)
 
 ## 3. 打包工具
 
@@ -63,10 +65,13 @@
 - [vue3的treeshake](../vue/vue3.md#treeshake)
 - [vue-router](../vue/vue3.md#router)
 - [computed和watch](../vue/vue3.md#computed和watch)
+- [prop和data](../vue/vue3.md#prop和data)
+- [vue3状态管理](../vue/状态管理.md)
 
 ## 6. 前端工程化
 
-- [性能指标](../career/APM.md#性能指标)
+- [性能优化](../career/性能优化.md)
+- [图片优化方案](../js&browser/图片优化.md#优化措施)
 
 ## 7. 团队管理
 
@@ -80,6 +85,13 @@
 ## 9. 技术方案
 
 - [离线包更新方案](./src/common.md#移动端离线包)
+- [文件下载方案](../fe-interview/src/文件下载.md#总结)
+- [版本发布后页面刷新方案](../fe-interview/src/版本发布后页面刷新方案.md)
+- [最快下载100万条数据](../fe-interview/src/最快下载100万条数据.md)
+- [灰度方案](../fe-interview/src/灰度方案.md)
+- [前后端统一监控方案](../fe-interview/src/前后端统一监控方案.md)
+- [白屏+卡顿检测方案](../js&browser/性能优化2019.md#白屏检测方案)
+
 
 ## 10. 业务
 

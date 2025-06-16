@@ -92,6 +92,7 @@
 **进阶 js**
 
 * [`如何实现一个new`](#如何实现一个new)
+* [`如何禁止别人调试网页代码`](#如何禁止别人调试网页代码)
 * [`Promise.all实现`](#Promise.all实现)
 * [`jsbridge`](#jsbridge)
 * [`前端监控&异常捕获`](#前端监控&异常捕获)
@@ -2768,13 +2769,15 @@ intersectionObserver
 
 ### 闭包
 
-> 能够访问其他函数内部变量的函数，或者说能够访问 `自由变量` 的函数
->
-> 自由变量 = 非函数局部变量 + 非函数入参
->
-> 上下文已经销毁，但是作用域链还在，所以能取到
+#### 特性
+- **保留词法作用域**：是一个函数与其被定义时的词法作用域的组合
+- **变量持久性**：允许函数在外部作用域被调用时，仍然能记住其声明时的作用域
+- 类似私有的全局作用域
 
-参考[执行上下文](../js&browser/并发模型-event_loop.md#执行上下文)
+#### 举例
+- Function.prototype.bind
+- 函数柯里化
+
 
 #### 示例:执行上下文
 
@@ -3972,3 +3975,22 @@ document.querySelector('input[type=password]').addEventListener('keyup', functio
 - 子元素dipsplay: inline-block;
 
 据记载，底层元素或子元素加float或者position: absolute/fixed也能解决，但是不太好吧？
+
+---
+
+### 如何禁止别人调试网页代码
+```js
+(() => {
+  function block() {
+    if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
+      document.body.innerHTML = '非法调试';
+    }
+    setInterval(() => {
+      (function() { return false}['constructor']('debugger').call())
+    }, 50);
+  }
+  try {
+    block();
+  } catch() {}
+})()
+```

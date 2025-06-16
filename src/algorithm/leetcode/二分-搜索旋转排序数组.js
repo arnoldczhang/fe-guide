@@ -58,7 +58,13 @@ var search = function(nums, target) {
   return nums[left] != target ? -1 : left;
 };
 
-// 直觉写法
+/**
+ * 直觉写法
+ * 
+ * @param {*} nums 
+ * @param {*} target 
+ * @returns 
+ */
 var search2 = function(nums, target) {
   const len = nums.length;
   let result = -1;

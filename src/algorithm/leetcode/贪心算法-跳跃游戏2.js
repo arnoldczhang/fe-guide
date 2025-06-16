@@ -23,7 +23,7 @@
  * 
  * 提示：
  * 1. 不用考虑到不了
- * 2. 记录前后max，到达前max后继续跳下一步
+ * 2. 记录区间内能跳的最远距离
  * 
  */
 
@@ -32,14 +32,13 @@ console.log(jump([2,3,1,1,4])); // 2
 console.log(jump([2,3,0,1,4])); // 2
 
 var jump = function(nums) {
-  const len = nums.length;
-  if (!len) return 0;
-  let preMax = 0;
   let max = 0;
+  let preMax = 0;
   let count = 0;
-  for (let i = 0; i <len - 1; i += 1) {
-    max = Math.max(max, i + nums[i]);
-    if (i === preMax) {
+  for (let i = 0; i < nums.length - 1; i += 1) {
+    const num = nums[i];
+    max = Math.max(max, i + num);
+    if (preMax === i) {
       preMax = max;
       count += 1;
     }

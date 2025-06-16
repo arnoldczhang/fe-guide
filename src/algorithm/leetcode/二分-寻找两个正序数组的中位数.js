@@ -17,6 +17,9 @@
  * @param {*} a 
  * @param {*} b 
  * @returns 
+ * 
+ * 提示：
+ * 1. 巨他妈难，别管
  */
 
 // test
@@ -25,7 +28,7 @@ console.log(findMedianSortedArrays([1,2], [3, 4])); // 2.5
 
 var findMedianSortedArrays = function(a, b) {
   if (a.length > b.length) {
-      [a, b] = [b, a];
+    [a, b] = [b, a];
   }
 
   const m = a.length, n = b.length;
@@ -36,9 +39,9 @@ var findMedianSortedArrays = function(a, b) {
       const i = Math.floor((left + right) / 2);
       const j = Math.floor((m + n - 3) / 2) - i;
       if (a[i] <= b[j + 1]) {
-          left = i; // 缩小二分区间为 (i, right)
+        left = i; // 缩小二分区间为 (i, right)
       } else {
-          right = i; // 缩小二分区间为 (left, i)
+        right = i; // 缩小二分区间为 (left, i)
       }
   }
 
