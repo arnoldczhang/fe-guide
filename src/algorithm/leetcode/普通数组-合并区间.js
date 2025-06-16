@@ -42,3 +42,24 @@ var merge = function(intervals) {
   }
   return result;
 };
+
+var merge2 = function(intervals) {
+  intervals.sort((pre, next) => pre[0] - next[0]);
+  const result = [];
+  let tempRange;
+  for (let i = 0; i < intervals.length; i += 1) {
+    if (!tempRange) {
+      tempRange = intervals[i];
+      continue;
+    }
+    const interval = intervals[i];
+    if (interval[0] <= tempRange[1]) {
+      tempRange[1] = Math.max(tempRange[1], interval[1]);
+    } else {
+      result.push(tempRange);
+      tempRange = interval;
+    }
+  }
+  if (tempRange) result.push(tempRange);
+  return result;
+}
