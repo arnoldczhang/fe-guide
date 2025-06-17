@@ -46,6 +46,12 @@
 
 ### 题集
 
+- [数组的度](./leetcode/哈希-数组的度.js)
+- [推文计数](./leetcode/哈希-推文计数.js)
+- [计数质数](./leetcode/技巧-计数质数.js)
+- [TODO 剧情触发时间](./leetcode/二分-剧情触发时间.js)
+- [最小时间差](./leetcode/普通数组-最小时间差.js)
+
 - [最大子数组和](./leetcode/普通数组-最大子数组和.js)
 - [合并区间](./leetcode/普通数组-合并区间.js)
 - [轮转数组](./leetcode/普通数组-轮转数组.js)
@@ -65,8 +71,6 @@
 - [两数之和](./leetcode/哈希-两数之和.js)
 - [字母异位词分组](./leetcode/哈希-字母异位词分组.js)
 - [最长连续序列](./leetcode/哈希-最长连续序列.js)
-- [数组的度](./leetcode/哈希-数组的度.js)
-- [推文计数](./leetcode/哈希-推文计数.js)
 - [DELETE 和为K的子数组](./leetcode/哈希-和为K的子数组.js)
 - [有效的括号](./leetcode/栈-有效的括号.js)
 - [最小栈](./leetcode/栈-最小栈.js)
