@@ -21,6 +21,12 @@
  * 1. 埃氏筛：如果 x 是质数，那么大于 x 的 x 的倍数 2x,3x,… 一定不是质数
  * 
  */
+
+// test
+console.log(countPrimes(10)); // 4
+console.log(countPrimes(0)); // 0
+console.log(countPrimes(1)); // 0
+
 var countPrimes = function(n) {
   let ans = 0;
   const isPrime = Array(n).fill(true);

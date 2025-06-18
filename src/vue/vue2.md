@@ -100,13 +100,16 @@ class Watcher {
 ## 2. 虚拟dom和diff算法
 
 1. 用vnode描述dom结构
+
 2. 数据变化时生成新的vnode
+
 3. 通过diff算法比较新旧vnode
    
    > 同级比较
    > 深度优先
    > 优先处理特殊情况（头头匹配和尾尾匹配）
    > 通过isSameNode判断节点可复用（key/icComment/tagName/细节属性）
+
 4. 尽量复用vnode（移动/修改），减少dom操作
 
 ### diff算法
