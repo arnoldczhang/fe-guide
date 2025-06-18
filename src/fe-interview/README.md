@@ -62,15 +62,18 @@
 
 ## 5. 前端框架
 
+- [vue2](../vue/vue2.md)
 - [vue3的treeshake](../vue/vue3.md#treeshake)
 - [vue-router](../vue/vue3.md#router)
-- [computed和watch](../vue/vue3.md#computed和watch)
-- [prop和data](../vue/vue3.md#prop和data)
+- [vue3 computed和watch](../vue/vue3.md#computed和watch)
+- [vue3 prop和data](../vue/vue3.md#prop和data)
+- [vue3 diff算法](../vue/vue3.md#diff算法)
 - [vue3状态管理](../vue/状态管理.md)
 
 ## 6. 前端工程化
 
 - [性能优化](../career/性能优化.md)
+- [性能指标](../career/性能优化.md#性能指标)
 - [图片优化方案](../js&browser/图片优化.md#优化措施)
 
 ## 7. 团队管理
@@ -91,7 +94,6 @@
 - [灰度方案](../fe-interview/src/灰度方案.md)
 - [前后端统一监控方案](../fe-interview/src/前后端统一监控方案.md)
 - [白屏+卡顿检测方案](../js&browser/性能优化2019.md#白屏检测方案)
-
 
 ## 10. 业务
 

@@ -27,6 +27,9 @@
  * @param {number[][]} increase
  * @param {number[][]} requirements
  * @return {number[]}
+ * 
+ * 提示：
+ * 1. 正常二分
  */
 
 // test
@@ -36,30 +39,28 @@ console.log(getTriggerTime([[1,1,1]], [[0,0,0]])); // [0]
 
 var getTriggerTime = function(increase, requirements) {
   const result = [];
-  const dayArr = Array(increase.length +1).fill(0).map(() => Array(3).fill(0));
-  for (let i = 0; i < increase.length; i += 1) {
+  const len = increase.length;
+  const dayArr = Array.from({ length: len + 1 }, () => Array(3).fill(0));
+  for (let i = 1; i <= len; i += 1) {
     for (let j = 0; j < 3; j += 1) {
-      dayArr[i + 1][j] = dayArr[i][j] + increase[i][j];
+      dayArr[i][j] = dayArr[i - 1][j] + increase[i - 1][j];
     }
   }
-
   for (let i = 0; i < requirements.length; i += 1) {
-    const required = requirements[i];
-    let start = -1;
-    let end = increase.length + 1;
-    while (start + 1 < end) {
-      let mid = (start + end) >> 1;
-      if (dayArr[mid][0] >= required[0]
-        && dayArr[mid][1] >= required[1]
-        && dayArr[mid][2] >= required[2]
-      ) {
-        end = mid;
+    const req = requirements[i];
+    let start = 0;
+    let end = dayArr.length - 1;
+    let index = -1;
+    while (start <= end) {
+      const mid = (start + end) >> 1;
+      if (dayArr[mid].every((item, index) => item >= req[index])) {
+        index = mid;
+        end = mid - 1;
       } else {
-        start = mid;
+        start = mid + 1;
       }
     }
-    if (end === increase.length + 1) end = -1;
-    result.push(end);
+    result[i] = index;
   }
   return result;
 };

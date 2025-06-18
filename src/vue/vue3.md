@@ -257,7 +257,7 @@ defineComponent({
 
 - 底层是一个class，设置了针对value属性的getter/setter
 
-- 有一个变更标记（使用了vue3reactive包里的ReactiveEffect），当依赖变化时需要重新计算值，否则用缓存值
+- 有一个变更标记（使用了vue3 reactive包里的ReactiveEffect），当依赖变化时需要重新计算值，否则用缓存值
 
 - 有一个依赖收集函数，收集computed里用到的依赖，变化时，更新变更标记
 
@@ -292,12 +292,13 @@ class ComputedImpl {
 ```
 
 ### watch原理
+
 > 底层同样使用了reactive包里的reactiveEffect，getter是第一个处理过的入参，schedule属性会在effect变化后触发。
 
 ```js
 function watch(source, callback, options) {
   let getter;
-  
+
   switch (true) {
     case typeof source === 'function':
       getter = source;
@@ -314,12 +315,14 @@ function watch(source, callback, options) {
 ```
 
 ### vue2和vue3的区别
+
 - vue2是申明式写法
 - vue2的watch仅支持监听单个
 - vue2的对象属性的删除和新增（比如push、pop等），无法watch到
 
-## prop和data
-prop对于子组件是只读的，完全无法修改
+## props和data
+
+props对于子组件是只读的，完全无法修改（vue3）
 
 ```js
 class BaseReactiveHandler {
@@ -350,9 +353,7 @@ class MutationReactiveHandler extends BaseReactiveHandler {
 
 const propHandler = new ReadonlyReactiveHandler();
 const dataHandler = new MutationReactiveHandler();
-
 const prop = new Proxy({}, propHandler);
-
 const data = new Proxy({}, dataHandler);
 
 data.a = 1;
@@ -360,4 +361,68 @@ console.log(data.a);
 
 prop.a = 1;
 console.log(prop.a);
+```
+
+## diff算法
+
+> vue3专注于降低需要diff的节点数量，更少更精准的dom操作
+
+### 1. 静态提升
+
+静态内容提升到渲染函数外部，避免不必要的diff
+
+```js
+// 编译前模板
+<div>
+  <h1>静态标题</h1>
+  <p>{{ dynamicContent }}</p>
+</div>
+
+// 编译后代码
+const _hoisted_1 = /*#__PURE__*/_createVNode("h1", null, "静态标题", -1 /* HOISTED */)
+
+function render() {
+  return (_openBlock(), _createBlock("div", null, [
+    _hoisted_1,
+    _createVNode("p", null, _toDisplayString(_ctx.dynamicContent), 1 /* TEXT */)
+  ]))
+}
+```
+
+### 2. Patch flag
+
+为每个动态vnode分配patch flag，更新时只要检查有标记的vnode即可
+
+1 - 文本内容变化
+2 - class变化
+4 - style变化
+8 - props变化
+16 - 要全量比较
+
+### 3. 最长递增子序列
+
+- 相比vue2，采用首尾匹配 + 最长递增子序列的组合
+- 首尾匹配，仍然处理四种常见场景[参考](./vue2.md#diff算法)
+- 最长递增子序列处理乱序场景，时间复杂度提高到O(nlogn)，但是最小化dom移动
+- 原理：在newElem里寻找新增的元素，他们顺序是固定的；oldElem只和不在列表里的元素对比
+
+### 4. 支持多根节点
+
+避免无意义的外层包裹元素
+
+#### 如何实现？
+
+新增fragment类型vnode，单独处理
+
+```js
+function patch(n1, n2, container) {
+  if (n2.type === Fragment) {
+    if (!n1) {
+      // 挂载所有子节点
+      n2.children.forEach((el) => patch(null, el, container));
+    } else {
+      patchChildren(n1, n2, container);
+    }
+  }
+}
 ```
