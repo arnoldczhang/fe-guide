@@ -51,6 +51,7 @@
 - [计数质数](./leetcode/技巧-计数质数.js)
 - [TODO 剧情触发时间](./leetcode/二分-剧情触发时间.js)
 - [最小时间差](./leetcode/普通数组-最小时间差.js)
+- [LRU缓存](./leetcode/链表-LRU缓存.js)
 
 - [最大子数组和](./leetcode/普通数组-最大子数组和.js)
 - [合并区间](./leetcode/普通数组-合并区间.js)
@@ -67,7 +68,6 @@
 - [两两交换链表中的节点](./leetcode/链表-两两交换链表中的节点.js)
 - [随机链表的复制](./leetcode/链表-随机链表的复制.js)
 - [排序链表](./leetcode/链表-排序链表.js)
-- [LRU缓存](./leetcode/链表-LRU缓存.js)
 - [两数之和](./leetcode/哈希-两数之和.js)
 - [字母异位词分组](./leetcode/哈希-字母异位词分组.js)
 - [最长连续序列](./leetcode/哈希-最长连续序列.js)
