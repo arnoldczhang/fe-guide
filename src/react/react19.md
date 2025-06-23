@@ -2,6 +2,48 @@
 
 ## hook
 
+### memo
+> 缓存组件，避免不必要重渲染
+
+```jsx
+const ListItem = memo(({ item, isSelected, onClick }) => {
+  console.log(`渲染列表项 ${item.id}`); // 用于演示重渲染情况
+  return (
+    <li 
+      onClick={() => onClick(item.id)}
+      style={{
+        padding: '10px',
+        margin: '5px 0',
+        background: isSelected ? '#e3f2fd' : '#f5f5f5',
+        cursor: 'pointer',
+        borderRadius: '4px'
+      }}
+    >
+      {item.title}
+    </li>
+  );
+});
+```
+
+### useCallback
+> 缓存函数定义
+
+```jsx
+const fetchData = useCallback(async () => {
+  try {
+    setLoading(true);
+    const result = await fetch('https://jsonplaceholder.typicode.com/posts');
+    if (!result.ok) return;
+    setList((await result.json()).map((item: Item) => ({
+      id: item.id,
+      title: item.title,
+    })));
+  } finally {
+    setLoading(false);
+  }
+}, []);
+```
+
 ### useState
 
 > 创建当次快照和更新下次快照的数据的方法

@@ -96,6 +96,7 @@
 - [前后端统一监控方案](../fe-interview/src/前后端统一监控方案.md)
 - [白屏+卡顿检测方案](../js&browser/性能优化2019.md#白屏检测方案)
 - [微前端方案](../microservice/微前端方案.md)
+- [复杂组件方案](../fe-interview/src/复杂组件方案.md)
 
 ## 10. 业务
 
