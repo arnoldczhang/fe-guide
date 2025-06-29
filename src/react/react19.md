@@ -250,3 +250,32 @@ const ThemeContext = createContext('example');
 // 消费
 const theme = useContext(ThemeContext);
 ```
+
+### useRef
+> 适用于组件生命周期内持久化存储值
+>
+> 区别于useState，改动不会触发渲染
+>
+> 常用于：定时器、DOM操作
+
+```jsx
+import { useRef } from 'react';
+
+export default function Counter() {
+  let ref = useRef(0);
+
+  function handleClick() {
+    ref.current = ref.current + 1;
+    alert('你点击了 ' + ref.current + ' 次！');
+  }
+
+  return (
+    <div>
+      <button onClick={handleClick}>
+        点击我！
+      </button>
+    </div>
+  );
+}
+
+```
