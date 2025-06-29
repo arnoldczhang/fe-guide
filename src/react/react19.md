@@ -277,5 +277,81 @@ export default function Counter() {
     </div>
   );
 }
-
 ```
+
+### useImperativeHandle
+> 限制useRef暴露的功能
+
+```jsx
+import { useRef, useImperativeHandle } from 'react';
+
+// 方式一：正常透传ref
+function MyInput({ ref }) {
+  return (
+    <>
+      <input type="text" ref={ref} />
+    </>
+  )
+}
+
+// 方式二：仅透传focus
+function MyInput({ ref }) {
+  const realInputRef = useRef(null);
+  useImperativeHandle(ref, {
+    focus() {
+      realInputRef.current.focus();
+    },
+  })
+
+  return (
+    <>
+      <input type="text" ref={realInputRef} />
+    </>
+  )
+}
+
+function Form() {
+  const inputRef = useRef(null);
+
+  const handleFocus = () => {
+    console.log(inputRef.current); // 仅focus
+    inputRef.current.focus(); 
+  };
+
+  return (
+    <>
+      <MyInput ref={inputRef} />
+      <button onClick={handleFocus}>click</button>
+    </>
+  )
+}
+```
+
+## 时机
+
+### flushSync
+> 执行完传入的方法后，立即更新dom
+>
+> 适用于：动态添加dom后立即交互的场景
+
+```jsx
+function List() {
+  flushSync(() => {
+    setText('');
+    setTodos([ ...todos, newTodo]);
+  });
+  listRef.current.lastChild.scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest'
+  });
+
+  return (
+    <ul ref={listRef}>
+      {todos.map(todo => (
+        <li key={todo.id}>{todo.text}</li>
+      ))}
+    </ul>
+  )
+}
+```
+
