@@ -212,14 +212,21 @@ const staticMemorizedValue = useMemo(() => ({
 ```jsx
 /**
 * 触发条件
-* 1. （无deps时）mounted触发
-* 2. （有deps时）依赖更新时触发
+* 1. （无第二个参数时）每次渲染后执行
+* 2. （无deps时）mounted触发
+* 3. （有deps时）mounted或某个依赖更新时触发
 **/
 useEffect(() => {
     // ...一些逻辑
     return () => { /* beforeUnMount时触发 */ }
 }, [deps]);
 ```
+
+**关于react18+执行两次mounted**
+
+- 不建议关闭
+- 不建议用类似`mountedRef`来阻止，没解决问题
+- 添加useEffect对应的销毁函数是正解
 
 **执行顺序**
 
