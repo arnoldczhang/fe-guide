@@ -228,6 +228,27 @@ useEffect(() => {
 - 不建议用类似`mountedRef`来阻止，没解决问题
 - 添加useEffect对应的销毁函数是正解
 
+```jsx
+useEffect(() => {
+  let ignore = false;
+
+  async function startFetching() {
+    const json = await fetchTodos(userId);
+    
+    // 保证组件销毁时，不重新渲染
+    if (!ignore) {
+      setTodos(json);
+    }
+  }
+
+  startFetching();
+
+  return () => {
+    ignore = true;
+  };
+}, [userId]);
+```
+
 **执行顺序**
 
 ```text
