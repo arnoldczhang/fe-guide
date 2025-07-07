@@ -357,11 +357,15 @@ function Form() {
 
 ### useEffectEvent
 > 从effect中提取你不希望是响应式的逻辑，但是又能实时监听最新prop和state
+>
+> 黄金法则：
+>
+> 1. 永远在调用的effect旁边注册useEffectEvent，因为他们是effect的片段
 
 ```jsx
 function ChatRoom({ roomId, theme }) {
   // 会实时读取最新theme，但是theme的变化，不影响connect
-  const onConnected = useEffectEvent(() => {
+  const onConnected = useEffectEvent((msg) => {
     showNotification('Connected!', theme);
   });
 
@@ -369,7 +373,7 @@ function ChatRoom({ roomId, theme }) {
   useEffect(() => {
     const connection = createConnection(serverUrl, roomId);
     connection.on('connected', () => {
-      onConnected();
+      onConnected('hello');
     });
     connection.connect();
     return () => connection.disconnect();
