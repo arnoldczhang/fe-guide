@@ -355,6 +355,28 @@ function Form() {
 }
 ```
 
+### useEffectEvent
+> 从effect中提取你不希望是响应式的逻辑，但是又能实时监听最新prop和state
+
+```jsx
+function ChatRoom({ roomId, theme }) {
+  // 会实时读取最新theme，但是theme的变化，不影响connect
+  const onConnected = useEffectEvent(() => {
+    showNotification('Connected!', theme);
+  });
+
+  // 只有roomId的变化才会影响connect
+  useEffect(() => {
+    const connection = createConnection(serverUrl, roomId);
+    connection.on('connected', () => {
+      onConnected();
+    });
+    connection.connect();
+    return () => connection.disconnect();
+  }, [roomId]);
+}
+```
+
 ## 时机
 
 ### flushSync
