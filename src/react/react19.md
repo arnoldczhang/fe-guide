@@ -198,9 +198,10 @@ const staticMemorizedValue = useMemo(() => ({
 ```
 
 ### useEffect
-
 > 副作用处理（watch、mounted、beforeUnMount）
 > 
+> 不能对比beforeValue和value，挺尴尬
+>
 > 黄金法则：
 > 
 > 1. 一个effect只做一件事
