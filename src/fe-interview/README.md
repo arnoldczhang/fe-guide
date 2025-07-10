@@ -48,6 +48,9 @@
 
 ## 3. 打包工具
 
+- [各打包工具区别](../webpack/各打包工具区别.md)
+- [webpack 常用配置](../webpack/常用配置.md)
+- [vite 常用配置](../vue/vite常用配置.md)
 - [webpack加速优化](../webpack/README.md#加速优化)
 - [webpack和rollup的treeshake的区别](../treeshake/README.md)
 - [vite对比webpack的优势](../vue/README.md#vite)

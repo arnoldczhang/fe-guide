@@ -24,6 +24,8 @@
 > rollup 默认会基于 esm 做树摇，但是对于函数调用，由于不确定是否有副作用（比如改全局变量），不会自动treeshake，
 > 
 > 可以通过 **__PURE__**关键词标记不含副作用，可以正常 treeshake。
+>
+> 注：生产环境不用这样
 
 ```js
 import { foo } from './utils
