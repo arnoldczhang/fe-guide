@@ -6,6 +6,7 @@ const STATUS = {
 
 const isPromise = (item) => item instanceof _Promise;
 
+// 方案一
 function _Promise(fn) {
   if (typeof fn !== 'function') {
     throw new Error(`Promise resolver ${typeof fn} is not a function`);
@@ -129,6 +130,45 @@ _Promise.all = function all(array) {
 _Promise.race = function race() {}
 _Promise.allSettled = function allSettled() {}
 _Promise.any = function any() {}
+
+// 方案二
+class MyPromise {
+  constructor(callback) {
+    this.status = STATUS.pending;
+    this.queue = [];
+    this.errorQueue = [];
+    callback(this.resolve.bind(this), this.reject.bind(this));
+    return this;
+  }
+  resolve(res) {
+    if (this.status !== STATUS.pending) return;
+    this.status = STATUS.fullfilled;
+    while (this.queue.length) {
+      try {
+        res = this.queue.shift()(res);
+      } catch (err) {
+        if (this.errorQueue.length) {
+          return this.errorQueue.shift()(err);
+        }
+      }
+    }
+  }
+  reject(res) {
+    if (this.status !== STATUS.pending) return;
+    this.status = STATUS.rejected;
+    if (!this.errorQueue.length) return;
+    return this.errorQueue.shift()(res);
+  }
+  then(callback, fallback) {
+    this.queue.push(callback);
+    fallback && this.errorQueue.push(fallback);
+    return this;
+  }
+  catch(fallback) {
+    this.errorQueue.push(fallback);
+    return this;
+  }
+}
 
 // test
 
