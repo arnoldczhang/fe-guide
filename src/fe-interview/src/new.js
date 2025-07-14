@@ -35,5 +35,14 @@ function neW2(Construtor, ...args) {
   throw new Error(`${Construtor} is not a constructor`);
 };
 
+// new3
+function myNew(func, ...args) {
+  const obj = {};
+  obj.__proto__ = func.prototype;
+  const result = func.call(obj, ...args);
+  if (result instanceof Object) return result;
+  return obj;
+}
+
 // test
 // const a = neW(A, 'abc');
