@@ -30,6 +30,17 @@
 
 ## 2. 手写源码
 
+**无意义的重新实现**
+
+- [new](./src/new.js)
+- [promise](./src/promise.js)
+- [bind](./src/bind.js)
+- [缓存时效性](./src/缓存时效性.js)
+- [防抖 - clearTimeout](./src/debounce.js)
+- [节流 - 固定频率](./src/throttle.js)
+
+**优点意思的**
+
 - [LRU](../algorithm/leetcode/双向链表-LRU缓存机制.js)
 - [eventBus](./src/eventBus.js)
 - [模拟请求池](./src/模拟节流请求.js)
@@ -37,14 +48,8 @@
 - [数据结构扁平化](./src/扁平数据转树状结构.js)
 - [数据结构扁平化2](./src/扁平数据转树状结构2.js)
 - 正则解析url
-- [防抖 - clearTimeout](./src/debounce.js)
-- [节流 - 固定频率](./src/throttle.js)
-- [new](./src/new.js)
-- [promise](./src/promise.js)
-- [bind](./src/bind.js)
 - [双指针-字符串全匹配](./src/字符串全匹配.js)
 - [zookeeper增删改查](./src/zookeeper.js)
-- [缓存时效性](./src/缓存时效性.js)
 - [微信红包算法](../algorithm/leetcode/微信红包算法.js)
 - [indexedDB读写](./src/indexedDB读写.js)
 - [proxy响应式](./src/proxy响应式.js)
