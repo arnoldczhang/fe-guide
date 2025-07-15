@@ -36,6 +36,7 @@ var searchInsert = function(nums, target) {
   let mid;
   while (start <= end) {
     mid = start + ((end - start) >> 1);
+    // 默认在最后，所以优先比较小于中位数的情况
     if (nums[mid] >= target) {
       result = mid;
       end = mid - 1;

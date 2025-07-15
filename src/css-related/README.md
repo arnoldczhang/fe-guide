@@ -1486,6 +1486,10 @@ textarea {
 
 [纯css实现tree](https://codepen.io/xboxyan/pen/jOJOBdr)
 
+### shape
+> shape() CSS 函数用于定义 clip-path 和 offset-path 属性的形状。它结合了一个初始起点和一系列定义形状路径的形状命令。shape() 函数是 数据类型的成员。
+[用shape实现圆角](https://juejin.cn/post/7510590947550871592?sessionid=-1583247015)
+
 ---
 
 ### calc

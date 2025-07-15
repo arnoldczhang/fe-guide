@@ -223,7 +223,9 @@ fetch(`/receive?channel=${channel}`, {
 - [api](https://api-docs.deepseek.com/zh-cn/api/create-chat-completion)
 
 ## MCP
-[mcp - 进阶版function call](https://mp.weixin.qq.com/s/jV46NMDfcJRiklUG_RLsmQ)
+- [mcp - 进阶版function call](https://mp.weixin.qq.com/s/jV46NMDfcJRiklUG_RLsmQ)
+- [figma支持mcp导出视觉稿](https://mp.weixin.qq.com/s/i4VGAv8mg3wBVgQrKqUmWQ)
+
 
 ### 本地调试
 cline

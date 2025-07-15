@@ -20,6 +20,7 @@
 - [重绘重排](./src/common.md#重绘和回流)
 - [GPU渲染和复合图层](./src/common.md#GPU加速)
 - [VO和AO](../js&browser/并发模型-event_loop.md#执行上下文和作用域链)
+- [作用域链](./src/common.md#执行上下文和作用域链)
 - [盒模型](./src/common.md#盒模型)
 - [get和post](../js&browser/页面过程与浏览器缓存.md)
 - [mjs和cjs](../js&browser/esm.md)
@@ -29,6 +30,17 @@
 
 ## 2. 手写源码
 
+**无意义的重新实现**
+
+- [new](./src/new.js)
+- [promise](./src/promise.js)
+- [bind](./src/bind.js)
+- [缓存时效性](./src/缓存时效性.js)
+- [防抖 - clearTimeout](./src/debounce.js)
+- [节流 - 固定频率](./src/throttle.js)
+
+**优点意思的**
+
 - [LRU](../algorithm/leetcode/双向链表-LRU缓存机制.js)
 - [eventBus](./src/eventBus.js)
 - [模拟请求池](./src/模拟节流请求.js)
@@ -36,10 +48,6 @@
 - [数据结构扁平化](./src/扁平数据转树状结构.js)
 - [数据结构扁平化2](./src/扁平数据转树状结构2.js)
 - 正则解析url
-- [防抖 - clearTimeout](./src/debounce.js)
-- [节流 - 固定频率](./src/throttle.js)
-- [promise](./src/promise.js)
-- [bind](./src/bind.js)
 - [双指针-字符串全匹配](./src/字符串全匹配.js)
 - [zookeeper增删改查](./src/zookeeper.js)
 - [微信红包算法](../algorithm/leetcode/微信红包算法.js)
@@ -48,6 +56,9 @@
 
 ## 3. 打包工具
 
+- [各打包工具区别](../webpack/各打包工具区别.md)
+- [webpack 常用配置](../webpack/常用配置.md)
+- [vite 常用配置](../vue/vite常用配置.md)
 - [webpack加速优化](../webpack/README.md#加速优化)
 - [webpack和rollup的treeshake的区别](../treeshake/README.md)
 - [vite对比webpack的优势](../vue/README.md#vite)
@@ -62,15 +73,19 @@
 
 ## 5. 前端框架
 
+- [react](../react/react19.md)
+- [vue2](../vue/vue2.md)
 - [vue3的treeshake](../vue/vue3.md#treeshake)
 - [vue-router](../vue/vue3.md#router)
-- [computed和watch](../vue/vue3.md#computed和watch)
-- [prop和data](../vue/vue3.md#prop和data)
+- [vue3 computed和watch](../vue/vue3.md#computed和watch)
+- [vue3 prop和data](../vue/vue3.md#prop和data)
+- [vue3 diff算法](../vue/vue3.md#diff算法)
 - [vue3状态管理](../vue/状态管理.md)
 
 ## 6. 前端工程化
 
 - [性能优化](../career/性能优化.md)
+- [性能指标](../career/性能优化.md#性能指标)
 - [图片优化方案](../js&browser/图片优化.md#优化措施)
 
 ## 7. 团队管理
@@ -91,7 +106,8 @@
 - [灰度方案](../fe-interview/src/灰度方案.md)
 - [前后端统一监控方案](../fe-interview/src/前后端统一监控方案.md)
 - [白屏+卡顿检测方案](../js&browser/性能优化2019.md#白屏检测方案)
-
+- [微前端方案](../microservice/微前端方案.md)
+- [复杂组件方案](../fe-interview/src/复杂组件方案.md)
 
 ## 10. 业务
 
