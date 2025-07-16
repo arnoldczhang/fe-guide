@@ -32,6 +32,7 @@
 
 **无意义的重新实现**
 
+- [数字千分位](./src/数字千分位.js)
 - [new](./src/new.js)
 - [promise](./src/promise.js)
 - [bind](./src/bind.js)

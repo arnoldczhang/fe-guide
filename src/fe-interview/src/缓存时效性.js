@@ -14,6 +14,7 @@ class Cach {
   set(key, value, delay) {
     if (this.timeIdMap.has(key)) {
       clearTimeout(this.timeIdMap.get(key));
+      this.timeIdMap.delete(key);
     }
     this.cach.set(key, value);
     const timeId = setTimeout(() => {
