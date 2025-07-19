@@ -471,18 +471,42 @@ packages:
 
 ### 使用changeset管理版本&发布
 
+#### 命令
 ```json
 {
   "scripts": {
-    <!-- 统一为packages/* 升级版本号 -->
+    // 统一为packages/* 升级版本号
     "publish:first": "changeset",
-    <!-- 更新 package.json 和 CHANGELOG.md -->
+    // 更新 package.json 和 CHANGELOG.md
     "publish:second": "pnpm changeset version",
-    <!-- 更新workspace依赖版本 -->
+    // 更新workspace依赖版本
     "publish:third": "pnpm install",
-    <!-- 发布所有package/* -->
-    "publish:final": "pnpm changeset publish"
+    // 发布所有package/*
+    "publish:final": "pnpm changeset publish",
+    // nx按需构建
+    "build": "pnpm exec nx run-many --target=build --projects=app1 app2",
   },
+}
+```
+
+#### 版本管理 ./changeset/config.json
+```json
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  // 保持下面所有包的版本号保持统一
+  "fixed": [
+    "@tencent/mole-utils-server",
+    "@tencent/mole-utils-client"
+  ],
+  // 允许独立发布（可以默认不填）
+  "linked": [
+    
+  ],
+  // 无需关注的包
+  "ignore": [
+    "common",
+  ],
 }
 ```
 
@@ -499,6 +523,150 @@ changeset
 pnpm changeset version
 pnpm changeset publish
 ```
+
+#### 配置nx远程缓存
+> 适用于nx21+：https://nx.dev/recipes/running-tasks/self-hosted-caching#open-api-specification
+
+两件事：
+1. 项目bash注入远程缓存服务器配置
+2. 配置远程服务器（两个接口获取缓存和上传缓存）
+
+**项目bash注入远程缓存服务器配置**
+
+```bash
+
+#!/bin/bash
+ # 远程缓存构建函数
+try_remote_build() {
+    echo "Attempting remote cache build..."
+    # 远程缓存服务器url
+    export NX_SELF_HOSTED_REMOTE_CACHE_SERVER=your-server-remote-url
+    export NX_SELF_HOSTED_REMOTE_CACHE_ACCESS_TOKEN=your-secure-token
+    pnpm run build
+}
+ # 本地回退构建函数
+local_fallback_build() {
+    echo "Falling back to local build..."
+    # 重置远程缓存信息，确保可以使用本地缓存，而不是跳过所有缓存
+    export NX_SELF_HOSTED_REMOTE_CACHE_SERVER=""
+    export NX_SELF_HOSTED_REMOTE_CACHE_ACCESS_TOKEN=""
+    pnpm run build
+}
+ # 尝试远程构建
+try_remote_build || {
+    # 捕获错误后执行
+    echo "▶️ Remote cache build failed! Reason: $?"
+
+    # 执行降级构建
+    local_fallback_build || {
+        # 连本地构建都失败的处理
+        echo "💥 Critical: Local build also failed!"
+        exit 1
+    }
+
+    # 构建后
+    echo "⚠️ Warning: Used local fallback build"
+}
+```
+
+**配置远程服务器**
+
+```js
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+const app = express();
+const PORT = 3000;
+ // 配置参数
+const CACHE_DIR = path.join(__dirname, 'nx-cache'); // 缓存存储目录
+const AUTH_TOKEN = 'your-secure-token'; // 替换为实际密钥
+ // 确保缓存目录存在
+if (!fs.existsSync(CACHE_DIR)) {
+  fs.mkdirSync(CACHE_DIR, { recursive: true });
+}
+ // 认证中间件
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).send('Missing authentication token');
+  }
+
+  const [bearer, token] = authHeader.split(' ');
+
+  if (bearer !== 'Bearer' || token !== AUTH_TOKEN) {
+    return res.status(403).send('Invalid authentication token');
+  }
+
+  next();
+};
+ // 处理文件上传
+app.put('/v1/cache/:hash', authMiddleware, express.raw({
+  type: 'application/octet-stream',
+  limit: '2gb' // 根据需求调整大小限制
+}), (req, res) => {
+  const hash = req.params.hash;
+  const project = req.params.project;
+  const contentLength = parseInt(req.headers['content-length'], 10);
+  console.log(`PUT ${project}/v1/cache/${hash}, Size: ${contentLength} bytes`);
+
+  if (!contentLength || isNaN(contentLength)) {
+    return res.status(400).send('Content-Length header required');
+  }
+   const cachePath = path.resolve(CACHE_DIR, `./${project}`)
+  if (!fs.existsSync(cachePath)) {
+    fs.mkdirSync(cachePath, { recursive: true });
+  }
+   const filePath = path.join(cachePath, `${hash}.tar`);
+
+  // 检查缓存是否已存在
+  if (fs.existsSync(filePath)) {
+    return res.status(409).send('Cache already exists');
+  }
+   // 写入缓存文件
+  fs.writeFile(filePath, req.body, (err) => {
+    if (err) {
+      console.error(`Error saving cache ${hash}:`, err);
+      return res.status(500).send('Internal server error');
+    }
+
+    res.status(202).end();
+  });
+});
+ // 处理缓存下载
+app.get('/v1/cache/:hash', authMiddleware, (req, res) => {
+  const hash = req.params.hash;
+  const project = req.params.project;
+  console.log(`GET ${project}/v1/cache/${hash}`);
+  const cachePath = path.resolve(CACHE_DIR, `./${project}`)
+  const filePath = path.join(cachePath, `${hash}.tar`);
+
+  if (!fs.existsSync(filePath)) {
+    console.log(`cache miss`);
+    return res.status(404).end();
+  }
+   // 设置正确的内容类型
+  res.setHeader('Content-Type', 'application/octet-stream');
+
+  // 创建文件流
+  const fileStream = fs.createReadStream(filePath);
+
+  fileStream.on('error', (err) => {
+    console.error(`Error serving cache ${hash}:`, err);
+    res.status(500).end();
+  });
+
+  console.log(`cache hit`);
+  fileStream.pipe(res);
+});
+ // 启动服务器
+app.listen(PORT, () => {
+  console.log(`NX Cache Server running on port ${PORT}`);
+  console.log(`Cache storage: ${CACHE_DIR}`);
+});
+```
+
 
 ### pnpm publish
 
@@ -519,7 +687,8 @@ pnpm link --global <包名>
 ```
 
 ### pnpm + nx + bundle-status
-[腾讯文档-多仓库构建](https://mp.weixin.qq.com/s/JutlJ2k4XFM2r1MgeMcDgQ)
+- [腾讯文档实践](https://mp.weixin.qq.com/s/JutlJ2k4XFM2r1MgeMcDgQ)
+- [腾讯文档实践2](https://mp.weixin.qq.com/s/Xdv4VGObIvUYM-6ALWMf3A)
 
 ---
 

@@ -410,3 +410,6 @@ function List() {
 }
 ```
 
+
+## 资源
+- [动效库react bit](https://www.reactbits.dev)
