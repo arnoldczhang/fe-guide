@@ -24,7 +24,7 @@
 > rollup 默认会基于 esm 做树摇，但是对于函数调用，由于不确定是否有副作用（比如改全局变量），不会自动treeshake，
 > 
 > 可以通过 **__PURE__**关键词标记不含副作用，可以正常 treeshake。
->
+> 
 > 注：生产环境不用这样
 
 ```js
@@ -33,8 +33,6 @@ import { foo } from './utils
 
 export const isHtml = /*#__PURE__*/ isHtmlFn();
 ```
-
-## 
 
 ---
 
@@ -364,6 +362,48 @@ console.log(data.a);
 prop.a = 1;
 console.log(prop.a);
 ```
+
+## ref和reactive
+
+|      | ref      | reactive                 |
+| ---- | -------- | ------------------------ |
+| 数据类型 | 任意       | 对象（Object/Array/Map/Set） |
+| 访问方式 | xx.value | 直接访问，比如obj.aa            |
+| 修改方式 | 直接替换     | 不可替换                     |
+| 解构   | 失去响应     | 失去响应                     |
+
+### reactive -> ref
+
+```js
+import { reactive, toRefs } from 'vue';
+
+const obj = reactive({ name: 'abc' });
+const { name } = toRefs(obj);
+
+// 实时响应
+// {{ name }}
+// <input v-model="name" />
+
+
+```
+
+### ref -> reactive
+
+```js
+import { ref, reactive } from 'vue';
+
+
+const name = ref('abc');
+const obj = reactive({ name });
+
+
+// 实时响应
+// {{ obj.name }}
+// {{ name }
+// <input v-model="name" />
+```
+
+
 
 ## diff算法
 
