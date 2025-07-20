@@ -41,12 +41,14 @@
 - [防抖 - clearTimeout](./src/debounce.js)
 - [节流 - 固定频率](./src/throttle.js)
 - [深拷贝](./src/深拷贝.md#终局)
+- [发布订阅](./src/发布订阅.js)
 
-**优点意思的**
+**有点意思的**
 
 - [LRU](../algorithm/leetcode/双向链表-LRU缓存机制.js)
 - [eventBus](./src/eventBus.js)
 - [模拟请求池](./src/模拟节流请求.js)
+- [数组转树形结构](./src/数组转树形结构.js)
 - [数据结构扁平化](./src/扁平数据转树状结构.js)
 - [数据结构扁平化2](./src/扁平数据转树状结构2.js)
 - 正则解析url
