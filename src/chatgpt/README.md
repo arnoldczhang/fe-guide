@@ -21,6 +21,7 @@
 - [2025deepseek提示词](https://www.cnblogs.com/vipstone/p/18710104)
 - [deepseek本地部署指南](https://mp.weixin.qq.com/s/SPEvYTmTBxhoEkJqm1yPmw)
 - [提示词优化器](https://github.com/linshenkx/prompt-optimizer)
+- [自更新的全球日报](https://kite.kagi.com/6b906e50-83ee-41e1-b3b4-907b10095066/world?data_lang=zh-Hant)
 
 ## Prompt
 
