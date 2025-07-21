@@ -6,11 +6,12 @@
 - [vue3-管理端开箱即用1](https://github.com/fantastic-admin/basic)
 - [200行实现diff](https://lazamar.github.io/virtual-dom/)
 
-## 目录
-
-[TOC]
-
----
+## 新特性
+- Teleport
+- Composition API
+- 独立的reactivity模块
+- Suspense
+- Fragment
 
 ## 框架考虑点
 
@@ -146,7 +147,7 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 
 ---
 
-## 原理
+## proxy原生属性
 
 ### 普通对象vs异质对象
 
@@ -155,6 +156,7 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 > 1. 含对象必要的内部方法，比如[[GetPrototypeOf]]、[[SetPrototypeOf]]等
 > 2. 含原生实现的[[Call]]
 > 3. 含原生实现的[[Construct]]
+> 4. 读取key时，访问[[Symbol.toPrimitive]]
 
 **异质对象**
 
@@ -233,6 +235,15 @@ defineComponent({
 
 ## router
 
+### 关键点
+- hash/history
+- 外部事件监听（hashchange、popstate）和路由内部监听（routeChange）
+- 路由守卫（beforeleave、鉴权、消毒）
+- 路由解析（静态、动态、嵌套路由）
+- 边界情况兜底（异常、loading、重定向）
+- 动态更新（updateRoute）
+
+
 ### hash和history
 
 |       | hash       | history            |
@@ -241,7 +252,7 @@ defineComponent({
 | 区别    | #xxx       | /path/a/b          |
 | 服务端配置 | 无需支持       | nginx要配置try_files  |
 
-## computed和watch
+## computed和watch和watchEffect
 
 ### 区别
 
@@ -313,6 +324,12 @@ function watch(source, callback, options) {
   effect.schedule = callback;
 }
 ```
+
+### watchEffect(callback)
+> 相当于watch(watchFn, callback, { immediate: true })
+>
+> 会先执行一遍callback，收集依赖，也就是watchFn
+>
 
 ### vue2和vue3的区别
 
@@ -403,8 +420,6 @@ const obj = reactive({ name });
 // <input v-model="name" />
 ```
 
-
-
 ## diff算法
 
 > vue3专注于降低需要diff的节点数量，更少更精准的dom操作
@@ -473,3 +488,15 @@ function patch(n1, n2, container) {
 - 都可以异步，但vue不会等，要考虑卸载时清除异步
 - 父组件的下一步生命周期都滞后于子组件
 - 加载、异常等状态处理
+
+## 数据通信
+
+### 父子组件
+- props
+- $emit/$on
+
+### 跨层组件
+- provide/inject
+
+### 兄弟组件
+- eventbus

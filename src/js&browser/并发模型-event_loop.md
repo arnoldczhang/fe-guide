@@ -518,7 +518,7 @@ function f() {
 - postMessage（可模拟实现setTimeout(0)的效果）
 - MessageChannel
 - scheduler.postTask
-- Evaluate Script（执行同步js也是宏任务）
+- Evaluate Script（**执行同步js也是宏任务**）
 
 ### 微任务
 
@@ -526,8 +526,6 @@ function f() {
 - process.nextTick（node）
 - MutaionObserver
 - IntersectionObserver
-
-
 
 ### scheduler.postTask
 

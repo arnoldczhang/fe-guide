@@ -14,7 +14,7 @@
 
 - [闭包](./src/common.md#闭包)
 - [promise细节](./src/promise.md)
-- [暂时性死区](./src/common.md#let、const以及var的区别)
+- [暂时性死区](./src/common.md#暂时性死区)
 - [事件循环](../js&browser/并发模型-event_loop.md#宏任务和微任务)
 - [线程&进程](../js&browser/现代浏览器.md#进程)
 - [重绘重排](./src/common.md#重绘和回流)

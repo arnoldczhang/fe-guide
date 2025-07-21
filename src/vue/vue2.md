@@ -108,7 +108,7 @@ class Watcher {
    > 同级比较
    > 深度优先
    > 优先处理特殊情况（头头匹配和尾尾匹配）
-   > 通过isSameNode判断节点可复用（key/icComment/tagName/细节属性）
+   > 通过isSameNode判断节点可复用（key/isComment/tagName/细节属性）
 
 4. 尽量复用vnode（移动/修改），减少dom操作
 
@@ -163,6 +163,7 @@ function updateChildren(parent, oldElem, newElem) {
 ```
 
 ## 3. 模板编译
+> template -> ast -> code
 
 **三个阶段**
 
@@ -188,7 +189,7 @@ function compile(template) {
 ## 5. 生命周期（简要）
 
 - 创建阶段（beforeCreate、created）
-- 更新阶段（beforeUpdated、updated）
+- 更新阶段（beforeUpdate、updated）
 - 销毁阶段（beforeDestory、destroyed）
 
 ## 6. 性能优化
@@ -234,8 +235,47 @@ function render() {
 }
 ```
 
-## 7. 问题
+#### keep-alive
+
+## 7. 隐患
 
 - 数组直接改索引、length，不会触发数据响应
 - 给对象加新属性不会触发数据响应，要通过`Vue.set`
 - 深度监听大对象会有性能瓶颈
+
+## 8. 面试题
+
+### v-model和.sync区别
+- 都可以实现父子组件双向通信，都是props/$emit('update:xxx', value)的语法糖
+- 组件只能绑定一个v-model，而.sync却无此限制
+
+### vuex
+- 提供了全局状态共享的一个集中管理
+- 非必须
+
+### nextTick
+> 在修改数据，dom更新完成后，执行的延迟回调
+>
+> 优先用promise，不支持才降级到setTimeout(xxx, 0)
+
+```js
+const queue = [];
+function nextTick(callback) {
+  queue.push(callback)
+}
+
+function flushQueue() {
+  for (let i = 0; i < queue.length; i += 1) {
+    const callback = queue[i];
+    callback();
+  }
+}
+
+function render() {
+  // ...数据更新
+  Promise.resolve().then(flushQueue);
+}
+```
+
+### 单个根节点
+vue2是，vue3用Fragment解决了这个问题（自动外面包一层）

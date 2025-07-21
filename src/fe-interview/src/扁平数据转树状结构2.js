@@ -30,7 +30,7 @@
  *    'e.g.h: aaa',
  * ]
  */
-function transfer(obj = {}, cach = {}, cachKey = []) {
+function transform(obj = {}, cach = {}, cachKey = []) {
   Object.entries(obj).forEach(([key, value]) => {
     const current = cachKey.concat(key);
     if (value && typeof value === 'object') {
