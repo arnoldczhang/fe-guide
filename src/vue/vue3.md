@@ -337,7 +337,7 @@ function watch(source, callback, options) {
 - vue2的watch仅支持监听单个
 - vue2的对象属性的删除和新增（比如push、pop等），无法watch到
 
-## props和data
+## prop和data
 
 props对于子组件是只读的，完全无法修改（vue3）
 
