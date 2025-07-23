@@ -200,7 +200,7 @@ const staticMemorizedValue = useMemo(() => ({
 ### useEffect
 > 副作用处理（watch、mounted、beforeUnMount）
 > 
-> 不能对比beforeValue和value，挺尴尬
+> 不能对比oldValue和newValue，挺尴尬
 >
 > 黄金法则：
 > 

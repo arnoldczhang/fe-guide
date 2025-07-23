@@ -79,12 +79,12 @@
 
 - [react](../react/react19.md)
 - [vue2](../vue/vue2.md)
-- [vue3的treeshake](../vue/vue3.md#treeshake)
+- [vue3 treeshake](../vue/vue3.md#treeshake)
 - [vue-router](../vue/vue3.md#router)
 - [vue3 computed和watch](../vue/vue3.md#computed和watch)
 - [vue3 prop和data](../vue/vue3.md#prop和data)
 - [vue3 diff算法](../vue/vue3.md#diff算法)
-- [vue3状态管理](../vue/状态管理.md)
+- [vue3 状态管理](../vue/状态管理.md)
 
 ## 6. 前端工程化
 
