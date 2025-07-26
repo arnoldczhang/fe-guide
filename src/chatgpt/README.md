@@ -22,6 +22,7 @@
 - [deepseek本地部署指南](https://mp.weixin.qq.com/s/SPEvYTmTBxhoEkJqm1yPmw)
 - [提示词优化器](https://github.com/linshenkx/prompt-optimizer)
 - [自更新的全球日报](https://kite.kagi.com/6b906e50-83ee-41e1-b3b4-907b10095066/world?data_lang=zh-Hant)
+- [agent串联库 Oxygen](https://github.com/jd-opensource/OxyGent)
 
 ## Prompt
 
@@ -300,3 +301,7 @@ startServer();
 - https://github.com/modelcontextprotocol/servers
 - https://mcpmarket.cn/
 - https://mcp.so/
+
+
+## cursor
+[cursor使用指南和常用prompt](https://mp.weixin.qq.com/s/UM3nBcX6JpYtnchSCdrxOA)
