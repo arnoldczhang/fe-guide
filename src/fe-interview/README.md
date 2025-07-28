@@ -77,6 +77,7 @@
 
 ## 5. 前端框架
 
+- [MV*区别](./src/common.md#mv*)
 - [react](../react/react19.md)
 - [vue2](../vue/vue2.md)
 - [vue3 treeshake](../vue/vue3.md#treeshake)
@@ -91,6 +92,7 @@
 - [性能优化](../career/性能优化.md)
 - [性能指标](../career/性能优化.md#性能指标)
 - [图片优化方案](../js&browser/图片优化.md#优化措施)
+- [B端和C端差异](../career/前端架构&技术方案.md#各端差异)
 
 ## 7. 团队管理
 

@@ -22,7 +22,8 @@
 - [deepseek本地部署指南](https://mp.weixin.qq.com/s/SPEvYTmTBxhoEkJqm1yPmw)
 - [提示词优化器](https://github.com/linshenkx/prompt-optimizer)
 - [自更新的全球日报](https://kite.kagi.com/6b906e50-83ee-41e1-b3b4-907b10095066/world?data_lang=zh-Hant)
-- [agent串联库 Oxygen](https://github.com/jd-opensource/OxyGent)
+- [Oxygen agent串联库](https://github.com/jd-opensource/OxyGent)
+- [Lovart 集成agent的figma](https://mp.weixin.qq.com/s/cTOaTF94DPqMeWiRsdhetQ)
 
 ## Prompt
 
