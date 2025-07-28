@@ -818,14 +818,16 @@ yarn add node-sass@4.14.1
 > blur后才触发值更新
 
 ```vue
-<input type="text" v-model.lazy="value">
+<input type="text" v-model.lazy="value" />
 <div>{{value}}</div>
 
-data() {
-        return {
-            value: '222'
-        }
-    }
+{
+  data() {
+      return {
+          value: '222'
+      }
+  }
+}
 ```
 
 ### trim

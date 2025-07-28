@@ -390,6 +390,8 @@ function ChatRoom({ roomId, theme }) {
 > 适用于：动态添加dom后立即交互的场景
 
 ```jsx
+import { flushSync } from 'react-dom';
+
 function List() {
   flushSync(() => {
     setText('');
@@ -410,6 +412,11 @@ function List() {
 }
 ```
 
+**缺点**
+
+- 可能会严重影响性能
+- 可能会异步功能（比如suspense），可能会直接显示fallback状态
+- 可能会运行与回调函数相关的effect
 
 ## 资源
 - [动效库react bit](https://www.reactbits.dev)

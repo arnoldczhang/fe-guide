@@ -252,6 +252,8 @@ defineComponent({
 | 区别    | #xxx       | /path/a/b          |
 | 服务端配置 | 无需支持       | nginx要配置try_files  |
 
+---
+
 ## computed和watch和watchEffect
 
 ### 区别
@@ -484,10 +486,14 @@ function patch(n1, n2, container) {
 }
 ```
 
+---
+
 ## 生命周期
 - 都可以异步，但vue不会等，要考虑卸载时清除异步
 - 父组件的下一步生命周期都滞后于子组件
 - 加载、异常等状态处理
+
+---
 
 ## 数据通信
 
