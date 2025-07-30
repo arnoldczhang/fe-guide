@@ -281,9 +281,7 @@ const theme = useContext(ThemeContext);
 ```
 
 ### useRef
-> 适用于组件生命周期内持久化存储值
->
-> 区别于useState，改动不会触发渲染
+> 适用于引用一个不需要渲染的值，而要在组件生命周期内持久化存储的
 >
 > 常用于：定时器、DOM操作
 
