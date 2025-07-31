@@ -551,5 +551,70 @@ ReactDOM.createRoot(root).render(
 
 ### hook
 
+#### useOutlet
+> 用于渲染当前路由的子路由组件
+
+```jsx
+import { useOutlet } from 'react-router-dom';
+
+function Guards() {
+  const outlet = useOutlet();
+  return (
+    <>
+      <header>
+        <h1>Guards</h1>
+      </header>
+      {outlet}
+    </>
+  );
+}
+```
+
+#### useNavigate
+> 用于编程式导航
+
+```jsx
+import { useNavigate } from 'react-router-dom';
+
+function Login() {
+  const navigate = useNavigate();
+  return (
+    <button onClick={() => navigate('/')}>登录</button>
+  );
+}
+```
+
+#### useLocation
+> 用于获取当前路由的信息
+
+```jsx
+import { useLocation } from 'react-router-dom';
+
+function Login() {
+  const location = useLocation();
+
+  // 控制顶部进度条
+  useEffect(() => {
+    nprogress.start();
+  }, []);
+
+  useEffect(() => {
+    nprogress.done();
+
+    return () => {
+      nprogress.start();
+    };
+  }, [location]);
+
+  return (
+    <button onClick={() => navigate('/')}>登录</button>
+  );
+}
+```
+
+
+## zustand
+https://awesomedevin.github.io/zustand-vue/docs/advanced/typescript
+
 ## 资源
 - [动效库react bit](https://www.reactbits.dev)
