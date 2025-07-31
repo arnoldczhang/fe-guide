@@ -111,6 +111,7 @@
 - [最快下载100万条数据](../fe-interview/src/最快下载100万条数据.md)
 - [灰度方案](../fe-interview/src/灰度方案.md)
 - [前后端统一监控方案](../fe-interview/src/前后端统一监控方案.md)
+- [监控sdk设计](../fe-interview/src/前后端统一监控方案.md#sdk设计)
 - [白屏+卡顿检测方案](../js&browser/性能优化2019.md#白屏检测方案)
 - [微前端方案](../microservice/微前端方案.md)
 - [复杂组件方案](../fe-interview/src/复杂组件方案.md)

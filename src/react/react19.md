@@ -416,5 +416,140 @@ function List() {
 - 可能会异步功能（比如suspense），可能会直接显示fallback状态
 - 可能会运行与回调函数相关的effect
 
+
+## react-router@V7
+
+### 三种模式
+- 框架模式
+- 数据模式
+- 申明模式
+
+#### 框架模式
+比较奇怪，个人认为不太会这么写
+
+```jsx
+export default [
+  index("./home.tsx"),
+  route("about", "./about.tsx"),
+
+  layout("./auth/layout.tsx", [
+    route("login", "./auth/login.tsx"),
+    route("register", "./auth/register.tsx"),
+  ]),
+
+  ...prefix("concerts", [
+    index("./concerts/home.tsx"),
+    route(":city", "./concerts/city.tsx"),
+    route("trending", "./concerts/trending.tsx"),
+  ]),
+] satisfies RouteConfig;
+```
+
+#### 数据模式
+和[vue-router](https://router.vuejs.org/zh/guide/#%E5%88%9B%E5%BB%BA%E8%B7%AF%E7%94%B1%E5%99%A8%E5%AE%9E%E4%BE%8B)比较像
+
+```jsx
+import {
+  createHashRouter,
+  RouterProvider,
+} from 'react-router-dom';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Home from './pages/Home.tsx';
+
+const router = createHashRouter([
+  {
+    path: '/',
+    Component: Home,
+  }
+]);
+
+const root = document.getElementById('root');
+
+ReactDOM.createRoot(root).render(
+  <RouterProvider router={router} />
+);
+```
+
+#### 申明模式
+相对传统的写法
+
+```jsx
+// 写法一
+import { HashRouter } from 'react-router-dom';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Comp1 from './pages/Comp1.tsx';
+
+const root = document.getElementById('root');
+
+const layouts = [
+  {
+    path: 'aa',
+    element: <Comp1 />,
+  }
+]
+
+ReactDOM.createRoot(root).render(
+  <HashRouter>
+    <Routes>
+      <Route path="login" element={<Login />}></Route>
+      <Route path="forget" element={<Forget />}></Route>
+      <Route path="" element={<Guards />}>
+        {layouts.map(({ path, element }) => (
+          <Route path={path} element={element} />
+        ))}
+      </Route>
+      <Route path="*" element={<NotFound />}></Route>
+    </Routes>
+  </HashRouter>
+);
+```
+
+```jsx
+// 写法二
+import { HashRouter, useRoutes } from 'react-router-dom';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Comp1 from './pages/Comp1.tsx';
+
+const root = document.getElementById('root');
+
+const layouts = [
+  {
+    path: 'aa',
+    element: <Comp1 />,
+  }
+]
+
+const newRoutes: RouteObject[] = [
+  {
+    path: 'login',
+    element: <Login />,
+  },
+  {
+    path: 'forget',
+    element: <Forget />,
+  },
+  {
+    path: '',
+    element: <Guards />,
+    children: layouts,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
+  },
+];
+
+ReactDOM.createRoot(root).render(
+  <HashRouter>
+    {useRoutes(newRoutes)}
+  </HashRouter>
+);
+```
+
+### hook
+
 ## 资源
 - [动效库react bit](https://www.reactbits.dev)
