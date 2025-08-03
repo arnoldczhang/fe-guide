@@ -24,6 +24,7 @@
 - [自更新的全球日报](https://kite.kagi.com/6b906e50-83ee-41e1-b3b4-907b10095066/world?data_lang=zh-Hant)
 - [Oxygen agent串联库](https://github.com/jd-opensource/OxyGent)
 - [Lovart 集成agent的figma](https://mp.weixin.qq.com/s/cTOaTF94DPqMeWiRsdhetQ)
+- [文字润色](https://www.text-well.com/zh/app)
 
 ## Prompt
 
