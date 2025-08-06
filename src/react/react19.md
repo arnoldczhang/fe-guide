@@ -616,5 +616,52 @@ function Login() {
 ## zustand
 https://awesomedevin.github.io/zustand-vue/docs/advanced/typescript
 
+### 1. 注册store
+```typescript
+import { create } from 'zustand';
+
+// 需要中间件时，引入
+import { devtools, persist } from 'zustand/middleware';
+
+interface ExampleState {
+  number: number;
+  add: (val: number) => void;
+}
+
+// 正常使用
+export const useExampleStore = create<ExampleState>()(
+  (set) => ({
+    number: 0,
+    add: (val) => set((state) => ({ number: state.number + val })),
+  }),
+);
+
+// 需要调试时
+export const useExampleStore = create<ExampleState>()(
+  devtools(
+    persist(
+      (set) => ({
+        number: 0,
+        add: (val) => set((state) => ({ number: state.number + val })),
+      }),
+      {
+        name: 'exampleStore', // 存储的名称
+      }
+    ),
+    {
+      enabled: process.env.NODE_ENV === 'development',
+    }
+  )
+);
+```
+
+### 2. 使用store
+```tsx
+function Example() {
+  const store = useExampleStore()
+  return <>{}</>;
+}
+```
+
 ## 资源
 - [动效库react bit](https://www.reactbits.dev)
