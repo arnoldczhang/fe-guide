@@ -628,7 +628,7 @@ interface ExampleState {
   add: (val: number) => void;
 }
 
-// 正常使用
+// 用法一：正常使用
 export const useExampleStore = create<ExampleState>()(
   (set) => ({
     number: 0,
@@ -636,7 +636,7 @@ export const useExampleStore = create<ExampleState>()(
   }),
 );
 
-// 需要调试时
+// 用法二：需要调试时
 export const useExampleStore = create<ExampleState>()(
   devtools(
     persist(
@@ -657,10 +657,31 @@ export const useExampleStore = create<ExampleState>()(
 
 ### 2. 使用store
 ```tsx
+import { useShallow } from 'zustand/react/shallow';
+
+// 用法一：全量获取（避免！任意状态变化导致组件重新渲染）
 function Example() {
   const store = useExampleStore()
-  return <>{}</>;
+  return <>{store.number}</>;
 }
+
+// 用法二：单个状态选择
+function Example() {
+  const number = useExampleStore(state => state.number)
+  return <>{number}</>;
+}
+
+// 用法三：多个状态选择
+function Example() {
+  const { number, add } = useExampleStore(
+    useShallow((state) => ({
+      number: state.number,
+      add: state.add,
+    }))
+  )
+  return <>{number}</>;
+}
+
 ```
 
 ## 资源
