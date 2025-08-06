@@ -684,5 +684,29 @@ function Example() {
 
 ```
 
+### 3. 深层修改
+推荐用immer吧，看起来顺眼点
+```tsx
+import { produce } from 'immer';
+
+export const useExampleStore = create<ExampleState>()(
+  devtools(
+    (set, get) => ({
+      deep: {
+        nested: {
+          obj: { count: 0 },
+        }
+      },
+      increment: () => set(produce((state: ExampleState) => {
+        state.deep.nested.obj.count += 1;
+      })),
+    }),
+    {
+      name: 'exampleStore',
+    },
+  ),
+);
+```
+
 ## 资源
 - [动效库react bit](https://www.reactbits.dev)
