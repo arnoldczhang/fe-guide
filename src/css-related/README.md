@@ -901,13 +901,12 @@ flex-shrink: 0
   .margin{
   display: flex;
   }
+
+  .center{
+    margin: auto;
+  }
   ```
 
-.center{
-  margin: auto;
-}
-
-```
 - absolute + margin auto
  ```css
  .margin{
