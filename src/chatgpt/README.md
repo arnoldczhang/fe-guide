@@ -74,6 +74,58 @@ yyy: ...
 
 到这里才开始你真正的提问-_-
 
+### Agent Steering
+> 为ai提供持久化的上下文
+
+**rules.md**
+
+```md
+---
+inclusion: always
+---
+
+# Code Standards and Architecture Guidelines
+
+## SOLID Principles
+
+Follow SOLID principles throughout the codebase:
+
+- **Single Responsibility**: Each component, hook, and utility should have one clear purpose
+- **Open/Closed**: Components should be extensible through props and composition, not modification
+- **Liskov Substitution**: Interfaces and types should be substitutable without breaking functionality
+- **Interface Segregation**: Create focused, specific interfaces rather than large monolithic ones
+- **Dependency Inversion**: Depend on abstractions (interfaces/types) rather than concrete implementations
+
+## Component Architecture
+
+- Use custom hooks to separate business logic from UI components
+- Implement compound component patterns for complex UI elements (like Dropdown)
+- Leverage TypeScript interfaces for clear component contracts
+- Use ref forwarding for proper DOM access and integration
+
+## Code Organization
+
+- Group related functionality in dedicated folders with index files for clean imports
+- Separate types, hooks, and utilities into their own files
+- Use barrel exports (index.ts files) to create clean public APIs
+- Follow consistent naming conventions: PascalCase for components, camelCase for functions/variables
+
+## TypeScript Standards
+
+- Define comprehensive interfaces for all props and state
+- Use union types for controlled vocabularies (e.g., placement, trigger types)
+- Implement proper generic constraints where applicable
+- Avoid `any` type - use proper typing or `unknown` when necessary
+
+## React Patterns
+
+- Use functional components with hooks exclusively
+- Implement proper cleanup in useEffect hooks
+- Use useCallback and useMemo for performance optimization when needed
+- Handle edge cases and loading states appropriately
+
+```
+
 ## 境界
 
 > 程序 = 算法 + 结构
@@ -307,3 +359,14 @@ startServer();
 
 ## cursor
 [cursor使用指南和常用prompt](https://mp.weixin.qq.com/s/UM3nBcX6JpYtnchSCdrxOA)
+
+## 氛围编程
+
+### 需求澄清
+
+### 文档生成（Spec 规范驱动开发）
+1. 需求说明（requirements.md）
+2. 创建设计文档（design.md）
+3. 制定实施计划（tasks.md）
+
+### 代码生成

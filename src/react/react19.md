@@ -710,3 +710,4 @@ export const useExampleStore = create<ExampleState>()(
 
 ## 资源
 - [动效库react bit](https://www.reactbits.dev)
+- [react发展史](https://mp.weixin.qq.com/s/Lnsa3XnVGQYrpgaCOY_qDw)

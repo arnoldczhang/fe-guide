@@ -147,6 +147,21 @@ function format2(value: unknown) {
 
 ## 常用语法
 
+### satisfies
+> as的上位替代（ts4.9+支持）
+>
+> as强制确定类型，satisfies支持类型推断后的确定类型
+
+```typescript
+type Config = { port: number; domain: string };
+
+const config = {
+  port: 3301,
+  domain: 'localhost',
+  protocol: 'http', // error
+} satisfies Config
+```
+
 ### omit
 
 ```ts

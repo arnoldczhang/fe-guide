@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebUSB示例</title>
+</head>
+<body>
+    <button id="requestDevice">连接USB设备</button>
+    <div id="deviceInfo"></div>
+
+    <script>
+        document.getElementById('requestDevice').addEventListener('click', async () => {
+            try {
+                // 请求用户选择USB设备
+                const device = await navigator.usb.requestDevice({
+                    filters: [] // 可以添加特定设备的过滤器
+                });
+                
+                // 打开设备
+                await device.open();
+                
+                // 显示设备信息
+                const infoDiv = document.getElementById('deviceInfo');
+                infoDiv.innerHTML = `
+                    <h3>已连接设备:</h3>
+                    <p>厂商ID: 0x${device.vendorId.toString(16)}</p>
+                    <p>产品ID: 0x${device.productId.toString(16)}</p>
+                    <p>制造商: ${device.manufacturerName || '未知'}</p>
+                    <p>产品名称: ${device.productName || '未知'}</p>
+                `;
+                
+                // 这里可以添加更多USB操作代码...
+                
+            } catch (error) {
+                console.error('USB错误:', error);
+                alert(`USB错误: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html>
