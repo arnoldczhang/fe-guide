@@ -15,9 +15,6 @@
     "listFiles": false,
     "declaration": true,
     "resolveJsonModule": true,
-    "path": {
-      "utils/*": ["src/utils/*"],
-    },
     "lib": [
       "dom",
       "es2017"
@@ -27,6 +24,8 @@
     "./src/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "./src/pages/**/*.ts",
+    "./src/components/**/*.ts",
   ]
 }

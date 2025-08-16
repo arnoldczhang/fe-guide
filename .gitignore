@@ -4,3 +4,8 @@
 /build/
 /src/mobx/dist/
 /alipay-electron/
+*.lock
+.DS_Store 
+*/.DS_Store 
+package-lock.json
+settings.json

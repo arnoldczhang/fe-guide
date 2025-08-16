@@ -1,12 +1,20 @@
 ## python
 
-- 参考
-  - http://blog.csdn.net/freewebsys/article/details/46683645
-  - ...
+## 参考
+
+- http://blog.csdn.net/freewebsys/article/details/46683645
+- [python和javascript相互运行](https://github.com/Distributive-Network/PythonMonkey)
+- ...
+
+
+
+## 操作流程
 
 - 启动
-```python
+
+```sh
 python3 ./src/python/super_cat.py
+```
 - 安装py2app
 ```python
 pip3 install py2app

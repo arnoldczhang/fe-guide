@@ -1,66 +1,91 @@
-/**
- * [Promise2 description]
- * @param {[type]} nextTick [description]
- */
-function Promise2(nextTick) {
-  this.nextTick = nextTick;
-  this.resolve = this.resolve.bind(this);
-  this.reject = this.reject.bind(this);
-  if (typeof this.nextTick === 'function') {
-    this.nextTick(this.resolve, this.reject);
+class MyPromise {
+  constructor(callback) {
+    this.status = this.#STATUS.pending;
+    this.value = null;
+    this.queue = [];
+    this.errorQueue = [];
+    callback(this.resolve.bind(this), this.reject.bind(this));
+    return this;
   }
-};
 
-Promise2.resolve = function resolve() {
-};
+  #STATUS = {
+    pending: 'pending',
+    fullfilled: 'fullfilled',
+    rejected: 'rejected',
+  };
 
-Promise2.prototype = {
-  status: 'pending',
-  resolve(data) {
-    if (this.status === 'pending' && typeof this.callback === 'function') {
-      this.status = 'fulfilled';
-      const res = this.callback(data);
-      if (typeof this.nextResolve === 'function') {
-        this.thenResolve(res);
-      }
+  execute() {
+    switch (true) {
+      case this.staue === this.#STATUS.pending:
+        return;
+      case this.value instanceof Error:
+        while (this.errorQueue.length) {
+          try {
+            this.value = this.errorQueue.shift()(this.value);
+            while (this.queue.length) {
+              try {
+                this.value = this.queue.shift()(this.value);
+              } catch (err2) {
+                break;
+              }
+            }
+          } catch (err) {
+            this.value = err;
+          }
+        }
+        break;
+      default:
+        while (this.queue.length) {
+          try {
+            this.value = this.queue.shift()(this.value);
+          } catch (err) {
+            this.value = err;
+            while (this.errorQueue.length) {
+              try {
+                this.value = this.errorQueue.shift()(this.value);
+                break;
+              } catch (err2) {
+                err = err2;
+              }
+            }
+          }
+        }
+        break;
     }
-  },
-  reject(data) {
-    if (this.status === 'pending' && typeof this.fallback === 'function') {
-      this.status = 'rejected';
-      const rej = this.fallback(data);
-    }
-  },
+  }
+  resolve(res) {
+    if (this.status !== this.#STATUS.pending) return;
+    this.status = this.#STATUS.fullfilled;
+    this.value = res;
+    this.execute();
+  }
+  reject(res) {
+    if (this.status !== this.#STATUS.pending) return;
+    this.status = this.#STATUS.rejected;
+    this.value = res;
+    this.execute();
+  }
   then(callback, fallback) {
-    this.callback = callback;
-    this.fallback = fallback;
-    return new Promise2((resolve, reject) => {
-      this.thenResolve = resolve;
-      this.thenReject = reject;
-    });
-  },
-};
-
+    this.queue.push(callback);
+    fallback && this.errorQueue.push(fallback);
+    this.execute();
+    return this;
+  }
+  catch(fallback) {
+    this.errorQueue.push(fallback);
+    this.execute();
+    return this;
+  }
+}
 
 // test
-// const promise1 = new Promise2((resolve, reject) => {
-//   debugger;
-//   setTimeout(() => {
-//     resolve(100);
-//   }, 2000);
-// });
-
-// const promise2 = promise1.then((res) => {
-//   console.log(res);
-//   return res + 1000;
-// });
-
-// const promise3 = promise2.then((data) => {
-//   console.log(data);
-//   return data + 10000;
-// });
-
-// promise3.then((data) => {
-//   console.log(data);
-// });
-
+const promise = new MyPromise((resolve, reject) => {
+  resolve('a');
+}).then((res) => {
+  console.log(res);
+  console.log(1);
+  throw new Error();
+}).catch(err => {
+  console.log(2);
+  return 3;
+}).then(res => console.log(res));

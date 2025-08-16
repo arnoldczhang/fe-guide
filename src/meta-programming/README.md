@@ -10,9 +10,13 @@
 
 * [`Symbol`](#Symbol)
 * [`Proxy`](#Proxy)
+* [`Generator`](#Generator)
+* [`Refelct`](#Refelct)
 * [`ditto`](#ditto)
 
 </details>
+
+---
 
 ## Symbol
 
@@ -63,6 +67,10 @@ var mix = {
 ```
 
 ### Symbol.toStringTag
+>
+> 修改对象`toString`后的类型
+>
+
 ```js
 function Foo() {}
 Foo.prototype[Symbol.toStringTag] = 'aaaa';
@@ -71,6 +79,10 @@ foo.toString(); // [object aaaaa]
 ```
 
 ### Symbol.hasInstance
+>
+> 修改`instanceof`后的结果
+>
+
 ```js
 function Foo(){}
 var foo = new Foo;
@@ -82,15 +94,23 @@ Object.defineProperty(Foo, Symbol.hasInstance, {
     return inst.greeting == "hello";
   }
 });
+
+// 任意值都是obj的实例的对象
+var obj = {[Symbol.hasInstance](){return true}};
 ```
 
 ### Symbol.toPrimitive
+>
+> 对象转基本类型后的值
+>
+> `hint`可以是`number`、`string`或`default`
+>
+
 运算时调用（==, -, +）
+
 ```js
 var arr = [1,2,3,4,5];
-
 arr + 10;       // 1,2,3,4,510
-
 arr[Symbol.toPrimitive] = function(hint) {
   if (hint == "default" || hint == "number") {
     // sum all numbers
@@ -99,7 +119,6 @@ arr[Symbol.toPrimitive] = function(hint) {
     }, 0 );
   }
 };
-
 arr + 10; // 25
 ```
 
@@ -199,6 +218,8 @@ obj3[ Symbol.for( "[[Prototype]]" ) ] = [
 obj3.baz();
 ```
 
+---
+
 ## Proxy
 
 ### new Proxy(target, handler);
@@ -218,8 +239,32 @@ proxy.a; // aaaa
 proxy.test // undefined
 ```
 
-### Proxy.revoke
-可撤销代理对象
+### Proxy.has
+>
+> 检测"任意名字的属性" in obj
+>
+
+```js
+var proxy = new Proxy({}, {
+	has() { return true; },
+});
+```
+
+### Proxy.getPrototypeOf
+>
+> 设置__proto__的取值
+>
+
+```js
+var proxy = new Proxy({}, {
+	getPrototypeOf() { return proxy; },
+});
+```
+
+### Proxy.revocable
+>
+> 创建一个可撤销的代理对象
+>
 ```js
 var obj = { a: 1 };
 var handlers = {
@@ -228,10 +273,10 @@ var handlers = {
     return target[key];
   },
 };
-const { proxy: pobj, revoke: prevoke } = Proxy.revocable( obj, handlers );
+const { proxy: pobj, revoke } = Proxy.revocable( obj, handlers );
 
 pobj.a; // accessing: a
-prevoke();
+revoke(); // 撤销对象代理
 pobj.a; // typeError
 ```
 
@@ -262,6 +307,8 @@ obj.foo();      // a: 3
 obj.b = 4;      // Error: No such property/method!
 obj.bar();      // Error: No such property/method!
 ```
+
+---
 
 ## Refelct
 
@@ -321,4 +368,50 @@ c.d.forEach(() => {
   // ...
 });
 ```
+
+---
+
+## Generator
+[generator 执行机制分析](https://zhuanlan.zhihu.com/p/150984402)
+- `...`: 相当于调用`Symbol.iterator`
+- `yield*`: 迭代展开
+
+### 生成器
+
+```js
+// 简易版
+function* initializer(n, mapFunc = v => v) {
+  for (let i = 0; i < n; i += 1) {
+    yield mapFunc(i, n);
+  }
+};
+
+// 生成升序数组
+const arr = [...initializer(10)]; // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+const arr2 = [...initializer(10, v => v * 2)]; // [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+```
+
+```js
+// 加强版
+function* initializer(n, mapFunc = v => v) {
+  const isGen = mapFunc.constructor.name === 'GeneratorFunction';
+  for (let i = 0; i < n; i += 1) {
+    if (isGen) {
+      yield* mapFunc(i, n);
+    } else {
+      yield mapFunc(i, n);
+    }
+  }
+};
+
+// 生成扑克
+const pocket = [...initializer(13, function *(i) {
+  const p = i + 1;
+  yield ['♠️', p];
+  yield ['♣️', p];
+  yield ['♥️', p];
+  yield ['♦️', p];
+})];
+```
+
 

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+      <link rel="stylesheet" href="https://gw.alipayobjects.com/os/rmsportal/PqLCOJpqoOUfuPRacUzE.css" />
+    <title>自定义marker样式</title>
+    <style> ::-webkit-scrollbar{display:none;}html,body{overflow:hidden;margin:0;}
+    	#map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>/*Fixing iframe window.innerHeight 0 issue in Safari*/ document.body.clientHeight; </script>
+<script src="https://webapi.amap.com/maps?v=1.4.8&key=15cd8a57710d40c9b7c0e3cc120f1200&plugin=Map3D"></script>
+<script src="https://gw.alipayobjects.com/os/antv/assets/lib/jquery-3.2.1.min.js"></script>
+<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.l7-1.3.0-beta.4/build/L7-min.js"></script>
+<style> 
+.lableclass {
+    position: absolute;
+    display: inline;
+    cursor: pointer;
+    background: rgb(255, 228, 120); 
+    border: none; padding: 4px;
+    white-space: nowrap; 
+    font: bold 12px/18px arial, sans-serif; 
+    color: rgb(51, 51, 51);
+    box-shadow: rgb(153, 153, 153) 1px 1px 2px;
+    border-radius: 4px;
+    width: 18px; 
+    height: 18px; 
+    text-align: center; 
+    user-select: none;
+}
+</style>
+<script>
+  var scene = new L7.Scene({
+    id: 'map',
+    mapStyle: 'dark', // 样式URL
+    center: [120.19382669582967, 30.258134],
+    pitch: 0,
+    zoom: 5
+  });
+  scene.on('loaded', function() {
+    $.get('https://gw.alipayobjects.com/os/basement_prod/67f47049-8787-45fc-acfe-e19924afe032.json', function(data) {
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].g !== '1') continue;
+        var el = document.createElement('label');
+        el.className = 'lableclass';
+        el.textContent = data[i].v;
+        el.style.background = getColor(data[i].v);
+
+        new L7.Marker({
+          element: el
+        }).setLnglat([data[i].x * 1, data[i].y]).addTo(scene);
+      }
+    });
+  });
+
+  function getColor(v) {
+    return v > 50 ? '#800026' : v > 40 ? '#BD0026' : v > 30 ? '#E31A1C' : v > 20 ? '#FC4E2A' : v > 10 ? '#FD8D3C' : v > 5 ? '#FEB24C' : v > 0 ? '#FED976' : '#FFEDA0';
+  }
+</script>
+</body>
+</html>

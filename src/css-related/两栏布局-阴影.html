@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-cmn-Hans">
+<head>
+<meta charset="utf-8" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<meta name="apple-mobile-web-app-title" content="" />
+<meta name="theme-color" content="#0096ff" />
+<link rel="apple-touch-startup-image" href="xx.png" />
+<meta http-equiv="x-dns-prefetch-control" content="on" />
+<meta name="AApay:title" content="" />
+<meta name="AApay:imgUrl" content="xx-96x96.png" />
+<meta name="viewport" content="initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5, user-scalable=no, viewport-fit=cover" />
+<meta name="AApay:desc" content="" />
+<link rel="dns-prefetch" href="//xx.com" />
+<link rel="preconnect" href="//xx.com" />
+<link rel="prefetch" href="//xx.com">
+<title>aa</title>
+<style type="text/css">
+body, html {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background: #fff;
+  padding: 10px;
+}
+* {
+  box-sizing: border-box;
+}
+.g-container {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  width: 90%;
+  height: 80vh;
+  bottom: 0;
+}
+.g-nav {
+  width: 160px;
+  flex-shrink: 0;
+  z-index: 1;
+}
+.g-nav ul {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.g-nav li {
+  text-align: center;
+  line-height: 36px;
+  cursor: pointer;
+}
+.g-nav:has(li:nth-child(1):hover) + .g-main .g-status li:nth-child(1) {
+  opacity: 1;
+}
+.g-nav:has(li:nth-child(1):hover) + .g-main .g-content li {
+  display: none;
+}
+.g-nav:has(li:nth-child(1):hover) + .g-main .g-content li:nth-child(1) {
+  display: block;
+}
+.g-nav:has(li:nth-child(2):hover) + .g-main .g-status li:nth-child(2) {
+  opacity: 1;
+}
+.g-nav:has(li:nth-child(2):hover) + .g-main .g-content li {
+  display: none;
+}
+.g-nav:has(li:nth-child(2):hover) + .g-main .g-content li:nth-child(2) {
+  display: block;
+}
+.g-nav:has(li:nth-child(3):hover) + .g-main .g-status li:nth-child(3) {
+  opacity: 1;
+}
+.g-nav:has(li:nth-child(3):hover) + .g-main .g-content li {
+  display: none;
+}
+.g-nav:has(li:nth-child(3):hover) + .g-main .g-content li:nth-child(3) {
+  display: block;
+}
+.g-nav:has(li:nth-child(4):hover) + .g-main .g-status li:nth-child(4) {
+  opacity: 1;
+}
+.g-nav:has(li:nth-child(4):hover) + .g-main .g-content li {
+  display: none;
+}
+.g-nav:has(li:nth-child(4):hover) + .g-main .g-content li:nth-child(4) {
+  display: block;
+}
+.g-main {
+  position: relative;
+  flex-grow: 1;
+  line-height: 2;
+  height: 500px;
+  padding: 20px;
+  background: #ddd;
+  filter: drop-shadow(0 0 3px #999);
+}
+.g-main .g-content {
+  position: relative;
+}
+.g-main .g-content li {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: none;
+}
+.g-main .g-content li:nth-child(1) {
+  display: block;
+}
+.g-status {
+  position: absolute;
+  left: -160px;
+  top: 0;
+  width: 160px;
+}
+.g-status li {
+  width: 160px;
+  height: 36px;
+}
+.g-status li {
+  position: relative;
+  border-radius: 10px 0 0 10px;
+  background: #ddd;
+  opacity: 0;
+}
+.g-status li::before, .g-status li::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  border-radius: unset;
+}
+.g-status li::before {
+  width: 20px;
+  height: 20px;
+  top: -20px;
+  background: radial-gradient(circle at 0 0, transparent, transparent 19.5px, #ddd 20px, #ddd);
+}
+.g-status li::after {
+  width: 20px;
+  height: 20px;
+  bottom: -20px;
+  background: radial-gradient(circle at 0 100%, transparent, transparent 19.5px, #ddd 20px, #ddd);
+}
+.g-status li:nth-child(1)::before {
+  content: unset;
+}
+</style>
+</head>
+<body>
+  <div class="g-container">
+    <div class="g-nav">
+        <ul>
+            <li>Tab 1</li>
+            <li>Tab 2</li>
+            <li>Tab 3</li>
+            <li>Tab 4</li>
+        </ul>
+    </div>
+    <div class="g-main">
+        <ul class="g-status">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+        <ul class="g-content">
+            <li>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt a quod asperiores quos. Expedita adipisci pariatur provident ipsum incidunt, quibusdam iste ex necessitatibus quaerat dolorum culpa animi in magni excepturi!</p>
+            </li>
+            <li>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt a quod asperiores quos. Expedita adipisci pariatur provident ipsum incidunt, quibusdam iste ex necessitatibus quaerat dolorum culpa animi in magni excepturi!</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt a quod asperiores quos. Expedita adipisci pariatur provident ipsum incidunt, quibusdam iste ex necessitatibus quaerat dolorum culpa animi in magni excepturi!</p>
+            </li>
+            <li>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt a quod asperiores quos. Expedita adipisci pariatur provident ipsum incidunt, quibusdam iste ex necessitatibus quaerat dolorum culpa animi in magni excepturi!</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt a quod asperiores quos. Expedita adipisci pariatur provident ipsum incidunt, quibusdam iste ex necessitatibus quaerat dolorum culpa animi in magni excepturi!</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt a quod asperiores quos. Expedita adipisci pariatur provident ipsum incidunt, quibusdam iste ex necessitatibus quaerat dolorum culpa animi in magni excepturi!</p>
+            </li>
+            <li>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt a quod asperiores quos. Expedita adipisci pariatur provident ipsum incidunt, quibusdam iste ex necessitatibus quaerat dolorum culpa animi in magni excepturi!</p>
+            </li>
+        </ul>
+    </div>
+  </div>
+</body>
+</html>

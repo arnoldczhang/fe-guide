@@ -1,0 +1,4 @@
+[
+    { "key": "shift+cmd+l",           "command": "editor.action.insertCursorAtEndOfEachLineSelected",
+        "when": "editorTextFocus" },
+]

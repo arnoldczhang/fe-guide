@@ -1,6 +1,6 @@
 import { wx } from "../config";
 import { ICO } from "../types";
-import { isObj } from "./assert";
+import { isArr, isObj } from "./assert";
 
 const {
   keys,
@@ -43,6 +43,21 @@ export const fillDefaultValue = (obj: ICO = {}): ICO => {
 export const combine = (arr: any[]): any[] => {
   if (arr.length && arr.concat) {
     return arr.concat.apply([], arr);
+  }
+  return arr;
+};
+
+/**
+ * appendUniq
+ * @param arr
+ * @param item
+ */
+export const appendUniq = (
+  arr: any[],
+  ...args: any[]
+): any[] => {
+  if (isArr(arr)) {
+    return [...arr, ...args];
   }
   return arr;
 };

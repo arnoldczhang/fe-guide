@@ -1,0 +1,77 @@
+{
+  "editor.fontSize": 18,
+  "editor.fontFamily": "Comic Sans MS",
+  "terminal.integrated.fontFamily": "monospace",
+  "tslint.autoFixOnSave": true,
+  "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      { "language": "vue", "autoFix": true }//eslint默认检查.vue文件,添加可检查vue文件类型并且保存时自动修复
+  ],
+  "eslint.options": {
+      "ext": [".ts"]
+  },
+  "editor.tabSize": 2,
+  "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+      "editor.defaultFormatter": "octref.vetur"
+  },
+  "[html]": {
+      "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "search.followSymlinks": false,
+  "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/tmp": true,
+      "**/node_modules": false,
+      "**/bower_components": true,
+      "**/dist": false
+  },
+  "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/node_modules/**": true,
+      "**/tmp/**": true,
+      "**/bower_components/**": true,
+      "**/dist/**": true
+  },
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+      "source.fixAll": true
+  },
+  "[json]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[typescript]": {
+      "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "java.configuration.checkProjectSettingsExclusions": false,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "stock-watch.stocks": [
+      "SH000001"
+  ],
+  "stock-watch.updateInterval": 60000,
+  "stock-watch.riseColor": "white",
+  "stock-watch.fallColor": "white",
+  "files.associations": {
+      "*.cjson": "jsonc",
+      "*.wxss": "css",
+      "*.wxs": "javascript"
+  },
+  "emmet.includeLanguages": {
+      "wxml": "html"
+  },
+  "minapp-vscode.disableAutoConfig": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "workbench.statusBar.visible": true,
+  "tabnine.experimentalAutoImports": true
+}

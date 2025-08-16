@@ -11,7 +11,8 @@ let index: number = 1;
 const Logger = {
   getInstance() {
     return {
-      warn: instance.warn,
+      error: signale.fatal,
+      warn: signale.warn,
       await(word: string) {
         instance.pending(`[%d/${length}] - ${word}`, index);
       },

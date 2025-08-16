@@ -1,3 +1,4 @@
+import { SKELETON, WXSS_BG_GREY } from "../config";
 import { CF } from "../types";
 import { isStr } from "./assert";
 import { identity } from "./dir";
@@ -5,6 +6,50 @@ import { identity } from "./dir";
 // =========== //
 // === test === //
 // =========== //
+export const hasDefaultBg = (input: string): boolean => (
+  new RegExp(`\\b${WXSS_BG_GREY.replace(/\-/g, '\\-')}\\b`).test(input)
+);
+
+export const isSkeleton = (input: string): boolean => (
+  new RegExp(`\\/${SKELETON}\\/`).test(input)
+);
+
+export const isSkeletonStyle = (input: string): boolean => (
+  new RegExp(`${SKELETON}\\.(?:s?css|less|w?xss|sass)$`).test(input)
+);
+
+export const isEvent = (input: string): boolean => (
+  /^on[A-Z]\w+/.test(input)
+);
+
+export const hasSuffix = (input: string): boolean => (
+  /\.[a-zA-Z]+$/.test(input)
+);
+
+export const isRelativePath = (input: string): boolean => (
+  /^\.\.?\//.test(input)
+);
+
+export const isCssFile = (input: string): boolean => (
+  /\.(?:s?css|less|w?xss|sass)$/.test(input)
+);
+
+export const isTypescript = (input: string): boolean => (
+  /\.tsx?$/.test(input)
+);
+
+export const isCompMethod = (input: string): boolean => (
+  /^component(?:Will|Did)/.test(input)
+);
+
+export const isColor = (input: string): boolean => (
+  /^(?:#[a-zA-Z0-9]{3,6}|rgba?|hsla?|[a-zA-Z])/.test(input)
+);
+
+export const isWxml = (input: string): boolean => (
+  /\.wxml$/.test(input)
+);
+
 export const isNpmComponent = (path: string): boolean => (
   /^~@/.test(path)
 );
@@ -59,7 +104,7 @@ export const withoutPageSelector = (selector: string): boolean => (
 );
 
 export const hasObjKey = (input: string): boolean => (
-  /^\s*[!~\-\+\/]*([^\.]+)\./.test(input)
+  /^\s*[!~\-\+\/]*\(?([^'"\.\s]+)\./.test(input)
 );
 
 export const hasUnDefVariable = (input: string): boolean => (
@@ -72,6 +117,10 @@ export const hasUnDefProperty = (input: string): boolean => (
 
 export const isItemVar = (input: string): boolean => (
   /item\.?/.test(input)
+);
+
+export const isGenWxss = (input: string): boolean => (
+  new RegExp(`\\.${SKELETON}\\.wxss['"]?$`).test(input)
 );
 
 // ============= //
@@ -97,25 +146,47 @@ export const splitWxAttrs = (input: string): string[] => (
 // #aa.bb:focus
 // page#aa.bb:focus
 export const matchIdStyle = (key: string): any[] | null => (
-  key.match(/(?:^([\.\w]+)?(#[^#\.\:]+)(\.\w+)?(\:[a-z]+)?$)/)
+  key.match(/(?:^([\.\-\w]+)*(#[^#\.\:]+)([\.\-\w]+)*(\:\:?[a-z]+)?$)/)
 );
+
+export const matchCallExpression = (input: string): string[] => (
+  input.match(/\b(?:(?:this|that|self)\.|)(\w+)/g) || []
+).map((inp: string): string => (
+  inp.replace(/^(?:this|that|self)\.(\w+)/, '$1')
+));
 
 // ============== //
 // === replace === //
 // ============== //
+export const removeStartEndBrace = (input: string): string => (
+  input.replace(/^\{([\s\S]*)\}$/, '$1')
+);
+export const removeDefaultBg = (
+  input: string,
+): string => (
+  input.replace(new RegExp(`\\b${WXSS_BG_GREY.replace(/\-/g, '\\-')}\\b`, 'g'), '')
+);
+
 export const replaceWith = (
   input: string,
   reg: RegExp | string = /\s+/,
   replacement?: CF,
-) => (
-    input.replace(reg, replacement)
+): string => (
+  input.replace(reg, replacement)
+);
+
+export const addSuffixWxss = (
+  input: string,
+  suffix = SKELETON,
+): string => (
+  input.replace(/(.+)\.(wxss)$/, `$1.${suffix}.$2`)
 );
 
 export const interceptWxVariable = (
   input: any,
   replacement?: string,
 ): string => (
-  isStr(input) ? input.replace(/\{\{([^\{\}]+)\}\}/, replacement || '$1') : input
+  isStr(input) ? input.replace(/\{\{([^\{\}]*)\}\}/, replacement || '$1') : input
 );
 
 export const replacePseudo = (
@@ -134,11 +205,12 @@ export const removeComment = (file: string): string => (
     .replace(/(\s|^)\/\/.*/g, '$1')
 );
 
-export const removeBlank = (input: string): string => (
-  input.replace(/(?:\n|\t|^ +| +$|\{\{[^\{\}]*\}\})/g, '')
+export const removeBlankAndWxVariable = (input: string): string => (
+  input.replace(/(?:^\s+|\s+$|^ +| +$|\{\{[^\{\}]*\}\})/g, '')
 );
 
 // rgb(0, 0, 0)
+// hsl(0, 0, 0)
 // #f1f1f1
 export const replaceColorSymbol = (input: string): string => (
   input.replace(/[#,\(\)\s]*/g, '')
@@ -216,6 +288,11 @@ export const getTemplateIs = (
     getExecRes(input, /<template[^\/\>]*is=(['"])([^'"]+)\1[^\/\>]*\/?>/g)
 );
 
+/**
+ * getPropTarget
+ * @param input
+ * @param prop
+ */
 export const getPropTarget = (
   input: string,
   prop: string,

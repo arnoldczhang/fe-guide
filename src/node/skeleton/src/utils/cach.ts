@@ -1,4 +1,4 @@
-import { PATH } from '../config';
+import { PATH } from '../config/cach';
 import { ICach, ICO } from '../types';
 
 const cache: ICach = {

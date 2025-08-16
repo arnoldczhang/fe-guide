@@ -8,13 +8,15 @@
  */
 function debounce(fn, wait = 300, immediate = false) {
   if (immediate) return fn;
-  let timeout;
+  let timeout = null;
   return function() {
     if (timeout) {
       clearTimeout(timeout);
+      timeout = null;
     }
     timeout = setTimeout(() => {
       fn.apply(this, [].slice.call(arguments));
+      timeout = null;
     }, wait);
   };
 };

@@ -1,0 +1,19 @@
+{
+    "presets": [
+        "env",
+        "stage-0"
+    ],
+    "plugins": [
+        "transform-export-extensions",
+        "syntax-export-extensions",
+        "transform-inline-environment-variables",
+        [
+          "transform-runtime",
+          {
+            "helpers": false,
+            "polyfill": false,
+            "regenerator": true
+          }
+        ]
+    ]
+}

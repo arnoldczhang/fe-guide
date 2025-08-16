@@ -6,6 +6,7 @@
 - [ast-tree字段参考](https://github.com/babel/babylon/blob/master/ast/spec.md)
 - [alloyTeam出的babel总览](http://www.alloyteam.com/2017/04/analysis-of-babel-babel-overview/)
 - https://github.com/babel/minify/packages/...
+- [语义化ast替换-gogocode](https://github.com/thx/gogocode)
 
 ## 目录
 <details>
@@ -19,15 +20,16 @@
 * [`babel-plugin学习`](#babel-plugin学习)
 * [`babel-macro`](#babel-macro)
 * [`babel-register`](#babel-register)
+* [`babel在线编译`](#babel在线编译)
 
 </details>
 
 ## 起源
-* acorn只提供基本的解析ast的能力，遍历还需要配套的acorn-travesal
-* babylon fork了acorn项目，做了改造
-* babel使用babylon作为解析ast的工具
-* recast内部的parser可以基于babylon、babel、acorn做选择
-* esprima类似babel，不过支持tokenize将代码转成数组形式
+* `acorn`只提供基本的解析ast的能力，遍历还需要配套的`acorn-travesal`
+* `babylon`fork了 acorn 项目，做了改造
+* `babel`使用`babylon`作为解析 ast 的工具
+* `recast`内部的 parser 可以基于 babylon、babel、acorn 做选择
+* `esprima`类似`babel`，不过支持 tokenize 将代码转成数组形式
 
 ---
 
@@ -273,10 +275,16 @@ function call(key) {
   * transform
   * transformSync
   * transformAsync
-2. @babel/generator（babel6的babel-generator）
+2. [@babel/generator](https://babeljs.io/docs/en/babel-generator)（babel6的babel-generator）
   * default
 3. @babel/parser（babel6的babylon）
   * parse
+
+### @babel/generator
+```js
+// 将装饰器置于export前（比如应对vue使用ts的情况）
+babelGenerate(ast, { decoratorsBeforeExport: true });
+```
 
 ### options
 [官方文档](https://babeljs.io/docs/en/options)
@@ -387,6 +395,8 @@ path是所有plugin-hook的第一个入参
 
 #### 部分用法
 - path.get(key)
+- p.get('loc.start.line') // 获取代码所在开始行
+- [p.get('start').node, p.get('end').node] // 获取代码所在index范围
 - path.isXXXX() or path.get(key).isXXXX()
 - path.replaceWith(types.valueToNode(/**/))
 - path.remove()
@@ -737,5 +747,12 @@ var ONE_DAY = 86400000;
 - presets配置同babel配置
 - 请用于开发环境
 - 示例参考[ssr](./babel-register.js)，或[完整示例](https://flaviocopes.com/react-server-side-rendering)
+
+---
+
+## babel在线编译
+> 具体效果[参考](./sandbox.html)
+
+主要通过`@babel/plugin-transform-modules-commonjs`将 `ESM`语法转为`CommonJS`语法。
 
 ---

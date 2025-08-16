@@ -21,9 +21,15 @@ const { Node } = require('./base');
  * 
  */
 class LinkedList {
-  constructor() {
+  constructor(value) {
     this.head = null;
     this.tail = null;
+    this.value = null;
+    this.next = null;
+
+    if (value !== undefined) {
+      this.add(value);
+    }
   }
 
   add(value) {
@@ -31,7 +37,11 @@ class LinkedList {
     if (!this.head) {
       this.head = node;
       this.tail = node;
+      this.value = value;
     } else {
+      if (!this.next) {
+        this.next = node;
+      }
       this.tail.next = node;
       this.tail = node;
     }
@@ -41,6 +51,7 @@ class LinkedList {
     const node = new Node(value);
     node.next = this.head;
     this.head = node;
+    this.value = value;
     if (!this.tail) {
       this.tail = node;
     }

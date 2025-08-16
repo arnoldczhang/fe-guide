@@ -1,0 +1,12 @@
+{
+  "editor.fontSize": 18,
+  "editor.fontFamily": "Comic Sans MS",
+  "terminal.integrated.fontFamily": "monospace",
+  "eslint.autoFixOnSave": true,//保存时,自动修复eslint可修复问题 
+  "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      { "language": "vue", "autoFix": true }//eslint默认检查.vue文件,添加可检查vue文件类型并且保存时自动修复
+  ],
+  "editor.tabSize": 2
+}

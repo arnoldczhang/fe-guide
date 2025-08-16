@@ -101,6 +101,7 @@ program
   .option('--ignore <tags>', 'ast解析wxml时忽略指定标签')
   .option('-c, --config <dir>', '指定读取配置文件，默认/skeleton.config.js')
   .option('-u, --checkUpdate', '检查更新版本')
+  .option('-v, --version', '检查更新版本')
   .option('-p, --page <pages>', '仅生成指定页的骨架图，默认*')
   .option('-t, --treeshake', '启用wxss摇树，默认不启用，注：可能存在样式缺少的风险')
   .option('-i, --inputDir <dir>', '指定输入目录，默认/src')
@@ -110,6 +111,10 @@ program
 
 ifArg('checkUpdate', () => {
   notifier.check();
+});
+
+ifArg('version', () => {
+  console.log(cfg.version);
 });
 
 ifArg('treeshake', () => {

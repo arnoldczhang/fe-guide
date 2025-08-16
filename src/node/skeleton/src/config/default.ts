@@ -1,5 +1,7 @@
-import { animationStyle, ICO } from '../types';
+import { animationStyle, ICO, IPath } from '../types';
+import { getRelativePath } from '../utils';
 import { isStr } from '../utils/assert';
+import { isColor } from '../utils/reg';
 import { JELLY_STYLE, PRE, SHINE_STYLE } from './attr';
 import {
   SKELETON_DEFAULT_JS_FILE,
@@ -11,22 +13,7 @@ export const COMP_JSON = `{
   "usingComponents": {}
 }`;
 
-export const COMP_WXSS = `@import '${SKELETON_DEFAULT_WXSS}'`;
-
 export const COMP_JS = `Component({...require('/skeleton${SKELETON_DEFAULT_JS_FILE}')});`;
-
-export const WXSS_BG_GREY = `${PRE}-default-grey`;
-
-export const DEFAULT_WXSS = new Map();
-DEFAULT_WXSS.set(WXSS_BG_GREY, `
-  position: relative;
-  background: #f4f4f4!important;
-  color: #f4f4f4!important;
-  overflow: hidden;
-  outline: none;
-  border: none;
-  z-index: 1;
-`);
 
 export const DEFAULT_JS = `
 module.exports = {
@@ -82,6 +69,59 @@ export const wx: ICO = new Proxy({}, {
   },
 });
 
+// wxss
+export const COMP_WXSS = `@import '${SKELETON_DEFAULT_WXSS}';`;
+
+export const WXSS_BG_GREY = `${PRE}-default-grey`;
+
+export const WXSS_BG_DARK_GREY = `${PRE}-default-dark-grey`;
+
+export const WXSS_BG_LIGHT_GREY = `${PRE}-default-light-grey`;
+
+export const DEFAULT_WXSS = new Map();
+
+DEFAULT_WXSS.set([
+  WXSS_BG_GREY,
+  WXSS_BG_DARK_GREY,
+  WXSS_BG_LIGHT_GREY,
+], `
+  position: relative;
+  background: #f4f4f4!important;
+  color: #f4f4f4!important;
+  overflow: hidden;
+  outline: none;
+  border: none;
+  z-index: 1;
+`);
+
+DEFAULT_WXSS.set(WXSS_BG_DARK_GREY, `
+  background: #c4c4c4!important;
+  color: #c4c4c4!important;
+`);
+
+DEFAULT_WXSS.set(WXSS_BG_LIGHT_GREY, `
+  background: #fdfdfd!important;
+  color: #fdfdfd!important;
+`);
+
+/**
+ * updateBgWxss
+ * @param key
+ * @param color
+ */
+export const updateBgWxss = (
+  key: string,
+  color: string,
+) => {
+  if (isColor(color)) {
+    DEFAULT_WXSS.set([key], `background: ${color}!important; color: ${color}!important;`);
+  }
+};
+
+/**
+ * updateDefaultWxss
+ * @param styles
+ */
 export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): void => {
   if (isStr(styles)) {
     styles = [styles as animationStyle];
@@ -94,7 +134,7 @@ export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): vo
         outline: none;
         border: none;
         z-index: 1;
-        background-color: hsla(0, 0%, 100%, 0.2);
+        background-color: hsla(0, 0%, 100%, 0.3);
         position: absolute;
         top: -50%;
         bottom: -50%;
@@ -114,8 +154,6 @@ export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): vo
       case JELLY_STYLE:
         DEFAULT_WXSS.set(WXSS_BG_GREY, `
         position: relative;
-        background: #f4f4f4!important;
-        color: #f4f4f4!important;
         overflow: hidden;
         outline: none;
         border: none;
@@ -133,7 +171,7 @@ export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): vo
         `);
         DEFAULT_WXSS.set('@-webkit-keyframes jelly', `
         0%,68%,
-        68% { transform: scale(1, 1);  }
+        68% { transform: scale(1, 1); }
         76% { transform: scale(0.9, 1.1); }
         84% { transform: scale(1.1, 0.9); }
         92% { transform: scale(0.95, 1.05); }
@@ -142,4 +180,29 @@ export const updateDefaultWxss = (styles: animationStyle | animationStyle[]): vo
         break;
     }
   });
+};
+
+/**
+ * getCompJs
+ * @param output
+ * @param dest
+ * @param options
+ */
+export const getCompJs = (
+  output: string,
+  dest: string,
+  options: IPath,
+): string => {
+  const {
+    globalOutputPath,
+    subPageRoot,
+    independent,
+  } = options;
+
+  // if is a subpackage not-dependent, reuse the `skeleton.js` in main package
+  if (subPageRoot && !independent) {
+    output = globalOutputPath || output;
+  }
+  const relativePath = getRelativePath(`${output}/${SKELETON_DEFAULT_JS_FILE}`, dest);
+  return `Component({...require('${relativePath}')});`;
 };

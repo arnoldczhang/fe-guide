@@ -12,6 +12,7 @@ A.prototype = {
   },
 };
 
+// new1
 function neW(Klass) {
   if (Klass instanceof Function) {
     if (typeof Klass.prototype === 'object') {
@@ -22,6 +23,26 @@ function neW(Klass) {
     return instance;
   }
 };
+
+// new2
+function neW2(Construtor, ...args) {
+  if (typeof Construtor === 'function') {
+    var obj = {};
+    obj.__proto__ = Construtor.prototype;
+    const result = Construtor.apply(obj, args);
+    return typeof result === 'object' ? result : obj;
+  }
+  throw new Error(`${Construtor} is not a constructor`);
+};
+
+// new3
+function myNew(func, ...args) {
+  const obj = {};
+  obj.__proto__ = func.prototype;
+  const result = func.call(obj, ...args);
+  if (result instanceof Object) return result;
+  return obj;
+}
 
 // test
 // const a = neW(A, 'abc');

@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "skipDefaultLibCheck": true,
+    "downlevelIteration": true,
+    "strictFunctionTypes": true,
+    "types": [],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@babel/@types",
+      "./src/types"
+    ],
+    "paths": {
+      "@/*": [
+        "src/*",
+      ],
+    },
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+  ],
+  "exclude": [
+    "**/node_modules"
+  ]
+}

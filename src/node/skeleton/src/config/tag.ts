@@ -1,23 +1,57 @@
-export const TPL_TAG = 'template';
+import { ICO } from "../types";
 
-export const IMPORT_TAG = 'import';
+export const TPL_TAG: string = 'template';
 
-export const INCLUDE_TAG = 'include';
+export const IMPORT_TAG: string = 'import';
 
-export const TEMPLATE_TAG = 'template';
+export const INCLUDE_TAG: string = 'include';
 
-export const WXS_TAG = 'wxs';
+export const TEMPLATE_TAG: string = 'template';
 
-export const IMAGE_TAG = 'image';
+export const WXS_TAG: string = 'wxs';
 
-export const BUTTON_TAG = 'button';
+export const IMAGE_TAG: string = 'image';
 
-export const RULE_TAG = 'rule';
+export const BUTTON_TAG: string = 'button';
 
-export const COMMENT_TAG = 'comment';
+export const RULE_TAG: string = 'rule';
 
-export const ELEMENT_TAG = 'element';
+export const COMMENT_TAG: string = 'comment';
 
-export const TEXT = 'text';
+export const ELEMENT_TAG: string = 'element';
 
-export const ROOT_TAG = 'root';
+export const TEXT: string = 'text';
+
+export const ROOT_TAG: string = 'root';
+
+export const TARO_TAG: ICO<string> = {
+  View: 'View',
+  Block: 'Block',
+  Image: 'Image',
+  Text: 'Text',
+  Switch: 'Switch',
+  Button: 'Button',
+  Icon: 'Icon',
+  Radio: 'Radio',
+  RadioGroup: 'RadioGroup',
+  Checkbox: 'Checkbox',
+  CheckboxGroup: 'CheckboxGroup',
+  Input: 'Input',
+  Label: 'Label',
+  Textarea: 'Textarea',
+  RichText: 'RichText',
+  Form: 'Form',
+  Progress: 'Progress',
+  ScrollView: 'ScrollView',
+  Swiper: 'Swiper',
+  SwiperItem: 'SwiperItem',
+  Slider: 'Slider',
+  Picker: 'Picker',
+  Tabbar: 'Tabbar',
+  TabbarContainer: 'TabbarContainer',
+  TabbarPanel: 'TabbarPanel',
+  WebView: 'WebView',
+  Canvas: 'Canvas',
+  PullDownRefresh: 'PullDownRefresh',
+  Video: 'Video',
+};

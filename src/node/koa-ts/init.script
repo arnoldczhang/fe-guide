@@ -1,0 +1,63 @@
+#!/bin/bash -ilex
+#
+# description: {{ APPID }} init script
+# processname: AppFeAPMService  
+# chkconfig: 234 20 80 
+
+export npm_config_registry="http://nodepackages-inner.hellobike.cn:4873/"
+APPID="AppFeAPMService"
+cd "/workspace/carkey/$APPID/latest/"
+
+reg='^[a-z]{2,4}_[0-9]{14}$'
+len=`ls ../ -tr | grep -E $reg | wc -l`
+head=$((len-2))
+for i in `ls ../ -tr | grep -E $reg | head -$head`
+do
+  echo removing ../$i
+  rm -rf ../$i
+done
+
+USER="deploy"
+
+start(){
+  /bin/su $USER -c "npm i --no-audit --production;"
+  count=`ps -efww | grep "node /workspace/carkey/$APPID" | grep -v "grep" | wc -l`
+  if [ 0 == $count ];
+  then
+    /bin/su $USER -c "pm2 start dist/main.js --name $APPID;"
+  else
+    /bin/su $USER -c "pm2 del $APPID;"
+    /bin/su $USER -c "pm2 start dist/main.js --name $APPID;"
+  fi
+}
+
+stop(){
+  echo 'stop';
+  # pm2 stop $APPID
+}
+
+status() {
+  echo 'status';
+  # pm2 show $APPID
+}
+
+case "$1" in
+    start)
+    start
+    ;;
+    stop)
+    stop
+    ;;
+    status)
+    status
+    ;;
+    restart)
+    start
+    ;;
+    *)
+    printf 'Usage: %s {start|stop|restart|status}\n'
+    exit 1
+    ;;
+esac
+
+exit 0
