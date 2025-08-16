@@ -4,26 +4,26 @@
 
 ## 参考
 
-- [根据代码生成代码文档，集成CICD](https://github.com/context-labs/autodoc)
-- [gpt生成图表](https://github.com/ObservedObserver/viz-gpt)
-- [AI合集](https://ai.nancheng.fun/)
-- [gpt合集-1](https://start.chatgot.io/)
-- [现有的一些AIGC](https://mp.weixin.qq.com/s?__biz=MzkxNDIzNTg4MA==&mid=2247488559&idx=1&sn=294b604f54aac0e8f925cee2a638bdec&scene=21#wechat_redirect)
+- [根据代码生成代码文档，集成 CICD](https://github.com/context-labs/autodoc)
+- [gpt 生成图表](https://github.com/ObservedObserver/viz-gpt)
+- [AI 合集](https://ai.nancheng.fun/)
+- [gpt 合集-1](https://start.chatgot.io/)
+- [现有的一些 AIGC](https://mp.weixin.qq.com/s?__biz=MzkxNDIzNTg4MA==&mid=2247488559&idx=1&sn=294b604f54aac0e8f925cee2a638bdec&scene=21#wechat_redirect)
 - [字节跳动-豆包](https://www.doubao.com/chat)
-- [prompt指南](https://mp.weixin.qq.com/s/jOU2qT5o88tuZC1p6vLkJw)
-- [前端训练gpt](https://mp.weixin.qq.com/s/0lSPqDmECyKcemXkWrgUuA)
+- [prompt 指南](https://mp.weixin.qq.com/s/jOU2qT5o88tuZC1p6vLkJw)
+- [前端训练 gpt](https://mp.weixin.qq.com/s/0lSPqDmECyKcemXkWrgUuA)
 - [聊天生成网页](https://bolt.new/)
-- [本地自建ai知识库](https://mp.weixin.qq.com/s/KlEocqoukwNU4DZYEzph8Q)
+- [本地自建 ai 知识库](https://mp.weixin.qq.com/s/KlEocqoukwNU4DZYEzph8Q)
 - [本地运行大模型工具](https://mp.weixin.qq.com/s/Tc9BkRGVu_9AiwH0PLlFgQ)
 - [DeepSeek-国产最屌开源大模型](https://github.com/deepseek-ai/DeepSeek-V3?tab=readme-ov-file)
-- [通过Rag实现与大模型对话检索](https://mp.weixin.qq.com/s/6yhYLKfNrumSMs7ELvktjg)
-- [ai声音克隆](https://anyvoice.net/zh/ai-voice-cloning)
-- [2025deepseek提示词](https://www.cnblogs.com/vipstone/p/18710104)
-- [deepseek本地部署指南](https://mp.weixin.qq.com/s/SPEvYTmTBxhoEkJqm1yPmw)
+- [通过 Rag 实现与大模型对话检索](https://mp.weixin.qq.com/s/6yhYLKfNrumSMs7ELvktjg)
+- [ai 声音克隆](https://anyvoice.net/zh/ai-voice-cloning)
+- [2025deepseek 提示词](https://www.cnblogs.com/vipstone/p/18710104)
+- [deepseek 本地部署指南](https://mp.weixin.qq.com/s/SPEvYTmTBxhoEkJqm1yPmw)
 - [提示词优化器](https://github.com/linshenkx/prompt-optimizer)
 - [自更新的全球日报](https://kite.kagi.com/6b906e50-83ee-41e1-b3b4-907b10095066/world?data_lang=zh-Hant)
-- [Oxygen agent串联库](https://github.com/jd-opensource/OxyGent)
-- [Lovart 集成agent的figma](https://mp.weixin.qq.com/s/cTOaTF94DPqMeWiRsdhetQ)
+- [Oxygen agent 串联库](https://github.com/jd-opensource/OxyGent)
+- [Lovart 集成 agent 的 figma](https://mp.weixin.qq.com/s/cTOaTF94DPqMeWiRsdhetQ)
 - [文字润色](https://www.text-well.com/zh/app)
 
 ## Prompt
@@ -42,7 +42,7 @@
 
 ### step
 
-> 教AI按什么步骤、从什么角度、基于某些限定条件思考
+> 教 AI 按什么步骤、从什么角度、基于某些限定条件思考
 
 ```
 - step1
@@ -72,10 +72,11 @@ yyy: ...
 
 ### question
 
-到这里才开始你真正的提问-_-
+到这里才开始你真正的提问-\_-
 
 ### Agent Steering
-> 为ai提供持久化的上下文
+
+> 为 ai 提供持久化的上下文
 
 **rules.md**
 
@@ -123,20 +124,19 @@ Follow SOLID principles throughout the codebase:
 - Implement proper cleanup in useEffect hooks
 - Use useCallback and useMemo for performance optimization when needed
 - Handle edge cases and loading states appropriately
-
 ```
 
 ## 境界
 
 > 程序 = 算法 + 结构
-> 
+>
 > 软件 = 程序 + 软件工程
-> 
+>
 > 软件企业= 软件 + 商业模式
 
-chatgpt在第一层大力提效，人类应该在二、三层发力。
+chatgpt 在第一层大力提效，人类应该在二、三层发力。
 
-### CO-STAR形式的prompt
+### CO-STAR 形式的 prompt
 
 ```
 ## Context
@@ -160,6 +160,7 @@ chatgpt在第一层大力提效，人类应该在二、三层发力。
 ```
 
 举例：
+
 ```
 ## Context
 我是一名正在寻找酒店信息的旅行者，计划在即将到来的假期前往某个城市。我希望了解关于酒店的设施、价格和预订流程等信息。
@@ -181,9 +182,10 @@ chatgpt在第一层大力提效，人类应该在二、三层发力。
 
 ```
 
-### prompt模板
-- 给到模型的数据，如果是json格式，建议转成md格式，省token
-- [prompt优化器](https://github.com/linshenkx/prompt-optimizer)
+### prompt 模板
+
+- 给到模型的数据，如果是 json 格式，建议转成 md 格式，省 token
+- [prompt 优化器](https://github.com/linshenkx/prompt-optimizer)
 
 ```
 # Role: XX Data Query Formatter
@@ -250,19 +252,17 @@ chatgpt在第一层大力提效，人类应该在二、三层发力。
 
 ```
 
-
-
 ## 传输
 
 ```js
 var result;
 fetch(`/receive?channel=${channel}`, {
-  method: 'POST',
+  method: "POST",
   headers: {
-    'content-type': 'application/json',
-    accept: 'text/event-stream',
+    "content-type": "application/json",
+    accept: "text/event-stream",
   },
-}).then(async res => {
+}).then(async (res) => {
   const reader = res.body?.pipeThrough(new TextDecoderStream())?.getReader();
   while (reader && true) {
     const { done, value } = await reader.read();
@@ -273,29 +273,198 @@ fetch(`/receive?channel=${channel}`, {
 ```
 
 ## 文档聊天机器人
+
 [langchain-doc chatbot](https://js.langchain.com/docs/tutorials/rag/)
 
 ## deepseek
+
 - [api](https://api-docs.deepseek.com/zh-cn/api/create-chat-completion)
 
 ## MCP
-- [mcp - 进阶版function call](https://mp.weixin.qq.com/s/jV46NMDfcJRiklUG_RLsmQ)
-- [figma支持mcp导出视觉稿](https://mp.weixin.qq.com/s/i4VGAv8mg3wBVgQrKqUmWQ)
 
+> 通用的 Function call
+
+### RAG-MCP
+
+> 调用mcp前执行预检索，避免输入token量过大
+
+
+
+### 设计原则 CRAFTS 框架
+
+1. 合理的出入参
+2. 清晰的任务导向
+3. 边界情况
+
+#### C - clear
+
+> 工具的功能描述清晰
+
+```json
+{
+  "name": "send_email",
+  "description": "向指定收件人发送邮件，支持纯文本和HTML格式，可以添加附件。适用于发送通知、报告或个人消息。"
+}
+```
+
+#### R - robust
+
+> 健壮性，格式化、有意义的返回结果（包括成功和失败）
+
+```json
+{
+  "name": "send_bulk_email",
+  "response": {
+    "status": "partial_success",
+    "summary": "成功发送245封邮件，15封失败",
+    "success_count": 245,
+    "failure_count": 15,
+    "failed_addresses": [
+      { "email": "invalid@domain.com", "reason": "域名不存在" },
+      { "email": "full@mailbox.com", "reason": "邮箱已满" }
+    ],
+    "retry_available": true,
+    "estimated_retry_time": "2小时后（避开高峰期）"
+  }
+}
+```
+
+#### A - adaptive
+
+> 适用性，通过入参差异，单一工具适配所有场景
+
+```json
+{
+  "name": "send_notification",
+  "description": "发送通知消息，支持多种渠道、优先级和消息格式",
+  "parameters": {
+    "message": { "type": "string", "required": true },
+    "channels": {
+      "type": "array",
+      "items": { "enum": ["email", "sms", "push", "slack", "webhook"] },
+      "default": ["email"]
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "normal", "high", "urgent"]
+    },
+    "recipients": { "type": "array", "items": { "type": "string" } },
+    "template": { "type": "string", "required": false }
+  }
+}
+```
+
+#### F - functional
+
+> 功能聚合，以单一任务为导向（非功能导向）
+
+```json
+{
+  "name": "generate_sales_report",
+  "description": "生成完整的销售报告，包括数据分析、图表生成、格式化和保存。一次调用完成整个报告生成流程。",
+  "parameters": {
+    "period": { "type": "string", "enum": ["daily", "weekly", "monthly"] },
+    "format": { "type": "string", "enum": ["pdf", "html", "excel"] },
+    "recipients": { "type": "array", "items": { "type": "string" } }
+  }
+}
+```
+
+#### T - thoughtful
+
+> 合理的参数名（对于 ai 来说）
+
+```json
+{
+  "name": "search_customer_data",
+  "parameters": {
+    "query": {
+      "type": "string",
+      "required": true,
+      "description": "客户姓名、邮箱或手机号"
+    },
+    "search_type": {
+      "type": "string",
+      "enum": ["exact", "fuzzy", "partial"],
+      "default": "fuzzy",
+      "description": "搜索匹配类型"
+    },
+    "include_inactive": {
+      "type": "boolean",
+      "default": false,
+      "description": "是否包含已停用的客户"
+    },
+    "date_range": {
+      "type": "object",
+      "properties": {
+        "start": { "type": "string", "format": "date" },
+        "end": { "type": "string", "format": "date" }
+      },
+      "description": "可选的注册时间范围筛选"
+    }
+  }
+}
+```
+
+#### S - smart
+
+> 返回聚合后的结果
+
+**成功**
+
+```json
+{
+  "status": "success",
+  "summary": "分析了过去30天的销售数据，发现收入增长15%，主要由移动端订单增长驱动。",
+  "key_metrics": {
+    "revenue_growth": "15%",
+    "total_orders": 1547,
+    "avg_order_value": 285.6,
+    "conversion_rate": "3.2%"
+  },
+  "insights": [
+    "移动端转化率提升显著（+22%）",
+    "周末销售表现超出预期",
+    "新客户获取成本下降18%"
+  ],
+  "recommendations": [
+    "增加移动端营销投入",
+    "优化周末促销策略",
+    "紧急补充热销商品库存"
+  ],
+  "alerts": ["退款率异常上升至5.2%，建议检查产品质量"]
+}
+```
+
+**失败**
+
+```json
+{
+  "status": "error",
+  "error_type": "insufficient_permissions",
+  "message": "当前用户无权访问财务数据。建议联系财务部门或使用 request_finance_access 工具申请权限。",
+  "suggested_actions": [
+    "联系财务部门申请权限",
+    "使用公开的销售数据进行分析",
+    "请求管理员提升权限级别"
+  ],
+  "alternative_tools": ["analyze_public_sales_data", "request_data_access"]
+}
+```
 
 ### 本地调试
+
 cline
 
 配置：
+
 ```json
 {
   "mcpServers": {
     "log": {
       "timeout": 60,
       "command": "node",
-      "args": [
-        "/mnt/d/website/vue/vite-project/test.js"
-      ],
+      "args": ["/mnt/d/website/vue/vite-project/test.js"],
       "transportType": "stdio"
     }
   }
@@ -303,20 +472,20 @@ cline
 ```
 
 样例文件内容：
+
 ```js
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
 const server = new McpServer({
-  name: "TimeServer", // 服务器名称
-  version: "1.0.0", // 服务器版本
+  name: "TimeServer", // 服务器名称
+  version: "1.0.0", // 服务器版本
 });
 
-
 server.tool(
-  "getCurrentTime", // 工具名称,
-  "根据时区（可选）获取当前时间", // 工具描述
+  "getCurrentTime", // 工具名称,
+  "根据时区（可选）获取当前时间", // 工具描述
   {
     timezone: z
       .string()
@@ -351,20 +520,27 @@ async function startServer() {
 startServer();
 ```
 
-### MCP市场
+### MCP 市场
+
 - https://github.com/modelcontextprotocol/servers
 - https://mcpmarket.cn/
 - https://mcp.so/
 
+### 参考
+
+- [mcp - 进阶版 function call](https://mp.weixin.qq.com/s/jV46NMDfcJRiklUG_RLsmQ)
+- [figma 支持 mcp 导出视觉稿](https://mp.weixin.qq.com/s/i4VGAv8mg3wBVgQrKqUmWQ)
 
 ## cursor
-[cursor使用指南和常用prompt](https://mp.weixin.qq.com/s/UM3nBcX6JpYtnchSCdrxOA)
+
+[cursor 使用指南和常用 prompt](https://mp.weixin.qq.com/s/UM3nBcX6JpYtnchSCdrxOA)
 
 ## 氛围编程
 
 ### 需求澄清
 
 ### 文档生成（Spec 规范驱动开发）
+
 1. 需求说明（requirements.md）
 2. 创建设计文档（design.md）
 3. 制定实施计划（tasks.md）
