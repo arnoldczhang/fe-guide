@@ -307,7 +307,7 @@ export default function Counter() {
 ```
 
 ### useImperativeHandle
-> 限制useRef暴露的功能
+> 自定义useRef暴露的功能
 
 ```jsx
 import { useRef, useImperativeHandle } from 'react';
@@ -679,7 +679,7 @@ function Example() {
       add: state.add,
     }))
   )
-  return <>{number}</>;
+  return <button onClick={add}>{number}</button>;
 }
 
 ```
