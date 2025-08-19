@@ -380,6 +380,49 @@ function ChatRoom({ roomId, theme }) {
 }
 ```
 
+### useReducer
+> 极其类似useState，区别是可以将reducer写在组件外面
+
+```jsx
+import { useReducer } from 'react';
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'add':
+      return {
+        ...state,
+        count: state.count + 1,
+      };
+  }
+}
+
+const initialState = {
+  count: 0,
+};
+
+interface Props {
+
+}
+
+export default function Counter(props: Props) {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const handleAdd = () => {
+    dispatch({ type: 'add' });
+  };
+
+  return (
+    <>
+      <button onClick={handeAdd}>
+        点击我add！
+      </button>
+      <p>{state.count}</p>
+    </>
+  )
+}
+
+```
+
 ## 时机
 
 ### flushSync
