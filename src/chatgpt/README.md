@@ -282,6 +282,8 @@ fetch(`/receive?channel=${channel}`, {
 
 ## MCP
 
+[MCP explorer](https://mcpso.cc/kchat/index.html)
+
 > 通用的 Function call
 
 ### RAG-MCP
