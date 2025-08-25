@@ -1,91 +1,96 @@
-class MyPromise {
-  constructor(callback) {
-    this.status = this.#STATUS.pending;
-    this.value = null;
-    this.queue = [];
-    this.errorQueue = [];
-    callback(this.resolve.bind(this), this.reject.bind(this));
+class BasePromise {
+  constructor(initialHandler) {
+    this.STATUS = {
+      pending: 'pending',
+      fullfilled: 'fullfilled',
+      rejected: 'rejected',
+    };
+
+    if (typeof initialHandler === 'function') {
+      this.initialHandler = initialHandler;
+    }
+    this.status = this.STATUS.pending;
+    this.callbackQueue = [];
+    this.fallbackQueue = [];
+  }
+}
+class MyPromise extends BasePromise {
+  constructor(handler) {
+    super(handler);
+    this.#init();
     return this;
   }
 
-  #STATUS = {
-    pending: 'pending',
-    fullfilled: 'fullfilled',
-    rejected: 'rejected',
-  };
-
-  execute() {
-    switch (true) {
-      case this.staue === this.#STATUS.pending:
-        return;
-      case this.value instanceof Error:
-        while (this.errorQueue.length) {
-          try {
-            this.value = this.errorQueue.shift()(this.value);
-            while (this.queue.length) {
-              try {
-                this.value = this.queue.shift()(this.value);
-              } catch (err2) {
-                break;
-              }
-            }
-          } catch (err) {
-            this.value = err;
-          }
-        }
-        break;
-      default:
-        while (this.queue.length) {
-          try {
-            this.value = this.queue.shift()(this.value);
-          } catch (err) {
-            this.value = err;
-            while (this.errorQueue.length) {
-              try {
-                this.value = this.errorQueue.shift()(this.value);
-                break;
-              } catch (err2) {
-                err = err2;
-              }
-            }
-          }
-        }
-        break;
+  #init() {
+    if (this.initialHandler) {
+      this.initialHandler(this.#resolve.bind(this), this.#reject.bind(this));
     }
   }
-  resolve(res) {
-    if (this.status !== this.#STATUS.pending) return;
-    this.status = this.#STATUS.fullfilled;
-    this.value = res;
-    this.execute();
+
+  #resolve(res) {
+    if (this.status !== this.STATUS.pending) return;
+    this.status = this.STATUS.fullfilled;
+    this.#runResolve(res);
   }
-  reject(res) {
-    if (this.status !== this.#STATUS.pending) return;
-    this.status = this.#STATUS.rejected;
-    this.value = res;
-    this.execute();
+
+  #reject(err) {
+    if (this.status !== this.STATUS.pending) return;
+    this.status = this.STATUS.rejected;
+    this.#runReject(err);
   }
-  then(callback, fallback) {
-    this.queue.push(callback);
-    fallback && this.errorQueue.push(fallback);
-    this.execute();
+
+  async #runResolve(res) {
+    if (!this.callbackQueue.length) return;
+    const callback = this.callbackQueue.shift();
+    try {
+      const result = await callback(res);
+      this.#runResolve(result);
+    } catch(err) {
+      this.#runReject(err);
+    }
+  }
+
+  async #runReject(err) {
+    if (!this.fallbackQueue.length) return;
+    const fallback = this.fallbackQueue.shift();
+    try {
+      const result = await fallback(err);
+      this.#runResolve(result);
+    } catch(err) {
+      this.#runReject(err);
+    }
+  }
+
+  then(handler, errorHandler) {
+    if (typeof handler === 'function') {
+      this.callbackQueue.push(handler);
+    }
+
+    if (typeof errorHandler === 'function') {
+      this.fallbackQueue.push(errorHandler);
+    }
     return this;
   }
-  catch(fallback) {
-    this.errorQueue.push(fallback);
-    this.execute();
+
+  catch(errorHandler) {
+    if (typeof errorHandler === 'function') {
+      this.fallbackQueue.push(errorHandler);
+    }
     return this;
   }
 }
 
 // test
 const promise = new MyPromise((resolve, reject) => {
-  resolve('a');
+  setTimeout(() => {
+    resolve('a');
+  }, 3000);
 }).then((res) => {
   console.log(res);
   console.log(1);
-  throw new Error();
+  throw new Error('hahaha');
 }).catch(err => {
+  console.log(err);
   console.log(2);
   return 3;
 }).then(res => console.log(res));

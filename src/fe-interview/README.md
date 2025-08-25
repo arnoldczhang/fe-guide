@@ -36,16 +36,15 @@
 - [数字千分位](./src/数字千分位.js)
 - [new](./src/new.js)
 - [flatten](./src/flatten.js)
-- [promise](./src/promise.js)
 - [call&apply&bind](./src/call&apply&bind.js)
 - [缓存时效性](./src/缓存时效性.js)
 - [防抖 - clearTimeout](./src/debounce.js)
 - [节流 - 固定频率](./src/throttle.js)
 - [深拷贝](./src/深拷贝.md#终局)
-- [发布订阅](./src/发布订阅.js)
 
 **有点意思的**
 
+- [模拟promise](./src/promise.js)
 - [LRU](../algorithm/leetcode/双向链表-LRU缓存机制.js)
 - [eventBus](./src/eventBus.js)
 - [模拟请求池](./src/模拟节流请求.js)
@@ -58,6 +57,8 @@
 - [微信红包算法](../algorithm/leetcode/微信红包算法.js)
 - [indexedDB读写](./src/indexedDB读写.js)
 - [proxy响应式](./src/proxy响应式.js)
+- [useFetch](./src/useFetch.js)
+- [发布订阅](./src/发布订阅.js)
 
 ## 3. 打包工具
 
