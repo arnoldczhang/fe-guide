@@ -1,53 +1,37 @@
-class EventEmitter {
+class PubSub {
   constructor() {
     this.cach = new Map();
   }
 
-  on(event, handler) {
-    if (!this.cach.has(event)) {
-      this.cach.set(event, new Set());
-    }
-    const list = this.cach.get(event);
-    if (typeof handler !== 'function') throw new Error('handler must be a function');
-    if (list.has(handler)) return;
-    list.add(handler);
+  publish(eventName, message) {
+    if (!this.cach.has(eventName)) return;
+    this.cach.get(eventName).forEach((callback) => {
+      callback(message);
+    });
   }
 
-  off(event, handler) {
-    if (!this.cach.has(event)) return;
-    const list = this.cach.get(event);
-    if (typeof handler === 'undefined') return list.clear();
-    if (!list.has(handler)) return;
-    list.delete(handler);
+  subscribe(eventName, callback) {
+    const list = this.cach.get(eventName) || [];
+    list.push(callback);
+    this.cach.set(eventName, list);
   }
 
-  trigger(event, params) {
-    if (!this.cach.has(event)) return;
-    const list = this.cach.get(event);
-    list.forEach((handler) => handler(params));
+  unsubscribe(eventName, callback) {
+    if (!this.cach.has(eventName)) return;
+    const list = this.cach.get(eventName);
+    if (!list.includes(callback)) return;
+    list.splice(list.indexOf(callback), 1);
   }
 }
 
-// test
-const emitter = new EventEmitter();
-
-const handler1 = (e) => {
-  console.log('handler1', e);
-};
-
-const handler2 = (e) => {
-  console.log('handler2', e);
-};
-
-const handler3 = (e) => {
-  console.log('handler3', e);
-};
-
-emitter.on('click', handler1);
-emitter.on('click', handler2);
-emitter.on('click', handler3);
-emitter.trigger('click', 'try1: hello');
-emitter.off('click', handler2);
-emitter.trigger('click', 'try2: hello');
-emitter.off('click');
-emitter.trigger('click', 'try3: hello');
+// test  
+const pubsub = new PubSub();
+const fn = data => console.log('Received data:', data);
+// 订阅事件  
+pubsub.subscribe('myEvent', fn);
+// 发布事件  
+pubsub.publish('myEvent', 'Hello, world!'); // 输出: Received data: Hello, world!  
+// 取消订阅事件  
+pubsub.unsubscribe('myEvent', fn);
+// 再次发布事件，此时不会有输出，因为已经取消了订阅  
+pubsub.publish('myEvent', 'Hello again!');

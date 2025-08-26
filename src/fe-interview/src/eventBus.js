@@ -1,64 +1,54 @@
 // 可参考eventemitter3@5.0.1
 class EventEmitter {
   constructor() {
-    this.eventMap = new Map();
+    this.cach = new Map();
   }
 
-  on(event, callback, context, once = false) {
-    if (typeof callback !== 'function') throw new Error('type error');
-    const item = { callback, context, once };
-    if (this.eventMap.has(event)) {
-      const set = this.eventMap.get(event);
-      set.add(item);
-    } else {
-      const set = new Set([item]);
-      this.eventMap.set(event, set);
+  on(event, handler) {
+    if (!this.cach.has(event)) {
+      this.cach.set(event, new Set());
     }
+    const list = this.cach.get(event);
+    if (typeof handler !== 'function') throw new Error('handler must be a function');
+    if (list.has(handler)) return;
+    list.add(handler);
   }
-  once(event, callback, context) {
-    return this.on(event, callback, context, true);
+
+  off(event, handler) {
+    if (!this.cach.has(event)) return;
+    const list = this.cach.get(event);
+    if (typeof handler === 'undefined') return list.clear();
+    if (!list.has(handler)) return;
+    list.delete(handler);
   }
-  emit(event, ...params) {
-    const set = this.eventMap.get(event);
-    if (typeof set !== 'undefined') {
-      set.forEach(({ callback, context, once }) => {
-        if (typeof callback.call === 'function') {
-          callback.call(context, ...params);
-        } else {
-          callback(...params);
-        }
-        if (once) this.off(event, callback);
-      })
-    }
-  }
-  off(event, callback) {
-    const set = this.eventMap.get(event);
-    if (typeof set === 'undefined') return;
-    set.forEach((item) => {
-      if (item.callback === callback) set.delete(item);
-    });
+
+  trigger(event, params) {
+    if (!this.cach.has(event)) return;
+    const list = this.cach.get(event);
+    list.forEach((handler) => handler(params));
   }
 }
 
 // test
-var eventBus = new EventEmitter();
+const emitter = new EventEmitter();
 
-const eventCallback = (value) => {
-  console.log(value);
+const handler1 = (e) => {
+  console.log('handler1', e);
 };
 
-const eventCallback2 = (value) => {
-  console.log(value + 'aaaaa');
+const handler2 = (e) => {
+  console.log('handler2', e);
 };
 
-const eventCallback3 = (value) => {
-  console.log(value + 'ccccc');
+const handler3 = (e) => {
+  console.log('handler3', e);
 };
 
-
-eventBus.on('click', eventCallback);
-eventBus.on('click', eventCallback2);
-eventBus.once('click', eventCallback3);
-eventBus.emit('click', 'aaa');
-eventBus.off('click', eventCallback);
-eventBus.emit('click', 'bbb');
+emitter.on('click', handler1);
+emitter.on('click', handler2);
+emitter.on('click', handler3);
+emitter.trigger('click', 'try1: hello');
+emitter.off('click', handler2);
+emitter.trigger('click', 'try2: hello');
+emitter.off('click');
+emitter.trigger('click', 'try3: hello');

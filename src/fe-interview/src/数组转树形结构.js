@@ -7,6 +7,8 @@
  * @param {*} arr 
  * @returns 
  */
+
+// 方式一：reduce
 const toTree = (arr = []) => {
   const cach = new Map();
   return arr.reduce((res, pre) => {
@@ -36,6 +38,36 @@ const toTree = (arr = []) => {
     return res;
   }, []);
 }
+
+// 方式二：未知父节点，借助临时数组
+const toTree2 = (arr = []) => {
+  const result = [];
+  const cach = new Map();
+  const pendingCach = new Map();
+
+  arr.forEach((item) => {
+    const { parentId, id } = item;
+    const newNode = {
+      ...item,
+      children: [],
+    };
+    cach.set(id, newNode);
+
+    if (pendingCach.has(id)) {
+      newNode.children = pendingCach.get(id);
+      pendingCach.set(id, []);
+    }
+
+    if (!parentId) {
+      result.push(newNode);
+    } else if (cach.has(parentId)) {
+      cach.get(parentId).children.push(newNode)
+    } else {
+      pendingCach.set(parentId, [...(pendingCach.get(parentId) || []), newNode]);
+    }
+  });
+  return result;
+};
 
 // test
 const items = [  
