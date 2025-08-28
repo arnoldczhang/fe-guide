@@ -282,7 +282,8 @@ fetch(`/receive?channel=${channel}`, {
 
 ## MCP
 
-[MCP explorer](https://mcpso.cc/kchat/index.html)
+- [MCP explorer](https://mcpso.cc/kchat/index.html)
+- [shadcn-ui-mcp-server，可作为MCP代码范式参考](https://github.com/Jpisnice/shadcn-ui-mcp-server/tree/master)
 
 > 通用的 Function call
 
