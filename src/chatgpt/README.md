@@ -25,6 +25,7 @@
 - [Oxygen agent 串联库](https://github.com/jd-opensource/OxyGent)
 - [Lovart 集成 agent 的 figma](https://mp.weixin.qq.com/s/cTOaTF94DPqMeWiRsdhetQ)
 - [文字润色](https://www.text-well.com/zh/app)
+- [代码仓库转wiki](https://deepwiki.com/)
 
 ## Prompt
 
