@@ -299,6 +299,10 @@ a {
 
 https://fusion.design/component/virtual-list?themeid=1
 
+1. 监听滚动事件（scrollTop），用transform定位元素
+2. 预制占位元素，模拟滚动条
+3. 根据滚动距离，动态绑定数据
+
 ### 换肤
 
 [rel=>alternate](https://www.zhangxinxu.com/wordpress/2019/02/link-rel-alternate-website-skin/comment-page-1/#comment-391940)

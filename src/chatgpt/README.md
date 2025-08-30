@@ -75,6 +75,10 @@ yyy: ...
 
 到这里才开始你真正的提问-\_-
 
+### prompt加固
+[智能体防御](https://mp.weixin.qq.com/s/ndNDFP8vEQIq0ZRbriLzXw)
+总结就是，不要太宽泛，给明确要求、示例
+
 ### Agent Steering
 
 > 为 ai 提供持久化的上下文
