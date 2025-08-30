@@ -36,8 +36,14 @@ A：menu文件里可能操控原型，所以无法直接移除
 
 ### webpack
 
+**编译时**
+
 1. 代码做标记
 2. 利用`terser-webpack-plugin`清理未使用代码
+
+**运行时**
+
+__webpack_require__
 
 ```js
 getContent({ runtimeTemplate, runtimeRequirements }) {

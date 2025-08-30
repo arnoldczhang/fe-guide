@@ -22,10 +22,8 @@
 - [VO和AO](../js&browser/并发模型-event_loop.md#执行上下文和作用域链)
 - [作用域链](./src/common.md#执行上下文和作用域链)
 - [盒模型](./src/common.md#盒模型)
-- [get和post](../js&browser/页面过程与浏览器缓存.md)
 - [mjs和cjs](../js&browser/esm.md)
 - [跨域](../http/跨域.md)
-- [性能优化](../js&browser/性能优化2020.md)
 - [2020年的题](./src/common.md)
 - [垂直居中](../css-related/README.md#垂直居中)
 
