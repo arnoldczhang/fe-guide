@@ -41,7 +41,7 @@ const fetchData = useCallback(async () => {
   } finally {
     setLoading(false);
   }
-}, []);
+}, [setLoading]);
 ```
 
 ### useState

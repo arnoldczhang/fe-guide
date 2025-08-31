@@ -77,7 +77,7 @@
 
 ## 5. 前端框架
 
-- [MV*区别](./src/common.md#mv*)
+- [MV*区别](./src/common.md#mvX)
 - [react](../react/react19.md)
 - [vue2](../vue/vue2.md)
 - [vue3 treeshake](../vue/vue3.md#treeshake)

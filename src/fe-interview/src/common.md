@@ -119,7 +119,7 @@
 * [`vue生命周期`](#vue生命周期)
 * [`异步请求`](#异步请求)
 * [`reduxVSmobx`](#reduxVSmobx)
-* [`mv*`](#mv*)
+* [`mvX`](#mvX)
 * [`react优化指南`](#react优化指南)
 * [`e2e测试`](#e2e测试)
 
@@ -3041,7 +3041,7 @@ String("mouseenter,mouseleave").replace(/\w+/g, function (type) {
 
 ---
 
-### mv*
+### mvX
 
 [参考](https://juejin.im/post/5cd8a7c1f265da037a3d0992#heading-7)
 
