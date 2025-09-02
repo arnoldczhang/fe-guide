@@ -27,6 +27,8 @@ const ListItem = memo(({ item, isSelected, onClick }) => {
 
 ### useCallback
 > 缓存函数定义
+> 
+> 一定要锁死依赖
 
 ```jsx
 const fetchData = useCallback(async () => {
@@ -261,6 +263,32 @@ Update阶段：
 
 Unmount阶段：
 [组件卸载] → [执行清理函数]
+```
+
+#### 可以避免useEffect的场景
+
+**示例1：对比前后状态再重置**
+
+```jsx
+function List({ items }) {
+  const [innerItem, setInnerItem] = useState(items);
+  /**
+   * react默认会从上个fiber（快照）取memorizedValue，
+   * 所以最新的items如果变化（不管是从props或store取），都需要重新setInnerItem才会触发渲染
+   */
+  if (innerItem !== items) {
+    setInnerItem(items);
+  }
+}
+```
+
+**示例2：通过key直接重置**
+
+```jsx
+function Parent({ userId }) {
+  // ...省略很多代码
+  return <Child key={userId} userId={userId} />
+}
 ```
 
 ### useContext

@@ -60,10 +60,13 @@
 
 ## 3. 打包工具
 
+- [打包格式-umd/esm等](../webpack/打包格式.md)
 - [各打包工具区别](../webpack/各打包工具区别.md)
 - [webpack 常用配置](../webpack/常用配置.md)
 - [vite 常用配置](../vue/vite常用配置.md)
 - [webpack加速优化](../webpack/README.md#加速优化)
+- [webpack模块联邦](../webpack/README.md#webpack5)
+- [webpack生命周期](../webpack/README.md#hook)
 - [webpack和rollup的treeshake的区别](../treeshake/README.md)
 - [vite对比webpack的优势](../vue/README.md#vite)
 - [yarn和pnpm](../npm&yarn/README.md#yarn&pnpm)
