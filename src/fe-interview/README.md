@@ -119,6 +119,7 @@
 - [微前端方案](../microservice/微前端方案.md)
 - [复杂组件方案 - 表格](../fe-interview/src/复杂组件方案.md)
 - [复杂组件方案 - 表单](../fe-interview/src/复杂表单解决方案.md)
+- [sdk搭建方案](./src/sdk搭建方案.md)
 - [前端物料库搭建方案](https://mp.weixin.qq.com/s/MUz3JMhmV1W2hC-YaGEiKQ)
 
 ## 10. 业务
