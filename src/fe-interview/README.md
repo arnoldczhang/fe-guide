@@ -26,6 +26,7 @@
 - [跨域](../http/跨域.md)
 - [2020年的题](./src/common.md)
 - [垂直居中](../css-related/README.md#垂直居中)
+- [内存泄漏](../js&browser/内存管理.md#内存泄漏)
 
 ## 2. 手写源码
 
