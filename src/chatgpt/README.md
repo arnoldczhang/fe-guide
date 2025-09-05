@@ -26,6 +26,7 @@
 - [Lovart 集成 agent 的 figma](https://mp.weixin.qq.com/s/cTOaTF94DPqMeWiRsdhetQ)
 - [文字润色](https://www.text-well.com/zh/app)
 - [代码仓库转wiki](https://deepwiki.com/)
+- [写agent的12个影响因素](https://github.com/humanlayer/12-factor-agents)
 
 ## Prompt
 
