@@ -534,6 +534,93 @@ startServer();
 - https://github.com/modelcontextprotocol/servers
 - https://mcpmarket.cn/
 - https://mcp.so/
+- https://modelscope.cn/mcp
+
+### 调试工具
+- [cherry ai](https://www.cherry-ai.com/)
+
+### 传输规则
+
+#### streamableHTTP
+- 相较于`sse`，支持断连恢复、双向通信、高性能
+- 需要：http1.1的`Transfer-Encoding: chunked`或http2的`steams`
+
+**前端**
+```js
+// 使用 Fetch API 处理分块响应
+fetch('http://localhost:3000/stream')
+  .then(response => {
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    
+    function read() {
+      return reader.read().then(({ done, value }) => {
+        if (done) {
+          console.log('流式传输结束');
+          return;
+        }
+        
+        // 处理接收到的数据块
+        const text = decoder.decode(value);
+        console.log('接收到数据块:', text);
+        
+        // 继续读取下一个数据块
+        return read();
+      });
+    }
+    
+    return read();
+  })
+  .catch(error => {
+    console.error('请求错误:', error);
+  });
+```
+
+**后端**
+
+```js
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'text/plain',
+    'Transfer-Encoding': 'chunked',
+    'Access-Control-Allow-Origin': '*' // 允许跨域
+  });
+  
+  console.log('客户端连接已建立，开始发送数据流...');
+  
+  // 模拟实时数据发送
+  let count = 0;
+  const intervalId = setInterval(() => {
+    count++;
+    
+    // 生成要发送的数据
+    const data = `时间: ${new Date().toISOString()}, 计数: ${count}\n`;
+    
+    // 发送分块数据
+    // 注意: Node.js 会自动处理分块编码，我们不需要手动添加长度前缀
+    res.write(data);
+    
+    // 发送10次后结束
+    if (count >= 10) {
+      clearInterval(intervalId);
+      res.end(); // Node.js 会自动添加结束块
+      console.log('数据流发送完成');
+    }
+  }, 1000);
+  
+  // 处理客户端断开连接
+  req.on('close', () => {
+    clearInterval(intervalId);
+    console.log('客户端断开连接');
+  });
+});
+
+server.listen(3000, () => {
+  console.log('服务器运行在端口 3000');
+});
+```
 
 ### 参考
 
