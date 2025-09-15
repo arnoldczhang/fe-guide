@@ -34,6 +34,9 @@
 
 **Prompt = context + step + shot + question**
 
+### 模板
+[prompt模板](./prompt模板.md)
+
 ### context
 
 > 限定语境
@@ -131,6 +134,8 @@ Follow SOLID principles throughout the codebase:
 - Use useCallback and useMemo for performance optimization when needed
 - Handle edge cases and loading states appropriately
 ```
+
+---
 
 ## 境界
 
