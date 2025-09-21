@@ -266,6 +266,8 @@ chatgpt 在第一层大力提效，人类应该在二、三层发力。
 
 ## 传输
 
+### 方式一：sse
+
 ```js
 var result;
 fetch(`/receive?channel=${channel}`, {
@@ -283,6 +285,15 @@ fetch(`/receive?channel=${channel}`, {
   }
 });
 ```
+
+**缺点**：
+
+1. 只能用GET
+2. 请求参数只有url和withCredentials
+3. 无法手动控制的自动重连
+
+### 方式二：streamableHTTP
+[streamableHTTP](#streamableHTTP)
 
 ## 文档聊天机器人
 
