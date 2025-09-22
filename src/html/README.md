@@ -323,7 +323,7 @@ container.append(content);
 ---
 
 ## 元素布局
-> 语义化html，WCAG标准之一
+> 语义化html，WCAG标准之一，更多可参考[web可访问性](https://mp.weixin.qq.com/s/HXC8oSN5qZ8sP0eV0XmQ1w)
 
 ```html
 <!-- 文档主体（唯一） -->
