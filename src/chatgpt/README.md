@@ -268,6 +268,14 @@ chatgpt 在第一层大力提效，人类应该在二、三层发力。
 
 ### 方式一：sse
 
+**数据格式**
+
+- data
+- event
+- id
+- retry
+- 两个换行符
+
 ```js
 var result;
 fetch(`/receive?channel=${channel}`, {
@@ -286,14 +294,15 @@ fetch(`/receive?channel=${channel}`, {
 });
 ```
 
-**缺点**：
+**特点**：
 
 1. 只能用GET
 2. 请求参数只有url和withCredentials
-3. 无法手动控制的自动重连
+3. 支持自动重连（无法手动控制）
+4. 支持断点续传（messageId）
 
-### 方式二：streamableHTTP
-[streamableHTTP](#streamableHTTP)
+### 方式二：分块传输
+[分块传输](#分块传输)
 
 ## 文档聊天机器人
 
@@ -558,9 +567,12 @@ startServer();
 
 ### 传输规则
 
-#### streamableHTTP
-- 相较于`sse`，支持断连恢复、双向通信、高性能
-- 需要：http1.1的`Transfer-Encoding: chunked`或http2的`steams`
+#### 分块传输
+
+**特点**
+1. 原始字节流，分块传输
+2. 无自动重连、无事件区分、无断点续传
+3. 需要：http1.1的`Transfer-Encoding: chunked`或http2的`steams`
 
 **前端**
 ```js
