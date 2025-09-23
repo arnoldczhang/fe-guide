@@ -43,6 +43,7 @@
 * [`热更新`](#热更新)
 * [`加速优化`](#加速优化)
 * [`其他`](#其他)
+* [`hook`](#hook)
 
 </details>
 
@@ -1741,5 +1742,13 @@ DllPlugin 是基于 Windows 动态链接库（dll）的思想被创作出来的�
 ### 6.tree Shaking 删除冗余代码
 
 ### 7.按需加载
+
+---
+
+## hook
+1. initialization
+2. compilation
+3. output
+4. finish
 
 ---

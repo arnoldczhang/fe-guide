@@ -4,6 +4,9 @@
 
 - http://blog.csdn.net/freewebsys/article/details/46683645
 - [python和javascript相互运行](https://github.com/Distributive-Network/PythonMonkey)
+- [2025年怎么学python](https://www.cesarsotovalero.net/blog/i-am-switching-to-python-and-actually-liking-it.html)
+- [开源的ai文件管理系统](https://github.com/DrizzleTime/Foxel)
+- [支持多平台的基于ai的视频转录工具](https://github.com/wendy7756/AI-Video-Transcriber)
 - ...
 
 

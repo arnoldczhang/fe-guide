@@ -6,11 +6,12 @@
 - [vue3-管理端开箱即用1](https://github.com/fantastic-admin/basic)
 - [200行实现diff](https://lazamar.github.io/virtual-dom/)
 
-## 目录
-
-[TOC]
-
----
+## 新特性
+- Teleport
+- Composition API
+- 独立的reactivity模块
+- Suspense
+- Fragment
 
 ## 框架考虑点
 
@@ -24,7 +25,7 @@
 > rollup 默认会基于 esm 做树摇，但是对于函数调用，由于不确定是否有副作用（比如改全局变量），不会自动treeshake，
 > 
 > 可以通过 **__PURE__**关键词标记不含副作用，可以正常 treeshake。
->
+> 
 > 注：生产环境不用这样
 
 ```js
@@ -33,8 +34,6 @@ import { foo } from './utils
 
 export const isHtml = /*#__PURE__*/ isHtmlFn();
 ```
-
-## 
 
 ---
 
@@ -148,7 +147,7 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 
 ---
 
-## 原理
+## proxy原生属性
 
 ### 普通对象vs异质对象
 
@@ -157,6 +156,7 @@ watch(obj, async (newObj, oldObj, onInvalidate) => {
 > 1. 含对象必要的内部方法，比如[[GetPrototypeOf]]、[[SetPrototypeOf]]等
 > 2. 含原生实现的[[Call]]
 > 3. 含原生实现的[[Construct]]
+> 4. 读取key时，访问[[Symbol.toPrimitive]]
 
 **异质对象**
 
@@ -235,6 +235,15 @@ defineComponent({
 
 ## router
 
+### 关键点
+- hash/history
+- 外部事件监听（hashchange、popstate）和路由内部监听（routeChange）
+- 路由守卫（beforeleave、鉴权、消毒）
+- 路由解析（静态、动态、嵌套路由）
+- 边界情况兜底（异常、loading、重定向）
+- 动态更新（updateRoute）
+
+
 ### hash和history
 
 |       | hash       | history            |
@@ -243,7 +252,9 @@ defineComponent({
 | 区别    | #xxx       | /path/a/b          |
 | 服务端配置 | 无需支持       | nginx要配置try_files  |
 
-## computed和watch
+---
+
+## computed和watch和watchEffect
 
 ### 区别
 
@@ -316,13 +327,19 @@ function watch(source, callback, options) {
 }
 ```
 
+### watchEffect(callback)
+> 相当于watch(watchFn, callback, { immediate: true })
+>
+> 会先执行一遍callback，收集依赖，也就是watchFn
+>
+
 ### vue2和vue3的区别
 
 - vue2是申明式写法
 - vue2的watch仅支持监听单个
 - vue2的对象属性的删除和新增（比如push、pop等），无法watch到
 
-## props和data
+## prop和data
 
 props对于子组件是只读的，完全无法修改（vue3）
 
@@ -363,6 +380,46 @@ console.log(data.a);
 
 prop.a = 1;
 console.log(prop.a);
+```
+
+## ref和reactive
+
+|      | ref      | reactive                 |
+| ---- | -------- | ------------------------ |
+| 数据类型 | 任意       | 对象（Object/Array/Map/Set） |
+| 访问方式 | xx.value | 直接访问，比如obj.aa            |
+| 修改方式 | 直接替换     | 不可替换                     |
+| 解构   | 失去响应     | 失去响应                     |
+
+### reactive -> ref
+
+```js
+import { reactive, toRefs } from 'vue';
+
+const obj = reactive({ name: 'abc' });
+const { name } = toRefs(obj);
+
+// 实时响应
+// {{ name }}
+// <input v-model="name" />
+
+
+```
+
+### ref -> reactive
+
+```js
+import { ref, reactive } from 'vue';
+
+
+const name = ref('abc');
+const obj = reactive({ name });
+
+
+// 实时响应
+// {{ obj.name }}
+// {{ name }
+// <input v-model="name" />
 ```
 
 ## diff算法
@@ -428,3 +485,24 @@ function patch(n1, n2, container) {
   }
 }
 ```
+
+---
+
+## 生命周期
+- 都可以异步，但vue不会等，要考虑卸载时清除异步
+- 父组件的下一步生命周期都滞后于子组件
+- 加载、异常等状态处理
+
+---
+
+## 数据通信
+
+### 父子组件
+- props
+- $emit/$on
+
+### 跨层组件
+- provide/inject
+
+### 兄弟组件
+- eventbus

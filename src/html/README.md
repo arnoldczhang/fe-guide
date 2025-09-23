@@ -323,9 +323,10 @@ container.append(content);
 ---
 
 ## 元素布局
+> 语义化html，WCAG标准之一，更多可参考[web可访问性](https://mp.weixin.qq.com/s/HXC8oSN5qZ8sP0eV0XmQ1w)
 
 ```html
-<!-- 文档主体 -->
+<!-- 文档主体（唯一） -->
 <main>
   <h1>Web 浏览器</h1>
   <!-- 导航链接区域 -->

@@ -33,6 +33,7 @@
 - [svg转css](https://www.zhangxinxu.com/sp/svgo/)
 - [生成网格背景](https://spacexcode.com/blog/pure-css-grid-line)
 - [基于模板生成海报图](https://og.indiehub.best/)
+- [图片转像素画](https://imgtopixel.art/)
 
 ### 各种案例
 
@@ -297,6 +298,10 @@ a {
 ### 虚拟滚动
 
 https://fusion.design/component/virtual-list?themeid=1
+
+1. 监听滚动事件（scrollTop），用transform定位元素
+2. 预制占位元素，模拟滚动条
+3. 根据滚动距离，动态绑定数据
 
 ### 换肤
 
@@ -901,13 +906,12 @@ flex-shrink: 0
   .margin{
   display: flex;
   }
+
+  .center{
+    margin: auto;
+  }
   ```
 
-.center{
-  margin: auto;
-}
-
-```
 - absolute + margin auto
  ```css
  .margin{

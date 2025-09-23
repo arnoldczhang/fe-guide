@@ -15,6 +15,7 @@
 - [cron表达式-含义解释](https://tool.lu/crontab/)
 - [嵌入设备的微型node](https://github.com/yodaos-project/ShadowNode)
 - [nodejs运行过程](https://mp.weixin.qq.com/s/_1YdX2wavRJhy2aOCsHP4w)
+- [2025年node写法](https://kashw1n.com/blog/nodejs-2025/)
 
 ## 目录
 

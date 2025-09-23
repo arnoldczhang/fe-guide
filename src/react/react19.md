@@ -27,6 +27,8 @@ const ListItem = memo(({ item, isSelected, onClick }) => {
 
 ### useCallback
 > 缓存函数定义
+> 
+> 一定要锁死依赖
 
 ```jsx
 const fetchData = useCallback(async () => {
@@ -41,7 +43,7 @@ const fetchData = useCallback(async () => {
   } finally {
     setLoading(false);
   }
-}, []);
+}, [setLoading]);
 ```
 
 ### useState
@@ -200,7 +202,7 @@ const staticMemorizedValue = useMemo(() => ({
 ### useEffect
 > 副作用处理（watch、mounted、beforeUnMount）
 > 
-> 不能对比beforeValue和value，挺尴尬
+> 不能对比oldValue和newValue，挺尴尬
 >
 > 黄金法则：
 > 
@@ -263,6 +265,32 @@ Unmount阶段：
 [组件卸载] → [执行清理函数]
 ```
 
+#### 可以避免useEffect的场景
+
+**示例1：对比前后状态再重置**
+
+```jsx
+function List({ items }) {
+  const [innerItem, setInnerItem] = useState(items);
+  /**
+   * react默认会从上个fiber（快照）取memorizedValue，
+   * 所以最新的items如果变化（不管是从props或store取），都需要重新setInnerItem才会触发渲染
+   */
+  if (innerItem !== items) {
+    setInnerItem(items);
+  }
+}
+```
+
+**示例2：通过key直接重置**
+
+```jsx
+function Parent({ userId }) {
+  // ...省略很多代码
+  return <Child key={userId} userId={userId} />
+}
+```
+
 ### useContext
 
 > Provider/Inject
@@ -281,9 +309,7 @@ const theme = useContext(ThemeContext);
 ```
 
 ### useRef
-> 适用于组件生命周期内持久化存储值
->
-> 区别于useState，改动不会触发渲染
+> 适用于引用一个不需要渲染的值，而要在组件生命周期内持久化存储的
 >
 > 常用于：定时器、DOM操作
 
@@ -309,7 +335,7 @@ export default function Counter() {
 ```
 
 ### useImperativeHandle
-> 限制useRef暴露的功能
+> 自定义useRef暴露的功能
 
 ```jsx
 import { useRef, useImperativeHandle } from 'react';
@@ -382,6 +408,49 @@ function ChatRoom({ roomId, theme }) {
 }
 ```
 
+### useReducer
+> 极其类似useState，区别是可以将reducer写在组件外面
+
+```jsx
+import { useReducer } from 'react';
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'add':
+      return {
+        ...state,
+        count: state.count + 1,
+      };
+  }
+}
+
+const initialState = {
+  count: 0,
+};
+
+interface Props {
+
+}
+
+export default function Counter(props: Props) {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const handleAdd = () => {
+    dispatch({ type: 'add' });
+  };
+
+  return (
+    <>
+      <button onClick={handeAdd}>
+        点击我add！
+      </button>
+      <p>{state.count}</p>
+    </>
+  )
+}
+
+```
+
 ## 时机
 
 ### flushSync
@@ -390,6 +459,8 @@ function ChatRoom({ roomId, theme }) {
 > 适用于：动态添加dom后立即交互的场景
 
 ```jsx
+import { flushSync } from 'react-dom';
+
 function List() {
   flushSync(() => {
     setText('');
@@ -410,3 +481,304 @@ function List() {
 }
 ```
 
+**缺点**
+
+- 可能会严重影响性能
+- 可能会异步功能（比如suspense），可能会直接显示fallback状态
+- 可能会运行与回调函数相关的effect
+
+
+## react-router@V7
+
+### 三种模式
+- 框架模式
+- 数据模式
+- 申明模式
+
+#### 框架模式
+比较奇怪，个人认为不太会这么写
+
+```jsx
+export default [
+  index("./home.tsx"),
+  route("about", "./about.tsx"),
+
+  layout("./auth/layout.tsx", [
+    route("login", "./auth/login.tsx"),
+    route("register", "./auth/register.tsx"),
+  ]),
+
+  ...prefix("concerts", [
+    index("./concerts/home.tsx"),
+    route(":city", "./concerts/city.tsx"),
+    route("trending", "./concerts/trending.tsx"),
+  ]),
+] satisfies RouteConfig;
+```
+
+#### 数据模式
+和[vue-router](https://router.vuejs.org/zh/guide/#%E5%88%9B%E5%BB%BA%E8%B7%AF%E7%94%B1%E5%99%A8%E5%AE%9E%E4%BE%8B)比较像
+
+```jsx
+import {
+  createHashRouter,
+  RouterProvider,
+} from 'react-router-dom';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Home from './pages/Home.tsx';
+
+const router = createHashRouter([
+  {
+    path: '/',
+    Component: Home,
+  }
+]);
+
+const root = document.getElementById('root');
+
+ReactDOM.createRoot(root).render(
+  <RouterProvider router={router} />
+);
+```
+
+#### 申明模式
+相对传统的写法
+
+```jsx
+// 写法一
+import { HashRouter } from 'react-router-dom';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Comp1 from './pages/Comp1.tsx';
+
+const root = document.getElementById('root');
+
+const layouts = [
+  {
+    path: 'aa',
+    element: <Comp1 />,
+  }
+]
+
+ReactDOM.createRoot(root).render(
+  <HashRouter>
+    <Routes>
+      <Route path="login" element={<Login />}></Route>
+      <Route path="forget" element={<Forget />}></Route>
+      <Route path="" element={<Guards />}>
+        {layouts.map(({ path, element }) => (
+          <Route path={path} element={element} />
+        ))}
+      </Route>
+      <Route path="*" element={<NotFound />}></Route>
+    </Routes>
+  </HashRouter>
+);
+```
+
+```jsx
+// 写法二
+import { HashRouter, useRoutes } from 'react-router-dom';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Comp1 from './pages/Comp1.tsx';
+
+const root = document.getElementById('root');
+
+const layouts = [
+  {
+    path: 'aa',
+    element: <Comp1 />,
+  }
+]
+
+const newRoutes: RouteObject[] = [
+  {
+    path: 'login',
+    element: <Login />,
+  },
+  {
+    path: 'forget',
+    element: <Forget />,
+  },
+  {
+    path: '',
+    element: <Guards />,
+    children: layouts,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
+  },
+];
+
+ReactDOM.createRoot(root).render(
+  <HashRouter>
+    {useRoutes(newRoutes)}
+  </HashRouter>
+);
+```
+
+### hook
+
+#### useOutlet
+> 用于渲染当前路由的子路由组件
+
+```jsx
+import { useOutlet } from 'react-router-dom';
+
+function Guards() {
+  const outlet = useOutlet();
+  return (
+    <>
+      <header>
+        <h1>Guards</h1>
+      </header>
+      {outlet}
+    </>
+  );
+}
+```
+
+#### useNavigate
+> 用于编程式导航
+
+```jsx
+import { useNavigate } from 'react-router-dom';
+
+function Login() {
+  const navigate = useNavigate();
+  return (
+    <button onClick={() => navigate('/')}>登录</button>
+  );
+}
+```
+
+#### useLocation
+> 用于获取当前路由的信息
+
+```jsx
+import { useLocation } from 'react-router-dom';
+
+function Login() {
+  const location = useLocation();
+
+  // 控制顶部进度条
+  useEffect(() => {
+    nprogress.start();
+  }, []);
+
+  useEffect(() => {
+    nprogress.done();
+
+    return () => {
+      nprogress.start();
+    };
+  }, [location]);
+
+  return (
+    <button onClick={() => navigate('/')}>登录</button>
+  );
+}
+```
+
+
+## zustand
+https://awesomedevin.github.io/zustand-vue/docs/advanced/typescript
+
+### 1. 注册store
+```typescript
+import { create } from 'zustand';
+
+// 需要中间件时，引入
+import { devtools, persist } from 'zustand/middleware';
+
+interface ExampleState {
+  number: number;
+  add: (val: number) => void;
+}
+
+// 用法一：正常使用
+export const useExampleStore = create<ExampleState>()(
+  (set) => ({
+    number: 0,
+    add: (val) => set((state) => ({ number: state.number + val })),
+  }),
+);
+
+// 用法二：需要调试时
+export const useExampleStore = create<ExampleState>()(
+  devtools(
+    persist(
+      (set) => ({
+        number: 0,
+        add: (val) => set((state) => ({ number: state.number + val })),
+      }),
+      {
+        name: 'exampleStore', // 存储的名称
+      }
+    ),
+    {
+      enabled: process.env.NODE_ENV === 'development',
+    }
+  )
+);
+```
+
+### 2. 使用store
+```tsx
+import { useShallow } from 'zustand/react/shallow';
+
+// 用法一：全量获取（避免！任意状态变化导致组件重新渲染）
+function Example() {
+  const store = useExampleStore()
+  return <>{store.number}</>;
+}
+
+// 用法二：单个状态选择
+function Example() {
+  const number = useExampleStore(state => state.number)
+  return <>{number}</>;
+}
+
+// 用法三：多个状态选择
+function Example() {
+  const { number, add } = useExampleStore(
+    useShallow((state) => ({
+      number: state.number,
+      add: state.add,
+    }))
+  )
+  return <button onClick={add}>{number}</button>;
+}
+
+```
+
+### 3. 深层修改
+推荐用immer吧，看起来顺眼点
+```tsx
+import { produce } from 'immer';
+
+export const useExampleStore = create<ExampleState>()(
+  devtools(
+    (set, get) => ({
+      deep: {
+        nested: {
+          obj: { count: 0 },
+        }
+      },
+      increment: () => set(produce((state: ExampleState) => {
+        state.deep.nested.obj.count += 1;
+      })),
+    }),
+    {
+      name: 'exampleStore',
+    },
+  ),
+);
+```
+
+## 资源
+- [动效库react bit](https://www.reactbits.dev)
+- [react发展史](https://mp.weixin.qq.com/s/Lnsa3XnVGQYrpgaCOY_qDw)

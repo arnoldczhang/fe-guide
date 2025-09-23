@@ -10,7 +10,11 @@
  * 
  */
 
-// Function.prototype.call
+/**
+ * 原型链
+ * @param {*} context 
+ * @returns 
+ */
 Function.prototype.call2 = function(context = window) {
   const restArgs = [...arguments].slice(1);
   context.fn = this;
@@ -18,8 +22,6 @@ Function.prototype.call2 = function(context = window) {
   delete context.fn;
   return result;
 };
-
-// Function.prototype.apply
 Function.prototype.apply2 = function(context = window) {
   const restArgs = arguments[1] || [];
   context.fn = this;
@@ -27,8 +29,6 @@ Function.prototype.apply2 = function(context = window) {
   delete context.fn;
   return result;
 };
-
-// Function.prototype.bind
 Function.prototype.bind2 = function(thisObj = window) {
   if (typeof this !== 'function') {
     throw new Error('Function.prototype.bind - what is trying to be bound is not callable');
@@ -45,6 +45,31 @@ Function.prototype.bind2 = function(thisObj = window) {
   fnn.prototype = new fo;
   return fnn;
 };
+
+/**
+ * 单独方法
+ * @param {*} func 
+ * @param {*} context 
+ * @param  {...any} args 
+ * @returns 
+ */
+function call(func, context, ...args) {
+  context.fn = func;
+  const result = context.fn(...args);
+  delete context.fn;
+  return result;
+}
+function apply(func, context, args) {
+  context.fn = func;
+  const result = context.fn(...args);
+  delete context.fn;
+  return result;
+}
+function bind(func, context) {
+  return function fn(...args) {
+    return func.apply(this instanceof fn ? this : context, args);
+  }
+}
 
 // test
 // function aa(a, b, c) {return a + b + c;};

@@ -8,18 +8,14 @@
  * @returns 
  */
 const genData = (initial = 0) => {
-  const protoData = {
-    [Symbol.toPrimitive]() {
-      return initial;
-    },
-  };
-  return new Proxy(protoData, {
-    get(obj, k) {
-      if (k === Symbol.toPrimitive) return obj[k];
-      return genData(initial + +k);
+  const obj = {};
+  return new Proxy(obj, {
+    get(target, key) {
+      if (key === Symbol.toPrimitive) return () => initial;
+      return genData(initial + +key);
     },
   })
-}
+};
 
 const data = genData();
 

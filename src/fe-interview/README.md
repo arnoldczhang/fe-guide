@@ -14,7 +14,7 @@
 
 - [闭包](./src/common.md#闭包)
 - [promise细节](./src/promise.md)
-- [暂时性死区](./src/common.md#let、const以及var的区别)
+- [暂时性死区](./src/common.md#暂时性死区)
 - [事件循环](../js&browser/并发模型-event_loop.md#宏任务和微任务)
 - [线程&进程](../js&browser/现代浏览器.md#进程)
 - [重绘重排](./src/common.md#重绘和回流)
@@ -22,29 +22,33 @@
 - [VO和AO](../js&browser/并发模型-event_loop.md#执行上下文和作用域链)
 - [作用域链](./src/common.md#执行上下文和作用域链)
 - [盒模型](./src/common.md#盒模型)
-- [get和post](../js&browser/页面过程与浏览器缓存.md)
 - [mjs和cjs](../js&browser/esm.md)
 - [跨域](../http/跨域.md)
-- [性能优化](../js&browser/性能优化2020.md)
 - [2020年的题](./src/common.md)
+- [垂直居中](../css-related/README.md#垂直居中)
+- [内存泄漏](../js&browser/内存管理.md#内存泄漏)
 
 ## 2. 手写源码
 
 **无意义的重新实现**
 
+- [数字千分位](./src/数字千分位.js)
 - [new](./src/new.js)
-- [promise](./src/promise.js)
-- [bind](./src/bind.js)
+- [flatten](./src/flatten.js)
+- [call&apply&bind](./src/call&apply&bind.js)
 - [缓存时效性](./src/缓存时效性.js)
 - [防抖 - clearTimeout](./src/debounce.js)
 - [节流 - 固定频率](./src/throttle.js)
+- [深拷贝](./src/深拷贝.md#终局)
 
-**优点意思的**
+**有点意思的**
 
-- [LRU](../algorithm/leetcode/双向链表-LRU缓存机制.js)
+- [模拟promise](./src/promise.js)
 - [eventBus](./src/eventBus.js)
+- [useFetch](./src/useFetch.js)
+- [LRU](../algorithm/leetcode/双向链表-LRU缓存机制.js)
 - [模拟请求池](./src/模拟节流请求.js)
-- [深拷贝](./src/深拷贝.md)
+- [数组转树形结构](./src/数组转树形结构.js)
 - [数据结构扁平化](./src/扁平数据转树状结构.js)
 - [数据结构扁平化2](./src/扁平数据转树状结构2.js)
 - 正则解析url
@@ -53,13 +57,17 @@
 - [微信红包算法](../algorithm/leetcode/微信红包算法.js)
 - [indexedDB读写](./src/indexedDB读写.js)
 - [proxy响应式](./src/proxy响应式.js)
+- [发布订阅](./src/发布订阅.js)
 
 ## 3. 打包工具
 
+- [打包格式-umd/esm等](../webpack/打包格式.md)
 - [各打包工具区别](../webpack/各打包工具区别.md)
 - [webpack 常用配置](../webpack/常用配置.md)
 - [vite 常用配置](../vue/vite常用配置.md)
 - [webpack加速优化](../webpack/README.md#加速优化)
+- [webpack模块联邦](../webpack/README.md#webpack5)
+- [webpack生命周期](../webpack/README.md#hook)
 - [webpack和rollup的treeshake的区别](../treeshake/README.md)
 - [vite对比webpack的优势](../vue/README.md#vite)
 - [yarn和pnpm](../npm&yarn/README.md#yarn&pnpm)
@@ -69,24 +77,27 @@
 
 - [网页请求展示全过程](../js&browser/页面过程与浏览器缓存.md#过程简述)
 - [get和post](../js&browser/页面过程与浏览器缓存.md#GETvsPOST)
+- [options](../js&browser/页面过程与浏览器缓存.md#options)
 - [http](../http/README.md#总览)
 
 ## 5. 前端框架
 
+- [MV*区别](./src/common.md#mvX)
 - [react](../react/react19.md)
 - [vue2](../vue/vue2.md)
-- [vue3的treeshake](../vue/vue3.md#treeshake)
+- [vue3 treeshake](../vue/vue3.md#treeshake)
 - [vue-router](../vue/vue3.md#router)
-- [vue3 computed和watch](../vue/vue3.md#computed和watch)
+- [vue3 computed和watch](../vue/vue3.md#computed和watch和watchEffect)
 - [vue3 prop和data](../vue/vue3.md#prop和data)
 - [vue3 diff算法](../vue/vue3.md#diff算法)
-- [vue3状态管理](../vue/状态管理.md)
+- [vue3 状态管理](../vue/状态管理.md)
 
 ## 6. 前端工程化
 
 - [性能优化](../career/性能优化.md)
 - [性能指标](../career/性能优化.md#性能指标)
 - [图片优化方案](../js&browser/图片优化.md#优化措施)
+- [B端和C端差异](../career/前端架构&技术方案.md#各端差异)
 
 ## 7. 团队管理
 
@@ -105,9 +116,15 @@
 - [最快下载100万条数据](../fe-interview/src/最快下载100万条数据.md)
 - [灰度方案](../fe-interview/src/灰度方案.md)
 - [前后端统一监控方案](../fe-interview/src/前后端统一监控方案.md)
+- [监控sdk设计](../fe-interview/src/前后端统一监控方案.md#sdk设计)
 - [白屏+卡顿检测方案](../js&browser/性能优化2019.md#白屏检测方案)
 - [微前端方案](../microservice/微前端方案.md)
-- [复杂组件方案](../fe-interview/src/复杂组件方案.md)
+- [通用组件封装方案](../career/前端代码质量.md#组件封装)
+- [复杂组件方案 - 表格](../fe-interview/src/复杂组件方案.md)
+- [复杂组件方案 - 表单](../fe-interview/src/复杂表单解决方案.md)
+- [sdk搭建方案](./src/sdk搭建方案.md)
+- [前端物料库搭建方案](https://mp.weixin.qq.com/s/MUz3JMhmV1W2hC-YaGEiKQ)
+- [i18n方案](./src/i18n方案.md)
 
 ## 10. 业务
 

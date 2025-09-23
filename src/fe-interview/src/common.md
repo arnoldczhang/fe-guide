@@ -24,7 +24,7 @@
 * [`arguments`](#arguments)
 * [`isNaN和Number.isNaN`](#isNaN和Number.isNaN)
 * [`[]==![]`](#[]==![])
-* [`let、const以及var的区别`](#let、const以及var的区别)
+* [`暂时性死区`](#暂时性死区)
 * [`this`](#this)
 * [`函数声明&变量声明`](#函数声明&变量声明)
 * [`统计数组成员重复个数`](#统计数组成员重复个数)
@@ -119,7 +119,7 @@
 * [`vue生命周期`](#vue生命周期)
 * [`异步请求`](#异步请求)
 * [`reduxVSmobx`](#reduxVSmobx)
-* [`mv*`](#mv*)
+* [`mvX`](#mvX)
 * [`react优化指南`](#react优化指南)
 * [`e2e测试`](#e2e测试)
 
@@ -270,7 +270,7 @@ Number([]) === 0
 
 ---
 
-### let、const以及var的区别
+### 暂时性死区
 
 | 声明方式 | 变量提升 | 暂时死区 | 重复声明 | 块作用有效 |
 | :-: | :-: | :-: | :-: | :-: |
@@ -3041,28 +3041,39 @@ String("mouseenter,mouseleave").replace(/\w+/g, function (type) {
 
 ---
 
-### mv*
+### mvX
 
 [参考](https://juejin.im/post/5cd8a7c1f265da037a3d0992#heading-7)
 
-#### mvvm
-
-vue 1/2
-
 #### mvc
+> model + view + controller
+>
+> view依赖model，两者直接交互，协作逻辑放在controller
+> 
 
 - react + redux
 - ng2
 
 #### mvp
+> model + view + presenter
+>
+> view不处理同步逻辑，仅对presenter暴露接口，model只和presenter交互，view可解耦
+>
 
 ![mvp](./mvp.PNG)
 
 - mvc 的改良
-- view 不依赖 model，纯组件化处理
 - presenter 比较厚
 - model 变动后，通过观察者模式通知 presenter
-- 如果有 view 更新，也需要 presenter 调用 view 更新接口
+
+#### mvvm
+> model + view + viewModel
+>
+> mvp模式对于view和model的关联关系需要手动设置，而mvvm实现了自动的双向绑定
+
+- vue 1/2
+- mvp的改良
+- 额外的性能损耗
 
 ---
 

@@ -3,6 +3,7 @@
 ## 参考
 
 - [基于echarts的可视化大屏](https://github.com/food-billboard/create-chart)
+- [在线ai帮写echarts配置](https://51aitools.com/echarts-chart.html)
 
 ## 用法
 
