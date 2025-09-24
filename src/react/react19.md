@@ -1,5 +1,8 @@
 # react19
 
+- [题库](https://www.greatfrontend.com/interviews/study/gfe75/questions/user-interface/job-board)
+- [演练场](https://bi.cool/project/KMmi5Hs)
+
 ## hook
 
 ### memo
