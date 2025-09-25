@@ -125,6 +125,7 @@
 - [sdk搭建方案](./src/sdk搭建方案.md)
 - [前端物料库搭建方案](https://mp.weixin.qq.com/s/MUz3JMhmV1W2hC-YaGEiKQ)
 - [i18n方案](./src/i18n方案.md)
+- [弱网可用性](./src/弱网可用性.md)
 
 ## 10. 业务
 
