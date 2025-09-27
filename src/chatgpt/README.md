@@ -10,6 +10,7 @@
 - [gpt 合集-1](https://start.chatgot.io/)
 - [现有的一些 AIGC](https://mp.weixin.qq.com/s?__biz=MzkxNDIzNTg4MA==&mid=2247488559&idx=1&sn=294b604f54aac0e8f925cee2a638bdec&scene=21#wechat_redirect)
 - [字节跳动-豆包](https://www.doubao.com/chat)
+- [gemini](https://aistudio.google.com/)
 - [prompt 指南](https://mp.weixin.qq.com/s/jOU2qT5o88tuZC1p6vLkJw)
 - [前端训练 gpt](https://mp.weixin.qq.com/s/0lSPqDmECyKcemXkWrgUuA)
 - [聊天生成网页](https://bolt.new/)
