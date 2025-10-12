@@ -29,6 +29,7 @@
 - [代码仓库转wiki](https://deepwiki.com/)
 - [写agent的12个影响因素](https://github.com/humanlayer/12-factor-agents)
 - [在线生成web应用 lovable](https://github.com/firecrawl/open-lovable?tab=readme-ov-file)
+- [ollama搜索API](https://ollama.com/blog/web-search)
 
 ## Prompt
 
