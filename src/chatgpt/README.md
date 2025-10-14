@@ -661,6 +661,7 @@ server.listen(3000, () => {
 ## cursor
 
 [cursor 使用指南和常用 prompt](https://mp.weixin.qq.com/s/UM3nBcX6JpYtnchSCdrxOA)
+[与Cursor结对编程](https://mp.weixin.qq.com/s/88iwKK9sryCket4F2MjjcQ)
 
 ### rules
 示例
