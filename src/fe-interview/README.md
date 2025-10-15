@@ -24,8 +24,9 @@
 - [跨域&网络安全](../http/跨域.md#同源策略)
 - [前端工程化](../career/前端工程化.md)
 - [babel](../babel/README.md#总结)
-- postcss
-- chrome插件
+- [postcss](../postcss/README.md#示例)
+- [chrome插件](../chrome/插件开发.md)
+- [echarts](../echart/README.md#总结)
 - [重绘重排](./src/common.md#重绘和回流)
 - [webpack 常用配置](../webpack/常用配置.md)
 - [垂直居中](../css-related/README.md#垂直居中)

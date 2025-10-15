@@ -152,7 +152,7 @@ export function detectImport(
   callback: Func,
 ) {
   return {
-    postcssPlugin: 'postcss-plugin-detect-deep',
+    postcssPlugin: 'postcss-plugin-detect-import',
     OnceExit(css: Root) {
       css.walkAtRules((atRule: AtRule) => {
         const { name, params } = atRule;

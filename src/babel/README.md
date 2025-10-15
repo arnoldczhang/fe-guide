@@ -831,14 +831,15 @@ beta版已出
 ---
 
 ## 总结
-> 转换流程: [code] -> transform -> [ast] -> traverse -> [new-ast] -> generate -> [new-code]
->
-> plugin优先preset执行，plugin顺序，preset倒序
->
+
+> 1. 转换流程: [code] -> transform -> [ast] -> traverse -> [new-ast] -> generate -> [new-code]
+> 
+> 2. plugin优先preset执行，plugin顺序，preset倒序
 
 ### plugin
+
 > 顺序解析
->
+> 
 > 仅用于处理特定语法
 
 ```js
@@ -851,8 +852,9 @@ beta版已出
 ```
 
 ### preset
+
 > 倒序解析
->
+> 
 > 类似plugin的集合
 
 ```js
@@ -869,14 +871,15 @@ beta版已出
 
 - 为了向后兼容
 - babel6.x时代，包括之前版本，用户习惯将最不稳定的preset写在最后，比如：
-```json
-{
+  
+  ```json
+  {
   "presets": [
     "es2015",
     "stage-0"
   ]
-}
-```
+  }
+  ```
 - 所以需要从新到旧，依次转换语法
 
 ### traverse
@@ -948,7 +951,6 @@ path = {
   },
 };
 ```
-
 
 **3. 操作方法**
 
