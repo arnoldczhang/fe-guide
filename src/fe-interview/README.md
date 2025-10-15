@@ -23,8 +23,9 @@
 - [缓存机制](../js&browser/页面过程与浏览器缓存.md#缓存分类)
 - [跨域&网络安全](../http/跨域.md#同源策略)
 - [前端工程化](../career/前端工程化.md)
-- babel
+- [babel](../babel/README.md#总结)
 - postcss
+- chrome插件
 - [重绘重排](./src/common.md#重绘和回流)
 - [webpack 常用配置](../webpack/常用配置.md)
 - [垂直居中](../css-related/README.md#垂直居中)

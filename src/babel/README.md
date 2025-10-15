@@ -1,6 +1,7 @@
 # babel
 
 ## 参考
+
 - [babel-plugins-repository](https://github.com/babel/minify.git)
 - [babel-handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/plugin-handbook.md)
 - [ast-tree字段参考](https://github.com/babel/babylon/blob/master/ast/spec.md)
@@ -9,6 +10,7 @@
 - [语义化ast替换-gogocode](https://github.com/thx/gogocode)
 
 ## 目录
+
 <details>
 <summary>展开更多</summary>
 
@@ -17,14 +19,17 @@
 * [`acorn相关`](#acorn相关)
 * [`babel6相关`](#babel6相关)
 * [`babel7相关`](#babel7相关)
+* [`babel8相关`](#babel8相关)
 * [`babel-plugin学习`](#babel-plugin学习)
 * [`babel-macro`](#babel-macro)
 * [`babel-register`](#babel-register)
 * [`babel在线编译`](#babel在线编译)
+* [`总结`](#总结)
 
 </details>
 
 ## 起源
+
 * `acorn`只提供基本的解析ast的能力，遍历还需要配套的`acorn-travesal`
 * `babylon`fork了 acorn 项目，做了改造
 * `babel`使用`babylon`作为解析 ast 的工具
@@ -34,6 +39,7 @@
 ---
 
 ## 流程
+
 ![流程](./babel流程.png)
 
 babel.transform(code, options) -> babel.traverse(ast, hooks) -> babel.generate(ast)
@@ -49,6 +55,7 @@ babel.transform(code, options) -> babel.traverse(ast, hooks) -> babel.generate(a
 acorn.parse(code) -> ast-traverse(ast) -> alter(code, replacers)
 
 ### acorn VS babylon VS babel
+
 [对比](./acorn.js)
 
 ---
@@ -58,189 +65,203 @@ acorn.parse(code) -> ast-traverse(ast) -> alter(code, replacers)
 ### babel.transform(code, opts)
 
 1. babel-core/lib/api/node.js
-```js
-exports.transform = pipeline.transform.bind(pipeline);
-```
+   
+   ```js
+   exports.transform = pipeline.transform.bind(pipeline);
+   ```
+
 2. babel-core/lib/transformation/pipeline.js
-```js
-Pipeline.prototype.transform = function transform(code, opts) {
-  var file = new _file2.default(opts, this);
-  return file.wrap(code, function () {
+   
+   ```js
+   Pipeline.prototype.transform = function transform(code, opts) {
+   var file = new _file2.default(opts, this);
+   return file.wrap(code, function () {
     file.addCode(code);
     file.parseCode(code);
     return file.transform();
-  });
-};
-```
+   });
+   };
+   ```
+
 3. babel-core/lib/transformation/file/index.js
-```js
-function File(opts) {
-  // 额外参数处理，plugins处理见[4]
-  this.initOptions(opts);
-  // ...
-  this.buildPluginsForOptions(opts);
-  // ...
-  opts.presets.forEach((preset) => {
-    this.buildPluginsForOptions(preset);
-  });
-};
-
-File.prototype.buildPluginsForOptions = function buildPluginsForOptions(opts) {
-  // ...
-  var currentPluginPasses = [];
-  opts.plugins.forEach((plugin) => {
+   
+   ```js
+   function File(opts) {
+    // 额外参数处理，plugins处理见[4]
+    this.initOptions(opts);
     // ...
-    // 这里相当于把所有plugins的处理（比如pre、post、visitor）归到临时队列
-    // presets里的也是plugins，同样处理归到临时队列
-    currentPluginPasses.push(pluginMainResolver.bind(this, pluginOptions));
-  });
-  // 临时队列push到plugins队列
-  this.pluginPasses.push(currentPluginPasses);
-};
+    this.buildPluginsForOptions(opts);
+    // ...
+    opts.presets.forEach((preset) => {
+      this.buildPluginsForOptions(preset);
+    });
+   };
+   
+   File.prototype.buildPluginsForOptions = function buildPluginsForOptions(opts) {
+    // ...
+    var currentPluginPasses = [];
+    opts.plugins.forEach((plugin) => {
+      // ...
+      // 这里相当于把所有plugins的处理（比如pre、post、visitor）归到临时队列
+      // presets里的也是plugins，同样处理归到临时队列
+      currentPluginPasses.push(pluginMainResolver.bind(this, pluginOptions));
+    });
+    // 临时队列push到plugins队列
+    this.pluginPasses.push(currentPluginPasses);
+   };
+   
+   File.prototype.addCode = function addCode(code) {
+    code = (code || "") + "";
+    code = this.parseInputSourceMap(code);
+    this.code = code;
+   };
+   
+   File.prototype.parseCode = function parseCode() {
+    // this.parseShebang会把首行的#!xxxx提取出来，用于系统bash执行
+    // 比如#!/bin/sh
+    this.parseShebang();
+    var ast = this.parse(this.code);
+    this.addAst(ast);
+   };
+   
+   File.prototype.parse = function parse(code) {
+    // ...
+    var ast = require("babylon").parse(code, this.opts.parserOpts || this.parserOpts);
+    return ast;
+   };
+   
+   File.prototype.transform = function transform() {
+    for (var i = 0; i < this.pluginPasses.length; i++) {
+      var pluginPasses = this.pluginPasses[i];
+      // 提取所有plugins里的pre，依次触发
+      // pre里的this指向当前plugin，第一个入参file指向当前transform的文件
+      this.call("pre", pluginPasses);
+      this.log.debug("Start transform traverse");
+   
+      var visitor = _babelTraverse2.default.visitors.merge(this.pluginVisitors[i], pluginPasses, this.opts.wrapPluginVisitorMethod);
+      (0, _babelTraverse2.default)(this.ast, visitor, this.scope);
+   
+      this.log.debug("End transform traverse");
+      // 提取所有plugins里的post，依次触发
+      // post里的this指向当前plugin，第一个入参file指向当前transform的文件
+      this.call("post", pluginPasses);
+   
+    }
+    return this.generate();
+   };
+   ```
 
-File.prototype.addCode = function addCode(code) {
-  code = (code || "") + "";
-  code = this.parseInputSourceMap(code);
-  this.code = code;
-};
-
-File.prototype.parseCode = function parseCode() {
-  // this.parseShebang会把首行的#!xxxx提取出来，用于系统bash执行
-  // 比如#!/bin/sh
-  this.parseShebang();
-  var ast = this.parse(this.code);
-  this.addAst(ast);
-};
-
-File.prototype.parse = function parse(code) {
-  // ...
-  var ast = require("babylon").parse(code, this.opts.parserOpts || this.parserOpts);
-  return ast;
-};
-
-File.prototype.transform = function transform() {
-  for (var i = 0; i < this.pluginPasses.length; i++) {
-    var pluginPasses = this.pluginPasses[i];
-    // 提取所有plugins里的pre，依次触发
-    // pre里的this指向当前plugin，第一个入参file指向当前transform的文件
-    this.call("pre", pluginPasses);
-    this.log.debug("Start transform traverse");
-
-    var visitor = _babelTraverse2.default.visitors.merge(this.pluginVisitors[i], pluginPasses, this.opts.wrapPluginVisitorMethod);
-    (0, _babelTraverse2.default)(this.ast, visitor, this.scope);
-
-    this.log.debug("End transform traverse");
-    // 提取所有plugins里的post，依次触发
-    // post里的this指向当前plugin，第一个入参file指向当前transform的文件
-    this.call("post", pluginPasses);
-  }
-
-  return this.generate();
-};
-```
 4. babel-core/lib/transformation/file/options/option-manager.js
-```js
-OptionManager.normalisePlugins = function normalisePlugins(loc, dirname, plugins) {
-  return plugins.map(function (val, i) {
-    var plugin = void 0,
-        options = void 0;
-
-    if (!val) {
-      throw new TypeError("Falsy value found in plugins");
-    }
-
-    if (Array.isArray(val)) {
-      plugin = val[0];
-      options = val[1];
-    } else {
-      plugin = val;
-    }
-
-    var alias = typeof plugin === "string" ? plugin : loc + "$" + i;
+   
+   ```js
+   OptionManager.normalisePlugins = function normalisePlugins(loc, dirname, plugins) {
+    return plugins.map(function (val, i) {
+      var plugin = void 0,
+          options = void 0;
+   
+      if (!val) {
+        throw new TypeError("Falsy value found in plugins");
+      }
+   
+      if (Array.isArray(val)) {
+        plugin = val[0];
+        options = val[1];
+      } else {
+        plugin = val;
+      }
+   
+      var alias = typeof plugin === "string" ? plugin : loc + "$" + i;
+      // ...
+   
+      plugin = OptionManager.normalisePlugin(plugin, loc, i, alias);
+   
+      return [plugin, options];
+    });
+   };
+   
+   OptionManager.normalisePlugin = function normalisePlugin(plugin, loc, i, alias) {
     // ...
-
-    plugin = OptionManager.normalisePlugin(plugin, loc, i, alias);
-
-    return [plugin, options];
-  });
-};
-
-OptionManager.normalisePlugin = function normalisePlugin(plugin, loc, i, alias) {
-  // ...
-  plugin = OptionManager.memoisePluginContainer(plugin, loc, i, alias);
-  // ...
-};
-
-OptionManager.memoisePluginContainer = function memoisePluginContainer(fn, loc, i, alias) {
-  // ...
-  if (typeof fn === "function") {
-    // 这里的context拿的是babel-core/lib/api/node.js，所有返回值
-    // context.type属性拿的是babel-types返回值
-    obj = fn(context);
-  }
-  // ...
-};
-```
+    plugin = OptionManager.memoisePluginContainer(plugin, loc, i, alias);
+    // ...
+   };
+   
+   OptionManager.memoisePluginContainer = function memoisePluginContainer(fn, loc, i, alias) {
+    // ...
+    if (typeof fn === "function") {
+      // 这里的context拿的是babel-core/lib/api/node.js，所有返回值
+      // context.type属性拿的是babel-types返回值
+      obj = fn(context);
+    }
+    // ...
+   };
+   ```
 
 ### babelTraverse(parent, opts, scope, state, parentPath)
-1. babel-traverse/lib/index.js
-```js
-function traverse(parent, opts, scope, state, parentPath) {
-  if (!parent) return;
-  if (!opts) opts = {};
 
-  if (!opts.noScope && !scope) {
+1. babel-traverse/lib/index.js
+   
+   ```js
+   function traverse(parent, opts, scope, state, parentPath) {
+   if (!parent) return;
+   if (!opts) opts = {};
+   
+   if (!opts.noScope && !scope) {
     if (parent.type !== "Program" && parent.type !== "File") {
       throw new Error(messages.get("traverseNeedsParent", parent.type));
     }
-  }
-
-  visitors.explode(opts);
-
-  traverse.node(parent, opts, scope, state, parentPath);
-}
-
-traverse.node = function (node, opts, scope, state, parentPath, skipKeys) {
-  // ...
-  const keys = t.VISITOR_KEYS[node.type];
-  const context = new context2.default(scope, opts, state, parentPath);
-  // ...
-  keys.forEach((node, key) => {
+   }
+   
+   visitors.explode(opts);
+   
+   traverse.node(parent, opts, scope, state, parentPath);
+   }
+   
+   traverse.node = function (node, opts, scope, state, parentPath, skipKeys) {
     // ...
-    // context见3
-    if (context.visit(node, key)) return;
-  });
-};
-```
+    const keys = t.VISITOR_KEYS[node.type];
+    const context = new context2.default(scope, opts, state, parentPath);
+    // ...
+    keys.forEach((node, key) => {
+      // ...
+      // context见3
+      if (context.visit(node, key)) return;
+    });
+   };
+   ```
+
 2. babel-traverse/lib/visitors.js
-```js
-function explode(visitor) {
-  // 1. hook名做split("|")，分别赋值原fns
-  // 例：'Identifier|BinaryExpression': (path) { ... }
-  // 转换成
-  // Identifier(path) { ... }
-  // BinaryExpression(path) { ... }
-  // 2. 校验visitor类型、key是否该ignore，或是否在babel-types.TYPES里
-  // 3. hook如果是function，转成 hookName: { enter: hookFn }
-  // 4. 如果hook有enter或exit，但不是数组，转成 visitor[hookName].enter = [visitor[hookName].enter]
-  // 5. 如果hookName属于virtualTypes（babel-traverse/lib/path/lib/virtual-types.js），将
-  // virtualTypes[hookName]加入virtualTypes[hookName].types的hook处理队列中
-  // 6. deprecratedKey检查
-};
-```
+   
+   ```js
+   function explode(visitor) {
+   // 1. hook名做split("|")，分别赋值原fns
+   // 例：'Identifier|BinaryExpression': (path) { ... }
+   // 转换成
+   // Identifier(path) { ... }
+   // BinaryExpression(path) { ... }
+   // 2. 校验visitor类型、key是否该ignore，或是否在babel-types.TYPES里
+   // 3. hook如果是function，转成 hookName: { enter: hookFn }
+   // 4. 如果hook有enter或exit，但不是数组，转成 visitor[hookName].enter = [visitor[hookName].enter]
+   // 5. 如果hookName属于virtualTypes（babel-traverse/lib/path/lib/virtual-types.js），将
+   // virtualTypes[hookName]加入virtualTypes[hookName].types的hook处理队列中
+   // 6. deprecratedKey检查
+   };
+   ```
+
 3. babel-traverse/lib/path/context.js
-// hook的入参，比如path，state都会定义在这里
-```js
-function visit() {
-  // ...各种黑名单、标记检测
-  if (this.call("enter") || this.shouldSkip) {
+   // hook的入参，比如path，state都会定义在这里
+   
+   ```js
+   function visit() {
+   // ...各种黑名单、标记检测
+   if (this.call("enter") || this.shouldSkip) {
     return this.shouldStop;
-  }
-  // ...
-  _index2.default.node(this.node, this.opts, this.scope, this.state, this, this.skipKeys);
-  this.call("exit");
-  return this.shouldStop;
-}
+   }
+   // ...
+   _index2.default.node(this.node, this.opts, this.scope, this.state, this, this.skipKeys);
+   this.call("exit");
+   return this.shouldStop;
+   }
+   ```
 
 function call(key) {
   // ...找到hook
@@ -250,6 +271,7 @@ function call(key) {
   // ...hook的参数path就是context实例，参数state和this都指向实例的state
   return fn.call(this.state, this, this.state);
 }
+
 ```
 4. **babel-types/lib/definitions/core.js** 和 **babel-types/lib/definitions/flow.js**
 用到的hook都可以在这两个文件里查
@@ -287,9 +309,11 @@ babelGenerate(ast, { decoratorsBeforeExport: true });
 ```
 
 ### options
+
 [官方文档](https://babeljs.io/docs/en/options)
 
 #### 常用key
+
 * **ast**：是否生成ast，默认false，返回null
 * **code**：是否生成code，默认true
 * **envName**：环境变量，默认process.env.BABEL_ENV || process.env.NODE_ENV || "development"
@@ -306,14 +330,17 @@ babelGenerate(ast, { decoratorsBeforeExport: true });
 ---
 
 ## babel-plugin学习
+
 这里记录下自己学习babel-plugin时碰到的各种情况
 
 ### 什么是plugin
+
 - babel-preset-xxx
 - babel-plugin-xxx
 - babel-macro
 
 ### 解析顺序
+
 babel-preset：倒序解析
 babel-plugin：顺序解析
 
@@ -342,6 +369,7 @@ const template = require('@babel/template').default;
 ```
 
 ### hooks入参
+
 1. path
 2. types
 3. options
@@ -349,6 +377,7 @@ const template = require('@babel/template').default;
 ---
 
 ### path
+
 path是所有plugin-hook的第一个入参
 
 #### 结构
@@ -356,10 +385,13 @@ path是所有plugin-hook的第一个入参
 **path**
 
 - node
+  
   * 表示当前ast节点的主体信息
+  
   * 结构：
-  ```js
-  interface BaseNode {
+    
+    ```js
+    interface BaseNode {
     leadingComments: ReadonlyArray<Comment> | null;
     innerComments: ReadonlyArray<Comment> | null;
     trailingComments: ReadonlyArray<Comment> | null;
@@ -367,26 +399,34 @@ path是所有plugin-hook的第一个入参
     end: number | null;
     loc: SourceLocation | null;
     type: Node["type"];
-  }
-  ```
+    }
+    ```
+  
   * 以上是基础字段，不同hook的path.node会有自己的扩展，
-  不过都继承于此
+    不过都继承于此
+
 - scope
+  
   * 当前词法作用域
+  
   * 结构：
-  ```js
-  {
+    
+    ```js
+    {
     path: path,
     block: path.node,
     parentBlock: path.parent,
     parent: parentScope,
     bindings: [...],  // 列出当前作用域绑定的变量，用Object.keys看起来较方便
-  }
-  ```
+    }
+    ```
+
 - type
+  
   * 词法类型
 
 #### path常用方法
+
 参考 **@babel/core/node_modules/@babel/traverse/lib/path/**.js**
 
 或参考
@@ -394,6 +434,7 @@ path是所有plugin-hook的第一个入参
 ![path属性&方法](./path属性&方法.png)
 
 #### 部分用法
+
 - path.get(key)
 - p.get('loc.start.line') // 获取代码所在开始行
 - [p.get('start').node, p.get('end').node] // 获取代码所在index范围
@@ -408,6 +449,7 @@ path是所有plugin-hook的第一个入参
 ### 常用词法类型hook
 
 #### CallExpression
+
 **作用**
 
 捕获(对象)方法的调用
@@ -417,6 +459,7 @@ path是所有plugin-hook的第一个入参
 [CallExpression](https://babeljs.io/docs/en/next/babel-types.html#callexpression)
 
 **示例**
+
 ```js
 aa();
 aa.bb();
@@ -439,6 +482,7 @@ aa.bb();
     ```
 
 #### VariableDeclarator
+
 **作用**
 
 捕获赋值操作
@@ -468,6 +512,7 @@ var test = require('./test');
     ```
 
 #### ImportDeclaration
+
 **作用**
 
 捕获`import sth from url`
@@ -498,6 +543,7 @@ import { isPlainObject, isAa } from './test';
     ```
 
 #### MemberExpression
+
 **作用**
 
 捕获短语取值和调用的方法名
@@ -524,13 +570,14 @@ test.isPlainObject({})
   - 比如上面的isPlainObject
 
 #### ExportNamedDeclaration
+
 **作用**
 
 捕获`export const xxx = xxx`
 
 **参考**
 
-[exportnameddeclaration](https://babeljs.io/docs/en/next/babel-types.html#exportnameddeclaration)
+[export named declaration](https://babeljs.io/docs/en/next/babel-types.html#exportnameddeclaration)
 
 **示例**
 
@@ -562,9 +609,10 @@ export {
       const key = specifier.local.name;
       const alias = specifier.exported.name;
     });
-    ```  
+    ```
 
 #### FunctionDeclaration
+
 **作用**
 
 捕获函数声明
@@ -582,12 +630,14 @@ function test() {
 ```
 
 **常用字段**
+
 * type
 * id
   - 函数名
   - path.get('id').node.name
 
 #### ImportSpecifier/ImportDefaultSpecifier/importNamespaceSpecifier
+
 **作用**
 
 捕获ImportDeclaration里的变量
@@ -641,6 +691,7 @@ import * as base from './base';
     + 比如例子中的bb,cc（aa没有，因为是ImportDefaultSpecifier，默认输出）
 
 #### ForInStatement
+
 **作用**
 **参考**
 **示例**
@@ -652,12 +703,15 @@ import * as base from './base';
 ---
 
 ### types
+
 即 **babel-types**，提供工具很多方法
 
 ---
 
 ### options
+
 注入plugins是添加的参数，比如
+
 ```js
 const { transformSync } = require('@babel/core');
 transformSync(input, {
@@ -678,6 +732,7 @@ transformSync(input, {
 ---
 
 ## babel-macro
+
 编译阶段预处理js逻辑（目前babel6支持使用）
 
 - [官方git](https://github.com/kentcdodds/babel-plugin-macros)
@@ -689,13 +744,17 @@ transformSync(input, {
 仅针对静态编译的内容
 
 ### babel6使用方法
+
 1. 安装macros
-```js
-npm install --save-dev babel-plugin-macros
+   
+   ```js
+   npm install --save-dev babel-plugin-macros
+   ```
 
 // 如果需要其他.macros，需要手动安装
 // .macros可以参考[awesome-babel-macros](https://github.com/jgierer12/awesome-babel-macros)
 npm install --save-dev ms.macro
+
 ```
 2. 配置使用macros
 ```js
@@ -707,11 +766,15 @@ const { ast } = require('babel-core').transform(input, {
   ],
 });
 ```
+
 3. 代码使用
-```js
-import ms from 'ms.macro';
+   
+   ```js
+   import ms from 'ms.macro';
+   ```
 
 const ONE_DAY = ms('1 day');
+
 ```
 4. 编译后输出的内容
 ```js
@@ -719,7 +782,9 @@ var ONE_DAY = 86400000;
 ```
 
 ### babel7使用方法
+
 - options需要新增参数`filename: 'xxx'`
+  
   ```js
   const { transformSync } = require('@babel/core');
   const { ast } = transformSync(input, {
@@ -743,6 +808,7 @@ var ONE_DAY = 86400000;
 [官网](https://babeljs.io/docs/en/next/babel-register.html)
 
 ### 注意
+
 - 待转码的内容单独抽离成文件，在babel-register后面引入
 - presets配置同babel配置
 - 请用于开发环境
@@ -751,8 +817,163 @@ var ONE_DAY = 86400000;
 ---
 
 ## babel在线编译
+
 > 具体效果[参考](./sandbox.html)
 
 主要通过`@babel/plugin-transform-modules-commonjs`将 `ESM`语法转为`CommonJS`语法。
+
+---
+
+## babel8相关
+
+beta版已出
+
+---
+
+## 总结
+> 转换流程: [code] -> transform -> [ast] -> traverse -> [new-ast] -> generate -> [new-code]
+>
+> plugin优先preset执行，plugin顺序，preset倒序
+>
+
+### plugin
+> 顺序解析
+>
+> 仅用于处理特定语法
+
+```js
+{
+  plugins: [
+    'transform-decorators-legacy',
+    'transform-class-properties',
+  ],
+}
+```
+
+### preset
+> 倒序解析
+>
+> 类似plugin的集合
+
+```js
+{
+  presets: [
+    '@babel/preset-env',
+    '@babel/preset-typescript',
+    '@babel/preset-react',
+  ],
+}
+```
+
+**为什么倒序？**
+
+- 为了向后兼容
+- babel6.x时代，包括之前版本，用户习惯将最不稳定的preset写在最后，比如：
+```json
+{
+  "presets": [
+    "es2015",
+    "stage-0"
+  ]
+}
+```
+- 所以需要从新到旧，依次转换语法
+
+### traverse
+
+```js
+import { traverse } from '@babel/core';
+traverse(ast, visitors);
+```
+
+#### visitors
+
+|                          | 作用                        | 举例                                                        |
+| ------------------------ | ------------------------- | --------------------------------------------------------- |
+| Program                  | 开始运行和退出时的钩子               | enter/exit                                                |
+| ImportDeclaration        | 识别import                  | - import test from 'xxx'<br/>- import { test } from 'xxx' |
+| ExportDefaultDeclaration | 识别export default          |                                                           |
+| ExportNamedDeclaration   | 识别export const name = xxx |                                                           |
+| CallExpression           | 识别方法调用                    |                                                           |
+| VariableDeclarator       | 识别赋值                      |                                                           |
+
+#### nodePath
+
+```js
+import * as t from '@babel/type';
+
+traverse(ast, {
+    CallExpression(p: NodePath<t.CallExpression>) {
+        /* ... */
+    }
+});
+```
+
+**1. 节点属性**
+
+```js
+path = {
+  /** 当前ast节点类型 */
+  type: {},
+  /** 当前ast节点 */
+  node: {
+    callee: {},
+    source: {},
+    specifiers: {},
+    local: {},
+    declaration: {},
+    id: {},
+  },
+  /** 父级ast节点 */
+  parent: {},
+  /** 父级path对象 */
+  parentPath: {},
+  /* 元数据，包括原始代码，文件路径 */
+  hub: {},
+  /** 当前节点在父节点属性中的键名 */
+  key: {},
+};
+```
+
+**2. 作用域属性**
+
+```js
+path = {
+  /** 当前节点所处最近的作用域对象 */
+  scope: {
+    /** 当前作用域内所有声明的变量信息 */
+    bindings: {},
+    /** 获取特定变量绑定的对象 */
+    getbinding(key) {},
+  },
+};
+```
+
+
+**3. 操作方法**
+
+```js
+path = {
+  /**获取node里的特定值，支持链式xx.xx.xx */
+  get(key) {},
+  /** 移除当前ast */
+  remove() {},
+  replaceWith(newNode) {},
+  /** 多个新节点替换当前节点 */
+  replaceWithMultiple(newNodes) {},
+  insertBefore(nodes) {},
+  insertAfter(nodes) {},
+  /** 停止当前节点子节点的深度遍历（如果已经完全替换了，没必要遍历原node，提效） */
+  stop() {},
+};
+```
+
+### 常用包
+
+- @babel/core
+
+- @babel/type
+
+- @babel/traverse
 
 ---
