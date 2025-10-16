@@ -465,21 +465,21 @@ if (isAdmin(user)) {
 
 ```ts
 // 根据第二个入参，决定返回值的类型
-function filterPersons(
+export function filterPersons(
   persons: Person[],
   personType: string,
   criteria: Partial<Person>,
 ) {}
 
 // 分别定义admin
-function filterPersons(
+export function filterPersons(
   persons: Person[],
   personType: "admin",
   criteria: Partial<Person>,
 ): Admin[]
 
 // 分别定义user
-function filterPersons(
+export function filterPersons(
   persons: Person[],
   personType: "user",
   criteria: Partial<Person>,
