@@ -1,3 +1,16 @@
+/**
+ * useFetch
+ * 
+ * 模拟 React Hook，实现一个 useFetch 方法，用于发送网络请求，支持以下功能：
+ * - 支持 GET 和 POST 请求
+ * - 支持请求参数的传递
+ * - 支持请求结果的缓存，避免重复请求
+ * - error/loading/result
+ * 
+ * @param {*} url 
+ * @param {*} params 
+ * @returns 
+ */
 const useFetch = (url, params = {}) => {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -35,7 +48,7 @@ const useFetch = (url, params = {}) => {
 };
 
 // test
-const { result, error, retry } = useFetch('/api/login', {
+const { result, error, loading, retry } = useFetch('/api/login', {
   method: 'POST',
   body: JSON.stringify({
     username: 'admin',

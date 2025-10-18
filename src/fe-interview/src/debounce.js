@@ -1,6 +1,9 @@
 
 /**
  * 防抖
+ * 
+ * - 取最近触发
+ * 
  * @param  {Function} fn        [description]
  * @param  {Number}   wait      [description]
  * @param  {Boolean}  immediate [description]
@@ -22,9 +25,13 @@ function debounce(fn, wait = 300, immediate = false) {
 };
 
 // test
-// function realFunc(){
-//     console.log("Success");
-// };
+const fn = (a) => {
+  console.log(a);
+};
+const dFn = debounce(fn, 1000);
 
-// const realFunc2 = debounce(realFunc);
-// realFunc2();
+dFn(1);
+setTimeout(() => {
+  // only log 2
+  dFn(2);
+}, 800);

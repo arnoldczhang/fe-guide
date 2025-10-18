@@ -17,7 +17,7 @@ const genData = (initial = 0) => {
   })
 };
 
+// test
 const data = genData();
-
 console.log(data[1] + 5); // 6
 console.log(data[1][2][3] + 4); // 10
