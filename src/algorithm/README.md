@@ -46,11 +46,7 @@
 
 ### 题集
 
-- [数组的度](./leetcode/哈希-数组的度.js)
-- [推文计数](./leetcode/哈希-推文计数.js)
 - [计数质数](./leetcode/技巧-计数质数.js)
-- [TODO 剧情触发时间](./leetcode/二分-剧情触发时间.js)
-- [最小时间差](./leetcode/普通数组-最小时间差.js)
 - [LRU缓存](./leetcode/链表-LRU缓存.js)
 
 - [最大子数组和](./leetcode/普通数组-最大子数组和.js)
