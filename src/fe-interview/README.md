@@ -18,7 +18,6 @@
 - [options](../js&browser/页面过程与浏览器缓存.md#options)
 - [http各版本区别](../http/README.md#总览)
 - [https](../http/README.md#https)
-- [响应式布局](./src/common.md#响应式方案)
 - [状态码](../http/README.md#常用状态码)
 - [缓存机制](../js&browser/页面过程与浏览器缓存.md#缓存分类)
 - [跨域&网络安全](../http/跨域.md#同源策略)
@@ -29,7 +28,6 @@
 - [echarts](../echart/README.md#总结)
 - [重绘重排](./src/common.md#重绘和回流)
 - [webpack 常用配置](../webpack/常用配置.md)
-- [垂直居中](../css-related/README.md#垂直居中)
 - [内存泄漏](../js&browser/内存管理.md#内存泄漏)
 - [闭包](./src/common.md#闭包)
 - [promise细节](./src/promise.md)
@@ -41,6 +39,12 @@
 - [盒模型](./src/common.md#盒模型)
 - [mjs和cjs](../js&browser/esm.md)
 - [B端和C端差异](../career/前端架构&技术方案.md#各端差异)
+
+### css
+- [响应式布局](./src/common.md#响应式方案)
+- [垂直居中](../css-related/README.md#垂直居中)
+- [margin塌陷](./src/common.md#margin塌陷)
+
 
 ## 手写源码
 
@@ -134,7 +138,6 @@
 - [前端物料库搭建方案](https://mp.weixin.qq.com/s/MUz3JMhmV1W2hC-YaGEiKQ)
 - [i18n方案](./src/i18n方案.md)
 - [弱网可用性](./src/弱网可用性.md)
-- [前端工程化](../career/前端工程化.md)
 
 ## 业务
 

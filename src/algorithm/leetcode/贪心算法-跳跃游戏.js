@@ -38,3 +38,18 @@ var canJump = function(nums) {
   }
   return true;  
 };
+
+/**
+ * 随心所至
+ * @param {*} nums 
+ * @returns 
+ */
+var canJump = function(nums) {
+  let max = 0;
+  const { length } = nums;
+  for (let i = 0; i <= max; i += 1) {
+      max = Math.max(max, i + nums[i]);
+      if (max >= length - 1) return true;
+  }
+  return false;
+};
