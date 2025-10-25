@@ -711,3 +711,27 @@ Always respond in 中文
 3. 制定实施计划（tasks.md）
 
 ### 代码生成
+
+## OpenAI
+> 以七牛统一openapi为例
+
+```js
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  baseURL: 'https://openai.qiniu.com/v1',
+  apiKey: 'sk-xxx',
+});
+
+async function main() {
+  const completion = await openai.chat.completions.create({
+    messages: [{ role: "system", content: "今天几号？" }],
+    model: "deepseek-v3.1",
+  });
+
+  console.log(completion.choices[0].message.content);
+}
+
+main();
+```
+
