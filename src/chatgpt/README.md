@@ -703,6 +703,9 @@ Always respond in 中文
 ## 氛围编程
 
 ### 需求澄清
+- 乔哈里窗
+- 费曼学习法
+- 产婆术
 
 ### 文档生成（Spec 规范驱动开发）
 
@@ -711,6 +714,7 @@ Always respond in 中文
 3. 制定实施计划（tasks.md）
 
 ### 代码生成
+todo
 
 ## OpenAI
 > 以七牛统一openapi为例
