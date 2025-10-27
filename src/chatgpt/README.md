@@ -31,9 +31,9 @@
 - [在线生成web应用 lovable](https://github.com/firecrawl/open-lovable?tab=readme-ov-file)
 - [ollama搜索API](https://ollama.com/blog/web-search)
 
-## Prompt
+## Prompt Engineering
 
-> 用于引导机器学习模型生成符合预期输出的文本或代码片段
+> 定义模型角色和身份，用于引导机器学习模型生成符合预期输出的文本或代码片段
 
 **Prompt = context + step + shot + question**
 
@@ -137,6 +137,11 @@ Follow SOLID principles throughout the codebase:
 - Use useCallback and useMemo for performance optimization when needed
 - Handle edge cases and loading states appropriately
 ```
+
+---
+
+## Context Engineering
+> 提示词工程的进阶版。为模型提供完成任务所需的背景知识
 
 ---
 
@@ -700,6 +705,11 @@ server.listen(3000, () => {
 Always respond in 中文
 ```
 
+### 三类文档
+> @Docs、@Web、MCP的区别
+
+![cursor知识库](./cursor知识库.png)
+
 ## 氛围编程
 
 ### 需求澄清
@@ -716,7 +726,7 @@ Always respond in 中文
 ### 代码生成
 todo
 
-## OpenAI
+## OpenAI API
 > 以七牛统一openapi为例
 
 ```js
@@ -739,3 +749,14 @@ async function main() {
 main();
 ```
 
+---
+
+## Cline
+在项目目录下创建专门的memory-bank目录，通过六个核心文件实现项目知识的全方位管理：
+
+- **projectbrief.md**作为项目基础文档，承载核心需求定义和目标规划
+- **productContext.md**深入阐述项目存在的根本原因、要解决的核心问题、具体工作方式以及用户体验目标
+- **activeContext.md**动态记录当前工作重点、最近变更内容、下一步执行计划和活跃的决策信息
+- **systemPatterns.md**详细描述系统架构设计、关键技术决策、采用的设计模式以及组件间的关系
+- **techContext.md**全面覆盖使用的技术栈、开发环境设置、技术约束条件和依赖关系管理
+- **progress.md**实时跟踪已完成的功能模块、待构建的内容清单、当前项目状态和已知问题记录
