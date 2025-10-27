@@ -31,5 +31,18 @@ const redPacket = (amount = 0, user = 0) => {
   return result;
 };
 
+const redPacket2 = (amount = 0, user = 0) => {
+  const result = [];
+  if (!amount || !user) return result;
+  while (user > 1) {
+    const money = Math.max(0.01, Math.min(Math.random() * amount, amount * 2 / user)).toFixed(2) - 0;
+    result.push(money);
+    amount -= money;
+    user--;
+  }
+  result.push(amount.toFixed(2) - 0);
+  return result;
+}
+
 // test
 console.log(redPacket(100, 10));

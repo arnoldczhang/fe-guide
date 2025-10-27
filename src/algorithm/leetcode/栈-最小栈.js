@@ -31,6 +31,17 @@
  * minStack.getMin();   --> 返回 -2.
  * 
  */
+
+// test
+minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin();   // --> 返回 -3.
+minStack.pop();
+minStack.top();      // --> 返回 0.
+minStack.getMin();   // --> 返回 -2.
+
 var MinStack = function() {
   this.minStack = [];
   this.stack = [];

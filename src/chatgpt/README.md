@@ -10,6 +10,7 @@
 - [gpt 合集-1](https://start.chatgot.io/)
 - [现有的一些 AIGC](https://mp.weixin.qq.com/s?__biz=MzkxNDIzNTg4MA==&mid=2247488559&idx=1&sn=294b604f54aac0e8f925cee2a638bdec&scene=21#wechat_redirect)
 - [字节跳动-豆包](https://www.doubao.com/chat)
+- [gemini](https://aistudio.google.com/)
 - [prompt 指南](https://mp.weixin.qq.com/s/jOU2qT5o88tuZC1p6vLkJw)
 - [前端训练 gpt](https://mp.weixin.qq.com/s/0lSPqDmECyKcemXkWrgUuA)
 - [聊天生成网页](https://bolt.new/)
@@ -28,10 +29,11 @@
 - [代码仓库转wiki](https://deepwiki.com/)
 - [写agent的12个影响因素](https://github.com/humanlayer/12-factor-agents)
 - [在线生成web应用 lovable](https://github.com/firecrawl/open-lovable?tab=readme-ov-file)
+- [ollama搜索API](https://ollama.com/blog/web-search)
 
-## Prompt
+## Prompt Engineering
 
-> 用于引导机器学习模型生成符合预期输出的文本或代码片段
+> 定义模型角色和身份，用于引导机器学习模型生成符合预期输出的文本或代码片段
 
 **Prompt = context + step + shot + question**
 
@@ -135,6 +137,11 @@ Follow SOLID principles throughout the codebase:
 - Use useCallback and useMemo for performance optimization when needed
 - Handle edge cases and loading states appropriately
 ```
+
+---
+
+## Context Engineering
+> 提示词工程的进阶版。为模型提供完成任务所需的背景知识
 
 ---
 
@@ -659,6 +666,7 @@ server.listen(3000, () => {
 ## cursor
 
 [cursor 使用指南和常用 prompt](https://mp.weixin.qq.com/s/UM3nBcX6JpYtnchSCdrxOA)
+[与Cursor结对编程](https://mp.weixin.qq.com/s/88iwKK9sryCket4F2MjjcQ)
 
 ### rules
 示例
@@ -697,9 +705,17 @@ server.listen(3000, () => {
 Always respond in 中文
 ```
 
+### 三类文档
+> @Docs、@Web、MCP的区别
+
+![cursor知识库](./cursor知识库.png)
+
 ## 氛围编程
 
 ### 需求澄清
+- 乔哈里窗
+- 费曼学习法
+- 产婆术
 
 ### 文档生成（Spec 规范驱动开发）
 
@@ -708,3 +724,39 @@ Always respond in 中文
 3. 制定实施计划（tasks.md）
 
 ### 代码生成
+todo
+
+## OpenAI API
+> 以七牛统一openapi为例
+
+```js
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  baseURL: 'https://openai.qiniu.com/v1',
+  apiKey: 'sk-xxx',
+});
+
+async function main() {
+  const completion = await openai.chat.completions.create({
+    messages: [{ role: "system", content: "今天几号？" }],
+    model: "deepseek-v3.1",
+  });
+
+  console.log(completion.choices[0].message.content);
+}
+
+main();
+```
+
+---
+
+## Cline
+在项目目录下创建专门的memory-bank目录，通过六个核心文件实现项目知识的全方位管理：
+
+- **projectbrief.md**作为项目基础文档，承载核心需求定义和目标规划
+- **productContext.md**深入阐述项目存在的根本原因、要解决的核心问题、具体工作方式以及用户体验目标
+- **activeContext.md**动态记录当前工作重点、最近变更内容、下一步执行计划和活跃的决策信息
+- **systemPatterns.md**详细描述系统架构设计、关键技术决策、采用的设计模式以及组件间的关系
+- **techContext.md**全面覆盖使用的技术栈、开发环境设置、技术约束条件和依赖关系管理
+- **progress.md**实时跟踪已完成的功能模块、待构建的内容清单、当前项目状态和已知问题记录

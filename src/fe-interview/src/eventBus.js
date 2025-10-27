@@ -1,4 +1,9 @@
-// 可参考eventemitter3@5.0.1
+/**
+ * 可参考eventemitter3@5.0.1
+ * 
+ * - on/off/trigger/
+ * 
+ */
 class EventEmitter {
   constructor() {
     this.cach = new Map();
@@ -52,3 +57,17 @@ emitter.off('click', handler2);
 emitter.trigger('click', 'try2: hello');
 emitter.off('click');
 emitter.trigger('click', 'try3: hello');
+
+/**
+ * ==第一次trigger==
+ * handler1 try1: hello
+ * handler2 try1: hello
+ * handler3 try1: hello
+ * 
+ * ==第二次trigger==
+ * handler1 try2: hello
+ * handler3 try2: hello
+ * 
+ * ==第三次trigger==
+ * 无
+ */

@@ -40,29 +40,36 @@
 ## 规范
 
 ### 命名
+
 - 尽量采用`kebab-case`格式（compiler-core、search-button.vue）
+
 - 高优单词开头
-```
-components/
-|- search-button.vue
-|- search-button-clear.vue
-|- search-input.vue
-|- search-input-query.vue
-|- settings-checkbox.vue
-|- settings-checkbox-terms.vue
-```
+  
+  ```
+  components/
+  |- search-button.vue
+  |- search-button-clear.vue
+  |- search-input.vue
+  |- search-input-query.vue
+  |- settings-checkbox.vue
+  |- settings-checkbox-terms.vue
+  ```
+
 - emit规范
-```
-状态变更：noun-verb
-生命周期：before/after等-verb
-动作：verb-noun
-```
+  
+  ```
+  状态变更：noun-verb
+  生命周期：before/after等-verb
+  动作：verb-noun
+  ```
+
 - function规范
-```
-交互事件：on + verb + noun
-逻辑处理：handle + noun + verb
-业务：符合场景就好
-```
+  
+  ```
+  交互事件：on + verb + noun
+  逻辑处理：handle + noun + verb
+  业务：符合场景就好
+  ```
 
 ## 极简安装&启动
 
@@ -917,8 +924,6 @@ vite3.0之后：优先爬取静态import（这个3.0能获取）给浏览器，�
 
 差异：10秒~
 
-
-
 ### 配置
 
 ### 本地调试
@@ -942,11 +947,12 @@ export default defineConfig({
   // ...省略很多配置
   resolve: { alias },
 })
-
 ```
 
 #### vue多版本问题
+
 vue指定版本
+
 > 本地调试且用到 provider/inject 时会出现类似问题（因为注入会依赖 currentVnodeInstance）
 
 ```js
@@ -959,6 +965,7 @@ export default defineConfig({
 ```
 
 #### 非本机访问
+
 ```js
 export default defineConfig({
   // ...省略很多配置
@@ -969,6 +976,7 @@ export default defineConfig({
 ```
 
 如果有登录问题，本地记得配host
+
 > sudo vi /etc/hosts
 
 ### 打包分析analysis
@@ -981,8 +989,8 @@ npx vite-bundle-visualizer
 
 ## 好用的npm
 
-点击外部：v-click-outside
-[解析html node-html-parser](https://mp.weixin.qq.com/s/3PyLAoluIz3rjf30flrRDA)
+- 点击外部：v-click-outside
 
-类似webpack-analysis：[rollup-plugin-visualizer](https://stackoverflow.com/questions/75746767/is-there-any-bundle-analyzer-for-vite)
+- [解析html node-html-parser](https://mp.weixin.qq.com/s/3PyLAoluIz3rjf30flrRDA)
 
+- 类似webpack-analysis：[rollup-plugin-visualizer](https://stackoverflow.com/questions/75746767/is-there-any-bundle-analyzer-for-vite)

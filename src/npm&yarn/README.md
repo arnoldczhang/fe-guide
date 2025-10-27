@@ -472,6 +472,7 @@ packages:
 ### 使用changeset管理版本&发布
 
 #### 命令
+
 ```json
 {
   "scripts": {
@@ -490,6 +491,7 @@ packages:
 ```
 
 #### 版本管理 ./changeset/config.json
+
 ```json
 {
   "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
@@ -501,7 +503,7 @@ packages:
   ],
   // 允许独立发布（可以默认不填）
   "linked": [
-    
+
   ],
   // 无需关注的包
   "ignore": [
@@ -525,16 +527,17 @@ pnpm changeset publish
 ```
 
 #### 配置nx远程缓存
+
 > 适用于nx21+：https://nx.dev/recipes/running-tasks/self-hosted-caching#open-api-specification
 
 两件事：
+
 1. 项目bash注入远程缓存服务器配置
 2. 配置远程服务器（两个接口获取缓存和上传缓存）
 
 **项目bash注入远程缓存服务器配置**
 
 ```bash
-
 #!/bin/bash
  # 远程缓存构建函数
 try_remote_build() {
@@ -667,7 +670,6 @@ app.listen(PORT, () => {
 });
 ```
 
-
 ### pnpm publish
 
 [自动更新版本号](https://github.com/umijs/umi/pull/10719/files#diff-32824c984905bb02bc7ffcef96a77addd1f1602cff71a11fbbfdd7f53ee026bb)
@@ -687,6 +689,7 @@ pnpm link --global <包名>
 ```
 
 ### pnpm + nx + bundle-status
+
 - [腾讯文档实践](https://mp.weixin.qq.com/s/JutlJ2k4XFM2r1MgeMcDgQ)
 - [腾讯文档实践2](https://mp.weixin.qq.com/s/Xdv4VGObIvUYM-6ALWMf3A)
 

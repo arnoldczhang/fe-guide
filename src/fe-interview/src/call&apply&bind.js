@@ -11,7 +11,7 @@
  */
 
 /**
- * 原型链
+ * 方式一：原型链
  * @param {*} context 
  * @returns 
  */
@@ -47,7 +47,8 @@ Function.prototype.bind2 = function(thisObj = window) {
 };
 
 /**
- * 单独方法
+ * 方式二：单独方法
+ * 
  * @param {*} func 
  * @param {*} context 
  * @param  {...any} args 
@@ -75,3 +76,31 @@ function bind(func, context) {
 // function aa(a, b, c) {return a + b + c;};
 // var bb = aa.bind2({}, 1, 2);
 // console.log(bb(3));
+
+
+/**
+ * 方式三：单独方法，不污染context
+ */
+const call = (func, thisArg, ...args) => {
+  const result = {};
+  result.__proto__ = thisArg;
+  result.func = func;
+  return result.func(...args);
+};
+const apply = (func, thisArg, args = []) => {
+  const result = {};
+  result.__proto__ = thisArg;
+  result.func = func;
+  return result.func(...args);
+};
+const bind = (func, thisArg, ...args) => {
+  const result = {};
+  result.__proto__ = thisArg;
+  result.func = func;
+  return function innerBind(...runtimeArgs) {
+    if (this instanceof innerBind) {
+      return call(func, func.prototype, ...args, ...runtimeArgs);
+    }
+    return result.func(...args, ...runtimeArgs);
+  }
+};

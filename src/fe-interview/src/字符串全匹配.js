@@ -36,6 +36,8 @@ const transform = (str = '', arr = []) => {
   }
   return result;
 };
+
+// test
 console.log(transform('abcde', ['ab', 'cde'])); // true
 console.log(transform('abcdef', ['ab', 'cde'])); // false
 console.log(transform('abcde', ['ab', 'cdde'])); // false

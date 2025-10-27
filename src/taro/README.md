@@ -20,3 +20,8 @@
 
 ### taro next
 [taro next](https://aotu.io/notes/2020/01/02/gmtc/index.html)
+
+## react19
+- [UI](https://docs.taro.zone/docs/react-page)
+- [API](https://docs.taro.zone/docs/apis/base/system/openSystemBluetoothSetting)
+- [hooks](https://docs.taro.zone/docs/hooks)

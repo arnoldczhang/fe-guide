@@ -64,3 +64,10 @@ const transfer2 = (input = [], keys = ['province', 'city', 'county']) => {
   })
   return result;
 }
+
+// test
+transfer([
+  {"province":"四川省", "city":"成都市", "county": "金牛区" },
+  {"province":"四川省", "city":"绵阳市", "county": "平武县" },
+  {"province":"上海市", "city":"上海市", "county": "长宁区" },
+]);

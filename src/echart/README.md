@@ -241,3 +241,66 @@ export default {
     },
 }
 ```
+
+---
+
+## 总结
+
+### 数据更新机制
+```js
+// 默认，增量更新
+setOption(option);
+// 彻底重绘
+setOption(option, { notMerge: true });
+```
+
+### 事件联动
+
+```js
+chart.on('click/legendselectchange', () => {
+    // 联动
+    chart.dispatchAction({ type: 'xxx ' });
+});
+```
+
+### 性能优化
+
+#### 1. 开启大数据模式
+
+```js
+{
+    series: {
+        large: true,
+        largeThreshold: 100,
+    },
+}
+```
+
+#### 2. 切换渲染器
+
+echarts支持三种：
+
+- svg（适合需要高清晰度场景）
+- canvas（适合大数据场景）
+- webgl
+
+改用`echarts GL`或者canvas渲染
+
+#### 3. 关闭动画
+
+```js
+{
+    animation: false
+}
+```
+
+#### 4. 数据抽稀
+减少展示的数据点
+
+```js
+{
+    series: {
+        sampling: 'average'
+    },
+}
+```

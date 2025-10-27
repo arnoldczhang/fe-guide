@@ -54,6 +54,8 @@ export default defineConfig({
 - sourcemap
 - minify（默认esbuild）
 - rollupOptions
+  + output
+    > manualChunks(id)：自定义异步加载文件名
 
 ### define
 

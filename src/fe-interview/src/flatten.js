@@ -1,3 +1,9 @@
+/**
+ * [1, [2, [3, [4]], 5]] -> [1,2,3,4,5]
+ * 
+ * @param {*} arr 
+ * @returns 
+ */
 const flatten = (arr) => {
   return arr.reduce((res, pre) => {
     if (Array.isArray(pre)) {

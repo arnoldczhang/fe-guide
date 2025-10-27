@@ -9,6 +9,7 @@
 - [tesseract.js训练模型](https://github.com/naptha/tessdata)
 - [puppeteer疑难杂症](https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch)
 - [屏幕录制rrweb](https://mp.weixin.qq.com/s/5RUjvKOBjqX5Btrse-C3Jg)
+- [远程调试chii](https://chii.liriliri.io/zh/docs/)
 
 ---
 
