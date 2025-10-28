@@ -760,3 +760,15 @@ main();
 - **systemPatterns.md**详细描述系统架构设计、关键技术决策、采用的设计模式以及组件间的关系
 - **techContext.md**全面覆盖使用的技术栈、开发环境设置、技术约束条件和依赖关系管理
 - **progress.md**实时跟踪已完成的功能模块、待构建的内容清单、当前项目状态和已知问题记录
+
+---
+
+## Agent
+1. AutoGPT：Github 17.8w Star
+2. LangGraph： Github 13.1w Star
+3. Dify： Github 11.2w Star
+4. CrewAI：Github 3w Star
+5. AutoGen：微软开源 Github 5w Star
+
+
+---
