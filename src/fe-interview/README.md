@@ -58,7 +58,7 @@
 - [防抖 - clearTimeout](./src/debounce.js)
 - [节流 - 固定频率](./src/throttle.js)
 - [深拷贝](./src/深拷贝.md#终局)
-- axios
+- [axios](./src/axios.js)
 
 ### 有点意思的
 
