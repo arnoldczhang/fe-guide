@@ -107,3 +107,10 @@ console.log(zk.getValue('/app/p_1/p_1_1'));
 zk.setValue('/app/p_1/p_1_1', 300);
 console.log(zk.getValue('/app/p_1/p_1_1'));
 zk.delete('/app/p_2');
+
+// 输出
+// null
+// 100
+// 200
+// 300
+// Error: 目录：p_2不存在，无法删除

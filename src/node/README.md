@@ -246,7 +246,7 @@ node --inspect-brk dist/app.js
 - [流程图-FlowGram](https://mp.weixin.qq.com/s/UBBGDYWtLGwpNGab_gPPcQ)
 - [屏幕录制rrweb](https://mp.weixin.qq.com/s/5RUjvKOBjqX5Btrse-C3Jg)
 - [远程调试chii](https://chii.liriliri.io/zh/docs/)
-- [在线调试mitmproxy](https://chii.liriliri.io/zh/docs/)
+- [在线调试mitmproxy](https://www.mitmproxy.org/)
 
 ### eggjs
 
