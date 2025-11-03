@@ -30,6 +30,7 @@
 - [写agent的12个影响因素](https://github.com/humanlayer/12-factor-agents)
 - [在线生成web应用 lovable](https://github.com/firecrawl/open-lovable?tab=readme-ov-file)
 - [ollama搜索API](https://ollama.com/blog/web-search)
+- [AI 驱动的开源知识库 PandaWiki](https://github.com/chaitin/PandaWiki)
 
 ## Prompt Engineering
 
