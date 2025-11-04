@@ -15,6 +15,7 @@
 - [前端训练 gpt](https://mp.weixin.qq.com/s/0lSPqDmECyKcemXkWrgUuA)
 - [聊天生成网页](https://bolt.new/)
 - [本地自建 ai 知识库](https://mp.weixin.qq.com/s/KlEocqoukwNU4DZYEzph8Q)
+- [本地自建 ai 知识库fastGPT](https://juejin.cn/post/7532596434030837810?sessionid)
 - [本地运行大模型工具](https://mp.weixin.qq.com/s/Tc9BkRGVu_9AiwH0PLlFgQ)
 - [DeepSeek-国产最屌开源大模型](https://github.com/deepseek-ai/DeepSeek-V3?tab=readme-ov-file)
 - [通过 Rag 实现与大模型对话检索](https://mp.weixin.qq.com/s/6yhYLKfNrumSMs7ELvktjg)
@@ -666,8 +667,9 @@ server.listen(3000, () => {
 
 ## cursor
 
-[cursor 使用指南和常用 prompt](https://mp.weixin.qq.com/s/UM3nBcX6JpYtnchSCdrxOA)
-[与Cursor结对编程](https://mp.weixin.qq.com/s/88iwKK9sryCket4F2MjjcQ)
+- [cursor 使用指南和常用 prompt](https://mp.weixin.qq.com/s/UM3nBcX6JpYtnchSCdrxOA)
+- [与Cursor结对编程](https://mp.weixin.qq.com/s/88iwKK9sryCket4F2MjjcQ)
+- [cursor实战指南](https://mp.weixin.qq.com/s/xYgkVAmUrd2Xu7QRhpjoIw)
 
 ### rules
 示例
