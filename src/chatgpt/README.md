@@ -32,6 +32,8 @@
 - [在线生成web应用 lovable](https://github.com/firecrawl/open-lovable?tab=readme-ov-file)
 - [ollama搜索API](https://ollama.com/blog/web-search)
 - [AI 驱动的开源知识库 PandaWiki](https://github.com/chaitin/PandaWiki)
+- [Nano Banana Pro 提示词大全](https://github.com/YouMind-OpenLab/awesome-nano-banana-pro-prompts/blob/main/README_zh.md)
+- [langchain大模型适配器](https://mp.weixin.qq.com/s/PsUuWLDTYS0O5Ug5285PaA)
 
 ## Prompt Engineering
 
@@ -40,6 +42,7 @@
 **Prompt = context + step + shot + question**
 
 ### 模板
+
 [prompt模板](./prompt模板.md)
 
 ### context
@@ -85,6 +88,7 @@ yyy: ...
 到这里才开始你真正的提问-\_-
 
 ### prompt加固
+
 [智能体防御](https://mp.weixin.qq.com/s/ndNDFP8vEQIq0ZRbriLzXw)
 总结就是，不要太宽泛，给明确要求、示例
 
@@ -143,6 +147,7 @@ Follow SOLID principles throughout the codebase:
 ---
 
 ## Context Engineering
+
 > 提示词工程的进阶版。为模型提供完成任务所需的背景知识
 
 ---
@@ -150,9 +155,9 @@ Follow SOLID principles throughout the codebase:
 ## 境界
 
 > 程序 = 算法 + 结构
->
+> 
 > 软件 = 程序 + 软件工程
->
+> 
 > 软件企业= 软件 + 商业模式
 
 chatgpt 在第一层大力提效，人类应该在二、三层发力。
@@ -177,7 +182,6 @@ chatgpt 在第一层大力提效，人类应该在二、三层发力。
 
 ## Response
 规定输出格式，以确保LLM生成符合后续使用需求的数据格式，如列表、JSON或专业报告等。这有助于在实际应用中更好地处理LLM的输出
-
 ```
 
 举例：
@@ -200,7 +204,6 @@ chatgpt 在第一层大力提效，人类应该在二、三层发力。
 
 ## Response
 请以列表形式呈现每个酒店的信息，包括名称、地址、房间类型、价格和联系方式。每个酒店的信息应简短且直接，便于快速浏览。
-
 ```
 
 ### prompt 模板
@@ -270,7 +273,6 @@ chatgpt 在第一层大力提效，人类应该在二、三层发力。
 ## 输入要素:
 1. xxx
 2. xxx
-
 ```
 
 ## 传输
@@ -311,6 +313,7 @@ fetch(`/receive?channel=${channel}`, {
 4. 支持断点续传（messageId）
 
 ### 方式二：分块传输
+
 [分块传输](#分块传输)
 
 ## 文档聊天机器人
@@ -331,8 +334,6 @@ fetch(`/receive?channel=${channel}`, {
 ### RAG-MCP
 
 > 调用mcp前执行预检索，避免输入token量过大
-
-
 
 ### 设计原则 CRAFTS 框架
 
@@ -572,6 +573,7 @@ startServer();
 - https://modelscope.cn/mcp
 
 ### 调试工具
+
 - [cherry ai](https://www.cherry-ai.com/)
 
 ### 传输规则
@@ -579,34 +581,36 @@ startServer();
 #### 分块传输
 
 **特点**
+
 1. 原始字节流，分块传输
 2. 无自动重连、无事件区分、无断点续传
 3. 需要：http1.1的`Transfer-Encoding: chunked`或http2的`steams`
 
 **前端**
+
 ```js
 // 使用 Fetch API 处理分块响应
 fetch('http://localhost:3000/stream')
   .then(response => {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    
+
     function read() {
       return reader.read().then(({ done, value }) => {
         if (done) {
           console.log('流式传输结束');
           return;
         }
-        
+
         // 处理接收到的数据块
         const text = decoder.decode(value);
         console.log('接收到数据块:', text);
-        
+
         // 继续读取下一个数据块
         return read();
       });
     }
-    
+
     return read();
   })
   .catch(error => {
@@ -625,21 +629,21 @@ const server = http.createServer((req, res) => {
     'Transfer-Encoding': 'chunked',
     'Access-Control-Allow-Origin': '*' // 允许跨域
   });
-  
+
   console.log('客户端连接已建立，开始发送数据流...');
-  
+
   // 模拟实时数据发送
   let count = 0;
   const intervalId = setInterval(() => {
     count++;
-    
+
     // 生成要发送的数据
     const data = `时间: ${new Date().toISOString()}, 计数: ${count}\n`;
-    
+
     // 发送分块数据
     // 注意: Node.js 会自动处理分块编码，我们不需要手动添加长度前缀
     res.write(data);
-    
+
     // 发送10次后结束
     if (count >= 10) {
       clearInterval(intervalId);
@@ -647,7 +651,7 @@ const server = http.createServer((req, res) => {
       console.log('数据流发送完成');
     }
   }, 1000);
-  
+
   // 处理客户端断开连接
   req.on('close', () => {
     clearInterval(intervalId);
@@ -672,6 +676,7 @@ server.listen(3000, () => {
 - [cursor实战指南](https://mp.weixin.qq.com/s/xYgkVAmUrd2Xu7QRhpjoIw)
 
 ### rules
+
 示例
 
 ```markdown
@@ -709,6 +714,7 @@ Always respond in 中文
 ```
 
 ### 三类文档
+
 > @Docs、@Web、MCP的区别
 
 ![cursor知识库](./cursor知识库.png)
@@ -716,6 +722,7 @@ Always respond in 中文
 ## 氛围编程
 
 ### 需求澄清
+
 - 乔哈里窗
 - 费曼学习法
 - 产婆术
@@ -727,9 +734,11 @@ Always respond in 中文
 3. 制定实施计划（tasks.md）
 
 ### 代码生成
+
 todo
 
 ## OpenAI API
+
 > 以七牛统一openapi为例
 
 ```js
@@ -755,6 +764,7 @@ main();
 ---
 
 ## Cline
+
 在项目目录下创建专门的memory-bank目录，通过六个核心文件实现项目知识的全方位管理：
 
 - **projectbrief.md**作为项目基础文档，承载核心需求定义和目标规划
@@ -767,11 +777,11 @@ main();
 ---
 
 ## Agent
+
 1. AutoGPT：Github 17.8w Star
 2. LangGraph： Github 13.1w Star
 3. Dify： Github 11.2w Star
 4. CrewAI：Github 3w Star
 5. AutoGen：微软开源 Github 5w Star
-
 
 ---
