@@ -395,6 +395,9 @@ npm view xxx versions
 > 简版monorepo，参考[基于 pnpm + changesets 的 monorepo 最佳实践](https://juejin.cn/post/7181409989670961207#heading-5)
 > 
 > Git: [monorepo-example](https://github.com/luhc228/pnpm-changsets-monorepo-example)
+>
+> [turbo-packages命令归一化](https://turborepo.com/docs/getting-started/examples)
+>
 
 #### 目录结构
 
