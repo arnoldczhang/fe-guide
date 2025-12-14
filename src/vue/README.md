@@ -899,6 +899,7 @@ export default class Child extends Vue {
 - [vite实践](https://mp.weixin.qq.com/s/pUzUr1lTfX3wkzJL_Xv1oQ)
 - [webpack和vite在开发阶段的区别](https://mp.weixin.qq.com/s?__biz=Mzg2MDU4MzU3Nw==&mid=2247492637&idx=1&sn=3b2403d0c66f1e5cdd5226fb5f06afd3&scene=21#wechat_redirect)
 - [state of vite 2023](https://docs.google.com/presentation/d/1oZnjsPBnb3OB2HxU88vYkZLa54GV-xNKrF8XkOIqLAU/edit#slide=id.g286269c24aa_0_120)
+- vite8
 
 ### 优势
 
