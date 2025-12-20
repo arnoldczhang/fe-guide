@@ -780,7 +780,7 @@ main();
 ## Agent
 
 1. AutoGPT：Github 17.8w Star
-2. LangGraph： Github 13.1w Star
+2. [LangGraph](https://mp.weixin.qq.com/s/XhFbLTLcSjDj0r3KGT9EOg)： Github 13.1w Star
 3. Dify： Github 11.2w Star
 4. CrewAI：Github 3w Star
 5. AutoGen：微软开源 Github 5w Star
