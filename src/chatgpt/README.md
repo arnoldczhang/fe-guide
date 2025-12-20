@@ -34,6 +34,7 @@
 - [AI 驱动的开源知识库 PandaWiki](https://github.com/chaitin/PandaWiki)
 - [Nano Banana Pro 提示词大全](https://github.com/YouMind-OpenLab/awesome-nano-banana-pro-prompts/blob/main/README_zh.md)
 - [langchain大模型适配器](https://mp.weixin.qq.com/s/PsUuWLDTYS0O5Ug5285PaA)
+- [AI对话渲染器 X-Markdown](https://github.com/ant-design/x)
 
 ## Prompt Engineering
 
