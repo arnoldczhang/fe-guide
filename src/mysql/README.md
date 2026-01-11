@@ -4,6 +4,28 @@
 
 - [mac安装mysql.tgz](https://www.cnblogs.com/yjmyzz/p/how-to-install-mysql8-on-mac-using-tar-gz.html)
 
+## 准则
+
+### 是否拆表？
+
+- 这个字段，是否具备「独立变化的可能性」
+
+- 流量大场景，拆成：
+  
+  - 用户基础信息表（低频更新）
+  
+  - 用户状态 / 行为表（高频更新）
+  
+  - 用户扩展表（可选字段、JSON 或 KV）
+
+- 总结：
+  
+  - 高频 + 易变 + 可选 → 拆表
+  
+  - 当前流量小 → 可以简单
+  
+  - 未来不确定 → 留好演进空间
+
 ## 安装（mysql8）
 
 ```sh
