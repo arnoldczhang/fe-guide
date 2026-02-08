@@ -3,6 +3,7 @@
 ## 参考
 
 - [mac安装mysql.tgz](https://www.cnblogs.com/yjmyzz/p/how-to-install-mysql8-on-mac-using-tar-gz.html)
+- [用户从0-1000万如何扩展](https://blog.algomaster.io/p/scaling-a-system-from-0-to-10-million-users)
 
 ## 准则
 
