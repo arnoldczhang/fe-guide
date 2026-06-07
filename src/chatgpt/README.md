@@ -36,6 +36,17 @@
 - [langchain大模型适配器](https://mp.weixin.qq.com/s/PsUuWLDTYS0O5Ug5285PaA)
 - [AI对话渲染器 X-Markdown](https://github.com/ant-design/x)
 
+## AI和程序员
+
+维度从高到低，升维可能是后续反向
+
+- 需求分析
+- 系统设计
+- CICD
+- 编码测试
+
+
+
 ## Prompt Engineering
 
 > 定义模型角色和身份，用于引导机器学习模型生成符合预期输出的文本或代码片段
