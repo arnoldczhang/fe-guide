@@ -1,3 +1,5 @@
+
+
 <h1 align="center">
   前端专业技能储备
 </h1>
@@ -39,6 +41,7 @@
 
 ## 一些尝试
 - [promise原生实现](./src/prototype/promise.js)
+- [chrome mock调试插件](./src/chrome/mock/)
 - [小程序打包](./src/miniprogram/build.js)
 - [es6兜底方法](./src/meta-programming/index.js)
 - [immer数据不变性](./src/immer/immer.js)
